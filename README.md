@@ -15,3 +15,7 @@ EasyG is a script written in ruby that I use to automate some tasks for PenTest 
   ruby easyg.rb dork <FILENAME>
   ```
   
+- To scan a list of targets with nmap from a text file: 
+  ```
+  ruby easyg.rb nmap <FILENAME>
+  ```
