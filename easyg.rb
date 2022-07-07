@@ -24,6 +24,10 @@ File.open(ARGV[1],'r').each_line do |f|
 			system "start firefox www.google.com/search?q=site%3A" + target.to_s
 		end
 		
+		if ARGV[0] == "nmap"
+			system "nmap " + target.to_s
+		end
+		
 		c += 1
 		
 		if c >= 30
