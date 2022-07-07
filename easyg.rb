@@ -25,7 +25,7 @@ File.open(ARGV[1],'r').each_line do |f|
 		end
 		
 		if ARGV[0] == "nmap"
-			system "nmap " + target.to_s
+			system "nmap -Pn " + target.to_s
 		end
 		
 		c += 1
