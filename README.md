@@ -1,5 +1,7 @@
 # EasyG
 
+**ToDo**: https://www.synbioz.com/blog/tech/optimize-ruby-code
+
 ### About EasyG
 
 EasyG is a script written in ruby that I use to automate some tasks for PenTest and Bug Hunting
