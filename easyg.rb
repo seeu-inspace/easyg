@@ -1,5 +1,4 @@
 # Fare opzione sublist3r + firefox
-# nmap -p 1-65535 -T4 -A -v
 
 require'socket'
 
@@ -15,6 +14,10 @@ end
 		
 if ARGV[0] == "nmap"
 	option = "nmap -Pn "
+end
+
+if ARGV[0] == "nmap-int"
+	option = "nmap -p 1-65535 -T4 -A -v "
 end
 
 if option != nil
@@ -42,5 +45,7 @@ if option != nil
 			end
 			
 		end
+		
 	end
+	
 end
