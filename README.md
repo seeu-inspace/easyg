@@ -2,7 +2,7 @@
 
 ### About EasyG
 
-EasyG is a script written in ruby that I use to automate some tasks for PenTest and Bug Hunting
+EasyG is a script written in ruby that I use to automate some tasks for information gathering for PenTest and Bug Hunting
 
 ### Usage
 
