@@ -13,11 +13,11 @@ if ARGV[0] == "dork"
 end
 		
 if ARGV[0] == "nmap"
-	option = "nmap -Pn "
+	system "nmap -Pn -iL " + ARGV[1]
 end
 
 if ARGV[0] == "nmap-int"
-	option = "nmap -p 1-65535 -T4 -A -v "
+	system "nmap -p 1-65535 -T4 -A -v -iL " + ARGV[1]
 end
 
 if option != nil
