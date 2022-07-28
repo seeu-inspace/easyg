@@ -7,6 +7,7 @@ def go_on(option, file_i)
 	c = 0
 
 	File.open(file_i,'r').each_line do |f|
+	
 		begin
 			ip=IPSocket::getaddress(f.strip)
 			target = f.gsub("\n","")
@@ -18,6 +19,7 @@ def go_on(option, file_i)
 		if ip!="unknown"
 			
 			system option + target.to_s
+			system option + target.to_s + ":443"
 			
 			c += 1
 			
@@ -49,14 +51,19 @@ if ARGV[0] == "nmap"
 end
 
 if ARGV[0] == "sublist3r"
+
 	File.open(ARGV[1],'r').each_line do |f|
+	
 		begin
 			target = f.gsub("\n","")
 			print target + "\n"
 		end
+		
 		system "python sublist3r.py -d" + target.to_s + " > " + target.to_s + ".txt"
 		option = "start firefox "
 		file_i = target.to_s + ".txt"
 		go_on(option, file_i)
+		
 	end
+	
 end
