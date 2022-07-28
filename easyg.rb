@@ -18,8 +18,8 @@ def go_on(option, file_i)
 			
 		if ip!="unknown"
 			
-			system option + target.to_s
-			system option + target.to_s + ":443"
+			system option + "http://" + target.to_s
+			system option + "https://" + target.to_s
 			
 			c += 1
 			
