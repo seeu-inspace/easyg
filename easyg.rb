@@ -1,5 +1,3 @@
-# Fare opzione sublist3r + firefox
-
 require'socket'
 
 puts "\e[35m\n E a s y G\n\e[0m"
