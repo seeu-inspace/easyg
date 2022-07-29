@@ -2,7 +2,7 @@
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting. Now it is more than that.
 
-Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting, notes, payloads that I found useful and many links to blogs and articles that I want to read (because having a lot of bookmarks bothered me).
+Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles that I want to read (because having a lot of bookmarks bothered me) and more.
 
 **To Read list**
 - https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
