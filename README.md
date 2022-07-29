@@ -24,7 +24,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 **Burp suite**
 
-To add a domain + subdomains in advanced scopes: `.*\.test\.com$`
+- To add a domain + subdomains in advanced scopes: `.*\.test\.com$`
 
 **Ysoserial**
 
