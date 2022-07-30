@@ -78,3 +78,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   </methodCall>
   ```
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan)
+
+### SSRF
+
+For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
