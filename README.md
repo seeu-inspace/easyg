@@ -6,6 +6,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 **To Read list**
 - https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
+- https://github.com/righettod/poc-graphql
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
 - https://portswigger.net/web-security/ssrf
 - https://portswigger.net/web-security/jwt
