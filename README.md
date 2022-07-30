@@ -31,6 +31,12 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 To add a domain + subdomains in advanced scopes: `.*\.test\.com$`
 
+**Cool extensions**
+- [Autorize](https://github.com/PortSwigger/autorize)
+- [InQL](https://github.com/doyensec/inql)
+- [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
+- [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
+
 ### Ysoserial
 
 Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
