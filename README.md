@@ -5,9 +5,12 @@ EasyG started out as a script that I use to automate some information gathering 
 Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles that I want to read (because having a lot of bookmarks bothered me) and more.
 
 ### To Read list
+**GraphQL**
 - https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
 - https://github.com/righettod/poc-graphql
 - https://lab.wallarm.com/graphql-batching-attack/
+
+**Miscellaneous**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
 - https://portswigger.net/web-security/ssrf
 - https://portswigger.net/web-security/jwt
