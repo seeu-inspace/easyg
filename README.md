@@ -93,6 +93,15 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 
+### CSP
+
+- CSP evaluator https://csp-evaluator.withgoogle.com/
+
+### XSS
+
+- https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
+- JSFuck
+
 ### Linux
 
 
