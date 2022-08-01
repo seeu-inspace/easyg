@@ -7,11 +7,11 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 **Index**
 - [Blog / Writeups / News](#blog--writeups--news)
+- [Tools](#tools)
 - [Burp suite](#burp-suite)
 - [Ysoserial](#ysoserial)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
-- [SSRF](#ssrf)
 - [CSP](#csp)
 - [XSS](#xss)
 - [Linux](#linux)
@@ -38,6 +38,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://portswigger.net/research
 - https://www.skeletonscribe.net
 - https://cvetrends.com/
+
+### Tools
+
+For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 
 ### Burp suite
 
@@ -90,10 +94,6 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   </methodCall>
   ```
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan)
-
-### SSRF
-
-For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 
 ### CSP
 
