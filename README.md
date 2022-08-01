@@ -95,12 +95,14 @@ For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok]
 
 ### CSP
 
-- CSP evaluator https://csp-evaluator.withgoogle.com/
+- CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 
 ### XSS
 
+Bypass:
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
-- JSFuck
+- [JSFuck](http://www.jsfuck.com/)
+- [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 
 ### Linux
 
