@@ -125,7 +125,7 @@ xp_cmdshell 'COMMAND';
 EXEC sp_configure 'allow updates', 0
 RECONFIGURE
 EXEC sp_configure 'show advanced options', 1
-go
+GO
 RECONFIGURE
 GO
 EXEC sp_configure 'xp_cmdshell', 1
