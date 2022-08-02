@@ -44,6 +44,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://wiki.owasp.org/index.php/Testing_Checklist
 - https://packetstormsecurity.com/
 - https://github.com/OlivierLaflamme/Cheatsheet-God
+- https://twitter.com/hashtag/bugbountytips
 
 ### Tools
 
