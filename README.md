@@ -40,6 +40,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://portswigger.net/research
 - https://www.skeletonscribe.net
 - https://cvetrends.com/
+- https://thehackernews.com/
+- https://wiki.owasp.org/index.php/Testing_Checklist
+- https://packetstormsecurity.com/
+- https://github.com/OlivierLaflamme/Cheatsheet-God
 
 ### Tools
 
