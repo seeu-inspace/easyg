@@ -3,7 +3,7 @@
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting. Now it is more than that.
 
-Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles that I want to read (because having a lot of bookmarks bothered me) and more.
+Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles.
 
 **Index**
 - [Blog / Writeups / News](#blog--writeups--news)
@@ -18,22 +18,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [PHP](#php)
 - [Network](#network)
 - [Linux](#linux)
-
-### To Read list
-**GraphQL**
-- https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
-- https://github.com/righettod/poc-graphql
-- https://lab.wallarm.com/graphql-batching-attack/
-
-**Miscellaneous**
-- https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
-- https://portswigger.net/web-security/ssrf
-- https://portswigger.net/web-security/jwt
-- https://github.com/nahamsec/Resources-for-Beginner-Bug-Bounty-Hunters/blob/master/assets/blogposts.md
-- https://github.com/nahamsec/Resources-for-Beginner-Bug-Bounty-Hunters/blob/master/assets/media.md
-- https://github.com/nahamsec/Resources-for-Beginner-Bug-Bounty-Hunters/blob/master/assets/mobile.md
-- https://www.bugcrowd.com/hackers/bugcrowd-university/
-- https://www.microsoft.com/en-us/msrc/bounty-example-report-submission?rtc=1
 
 ### Blog / Writeups / News
 - https://pentester.land/list-of-bug-bounty-writeups.html
