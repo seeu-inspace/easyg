@@ -51,7 +51,7 @@ if ARGV[0] == "amass"
 			print target + "\n"
 		end
 		
-		system "amass enum -brute -active -d" + target.to_s + " -o " + target.to_s + ".txt"
+		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
 		file_i = target.to_s + ".txt"
 		go_on(file_i)
 		
