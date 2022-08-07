@@ -38,26 +38,6 @@ if ARGV[0] == "nmap"
 	system "nmap -T4 -A -v -iL " + ARGV[1]
 end
 
-if ARGV[0] == "sqlcrawl"
-	File.open(ARGV[0],'r').each_line do |f|
-	
-		begin
-			ip=IPSocket::getaddress(f.strip)
-			target = f.gsub("\n","")
-			print target + "\n"
-		rescue
-			ip="unknown"
-		end
-			
-		if ip!="unknown"
-			
-			system "python sqlmap.py -u https://" + target.to_s + " --forms --batch --crawl=10 --level=5 --risk=3"
-
-		end
-		
-	end
-end
-
 if ARGV[0] == "firefox"
 	file_i = ARGV[1]
 	go_on(file_i)
