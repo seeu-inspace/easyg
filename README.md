@@ -35,6 +35,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 
+- [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
+
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
