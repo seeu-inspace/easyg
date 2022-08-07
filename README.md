@@ -35,6 +35,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
+- [Amass](https://github.com/OWASP/Amass)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
