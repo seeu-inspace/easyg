@@ -39,8 +39,7 @@ if ARGV[0] == "nmap"
 end
 
 if ARGV[0] == "firefox"
-	file_i = ARGV[1]
-	go_on(file_i)
+	go_on(ARGV[1])
 end
 
 if ARGV[0] == "amass"
