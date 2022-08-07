@@ -1,5 +1,5 @@
 # <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/EasyG.png" alt="EasyG">
-![last-commit](https://img.shields.io/github/last-commit/seeu-inspace/easyg) ![languages-count](https://img.shields.io/github/languages/count/seeu-inspace/easyg) ![languages](https://img.shields.io/github/languages/top/seeu-inspace/easyg)
+![last-commit](https://img.shields.io/github/last-commit/seeu-inspace/easyg) ![languages](https://img.shields.io/github/languages/top/seeu-inspace/easyg)
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting. Now it is more than that.
 
