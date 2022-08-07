@@ -43,7 +43,7 @@ if ARGV[0] == "firefox"
 	go_on(file_i)
 end
 
-if ARGV[0] == "sublist3r"
+if ARGV[0] == "amass"
 
 	File.open(ARGV[1],'r').each_line do |f|
 	
@@ -52,7 +52,7 @@ if ARGV[0] == "sublist3r"
 			print target + "\n"
 		end
 		
-		system "python sublist3r.py -d" + target.to_s + " > " + target.to_s + ".txt"
+		system "amass enum -brute -active -d" + target.to_s + " -o " + target.to_s + ".txt"
 		file_i = target.to_s + ".txt"
 		go_on(file_i)
 		
