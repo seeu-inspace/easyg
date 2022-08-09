@@ -18,6 +18,8 @@ def go_on(file_i)
 			
 		if ip!="unknown"
 			
+			#this workd only with Windows
+			#for Linux, use "xdg-open" insead of "start firefox"
 			system "start firefox " + "http://" + target.to_s
 			system "start firefox " + "https://" + target.to_s
 			
