@@ -37,6 +37,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [Amass](https://github.com/OWASP/Amass)
 
+
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
@@ -44,13 +45,14 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile an exe written in VB
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
 - [ILSpy](https://github.com/icsharpcode/ILSpy) .NET decompiler
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
 
 **Android**
 
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
-- [Android Studio]() Android application development, useful for the emulator
+- [Android Studio](https://developer.android.com/studio) Android application development, useful for the emulator
   - Note: To start the emulator only, use commands such as
     ```
     cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
@@ -109,8 +111,9 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   <params></params>
   </methodCall>
   ```
-- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan)
-- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets
+- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t /root/nuclei-templates/technologies/wordpress-detect.yaml`
+- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
+
 
 ### CSP
 
