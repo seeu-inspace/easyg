@@ -110,6 +110,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   </methodCall>
   ```
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan)
+- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets
 
 ### CSP
 
