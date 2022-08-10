@@ -122,6 +122,10 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - [JSFuck](http://www.jsfuck.com/)
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
+- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
+
+For desktop applications: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
 **Payloads**
 - HTML inj 
