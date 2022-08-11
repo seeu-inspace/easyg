@@ -1,4 +1,4 @@
-openapi: 3.0.0,
+swagger: "2.0",
 info: 
   title: "Swagger Sample App",
   description: "Please to click Terms of service"
