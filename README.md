@@ -131,7 +131,11 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 
-For desktop applications: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
+For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
+
+**Swagger XSS**
+- https://github.com/swagger-api/swagger-ui/issues/3847
+- https://github.com/swagger-api/swagger-ui/issues/1262
 
 **Payloads**
 - HTML inj 
