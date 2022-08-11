@@ -60,6 +60,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
     emulator -avd Pixel_4_XL_API_30
     ```
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar + [jd-gui](https://java-decompiler.github.io/) to see the source of a .jar
+- [jadx-gui](https://github.com/skylot/jadx/releases) another solution to explore the source code of an .apk
 
 
 ### Burp suite
