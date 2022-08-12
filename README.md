@@ -12,7 +12,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Ysoserial](#ysoserial)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
-- [CSP](#csp)
 - [XSS](#xss)
 - [SQLi](#sqli)
 - [PHP](#php)
@@ -116,11 +115,6 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t /root/nuclei-templates/technologies/wordpress-detect.yaml`
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
 
-
-### CSP
-
-- CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
-
 ### XSS
 
 **Bypasses**
@@ -130,6 +124,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
+- CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 
 For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
