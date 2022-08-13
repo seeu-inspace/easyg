@@ -1,3 +1,11 @@
+# usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>
+# if amass is selected, you can add firefox or wayback at the end
+# for Linux, use "xdg-open" insead of "start firefox"
+
+# Notes: (IGNORE)
+# python waybackurls.py $scope include_subdomains
+# result $scope-waybackurls.json
+
 require'socket'
 
 puts "\e[35m\n E a s y G\n\e[0m"
@@ -18,8 +26,6 @@ def go_on(file_i)
 			
 		if ip!="unknown"
 			
-			#this workd only with Windows
-			#for Linux, use "xdg-open" insead of "start firefox"
 			system "start firefox " + "http://" + target.to_s
 			system "start firefox " + "https://" + target.to_s
 			
@@ -36,24 +42,59 @@ def go_on(file_i)
 	
 end
 
-if ARGV[0] == "nmap"
-	system "nmap -T4 -A -v -iL " + ARGV[1]
+def wayback_go_on(file_i)
+
+	File.open(file_i,'r').each_line do |f|
+	
+		begin
+			target = f.gsub("\n","")
+		end
+			
+			system "python waybackrobots.py " + target.to_s
+			
+			File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
+			begin
+				target_robot = f.gsub("\n","")
+			end
+				system "start firefox " + "http://" + target.to_s + target_robot
+				system "start firefox " + "https://" + target.to_s + target_robot
+				
+			end
+
+	end
+
 end
 
-if ARGV[0] == "firefox"
-	go_on(ARGV[1])
+# --- OPTIONS ---
+
+if ARGV[1] == "nmap"
+	system "nmap -T4 -A -v -iL " + ARGV[0]
 end
 
-if ARGV[0] == "amass"
+if ARGV[1] == "firefox"
+	go_on(ARGV[0])
+end
 
-	File.open(ARGV[1],'r').each_line do |f|
+if ARGV[1] == "wayback"
+	wayback_go_on(ARGV[0])
+end
+
+if ARGV[1] == "amass"
+
+	File.open(ARGV[0],'r').each_line do |f|
 		begin
 			target = f.gsub("\n","")
 		end
 		
 		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
-		go_on(target.to_s + ".txt")
 		
+		if ARGV[2] == "firefox"
+			go_on(target.to_s + ".txt")
+		end
+		
+		if ARGV[2] == "wayback"
+			wayback_go_on(target.to_s + ".txt")
+		end
 	end
 	
 end
