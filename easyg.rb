@@ -2,11 +2,8 @@
 # if amass is selected, you can add firefox or wayback at the end
 # for Linux, use "xdg-open" insead of "start firefox"
 
-# Notes: (IGNORE)
-# python waybackurls.py $scope include_subdomains
-# result $scope-waybackurls.json
-
 require 'socket'
+require 'json'
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
@@ -55,7 +52,21 @@ def wayback_go_on(file_i)
 	begin
 		target = f.gsub("\n","")
 	end
+		
+		system "python waybackurls.py " + target.to_s
+		
+		if File.exists?(target.to_s + "-waybackurls.json") == true
+		
+			file_parsed = JSON.parse(File.read(target.to_s + "-waybackurls.json"));
 			
+			for i in 0..file_parsed.length()-1 do
+			
+				firefox(file_parsed[i].to_s[9...-2])
+			
+			end
+		
+		end
+		
 		system "python waybackrobots.py " + target.to_s
 			
 		if File.exists?(target.to_s + "-robots.txt") == true
