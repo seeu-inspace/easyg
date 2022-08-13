@@ -14,9 +14,9 @@ $c = 0
 
 def firefox(target)
 
-	system "start firefox " + "http://" + target.to_s
 	system "start firefox " + "https://" + target.to_s
-			
+	puts "https://" + target.to_s
+	
 	$c += 1
 			
 	if $c >= 15
@@ -58,9 +58,9 @@ def wayback_go_on(file_i)
 			
 		system "python waybackrobots.py " + target.to_s
 			
-		if File.exists?(target.to_s + ".my-robots.txt") == true
+		if File.exists?(target.to_s + "-robots.txt") == true
 			
-			File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
+			File.open(target.to_s + "-robots.txt",'r').each_line do |f|
 			begin
 				target_robot = f.gsub("\n","")
 			end
