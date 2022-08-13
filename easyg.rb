@@ -20,7 +20,7 @@ def firefox(target)
 	$c += 1
 			
 	if $c >= 15
-		sleep 7
+		sleep 30
 		$c = 0
 	end
 
