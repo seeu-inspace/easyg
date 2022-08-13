@@ -23,6 +23,7 @@ def firefox(target)
 		sleep 7
 		$c = 0
 	end
+
 end
 
 def go_on(file_i)
@@ -91,9 +92,9 @@ end
 if ARGV[1] == "amass"
 
 	File.open(ARGV[0],'r').each_line do |f|
-		begin
-			target = f.gsub("\n","")
-		end
+	begin
+		target = f.gsub("\n","")
+	end
 		
 		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
 		
@@ -104,6 +105,7 @@ if ARGV[1] == "amass"
 		if ARGV[2] == "wayback"
 			wayback_go_on(target.to_s + ".txt")
 		end
+
 	end
 	
 end
