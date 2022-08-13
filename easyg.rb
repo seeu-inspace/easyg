@@ -52,14 +52,20 @@ def wayback_go_on(file_i)
 			
 			system "python waybackrobots.py " + target.to_s
 			
-			File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
-			begin
-				target_robot = f.gsub("\n","")
+			if target.to_s + ".my-robots.txt" != nil
+			
+				File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
+				begin
+					target_robot = f.gsub("\n","")
+				end
+					system "start firefox " + "http://" + target.to_s + target_robot
+					system "start firefox " + "https://" + target.to_s + target_robot
+					
+				end
+
 			end
-				system "start firefox " + "http://" + target.to_s + target_robot
-				system "start firefox " + "https://" + target.to_s + target_robot
-				
-			end
+			
+		end
 
 	end
 
