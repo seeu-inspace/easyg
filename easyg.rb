@@ -116,6 +116,11 @@ if ARGV[1] == "amass"
 		if ARGV[2] == "wayback"
 			wayback_go_on(target.to_s + ".txt")
 		end
+		
+		if ARGV[2] == "firefox-wayback"
+			go_on(target.to_s + ".txt")
+			wayback_go_on(target.to_s + ".txt")
+		end
 
 	end
 	
