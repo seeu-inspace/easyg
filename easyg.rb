@@ -10,31 +10,36 @@ require 'socket'
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
-def go_on(file_i)
+$c = 0
 
-	c = 0
+def firefox(target)
+
+	system "start firefox " + "http://" + target.to_s
+	system "start firefox " + "https://" + target.to_s
+			
+	$c += 1
+			
+	if $c >= 15
+		sleep 7
+		$c = 0
+	end
+end
+
+def go_on(file_i)
 
 	File.open(file_i,'r').each_line do |f|
 	
-		begin
-			ip=IPSocket::getaddress(f.strip)
-			target = f.gsub("\n","")
-			print target + "\n"
-		rescue
-			ip="unknown"
-		end
+	begin
+		ip=IPSocket::getaddress(f.strip)
+		target = f.gsub("\n","")
+		print target + "\n"
+	rescue
+		ip="unknown"
+	end
 			
 		if ip!="unknown"
 			
-			system "start firefox " + "http://" + target.to_s
-			system "start firefox " + "https://" + target.to_s
-			
-			c += 1
-			
-			if c >= 15
-				sleep 7
-				c = 0
-			end
+			firefox(target.to_s)
 			
 		end
 		
@@ -46,29 +51,27 @@ def wayback_go_on(file_i)
 
 	File.open(file_i,'r').each_line do |f|
 	
-		begin
-			target = f.gsub("\n","")
-		end
+	begin
+		target = f.gsub("\n","")
+	end
 			
-			system "python waybackrobots.py " + target.to_s
+		system "python waybackrobots.py " + target.to_s
 			
-			if target.to_s + ".my-robots.txt" != nil
+		if File.exists?(target.to_s + ".my-robots.txt") == true
 			
-				File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
-				begin
-					target_robot = f.gsub("\n","")
-				end
-					system "start firefox " + "http://" + target.to_s + target_robot
-					system "start firefox " + "https://" + target.to_s + target_robot
-					
-				end
-
+			File.open(target.to_s + ".my-robots.txt",'r').each_line do |f|
+			begin
+				target_robot = f.gsub("\n","")
 			end
 			
+				firefox(target.to_s + target_robot.to_s)
+				
+			end
+
 		end
-
+			
 	end
-
+	
 end
 
 # --- OPTIONS ---
