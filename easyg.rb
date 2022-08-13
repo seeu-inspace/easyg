@@ -11,7 +11,7 @@ $c = 0
 
 def firefox(target)
 
-	system "start firefox " + "https://" + target.to_s
+	system 'start firefox ' + '"https://' + target.to_s + '"'
 	puts "https://" + target.to_s
 	
 	$c += 1
