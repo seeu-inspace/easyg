@@ -6,7 +6,7 @@
 # python waybackurls.py $scope include_subdomains
 # result $scope-waybackurls.json
 
-require'socket'
+require 'socket'
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
