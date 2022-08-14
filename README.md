@@ -207,6 +207,8 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 }
 ```
 
+Resource: https://hijacklibs.net/
+
 ### IIS - Internet Information Services
 
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
