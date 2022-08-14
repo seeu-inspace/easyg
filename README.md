@@ -15,6 +15,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XSS](#xss)
 - [SQLi](#sqli)
 - [DLL Hijacking](#dll-hijacking)
+- [IIS - Internet Information Services](#iis---internet-information-services)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -205,6 +206,24 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
     return TRUE;
 }
 ```
+
+### IIS - Internet Information Services
+
+- Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
+- Check if `trace.axd` is enabled
+- [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
+- Search for
+  ```
+  Views/web.config
+  bin/WebApplication1.dll
+  System.Web.Mvc.dll
+  System.Web.Mvc.Ajax.dll
+  System.Web.Mvc.Html.dll
+  System.Web.Optimization.dll
+  System.Web.Routing.dll
+  ```
+
+Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
 
 ### Network
 ```
