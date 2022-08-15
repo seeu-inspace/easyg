@@ -1,5 +1,5 @@
 # usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>
-# if amass is selected, you can add firefox or wayback at the end
+# if amass is selected, you can add <firefox/wayback/firefox-wayback>
 # for Linux, use "xdg-open" insead of "start firefox"
 
 require 'socket'
@@ -25,12 +25,13 @@ end
 
 def go_on(file_i)
 
+	#add httprobe here
+
 	File.open(file_i,'r').each_line do |f|
 	
 	begin
 		ip=IPSocket::getaddress(f.strip)
 		target = f.gsub("\n","")
-		print target + "\n"
 	rescue
 		ip="unknown"
 	end
