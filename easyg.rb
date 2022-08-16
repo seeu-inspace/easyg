@@ -1,6 +1,9 @@
 # usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>
 # if amass is selected, you can add <firefox/wayback/firefox-wayback>
 # for Linux, use "xdg-open" insead of "start firefox"
+# ToDo: 
+# - Add httprobe
+# - add a webscreenshot
 
 require 'socket'
 require 'json'
