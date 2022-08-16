@@ -1,9 +1,4 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
-# usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>
-# if amass is selected, you can add <firefox/wayback/firefox-wayback>
-
-# for Linux: - use `xdg-open` insead of `start firefox`
-#            - for httprobe, use `cat <file_name> | httprobe`
 
 # ToDo: - add a webscreenshot
 
@@ -130,5 +125,16 @@ if ARGV[1] == "amass"
 		end
 
 	end
+	
+end
+
+if ARGV[0] == "help"
+
+	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>'
+	puts 'If amass is selected, you can add <firefox/wayback/firefox-wayback>' + "\n\n"
+	
+	puts 'Tested on Windows, if you need to use it on Unix:'
+	puts ' - use `xdg-open` insead of `start firefox`'
+	puts ' - for httprobe, use `cat <file_name> | httprobe`'
 	
 end
