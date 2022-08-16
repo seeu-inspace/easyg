@@ -211,7 +211,9 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 }
 ```
 
-Resource: https://hijacklibs.net/
+**Resources**
+- [hijacklibs.net](https://hijacklibs.net/)
+- [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
 
 ### IIS - Internet Information Services
 
