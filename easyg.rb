@@ -135,6 +135,10 @@ if ARGV[0] == "help"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
 	puts ' - use `xdg-open` insead of `start firefox`'
-	puts ' - for httprobe, use `cat <file_name> | httprobe`'
+	puts ' - for httprobe, use `cat <file_name> | httprobe`' + "\n\n"
+	
+	puts 'You need waybackurls.py and waybackrobots.py in the same folder as easyg.rb. Links:'
+	puts 'https://gist.github.com/mhmdiaa/adf6bff70142e5091792841d4b372050'
+	puts 'https://gist.github.com/mhmdiaa/2742c5e147d49a804b408bfed3d32d07' + "\n\n"
 	
 end
