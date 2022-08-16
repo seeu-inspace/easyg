@@ -1,6 +1,6 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
-# ToDo: - add a webscreenshot
+# ToDo: - add a webscreenshot, use: https://github.com/michenriksen/aquatone
 
 # ===================================================================
 
