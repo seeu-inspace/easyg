@@ -35,7 +35,11 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-- [Amass](https://github.com/OWASP/Amass)
+- [Amass](https://github.com/OWASP/Amass) Subdomain discovery
+- [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
+- [waybackurls.py](https://gist.github.com/mhmdiaa/adf6bff70142e5091792841d4b372050)
+- [waybackrobots.py](https://gist.github.com/mhmdiaa/2742c5e147d49a804b408bfed3d32d07)
+- [nmap](https://nmap.org/)
 
 
 **Desktop Application Penetration Testing**
