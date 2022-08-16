@@ -1,9 +1,14 @@
+# https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 # usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>
 # if amass is selected, you can add <firefox/wayback/firefox-wayback>
-# for Linux, use "xdg-open" insead of "start firefox"
-# ToDo: 
-# - Add httprobe
-# - add a webscreenshot
+
+# for Linux: - use `xdg-open` insead of `start firefox`
+#            - for httprobe, use `cat <file_name> | httprobe`
+
+# ToDo: - add a webscreenshot
+
+# ===================================================================
+
 
 require 'socket'
 require 'json'
@@ -14,8 +19,8 @@ $c = 0
 
 def firefox(target)
 
-	system 'start firefox ' + '"https://' + target.to_s + '"'
-	puts "https://" + target.to_s
+	system 'start firefox "' + target.to_s + '"'
+	puts target.to_s
 	
 	$c += 1
 			
@@ -28,22 +33,15 @@ end
 
 def go_on(file_i)
 
-	#add httprobe here
+	system "type " + file_i + " | httprobe > " + file_i +  "_httprobed"
 
-	File.open(file_i,'r').each_line do |f|
+	File.open(file_i + "_httprobed",'r').each_line do |f|
 	
 	begin
-		ip=IPSocket::getaddress(f.strip)
 		target = f.gsub("\n","")
-	rescue
-		ip="unknown"
 	end
-			
-		if ip!="unknown"
-			
-			firefox(target.to_s)
-			
-		end
+
+		firefox(target.to_s)
 		
 	end
 	
@@ -65,7 +63,7 @@ def wayback_go_on(file_i)
 			
 			for i in 0..file_parsed.length()-1 do
 			
-				firefox(file_parsed[i].to_s[9...-2])
+				firefox("https://" + file_parsed[i].to_s[9...-2])
 			
 			end
 		
@@ -79,9 +77,9 @@ def wayback_go_on(file_i)
 			begin
 				target_robot = f.gsub("\n","")
 			end
-			
+
 				firefox(target.to_s + target_robot.to_s)
-				
+
 			end
 
 		end
