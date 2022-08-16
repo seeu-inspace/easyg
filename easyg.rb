@@ -95,7 +95,12 @@ if ARGV[1] == "nmap"
 end
 
 if ARGV[1] == "firefox"
-	go_on(ARGV[0])
+	File.open(ARGV[0],'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		firefox(target.to_s)
+	end
 end
 
 if ARGV[1] == "wayback"
