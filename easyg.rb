@@ -1,6 +1,6 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
-# ToDo: - add a webscreenshot, use: https://github.com/michenriksen/aquatone
+# ToDo: - add a webscreenshot
 
 # ===================================================================
 
@@ -28,7 +28,7 @@ end
 
 def go_on(file_i)
 
-	system "type " + file_i + " | httprobe > " + file_i +  "_httprobed"
+	system "type " + file_i + " | httprobe  -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + file_i +  "_httprobed"
 
 	File.open(file_i + "_httprobed",'r').each_line do |f|
 	
@@ -135,10 +135,6 @@ if ARGV[0] == "help"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
 	puts ' - use `xdg-open` insead of `start firefox`'
-	puts ' - for httprobe, use `cat <file_name> | httprobe`' + "\n\n"
-	
-	puts 'You need waybackurls.py and waybackrobots.py in the same folder as easyg.rb. Links:'
-	puts 'https://gist.github.com/mhmdiaa/adf6bff70142e5091792841d4b372050'
-	puts 'https://gist.github.com/mhmdiaa/2742c5e147d49a804b408bfed3d32d07' + "\n\n"
+	puts ' - for httprobe, use `cat <file_name> | httprobe`'
 	
 end
