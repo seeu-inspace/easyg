@@ -53,7 +53,7 @@ def wayback_go_on(file_i)
 			
 			for i in 0..file_parsed.length()-1 do
 			
-				firefox("https://" + file_parsed[i].to_s[9...-2])
+				firefox(file_parsed[i].to_s[2...-2])
 			
 			end
 		
