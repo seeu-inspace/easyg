@@ -1,10 +1,5 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
-# ToDo: - add a webscreenshot
-
-# ===================================================================
-
-
 require 'socket'
 require 'json'
 
