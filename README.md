@@ -5,7 +5,8 @@ EasyG started out as a script that I use to automate some information gathering 
 
 Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles.
 
-**Index**
+### Index
+
 - [Blog / Writeups / News](#blog--writeups--news)
 - [Tools](#tools)
 - [Burp suite](#burp-suite)
@@ -20,6 +21,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Linux](#linux)
 
 ### Blog / Writeups / News
+
 - https://pentester.land/list-of-bug-bounty-writeups.html
 - https://hackerone.com/hacktivity
 - https://portswigger.net/research
