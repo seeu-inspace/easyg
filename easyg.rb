@@ -129,13 +129,13 @@ if ARGV[1] == "sqlmap"
 		target = f.gsub("\n","")
 		puts target.to_s + "\n"
 	end
-		system 'python sqlmap.py -u "' + target.to_s + '" --batch --random-agent --level 1 --dbs > out.txt'
+		system 'python sqlmap.py -u "' + target.to_s + '" --batch --random-agent --level 1 --dbs'
 	end
 end
 
 if ARGV[0] == "help"
 
-	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>'
+	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass/sqlmap>'
 	puts 'If amass is selected, you can add <firefox/wayback/firefox-wayback>' + "\n\n"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
