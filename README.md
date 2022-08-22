@@ -42,6 +42,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [waybackrobots.py](https://gist.github.com/mhmdiaa/2742c5e147d49a804b408bfed3d32d07)
 - [nmap](https://nmap.org/)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
+- [textverified.com/](https://www.textverified.com/) for auths requiring a phone number
 
 
 **Desktop Application Penetration Testing**
