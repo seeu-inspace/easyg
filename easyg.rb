@@ -129,7 +129,7 @@ if ARGV[1] == "sqlmap"
 		target = f.gsub("\n","")
 		puts target.to_s + "\n"
 	end
-		system 'python sqlmap.py -u "' + target.to_s + '" --batch --random-agent --level 1 --dbs'
+		system 'python sqlmap.py -u "' + target.to_s + '" --forms --batch --crawl=10 --random-agent --level=5 --risk=3'
 	end
 end
 
