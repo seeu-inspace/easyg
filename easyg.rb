@@ -81,7 +81,7 @@ end
 # --- OPTIONS ---
 
 if ARGV[1] == "nmap"
-	system "nmap -T4 -A -v -iL " + ARGV[0]
+	system "nmap -T4 -A -v -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
@@ -127,15 +127,14 @@ if ARGV[1] == "sqlmap"
 	File.open(ARGV[0],'r').each_line do |f|
 	begin
 		target = f.gsub("\n","")
-		puts target.to_s + "\n"
 	end
-		system 'python sqlmap.py -u "' + target.to_s + '" --forms --batch --crawl=10 --random-agent --level=5 --risk=3'
+		system "python sqlmap.py " + target.to_s + " --batch --random-agent --level 1"
 	end
 end
 
 if ARGV[0] == "help"
 
-	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass/sqlmap>'
+	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>'
 	puts 'If amass is selected, you can add <firefox/wayback/firefox-wayback>' + "\n\n"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
