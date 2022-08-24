@@ -140,6 +140,9 @@ For **desktop applications**: try use as a vector the SSID with a payload like `
 - https://github.com/swagger-api/swagger-ui/issues/3847
 - https://github.com/swagger-api/swagger-ui/issues/1262
 
+**TRACE method enabled + HttpOnly flag present**
+- **Cross Site Tracing** https://owasp.org/www-community/attacks/Cross_Site_Tracing
+
 **Payloads**
 - HTML inj 
   ```HTML
