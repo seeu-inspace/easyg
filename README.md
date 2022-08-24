@@ -140,8 +140,8 @@ For **desktop applications**: try use as a vector the SSID with a payload like `
 - https://github.com/swagger-api/swagger-ui/issues/3847
 - https://github.com/swagger-api/swagger-ui/issues/1262
 
-**TRACE method enabled + HttpOnly flag present**
-- **Cross Site Tracing** https://owasp.org/www-community/attacks/Cross_Site_Tracing
+**Cross Site Tracing**
+If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. Reference: https://owasp.org/www-community/attacks/Cross_Site_Tracing
 
 **Payloads**
 - HTML inj 
