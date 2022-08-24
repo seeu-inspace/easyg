@@ -16,6 +16,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [SQLi](#sqli)
 - [DLL Hijacking](#dll-hijacking)
 - [IIS - Internet Information Services](#iis---internet-information-services)
+- [Open Redirect](#open-redirect)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -235,6 +236,11 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
   ```
 
 Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
+
+### Open Redirect
+
+Bypass:
+- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
 
 ### Network
 ```
