@@ -93,6 +93,10 @@ if ARGV[1] == "firefox"
 	end
 end
 
+if ARGV[1] == "firefox-httprobe"
+	go_on(ARGV[0])
+end
+
 if ARGV[1] == "wayback"
 	wayback_go_on(ARGV[0])
 end
