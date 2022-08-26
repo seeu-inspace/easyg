@@ -138,7 +138,7 @@ end
 
 if ARGV[0] == "help"
 
-	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/wayback/amass>'
+	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/firefox-httprobe/wayback/amass>'
 	puts 'If amass is selected, you can add <firefox/wayback/firefox-wayback>' + "\n\n"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
