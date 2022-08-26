@@ -133,6 +133,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
+- If Privileges are required, see if you can chain the XSS with a CSRF
 
 For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
