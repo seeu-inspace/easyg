@@ -83,6 +83,11 @@ if ARGV[1] == "amass"
 		if ARGV[2] == "gau"
 			gau_go_on(target.to_s + ".txt")
 		end
+		
+		if ARGV[2] == "firefox-gau"
+			go_on(target.to_s + ".txt")
+			gau_go_on(target.to_s + ".txt")
+		end
 
 	end
 	
@@ -96,7 +101,7 @@ if ARGV[0] == "help"
 	puts ' firefox			open the strings in the <file_input> in firefox'
 	puts ' firefox-httprobe		open the strings in the <file_input> in firefox checking them first with httprobe'
 	puts ' gau				perform gau scan against the strings in the <file_input>'
-	puts ' amass				subdomain discovery | you can add another option <firefox/gau>'+ "\n\n"
+	puts ' amass				subdomain discovery | you can add another option <firefox/gau/firefox-gau>'+ "\n\n"
 	
 	puts 'Notes:'
 	puts ' - tested on Windows, if you need to use it on Unix:'
