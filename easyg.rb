@@ -40,7 +40,7 @@ end
 
 def gau_go_on(file_i)
 
-	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,ttf,woff,ttf2,woff2,pptx,pdf"
+	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,ttf,woff,ttf2,woff2,pptx,pdf,css"
 
 end
 
