@@ -127,15 +127,6 @@ if ARGV[1] == "amass"
 	
 end
 
-if ARGV[1] == "sqlmap"
-	File.open(ARGV[0],'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		system "python sqlmap.py " + target.to_s + " --batch --random-agent --level 1"
-	end
-end
-
 if ARGV[0] == "help"
 
 	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/firefox-httprobe/wayback/amass>'
