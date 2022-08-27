@@ -1,4 +1,5 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
+# aggiungere knockpy + all.txt e combinarlo con i risutlati di amass grazie a anew by tomnomnom (+ vedere dnsgen)
 
 require 'socket'
 require 'json'
@@ -37,51 +38,16 @@ def go_on(file_i)
 	
 end
 
-def wayback_go_on(file_i)
+def gau_go_on(file_i)
 
-	File.open(file_i,'r').each_line do |f|
-	
-	begin
-		target = f.gsub("\n","")
-	end
-		
-		system "python waybackurls.py " + target.to_s
-		
-		if File.exists?(target.to_s + "-waybackurls.json") == true
-		
-			file_parsed = JSON.parse(File.read(target.to_s + "-waybackurls.json"));
-			
-			for i in 0..file_parsed.length()-1 do
-			
-				firefox(file_parsed[i].to_s[2...-2])
-			
-			end
-		
-		end
-		
-		system "python waybackrobots.py " + target.to_s
-			
-		if File.exists?(target.to_s + "-robots.txt") == true
-			
-			File.open(target.to_s + "-robots.txt",'r').each_line do |f|
-			begin
-				target_robot = f.gsub("\n","")
-			end
+	system "type " + file_i + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,ttf,woff,ttf2,woff2,pptx,pdf"
 
-				firefox(target.to_s + target_robot.to_s)
-
-			end
-
-		end
-			
-	end
-	
 end
 
 # --- OPTIONS ---
 
 if ARGV[1] == "nmap"
-	system "nmap -T4 -A -v -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
+	system "nmap -p 1-65535 -T4 -A -v -Pn -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
@@ -97,8 +63,8 @@ if ARGV[1] == "firefox-httprobe"
 	go_on(ARGV[0])
 end
 
-if ARGV[1] == "wayback"
-	wayback_go_on(ARGV[0])
+if ARGV[1] == "gau"
+	gau_go_on(ARGV[1])
 end
 
 if ARGV[1] == "amass"
@@ -114,13 +80,13 @@ if ARGV[1] == "amass"
 			go_on(target.to_s + ".txt")
 		end
 		
-		if ARGV[2] == "wayback"
-			wayback_go_on(target.to_s + ".txt")
+		if ARGV[2] == "gau"
+			gau_go_on(target.to_s + ".txt")
 		end
 		
-		if ARGV[2] == "firefox-wayback"
+		if ARGV[2] == "firefox-gau"
 			go_on(target.to_s + ".txt")
-			wayback_go_on(target.to_s + ".txt")
+			gau_go_on(target.to_s + ".txt")
 		end
 
 	end
@@ -129,8 +95,8 @@ end
 
 if ARGV[0] == "help"
 
-	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/firefox-httprobe/wayback/amass>'
-	puts 'If amass is selected, you can add <firefox/wayback/firefox-wayback>' + "\n\n"
+	puts 'Usage: ruby easyg.rb <file_input> <nmap/firefox/firefox-httprobe/gau/amass>'
+	puts 'If amass is selected, you can add <firefox/gau/firefox-gau>' + "\n\n"
 	
 	puts 'Tested on Windows, if you need to use it on Unix:'
 	puts ' - use `xdg-open` insead of `start firefox`'
