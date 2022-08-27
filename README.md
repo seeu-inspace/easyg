@@ -44,6 +44,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [nmap](https://nmap.org/)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com/](https://www.textverified.com/) for auths requiring a phone number
+- [nuclei](https://github.com/projectdiscovery/nuclei)
 
 
 **Desktop Application Penetration Testing**
