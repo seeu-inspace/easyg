@@ -64,7 +64,7 @@ if ARGV[1] == "firefox-httprobe"
 end
 
 if ARGV[1] == "gau"
-	gau_go_on(ARGV[1])
+	gau_go_on(ARGV[0])
 end
 
 if ARGV[1] == "amass"
