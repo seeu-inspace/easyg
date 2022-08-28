@@ -24,7 +24,7 @@ end
 
 def go_on(file_i)
 
-	system "type " + file_i + " | httprobe  -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + file_i +  "_httprobed"
+	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + file_i +  "_httprobed"
 
 	File.open(file_i + "_httprobed",'r').each_line do |f|
 	
