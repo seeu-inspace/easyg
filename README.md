@@ -17,6 +17,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [DLL Hijacking](#dll-hijacking)
 - [IIS - Internet Information Services](#iis---internet-information-services)
 - [Open Redirect](#open-redirect)
+- [SSRF](#ssrf)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -251,6 +252,10 @@ Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-we
 
 Bypass:
 - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+
+### SSRF
+
+- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
 
 ### Network
 ```
