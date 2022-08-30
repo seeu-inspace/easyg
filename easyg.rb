@@ -1,5 +1,4 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
-# aggiungere knockpy + all.txt e combinarlo con i risutlati di amass grazie a anew by tomnomnom (+ vedere dnsgen)
 
 require 'socket'
 require 'json'
