@@ -7,6 +7,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 ### Index
 
 - [Blog / Writeups / News](#blog--writeups--news)
+- [Bug Bounty tips](#bug-bounty-tips)
 - [Tools](#tools)
 - [Burp suite](#burp-suite)
 - [Ysoserial](#ysoserial)
@@ -35,6 +36,13 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://twitter.com/hashtag/bugbountytips
 - https://securib.ee/
 - https://samcurry.net/
+
+### Bug Bounty tips
+
+- For RCE: never upload a shell at first. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
+- For stored XSS: `console.log()` is better than `alert()`, it makes less noise;
+- For SQLi: don't dump the entire db. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed.
+
 
 ### Tools
 
