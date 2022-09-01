@@ -39,9 +39,9 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Bug Bounty tips
 
-- For RCE: never upload a shell at first. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
+- For RCE: never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
 - For stored XSS: `console.log()` is better than `alert()`, it makes less noise;
-- For SQLi: don't dump the entire db. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed.
+- For SQLi: don't dump the entire db, you can be banned from a program. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed.
 
 
 ### Tools
