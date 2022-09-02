@@ -93,6 +93,7 @@ To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 - [InQL](https://github.com/doyensec/inql)
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
+- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 ### Ysoserial
 
