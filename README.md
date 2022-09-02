@@ -89,7 +89,7 @@ Used in easyg.rb
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
-**Cool extensions**
+Cool extensions:
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [InQL](https://github.com/doyensec/inql)
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
