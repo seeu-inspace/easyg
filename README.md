@@ -36,6 +36,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://twitter.com/hashtag/bugbountytips
 - https://securib.ee/
 - https://samcurry.net/
+- https://blog.intigriti.com/hackademy/xss-challenges/
 
 ### Bug Bounty tips
 
