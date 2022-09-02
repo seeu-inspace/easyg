@@ -201,6 +201,9 @@ Common Spots:
   - Two-factor authentication
   - Bypass
   - Bruteforce
+- [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
+- [Password reset](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-poisoning-via-middleware)
+- [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
 
 ### DLL Hijacking
 
