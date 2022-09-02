@@ -107,22 +107,3 @@ if ARGV[0] == "help"
 	puts '   > Use `cat` instead of type'
 	
 end
-
-if ARGV[1] == "burp-recon"
-	File.open(ARGV[0],'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		
-		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
-		
-		system "type " + target.to_s + ".txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + target.to_s +  "_httprobed.txt"
-		
-		system "python addToBurp.py " + target.to_s + "_httprobed.txt"
-		
-		system "type " + target.to_s + "_httprobed.txt" + " | gau --o " + target.to_s + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
-		
-		system "python addToBurp.py " + target.to_s + "_gau.txt"
-
-	end
-end
