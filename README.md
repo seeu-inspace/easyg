@@ -57,10 +57,11 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
+- [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
 
-Used in easyg.rb
+Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
-- [Amass](https://github.com/OWASP/Amass) Subdomain discovery
+- [Amass](https://github.com/OWASP/Amass)
 - [gau](https://github.com/lc/gau)
 - [httprobe](https://github.com/tomnomnom/httprobe)
 
