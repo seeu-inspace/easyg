@@ -15,6 +15,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [SSRF](#ssrf)
 - [Authentication vulnerabilities](#authentication-vulnerabilities)
 - [Directory Traversal](#directory-traversal)
+- [Business logic vulnerabilities](#business-logic-vulnerabilities)
 - [DLL Hijacking](#dll-hijacking)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
@@ -214,6 +215,19 @@ Common Spots:
 - superfluous URL-decode `https://insecure-website.com/loadImage?filename=..%252f..%252f..%252fetc/passwd`
 - validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
 - validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
+
+### Business logic vulnerabilities
+
+Examples:
+- Excessive trust in client-side controls
+- 2FA broken logic
+- Failing to handle unconventional input
+- Inconsistent security controls
+- Weak isolation on dual-use endpoint
+- Password reset broken logic
+- Insufficient workflow validation
+- Flawed enforcement of business rules
+- [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
 ### DLL Hijacking
 
