@@ -19,6 +19,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [IIS - Internet Information Services](#iis---internet-information-services)
 - [Open Redirect](#open-redirect)
 - [SSRF](#ssrf)
+- [Authentication vulnerabilities](#authentication-vulnerabilities)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -47,18 +48,21 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Tools
 
-- For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
+- For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/) || [beeceptor](https://beeceptor.com/)
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com/](https://www.textverified.com/) for auths requiring a phone number
 - [nuclei](https://github.com/projectdiscovery/nuclei)
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
+- [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
+- [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
+
+Used in easyg.rb
 - [nmap](https://nmap.org/)
 - [Amass](https://github.com/OWASP/Amass) Subdomain discovery
 - [gau](https://github.com/lc/gau)
 - [httprobe](https://github.com/tomnomnom/httprobe)
-
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
@@ -182,6 +186,8 @@ If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a
 
 ### SQLi
 
+- [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+
 ```
  > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
                   --tables (to see db)
@@ -272,7 +278,15 @@ ip route add <net_address_in_cdr> via <interface_gateway>
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
 nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
 ```
- 
+
+### Authentication vulnerabilities
+
+Common Spots:
+- Vulnerabilities in password-based login
+- Vulnerabilities in multi-factor authentication
+  - Two-factor authentication
+  - Bypass
+  - Bruteforce
 
 ### Linux
 
