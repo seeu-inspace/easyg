@@ -49,16 +49,15 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-- [Amass](https://github.com/OWASP/Amass) Subdomain discovery
 - [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
-- [waybackurls.py](https://gist.github.com/mhmdiaa/adf6bff70142e5091792841d4b372050)
-- [waybackrobots.py](https://gist.github.com/mhmdiaa/2742c5e147d49a804b408bfed3d32d07)
-- [nmap](https://nmap.org/)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com/](https://www.textverified.com/) for auths requiring a phone number
 - [nuclei](https://github.com/projectdiscovery/nuclei)
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
-- [hakrawler](https://github.com/hakluke/hakrawler)
+- [nmap](https://nmap.org/)
+- [Amass](https://github.com/OWASP/Amass) Subdomain discovery
+- [gau](https://github.com/lc/gau)
+- [httprobe](https://github.com/tomnomnom/httprobe)
 
 
 **Desktop Application Penetration Testing**
