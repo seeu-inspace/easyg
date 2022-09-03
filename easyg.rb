@@ -1,38 +1,34 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
 require 'net/http'
+require 'json'
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
 $c = 0
 
-def firefox(target)
+def firefox_go_on(file_i)
 
-	system 'start firefox "' + target.to_s + '"'
-	puts target.to_s
-	
-	$c += 1
-			
-	if $c >= 15
-		sleep 30
-		$c = 0
+	File.open(file_i,'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		system 'start firefox "' + target.to_s + '"'
+		puts target.to_s
+		
+		$c += 1
+				
+		if $c >= 15
+			sleep 30
+			$c = 0
+		end
 	end
 
 end
 
-def go_on(file_i)
+def httprobe_go_on(file_i)
 
 	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + file_i +  "_httprobed"
-
-	File.open(file_i + "_httprobed",'r').each_line do |f|
-	
-	begin
-		target = f.gsub("\n","")
-	end
-
-		firefox(target.to_s)
-		
-	end
 	
 end
 
@@ -49,16 +45,12 @@ if ARGV[1] == "nmap"
 end
 
 if ARGV[1] == "firefox"
-	File.open(ARGV[0],'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		firefox(target.to_s)
-	end
+	firefox_go_on(ARGV[0])
 end
 
 if ARGV[1] == "firefox-httprobe"
-	go_on(ARGV[0])
+	firefox_go_on(ARGV[0])
+	httprobe_go_on(ARGV[0] + "_httprobed")
 end
 
 if ARGV[1] == "gau"
@@ -74,18 +66,7 @@ if ARGV[1] == "amass"
 		
 		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
 		
-		if ARGV[2] == "firefox"
-			go_on(target.to_s + ".txt")
-		end
-		
-		if ARGV[2] == "gau"
-			gau_go_on(target.to_s + ".txt")
-		end
-		
-		if ARGV[2] == "firefox-gau"
-			go_on(target.to_s + ".txt")
-			gau_go_on(target.to_s + ".txt")
-		end
+		httprobe_go_on(target.to_s + ".txt")
 
 	end
 	
@@ -99,7 +80,7 @@ if ARGV[0] == "help"
 	puts ' firefox			open the strings in the <file_input> in firefox'
 	puts ' firefox-httprobe		open the strings in the <file_input> in firefox checking them first with httprobe'
 	puts ' gau				perform gau scan against the strings in the <file_input>'
-	puts ' amass				subdomain discovery | you can add another option <firefox/gau/firefox-gau>'+ "\n\n"
+	puts ' amass				subdomain discovery'+ "\n\n"
 	
 	puts 'Notes:'
 	puts ' - tested on Windows, if you need to use it on Unix:'
