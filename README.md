@@ -1,4 +1,4 @@
-# EasyG ![last-commit](https://img.shields.io/github/last-commit/seeu-inspace/easyg) ![languages](https://img.shields.io/github/languages/top/seeu-inspace/easyg)
+# EasyG
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting. Now it is more than that.
 
