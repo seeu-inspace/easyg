@@ -1,41 +1,68 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
 require 'net/http'
-require 'json'
-
-puts "\e[35m\n E a s y G\n\e[0m"
 
 $c = 0
 
+httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
+
+puts "\e[35m\n E a s y G\n\e[0m"
+
+def sleep()
+
+	$c += 1
+				
+	if $c >= 15
+		sleep 30
+		$c = 0
+	end
+	
+end
+
 def firefox_go_on(file_i)
+
+	i = 0
 
 	File.open(file_i,'r').each_line do |f|
 	begin
 		target = f.gsub("\n","")
 	end
 		system 'start firefox "' + target.to_s + '"'
-		puts target.to_s
+		i += 1
+		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
 		
-		$c += 1
-				
-		if $c >= 15
-			sleep 30
-			$c = 0
-		end
+		sleep()
 	end
 
 end
 
 def httprobe_go_on(file_i)
 
-	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > " + file_i +  "_httprobed"
+	system "type " + file_i + " | " + httprobe_config.to_s + " > " + file_i +  "_httprobed"
 	
 end
 
 def gau_go_on(file_i)
 
-	system "type " + file_i + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
+	system "type " + file_i + " | " + httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
+end
+
+def add_to_burp(file_i)
+
+	i = 0
+
+	File.open(file_i,'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		system 'start curl --proxy "http://127.0.0.1:8080" "' + target.to_s + '" -k'
+		i += 1
+		puts '[' + i.to_s + '] GET ' + target.to_s
+		
+		sleep()
+		
+	end
 end
 
 # --- OPTIONS ---
@@ -56,6 +83,10 @@ end
 if ARGV[1] == "gau"
 	gau_go_on(ARGV[0])
 end
+
+if ARGV[1] == "addToBurp"
+	add_to_burp(ARGV[0])
+end 
 
 if ARGV[1] == "amass"
 
@@ -80,7 +111,8 @@ if ARGV[0] == "help"
 	puts ' firefox			open the strings in the <file_input> in firefox'
 	puts ' firefox-httprobe		open the strings in the <file_input> in firefox checking them first with httprobe'
 	puts ' gau				perform gau scan against the strings in the <file_input>'
-	puts ' amass				subdomain discovery'+ "\n\n"
+	puts ' amass				subdomain discovery'
+	puts ' addToBurp			add to Burp Suite every strings from <file_input>'+ "\n\n"
 	
 	puts 'Notes:'
 	puts ' - tested on Windows, if you need to use it on Unix:'
