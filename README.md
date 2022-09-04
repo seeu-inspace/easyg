@@ -67,6 +67,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [Amass](https://github.com/OWASP/Amass)
 - [gau](https://github.com/lc/gau)
 - [httprobe](https://github.com/tomnomnom/httprobe)
+- [cURL](https://curl.se/)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
