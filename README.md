@@ -63,6 +63,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutesrpay.py --file nmap.xml`
+- [shuffledns](https://github.com/projectdiscovery/shuffledns)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
