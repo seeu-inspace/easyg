@@ -62,7 +62,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
-- [bgp.he.net](https://bgp.he.net/) to find ANS + `amass intel -ans <ANS>`
+- [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
