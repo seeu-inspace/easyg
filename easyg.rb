@@ -68,7 +68,7 @@ end
 # --- OPTIONS ---
 
 if ARGV[1] == "nmap"
-	system "nmap -p 1-65535 -T4 -A -v -Pn -iL -sV " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
+	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
