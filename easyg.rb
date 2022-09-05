@@ -65,16 +65,10 @@ def add_to_burp(file_i)
 	end
 end
 
-# --- OPTIONS ---
+# === OPTIONS ===
 
 if ARGV[1] == "nmap"
-	File.open(ARGV[0],'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + target.to_s + ".txt -oX " + target.to_s +  ".xml"
-		system "python brutespray.py --file " + target.to_s +  ".xml" + " --threads 5 --hosts 5"
-	end
+	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + ".txt -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
