@@ -4,7 +4,7 @@ require 'net/http'
 
 $c = 0
 
-httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
+$httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
@@ -38,13 +38,13 @@ end
 
 def httprobe_go_on(file_i)
 
-	system "type " + file_i + " | " + httprobe_config.to_s + " > " + file_i +  "_httprobed"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " > " + file_i +  "_httprobed"
 	
 end
 
 def gau_go_on(file_i)
 
-	system "type " + file_i + " | " + httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080"
 
 end
 
@@ -68,7 +68,7 @@ end
 # --- OPTIONS ---
 
 if ARGV[1] == "nmap"
-	system "nmap -p 1-65535 -T4 -A -v -Pn -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
+	system "nmap -p 1-65535 -T4 -A -v -Pn -iL -sV " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
@@ -101,6 +101,14 @@ if ARGV[1] == "amass"
 	end
 		
 		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
+
+		system "subfinder -d " + target.to_s + " -all -o " + target.to_s + "_subfinder.txt"
+		
+		system "type " + target.to_s + "_subfinder.txt | anew " + target.to_s + ".txt"
+		
+		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > " + target.to_s + "_github.txt"
+		
+		system "type " + target.to_s + "_github.txt | anew " + target.to_s + ".txt" 
 		
 		httprobe_go_on(target.to_s + ".txt")
 
@@ -112,13 +120,13 @@ if ARGV[0] == "help"
 
 	puts 'Usage: ruby easyg.rb <file_input> <option>'+ "\n\n"
 	puts 'options:'
-	puts ' nmap				perform nmap scan against the domains in the <file_input>'
-	puts ' firefox			open the strings in the <file_input> in firefox'
-	puts ' firefox-httprobe		open the strings in the <file_input> in firefox checking them first with httprobe'
-	puts ' gau				perform gau scan against the strings in the <file_input>'
-	puts ' crawl				crawl using as targets <file_input>'
-	puts ' addToBurp			add to Burp Suite every strings from <file_input>'
-	puts ' amass				subdomain discovery' + "\n\n"
+	puts ' nmap					perform nmap scan against the domains in the <file_input>'
+	puts ' firefox				open the strings in the <file_input> in firefox'
+	puts ' firefox-httprobe			open the strings in the <file_input> in firefox checking them first with httprobe'
+	puts ' gau					perform gau scan against the strings in the <file_input>'
+	puts ' crawl					crawl using as targets <file_input>'
+	puts ' addToBurp				add to Burp Suite every strings from <file_input>'
+	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
 	puts 'Note: tested on Windows'
 	
