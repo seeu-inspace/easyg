@@ -84,9 +84,14 @@ if ARGV[1] == "gau"
 	gau_go_on(ARGV[0])
 end
 
+if ARGV[1] == "crawl"
+	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider.txt -c 10 -d 1 -p http://localhost:8080"
+	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080 > " + ARGV[0] + "_hakrawler.txt"
+end
+
 if ARGV[1] == "addToBurp"
 	add_to_burp(ARGV[0])
-end 
+end
 
 if ARGV[1] == "amass"
 
@@ -111,12 +116,10 @@ if ARGV[0] == "help"
 	puts ' firefox			open the strings in the <file_input> in firefox'
 	puts ' firefox-httprobe		open the strings in the <file_input> in firefox checking them first with httprobe'
 	puts ' gau				perform gau scan against the strings in the <file_input>'
-	puts ' amass				subdomain discovery'
-	puts ' addToBurp			add to Burp Suite every strings from <file_input>'+ "\n\n"
+	puts ' crawl				crawl using as targets <file_input>'
+	puts ' addToBurp			add to Burp Suite every strings from <file_input>'
+	puts ' amass				subdomain discovery' + "\n\n"
 	
-	puts 'Notes:'
-	puts ' - tested on Windows, if you need to use it on Unix:'
-	puts '   > use `xdg-open` insead of `start firefox`'
-	puts '   > Use `cat` instead of type'
+	puts 'Note: tested on Windows'
 	
 end
