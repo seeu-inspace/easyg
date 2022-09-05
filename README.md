@@ -57,7 +57,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-- [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
@@ -75,6 +74,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [cURL](https://curl.se/)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
+- [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
