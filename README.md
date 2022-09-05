@@ -66,7 +66,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
-- [Amass](https://github.com/OWASP/Amass)
+- [amass](https://github.com/OWASP/Amass)
+- [subfinder](https://github.com/projectdiscovery/subfinder)
 - [gau](https://github.com/lc/gau)
 - [httprobe](https://github.com/tomnomnom/httprobe)
 - [cURL](https://curl.se/)
