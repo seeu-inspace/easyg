@@ -62,7 +62,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
-- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutesrpay.py --file nmap.xml`
+- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutesrpay.py --file nmap.xml --threads 5 --hosts 5`
 - [shuffledns](https://github.com/projectdiscovery/shuffledns)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
