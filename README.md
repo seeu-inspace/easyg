@@ -1,6 +1,6 @@
 # EasyG
 
-EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it is more than that.
+EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it's more than that.
 
 Here I gather all the resources about PenTesting and Bug Bounty Hunting that I find interesting: notes, payloads that I found useful and many links to blogs and articles.
 
