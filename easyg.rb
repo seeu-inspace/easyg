@@ -68,7 +68,7 @@ end
 # === OPTIONS ===
 
 if ARGV[1] == "nmap"
-	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + ".txt -oX " + ARGV[0] +  ".xml"
+	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
@@ -76,8 +76,8 @@ if ARGV[1] == "firefox"
 end
 
 if ARGV[1] == "firefox-httprobe"
-	firefox_go_on(ARGV[0])
-	httprobe_go_on(ARGV[0] + "_httprobed")
+	httprobe_go_on(ARGV[0])
+	firefox_go_on(ARGV[0] + "_httprobed")
 end
 
 if ARGV[1] == "gau"
