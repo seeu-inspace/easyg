@@ -1,5 +1,7 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
+require 'net/http'
+
 $c = 0
 
 $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
@@ -82,10 +84,6 @@ if ARGV[1] == "paramspider"
 		end
 		
 	end
-end
-
-if ARGV[1] == "addtoburp"
-	add_to_burp(ARGV[0])
 end
 
 if ARGV[1] == "amass"
