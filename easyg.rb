@@ -89,6 +89,15 @@ if ARGV[1] == "crawl"
 	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080 > " + ARGV[0] + "_hakrawler.txt"
 end
 
+if ARGV[1] == "paramspider"
+	File.open(ARGV[0],'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		system "python paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output results/" + target.to_s + ".txt"
+	end
+end
+
 if ARGV[1] == "addToBurp"
 	add_to_burp(ARGV[0])
 end
@@ -121,10 +130,11 @@ if ARGV[0] == "help"
 	puts 'Usage: ruby easyg.rb <file_input> <option>'+ "\n\n"
 	puts 'options:'
 	puts ' nmap					perform nmap scan against the domains in the <file_input>'
-	puts ' firefox				open the strings in the <file_input> in firefox'
-	puts ' firefox-httprobe			open the strings in the <file_input> in firefox checking them first with httprobe'
+	puts ' firefox				open every entry in <file_input> with firefox'
+	puts ' firefox-httprobe			open every entry in <file_input> with firefox checking them first with httprobe'
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
+	puts ' paramspider				find parameters for every domain in <file_input>'
 	puts ' addToBurp				add to Burp Suite every strings from <file_input>'
 	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
