@@ -80,7 +80,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [cURL](https://curl.se/)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
-- [ParamSpider](https://github.com/devanshbatham/ParamSpider) detection of the parameters present in the application
+- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
