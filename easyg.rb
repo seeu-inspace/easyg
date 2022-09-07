@@ -8,10 +8,10 @@ $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
-def sleep()
+def sleep_f()
 
 	$c += 1
-				
+	
 	if $c >= 15
 		sleep 30
 		$c = 0
@@ -31,7 +31,7 @@ def firefox_go_on(file_i)
 		i += 1
 		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
 		
-		sleep()
+		sleep_f()
 	end
 
 end
@@ -56,11 +56,9 @@ def add_to_burp(file_i)
 	begin
 		target = f.gsub("\n","")
 	end
-		system 'start curl --proxy "http://127.0.0.1:8080" "' + target.to_s + '" -k'
 		i += 1
 		puts '[' + i.to_s + '] GET ' + target.to_s
-		
-		sleep()
+		system 'curl --proxy "http://127.0.0.1:8080" -k ' + target.to_s + '"'
 		
 	end
 end
@@ -103,7 +101,7 @@ if ARGV[1] == "paramspider"
 	end
 end
 
-if ARGV[1] == "addToBurp"
+if ARGV[1] == "addtoburp"
 	add_to_burp(ARGV[0])
 end
 
@@ -140,7 +138,7 @@ if ARGV[0] == "help"
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
-	puts ' addToBurp				add to Burp Suite every strings from <file_input>'
+	puts ' addtoburp				add to Burp Suite every strings from <file_input>'
 	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
 	puts 'Note: tested on Windows'
