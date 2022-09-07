@@ -67,7 +67,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
-- [ParamSpider](https://github.com/devanshbatham/ParamSpider) detection of the parameters present in the application. `python paramspider.py --domain target.com --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output results/target.txt`
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
@@ -81,6 +80,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [cURL](https://curl.se/)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
+- [ParamSpider](https://github.com/devanshbatham/ParamSpider) detection of the parameters present in the application
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
