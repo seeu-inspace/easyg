@@ -85,7 +85,7 @@ if ARGV[1] == "gau"
 end
 
 if ARGV[1] == "crawl"
-	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider.txt -c 10 -d 1 -p http://localhost:8080"
+	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider -c 10 -d 1 -p http://localhost:8080"
 	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080 > " + ARGV[0] + "_hakrawler.txt"
 end
 
@@ -94,7 +94,12 @@ if ARGV[1] == "paramspider"
 	begin
 		target = f.gsub("\n","")
 	end
-		system "python paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output results/" + target.to_s + ".txt"
+		system "python paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
+		
+		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
+			system "type paramspider_results/" + target.to_s + ".txt | anew final.txt"
+		end
+		
 	end
 end
 
@@ -109,17 +114,17 @@ if ARGV[1] == "amass"
 		target = f.gsub("\n","")
 	end
 		
-		system "amass enum -brute -active -d " + target.to_s + " -o " + target.to_s + ".txt"
+		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt"
 
-		system "subfinder -d " + target.to_s + " -all -o " + target.to_s + "_subfinder.txt"
+		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
 		
-		system "type " + target.to_s + "_subfinder.txt | anew " + target.to_s + ".txt"
+		system "type subdomains/" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
-		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > " + target.to_s + "_github.txt"
+		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
-		system "type " + target.to_s + "_github.txt | anew " + target.to_s + ".txt" 
+		system "type subdomains/" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
 		
-		httprobe_go_on(target.to_s + ".txt")
+		httprobe_go_on("subdomains/" + target.to_s + ".txt")
 
 	end
 	
