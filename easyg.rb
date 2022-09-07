@@ -97,7 +97,7 @@ if ARGV[1] == "paramspider"
 		system "python paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
 		
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
-			system "type paramspider_results/" + target.to_s + ".txt | anew final.txt"
+			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
 		end
 		
 	end
@@ -118,11 +118,11 @@ if ARGV[1] == "amass"
 
 		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
 		
-		system "type subdomains/" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
+		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
-		system "type subdomains/" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
+		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
 		
 		httprobe_go_on("subdomains/" + target.to_s + ".txt")
 
