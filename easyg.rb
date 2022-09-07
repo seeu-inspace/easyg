@@ -27,9 +27,9 @@ def firefox_go_on(file_i)
 	begin
 		target = f.gsub("\n","")
 	end
-		system 'start firefox "' + target.to_s + '"'
 		i += 1
 		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
+		system 'start firefox "' + target.to_s + '"'
 		
 		sleep_f()
 	end
@@ -38,7 +38,7 @@ end
 
 def httprobe_go_on(file_i)
 
-	system "type " + file_i + " | " + $httprobe_config.to_s + " > " + file_i +  "_httprobed"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
 end
 
@@ -68,7 +68,7 @@ if ARGV[1] == "gau"
 end
 
 if ARGV[1] == "crawl"
-	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider -c 10 -d 1 -p http://localhost:8080"
+	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
 	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080 > " + ARGV[0] + "_hakrawler.txt"
 end
 
