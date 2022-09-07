@@ -46,21 +46,6 @@ def gau_go_on(file_i)
 
 end
 
-def add_to_burp(file_i)
-
-	i = 0
-
-	File.open(file_i,'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		i += 1
-		puts '[' + i.to_s + '] GET ' + target.to_s
-		system 'curl --proxy "http://127.0.0.1:8080" -k ' + target.to_s + '"'
-		
-	end
-end
-
 # === OPTIONS ===
 
 if ARGV[1] == "nmap"
@@ -136,7 +121,6 @@ if ARGV[0] == "help"
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
-	puts ' addtoburp				add to Burp Suite every strings from <file_input>'
 	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
 	puts 'Note: tested on Windows'
