@@ -58,6 +58,10 @@ if ARGV[1] == "firefox"
 	firefox_go_on(ARGV[0])
 end
 
+if ARGV[1] == "httprobe"
+	httprobe_go_on(ARGV[0])
+end
+
 if ARGV[1] == "firefox-httprobe"
 	httprobe_go_on(ARGV[0])
 	firefox_go_on(ARGV[0] + "_httprobed")
@@ -102,8 +106,6 @@ if ARGV[1] == "amass"
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
-		
-		httprobe_go_on("subdomains/" + target.to_s + ".txt")
 
 	end
 	
@@ -115,6 +117,7 @@ if ARGV[0] == "help"
 	puts 'options:'
 	puts ' nmap					perform nmap scan against the domains in the <file_input>'
 	puts ' firefox				open every entry in <file_input> with firefox'
+	puts ' httprobe				check every entry in <file_input> with httprobe'
 	puts ' firefox-httprobe			open every entry in <file_input> with firefox checking them first with httprobe'
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
