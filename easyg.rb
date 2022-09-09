@@ -38,13 +38,14 @@ end
 
 def httprobe_go_on(file_i)
 
+	system "mkdir httprobe"
 	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
 end
 
 def gau_go_on(file_i)
 
-	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
 end
 
@@ -64,7 +65,7 @@ end
 
 if ARGV[1] == "firefox-httprobe"
 	httprobe_go_on(ARGV[0])
-	firefox_go_on(ARGV[0] + "_httprobed")
+	firefox_go_on("httprobe/" + ARGV[0] + "_httprobed")
 end
 
 if ARGV[1] == "gau"
@@ -72,8 +73,8 @@ if ARGV[1] == "gau"
 end
 
 if ARGV[1] == "crawl"
-	system "gospider -S " + ARGV[0] + " -o " + ARGV[0] + "_gospider -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
-	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080 > " + ARGV[0] + "_hakrawler.txt"
+	system "gospider -S " + ARGV[0] + " -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
+	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080"
 end
 
 if ARGV[1] == "paramspider"
@@ -81,12 +82,11 @@ if ARGV[1] == "paramspider"
 	begin
 		target = f.gsub("\n","")
 	end
-		system "python paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
-		
+		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
+
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
 			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
 		end
-		
 	end
 end
 
