@@ -379,6 +379,8 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t /root/nuclei-templates/technologies/wordpress-detect.yaml`
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
 
+More here: https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
+
 ### IIS - Internet Information Services
 
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
