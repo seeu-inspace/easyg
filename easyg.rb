@@ -8,6 +8,10 @@ $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
+def directory_exists?(directory)
+  File.directory?(directory)
+end
+
 def sleep_f()
 
 	$c += 1
@@ -38,8 +42,12 @@ end
 
 def httprobe_go_on(file_i)
 
-	system "mkdir httprobe"
+	if File.directory?('httprobe') == false
+		system "mkdir httprobe"
+	end	
+	
 	system "\n[+] Scan of " + target.to_s + " with httprobe"
+	
 	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
 end
@@ -47,7 +55,10 @@ end
 def gau_go_on(file_i)
 
 	system "\n[+] Scan of " + file_i + " with gau"
+	
 	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
+
+	system "python get.py " + file_i + "_gau.txt"
 
 end
 
@@ -110,6 +121,14 @@ if ARGV[1] == "amass"
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
+
+		system "\n[+] Scan of " + target.to_s + ".txt with subover"
+
+		if File.directory?('subover') == false
+			system "mkdir subover"
+		end
+
+		system "subover -l subdomains/" + target.to_s + ".txt > subover/" + target.to_s + "_subover.txt"
 
 	end
 	
