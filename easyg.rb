@@ -39,13 +39,15 @@ end
 def httprobe_go_on(file_i)
 
 	system "mkdir httprobe"
+	system "\n[+] Scan of " + target.to_s + " with httprobe"
 	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
 end
 
 def gau_go_on(file_i)
 
-	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
+	system "\n[+] Scan of " + target.to_s + " with gau"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
 end
 
@@ -73,7 +75,7 @@ if ARGV[1] == "gau"
 end
 
 if ARGV[1] == "crawl"
-	system "gospider -S " + ARGV[0] + " -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
+	system "gospider -S " + ARGV[0] + " -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
 	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080"
 end
 
@@ -82,7 +84,7 @@ if ARGV[1] == "paramspider"
 	begin
 		target = f.gsub("\n","")
 	end
-		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
+		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
 
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
 			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
@@ -102,6 +104,8 @@ if ARGV[1] == "amass"
 		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
 		
 		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
+		
+		system "\n[+] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
 		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
