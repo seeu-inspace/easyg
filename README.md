@@ -7,7 +7,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 ### Index
 
 - [Blog / Writeups / News](#blog--writeups--news)
-- [Bug Bounty tips](#bug-bounty-tips)
+- [Safety tips](#safety-tips)
 - [Tools](#tools)
 - [XSS](#xss)
 - [SQLi](#sqli)
@@ -42,7 +42,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://blog.intigriti.com/hackademy/xss-challenges/
 - https://breached.to/
 
-### Bug Bounty tips
+### Safety tips
 
 - For RCE: never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
 - For stored XSS: `console.log()` is better than `alert()`, it makes less noise;
