@@ -46,7 +46,7 @@ end
 
 def gau_go_on(file_i)
 
-	system "\n[+] Scan of " + target.to_s + " with gau"
+	system "\n[+] Scan of " + file_i + " with gau"
 	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
 end
