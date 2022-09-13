@@ -1,7 +1,5 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
-require 'net/http'
-
 $c = 0
 
 $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
@@ -46,7 +44,7 @@ def httprobe_go_on(file_i)
 		system "mkdir httprobe"
 	end	
 	
-	system "\n[+] Scan of " + target.to_s + " with httprobe"
+	puts "\n[+] Scan of " + file_i + " with httprobe"
 	
 	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
@@ -54,9 +52,9 @@ end
 
 def gau_go_on(file_i)
 
-	system "\n[+] Scan of " + file_i + " with gau"
+	puts "\n[+] Scan of " + file_i + " with gau"
 	
-	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o " + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o gau/" + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
 	system "python get.py " + file_i + "_gau.txt"
 
@@ -116,13 +114,13 @@ if ARGV[1] == "amass"
 		
 		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
-		system "\n[+] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
+		puts "\n[+] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
 		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
 
-		system "\n[+] Scan of " + target.to_s + ".txt with subover"
+		puts "\n[+] Scan of " + target.to_s + ".txt with subover"
 
 		if File.directory?('subover') == false
 			system "mkdir subover"
@@ -131,6 +129,14 @@ if ARGV[1] == "amass"
 		system "subover -l subdomains/" + target.to_s + ".txt > subover/" + target.to_s + "_subover.txt"
 
 	end
+	
+end
+
+if ARGV[1] == "sqlmap"
+
+	puts "\n[+] sqlmap on " + ARGV[0]
+
+	system 'python ../sqlmap/sqlmap.py -m ' + ARGV[0] + ' --batch --random-agent --level 1 --hostname --current-db --dbs'
 	
 end
 
@@ -145,7 +151,8 @@ if ARGV[0] == "help"
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
-	puts ' amass <github_token>			subdomain discovery' + "\n\n"
+	puts ' amass <github_token>			subdomain discovery'
+	puts ' sqlmap					perform sqlmap against the strings in the <file_input>' + "\n\n"
 	
 	puts 'Note: tested on Windows'
 	
