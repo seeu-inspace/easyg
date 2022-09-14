@@ -44,7 +44,7 @@ def httprobe_go_on(file_i)
 		system "mkdir httprobe"
 	end	
 	
-	puts "\n[+] Scan of " + file_i + " with httprobe"
+	puts "[+] Scan of " + file_i + " with httprobe"
 	
 	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
@@ -52,7 +52,7 @@ end
 
 def gau_go_on(file_i)
 
-	puts "\n[+] Scan of " + file_i + " with gau"
+	puts "[+] Scan of " + file_i + " with gau"
 	
 	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o gau/" + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
 
@@ -136,7 +136,7 @@ if ARGV[1] == "sqlmap"
 
 	puts "\n[+] sqlmap on " + ARGV[0]
 
-	system 'python ../sqlmap/sqlmap.py -m ' + ARGV[0] + ' --batch --random-agent --level 1 --hostname --current-db --dbs'
+	system 'python ../sqlmap/sqlmap.py -m ' + ARGV[0] + ' --batch --random-agent --level 1 --hostname --dbs'
 	
 end
 
