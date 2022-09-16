@@ -6,10 +6,6 @@ $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 
 
 puts "\e[35m\n E a s y G\n\e[0m"
 
-def directory_exists?(directory)
-  File.directory?(directory)
-end
-
 def sleep_f()
 
 	$c += 1
