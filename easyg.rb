@@ -122,21 +122,7 @@ if ARGV[1] == "amass"
 
 		puts "\n[+] Scan of " + target.to_s + ".txt with subover"
 
-		if File.directory?('subover') == false
-			system "mkdir subover"
-		end
-
-		system "subover -l subdomains/" + target.to_s + ".txt > subover/" + target.to_s + "_subover.txt"
-
 	end
-	
-end
-
-if ARGV[1] == "sqlmap"
-
-	puts "\n[+] sqlmap on " + ARGV[0]
-
-	system 'python ../sqlmap/sqlmap.py -m ' + ARGV[0] + ' --batch --random-agent --level 1 --hostname --dbs'
 	
 end
 
@@ -151,8 +137,7 @@ if ARGV[0] == "help"
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
-	puts ' amass <github_token>			subdomain discovery'
-	puts ' sqlmap					perform sqlmap against the strings in the <file_input>' + "\n\n"
+	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
 	puts 'Note: tested on Windows'
 	
