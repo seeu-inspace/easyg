@@ -111,6 +111,24 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
+To modify User-Agent:
+```
+Type: Request header
+Match: ^User-Agent: (.*)$
+Replace: User-Agent: $1 stuff-here
+Comment: stuff-here
+[x] Regex match
+```
+
+To add custom header
+```
+Type: Request header
+Match:
+Replace: X-Bug-Bounty: stuff-here
+Comment: stuff-here
+[ ] Regex match
+```
+
 Cool extensions:
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [InQL](https://github.com/doyensec/inql)
