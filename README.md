@@ -386,6 +386,8 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 More here: https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
 
+https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-Injection-via-XSS/
+
 ### IIS - Internet Information Services
 
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
