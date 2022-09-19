@@ -63,10 +63,15 @@ if ARGV[1] == "crawl"
 		target = f.gsub("\n","")
 	end
 	
-		puts "[\e[34m+\e[0m] Crawling " + target.to_s
-
+		puts "[\e[34m+\e[0m] Crawl of " + target.to_s + "\n"
+		
+		puts "[\e[34m+\e[0m] Crawling with gospider" + "\n"
 		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
+		
+		puts "[\e[34m+\e[0m] Crawling with hakrawler" + "\n"
 		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
+		
+		puts "[\e[34m+\e[0m] Crawling with gau" + "\n"
 		system 'echo ' + target.to_s + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
 		
 	end
