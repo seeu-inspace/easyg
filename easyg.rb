@@ -52,7 +52,7 @@ def httprobe_go_on(file_i)
 	
 	puts "[+] Scan of " + file_i + " with httprobe"
 	
-	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/httprobed_" + file_i
+	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
 	
 end
 
@@ -82,7 +82,7 @@ end
 
 if ARGV[1] == "firefox-httprobe"
 	httprobe_go_on(ARGV[0])
-	firefox_go_on("httprobe/httprobed_" + ARGV[0])
+	firefox_go_on("httprobe/" + ARGV[0] + "_httprobed")
 end
 
 if ARGV[1] == "gau"
@@ -97,8 +97,8 @@ if ARGV[1] == "crawl"
 	
 		puts "[+] Crawling " + target.to_s
 
-		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)" '
-		system 'echo ' + target.to_s + '| hakrawler -subs -proxy http://localhost:8080'
+		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)" '
+		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
 		
 	end
 end
