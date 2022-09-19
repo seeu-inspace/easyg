@@ -56,16 +56,6 @@ def httprobe_go_on(file_i)
 	
 end
 
-def gau_go_on(file_i)
-
-	puts "[+] Scan of " + file_i + " with gau"
-	
-	system "type " + file_i + " | " + $httprobe_config.to_s + " | gau --o gau/" + file_i + "_gau.txt --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200"
-
-	system "python get.py " + file_i + "_gau.txt"
-
-end
-
 # === OPTIONS ===
 
 if ARGV[1] == "nmap"
@@ -80,15 +70,6 @@ if ARGV[1] == "httprobe"
 	httprobe_go_on(ARGV[0])
 end
 
-if ARGV[1] == "firefox-httprobe"
-	httprobe_go_on(ARGV[0])
-	firefox_go_on("httprobe/" + ARGV[0] + "_httprobed")
-end
-
-if ARGV[1] == "gau"
-	gau_go_on(ARGV[0])
-end
-
 if ARGV[1] == "crawl"
 	File.open(ARGV[0],'r').each_line do |f|
 	begin
@@ -99,6 +80,7 @@ if ARGV[1] == "crawl"
 
 		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)" '
 		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
+		system 'echo ' + target.to_s + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
 		
 	end
 end
@@ -167,8 +149,6 @@ if ARGV[0] == "help"
 	puts ' nmap					perform nmap scan against the domains in the <file_input>'
 	puts ' firefox				open every entry in <file_input> with firefox'
 	puts ' httprobe				check every entry in <file_input> with httprobe'
-	puts ' firefox-httprobe			open every entry in <file_input> with firefox checking them first with httprobe'
-	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
 	puts ' webscreen				take a screenshot of every url in <file_input>'
