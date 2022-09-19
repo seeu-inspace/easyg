@@ -27,7 +27,7 @@ if ARGV[1] == "firefox"
 	end
 		i += 1
 		
-		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
+		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target.to_s
 		system 'start firefox "' + target.to_s + '"'
 		
 		c += 1
@@ -46,7 +46,7 @@ if ARGV[1] == "httprobe"
 		system "mkdir httprobe"
 	end	
 	
-	puts "[+] Scan of " + ARGV[0] + " with httprobe"
+	puts "[\e[34m+\e[0m] Scan of " + ARGV[0] + " with httprobe"
 	
 	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	
@@ -58,7 +58,7 @@ if ARGV[1] == "crawl"
 		target = f.gsub("\n","")
 	end
 	
-		puts "[+] Crawling " + target.to_s
+		puts "[\e[34m+\e[0m] Crawling " + target.to_s
 
 		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
 		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
@@ -95,7 +95,7 @@ if ARGV[1] == "webscreen"
 
 		driver.navigate.to target
 
-		puts '[+] Screenshot saved as: webscreen/' + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
+		puts "[\e[34m+\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
 
 		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
 		
@@ -117,7 +117,7 @@ if ARGV[1] == "amass"
 		
 		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
-		puts "\n[+] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
 		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
@@ -129,16 +129,16 @@ end
 
 if ARGV[0] == "help"
 
-	puts 'Usage: ruby easyg.rb <file_input> <option>'+ "\n\n"
-	puts 'options:'
-	puts ' nmap					perform nmap scan against the domains in the <file_input>'
-	puts ' firefox				open every entry in <file_input> with firefox'
-	puts ' httprobe				check every entry in <file_input> with httprobe'
-	puts ' crawl					crawl using as targets <file_input>'
-	puts ' paramspider				find parameters for every domain in <file_input>'
-	puts ' webscreen				take a screenshot of every url in <file_input>'
-	puts ' amass <github_token>			subdomain discovery' + "\n\n"
+	puts "Usage: ruby easyg.rb <file_input> <option> \n\n"
+	puts "options:"
+	puts " nmap					perform nmap scan against the domains in the <file_input>"
+	puts " firefox				open every entry in <file_input> with firefox"
+	puts " httprobe				check every entry in <file_input> with httprobe"
+	puts " crawl					crawl using as targets <file_input>"
+	puts " paramspider				find parameters for every domain in <file_input>"
+	puts " webscreen				take a screenshot of every url in <file_input>"
+	puts " amass <github_token>			subdomain discovery\n\n"
 	
-	puts 'Note: tested on Windows'
+	puts "Note: tested on Windows"
 	
 end
