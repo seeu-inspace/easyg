@@ -52,7 +52,7 @@ def httprobe_go_on(file_i)
 	
 	puts "[+] Scan of " + file_i + " with httprobe"
 	
-	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
+	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/httprobed_" + file_i
 	
 end
 
@@ -82,7 +82,7 @@ end
 
 if ARGV[1] == "firefox-httprobe"
 	httprobe_go_on(ARGV[0])
-	firefox_go_on("httprobe/" + ARGV[0] + "_httprobed")
+	firefox_go_on("httprobe/httprobed_" + ARGV[0])
 end
 
 if ARGV[1] == "gau"
