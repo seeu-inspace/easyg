@@ -82,16 +82,16 @@ end
 
 if ARGV[1] == "webscreen"
 
+	if File.directory?('webscreen') == false
+		system "mkdir webscreen"
+	end
+
 	driver = Selenium::WebDriver.for :chrome
 
 	File.open(ARGV[0],'r').each_line do |f|
 	begin
 		target = f.gsub("\n","")
 	end
-		
-		if File.directory?('webscreen') == false
-			system "mkdir webscreen"
-		end
 
 		driver.navigate.to target
 
@@ -130,6 +130,7 @@ end
 if ARGV[0] == "help"
 
 	puts "Usage: ruby easyg.rb <file_input> <option> \n\n"
+	
 	puts "options:"
 	puts " nmap					perform nmap scan against the domains in the <file_input>"
 	puts " firefox				open every entry in <file_input> with firefox"
