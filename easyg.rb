@@ -4,7 +4,14 @@ $c = 0
 
 $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
 
-puts "\e[35m\n E a s y G\n\e[0m"
+puts "\e[35m\n 
+███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ 
+██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
+█████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗   ██████╔╝██████╔╝
+██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║   ██╔══██╗██╔══██╗
+███████╗██║  ██║███████║   ██║   ╚██████╔╝██╗██║  ██║██████╔╝
+╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ 
+\n\e[0m"
 
 def sleep_f()
 
@@ -80,8 +87,17 @@ if ARGV[1] == "gau"
 end
 
 if ARGV[1] == "crawl"
-	system "gospider -S " + ARGV[0] + " -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)\" "
-	system "type " + ARGV[0] + " | hakrawler -subs -proxy http://localhost:8080"
+	File.open(ARGV[0],'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+	
+		puts "[+] Crawling " + target.to_s
+
+		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source --include-subs -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)" '
+		system 'echo ' + target.to_s + '| hakrawler -subs -proxy http://localhost:8080'
+		
+	end
 end
 
 if ARGV[1] == "paramspider"
@@ -114,9 +130,7 @@ if ARGV[1] == "amass"
 		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
-		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt" 
-
-		puts "\n[+] Scan of " + target.to_s + ".txt with subover"
+		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
 
 	end
 	
