@@ -82,23 +82,26 @@ end
 
 if ARGV[1] == "webscreen"
 
+	driver = Selenium::WebDriver.for :chrome
+
 	File.open(ARGV[0],'r').each_line do |f|
 	begin
 		target = f.gsub("\n","")
 	end
-		driver = Selenium::WebDriver.for :chrome
-		driver.navigate.to target
 		
 		if File.directory?('webscreen') == false
 			system "mkdir webscreen"
 		end
 
+		driver.navigate.to target
+
 		puts '[+] Screenshot saved as: webscreen/' + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
 
 		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
-
-		driver.quit
+		
 	end
+	
+	driver.quit
 end
 
 if ARGV[1] == "amass"
