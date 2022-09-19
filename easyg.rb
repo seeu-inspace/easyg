@@ -22,9 +22,11 @@ if ARGV[1] == "firefox"
 	c = 0
 
 	File.open(ARGV[0],'r').each_line do |f|
+	
 	begin
 		target = f.gsub("\n","")
 	end
+	
 		i += 1
 		
 		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target.to_s
@@ -36,6 +38,7 @@ if ARGV[1] == "firefox"
 			sleep 30
 			c = 0
 		end
+		
 	end
 
 end
@@ -53,7 +56,9 @@ if ARGV[1] == "httprobe"
 end
 
 if ARGV[1] == "crawl"
+
 	File.open(ARGV[0],'r').each_line do |f|
+	
 	begin
 		target = f.gsub("\n","")
 	end
@@ -68,19 +73,26 @@ if ARGV[1] == "crawl"
 end
 
 if ARGV[1] == "paramspider"
+
 	File.open(ARGV[0],'r').each_line do |f|
+	
 	begin
 		target = f.gsub("\n","")
 	end
+	
 		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
 
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
 			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
 		end
+		
 	end
+	
 end
 
 if ARGV[1] == "webscreen"
+
+	i = 0
 
 	if File.directory?('webscreen') == false
 		system "mkdir webscreen"
@@ -89,24 +101,29 @@ if ARGV[1] == "webscreen"
 	driver = Selenium::WebDriver.for :chrome
 
 	File.open(ARGV[0],'r').each_line do |f|
+	
 	begin
 		target = f.gsub("\n","")
 	end
+	
+		i += 1
 
 		driver.navigate.to target
 
-		puts "[\e[34m+\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
+		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
 
 		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
 		
 	end
 	
 	driver.quit
+	
 end
 
 if ARGV[1] == "amass"
 
 	File.open(ARGV[0],'r').each_line do |f|
+	
 	begin
 		target = f.gsub("\n","")
 	end
