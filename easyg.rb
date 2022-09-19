@@ -1,5 +1,8 @@
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
+require 'webdrivers'
+require 'selenium-webdriver'
+
 $c = 0
 
 $httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
@@ -113,6 +116,27 @@ if ARGV[1] == "paramspider"
 	end
 end
 
+if ARGV[1] == "webscreen"
+
+	File.open(ARGV[0],'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		driver = Selenium::WebDriver.for :chrome
+		driver.navigate.to target
+		
+		if File.directory?('webscreen') == false
+			system "mkdir webscreen"
+		end
+
+		puts '[+] Screenshot saved as: webscreen/' + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
+
+		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
+
+		driver.quit
+	end
+end
+
 if ARGV[1] == "amass"
 
 	File.open(ARGV[0],'r').each_line do |f|
@@ -147,6 +171,7 @@ if ARGV[0] == "help"
 	puts ' gau					perform gau scan against the strings in the <file_input>'
 	puts ' crawl					crawl using as targets <file_input>'
 	puts ' paramspider				find parameters for every domain in <file_input>'
+	puts ' webscreen				take a screenshot of every url in <file_input>'
 	puts ' amass <github_token>			subdomain discovery' + "\n\n"
 	
 	puts 'Note: tested on Windows'
