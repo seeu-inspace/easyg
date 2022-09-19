@@ -3,10 +3,6 @@
 require 'webdrivers'
 require 'selenium-webdriver'
 
-$c = 0
-
-$httprobe_config = "httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50"
-
 puts "\e[35m\n 
 ███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ 
 ██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
@@ -16,58 +12,44 @@ puts "\e[35m\n
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ 
 \n\e[0m"
 
-def sleep_f()
-
-	$c += 1
-	
-	if $c >= 15
-		sleep 30
-		$c = 0
-	end
-	
-end
-
-def firefox_go_on(file_i)
-
-	i = 0
-
-	File.open(file_i,'r').each_line do |f|
-	begin
-		target = f.gsub("\n","")
-	end
-		i += 1
-		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
-		system 'start firefox "' + target.to_s + '"'
-		
-		sleep_f()
-	end
-
-end
-
-def httprobe_go_on(file_i)
-
-	if File.directory?('httprobe') == false
-		system "mkdir httprobe"
-	end	
-	
-	puts "[+] Scan of " + file_i + " with httprobe"
-	
-	system "type " + file_i + " | " + $httprobe_config.to_s + " > httprobe/" + file_i +  "_httprobed"
-	
-end
-
-# === OPTIONS ===
-
 if ARGV[1] == "nmap"
 	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
 end
 
 if ARGV[1] == "firefox"
-	firefox_go_on(ARGV[0])
+
+	i = 0
+	c = 0
+
+	File.open(ARGV[0],'r').each_line do |f|
+	begin
+		target = f.gsub("\n","")
+	end
+		i += 1
+		
+		puts '[' + i.to_s + '] Firefox open > ' + target.to_s
+		system 'start firefox "' + target.to_s + '"'
+		
+		c += 1
+		
+		if c >= 15
+			sleep 30
+			c = 0
+		end
+	end
+
 end
 
 if ARGV[1] == "httprobe"
-	httprobe_go_on(ARGV[0])
+
+	if File.directory?('httprobe') == false
+		system "mkdir httprobe"
+	end	
+	
+	puts "[+] Scan of " + ARGV[0] + " with httprobe"
+	
+	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	
 end
 
 if ARGV[1] == "crawl"
@@ -78,7 +60,7 @@ if ARGV[1] == "crawl"
 	
 		puts "[+] Crawling " + target.to_s
 
-		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)" '
+		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
 		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
 		system 'echo ' + target.to_s + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
 		
