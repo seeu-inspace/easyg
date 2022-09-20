@@ -140,6 +140,7 @@ Cool extensions:
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
+- [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
 
 ### XSS
 
