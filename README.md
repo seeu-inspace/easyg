@@ -6,7 +6,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Index
 
-- [Blog / Writeups / News](#blog--writeups--news)
+- [Blog / Writeups / News & more](#blog--writeups--news--more)
 - [Safety tips](#safety-tips)
 - [Tools](#tools)
 - [XSS](#xss)
@@ -26,7 +26,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Network](#network)
 - [Linux](#linux)
 
-### Blog / Writeups / News
+### Blog / Writeups / News & more
 
 - https://pentester.land/list-of-bug-bounty-writeups.html
 - https://hackerone.com/hacktivity
@@ -42,6 +42,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://samcurry.net/
 - https://blog.intigriti.com/hackademy/xss-challenges/
 - https://breached.to/
+- https://github.com/juliocesarfort/public-pentesting-reports
 
 ### Safety tips
 
