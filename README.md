@@ -55,7 +55,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Tools
 
-- For a temporary public server: [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/) || [beeceptor](https://beeceptor.com/)
+- [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/) || [beeceptor](https://beeceptor.com/) For a temporary public server
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
@@ -63,7 +63,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [nuclei](https://github.com/projectdiscovery/nuclei)
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
-- [DotGit](https://chrome.google.com/webstore/detail/dotgit/pampamgoihgcedonnphgehgondkhikel?hl=en) find if a website has `.git` exposed
+- [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
@@ -74,7 +74,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
 - [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
-- [PlexTrac](https://plextrac.com/)
+- [PlexTrac](https://plextrac.com/) for reporting
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
@@ -156,8 +156,8 @@ Cool extensions:
 - If Privileges are required, see if you can chain the XSS with a CSRF
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 
-For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
-For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
+- For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
+- For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
 **Swagger XSS**
 - https://github.com/swagger-api/swagger-ui/issues/3847
