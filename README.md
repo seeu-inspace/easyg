@@ -61,7 +61,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers` 
+  - Check for Exposed panels `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/exposed-panels`
+  - Check for Technologies `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/technologies`
+  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers`
+  - Check for CVEs `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/cves`
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
@@ -71,7 +74,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [shuffledns](https://github.com/projectdiscovery/shuffledns)
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
-- [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
 - [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
