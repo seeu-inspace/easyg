@@ -79,6 +79,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [PlexTrac](https://plextrac.com/) for reporting
+- [Wappalyzer](https://www.wappalyzer.com/)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
