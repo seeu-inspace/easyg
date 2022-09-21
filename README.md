@@ -61,6 +61,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [nuclei](https://github.com/projectdiscovery/nuclei)
+  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers` 
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
