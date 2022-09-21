@@ -146,7 +146,6 @@ if ARGV[1] == "amass"
 		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
-		
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
