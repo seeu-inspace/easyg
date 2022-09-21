@@ -155,7 +155,6 @@ Cool extensions:
 - CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - If Privileges are required, see if you can chain the XSS with a CSRF
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
-
 - For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
 - For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
