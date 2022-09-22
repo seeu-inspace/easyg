@@ -50,7 +50,6 @@ if ARGV[1] == "httprobe"
 	end	
 	
 	puts "[\e[34m+\e[0m] Scan of " + ARGV[0] + " with httprobe"
-	
 	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	
 end
@@ -79,15 +78,19 @@ end
 
 if ARGV[1] == "paramspider"
 
+	i = 0
+
 	File.open(ARGV[0],'r').each_line do |f|
 	
 	begin
 		target = f.gsub("\n","")
 	end
 	
-		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --output paramspider_results/" + target.to_s + ".txt"
+		puts "[\e[34m" + i.to_s + "\e[0m] ParamSpider on " + target.to_s
+		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --subs False --output paramspider_results/" + target.to_s + ".txt"
 
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
+			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/final.txt"
 			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
 		end
 		
@@ -122,7 +125,6 @@ if ARGV[1] == "webscreen"
 		driver.navigate.to target
 
 		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
-
 		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
 		
 	end
@@ -139,15 +141,19 @@ if ARGV[1] == "amass"
 		target = f.gsub("\n","")
 	end
 		
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with amass"
 		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt"
 
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with subfinder"
 		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
 		
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
 		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
 		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
 		
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
 
 	end
