@@ -97,7 +97,7 @@ if ARGV[1] == "paramspider"
 	end
 	
 	puts "[\e[34m+\e[0m] Using trashcompactor on paramspider_results/final.txt"
-	system "type final.txt| trashcompactor > paramspider_results/_compact.txt"
+	system "type paramspider_results\\final.txt | trashcompactor > paramspider_results/_compact.txt"
 	puts "[\e[34m+\e[0m] saved results in paramspider_results/_compact.txt"
 	
 end
