@@ -51,6 +51,7 @@ if ARGV[1] == "httprobe"
 	
 	puts "[\e[34m+\e[0m] Scan of " + ARGV[0] + " with httprobe"
 	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 end
 
@@ -159,6 +160,8 @@ if ARGV[1] == "amass"
 		
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
+		
+		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target.to_s + ".txt"
 
 	end
 	
