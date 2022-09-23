@@ -128,8 +128,8 @@ if ARGV[1] == "webscreen"
 
 		driver.navigate.to target
 
-		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
 		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
+		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
 		
 	end
 	
