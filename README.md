@@ -94,6 +94,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
+- [trashcompactor](https://github.com/michael1026/trashcompactor)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
