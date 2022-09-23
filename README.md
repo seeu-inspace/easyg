@@ -46,12 +46,19 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Safety tips
 
-- For RCE: never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
-- For stored XSS: `console.log()` is better than `alert()`, it makes less noise especially for stored XSS;
-- For SQLi: 
-  - don't dump the entire db, you can be banned from a program. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed.
+- For RCE 
+  - Never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed;
+- For stored XSS
+  - `console.log()` is better than `alert()`, it makes less noise especially for stored XSS;
+- For SQLi
+  - Don't dump the entire db, you can be banned from a program. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed.
   - Don't use tautologies like `OR 1=1`, it can end up in a delete query or something dangerous. It's better to use `AND SLEEP(5)` or `te'+'st`
-
+- For subdomain takeovers
+  - use as a PoC an html page like:<br/>
+    9a69e2677c39cdae365b49beeac8e059.html
+    ```HTML
+    <!-- PoC by seeu -->
+    ```
 
 ### Tools
 
