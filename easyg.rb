@@ -127,7 +127,7 @@ if ARGV[1] == "webscreen"
 			
 		rescue
 		
-			puts "[\e[34m" + i + "\e[0m] ERROR while trying to take a screenshot of " + target
+			puts "[\e[31m" + i + "\e[0m] ERROR while trying to take a screenshot of " + target
 			
 		end
 		
