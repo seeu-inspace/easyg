@@ -23,14 +23,12 @@ if ARGV[1] == "firefox"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-	begin
 		target = f.gsub("\n","")
-	end
 	
 		i += 1
 		
-		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target.to_s
-		system 'start firefox "' + target.to_s + '"'
+		puts "[\e[34m" + i + "\e[0m] Firefox open > " + target
+		system 'start firefox "' + target + '"'
 		
 		c += 1
 		
@@ -59,20 +57,18 @@ if ARGV[1] == "crawl"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-	begin
 		target = f.gsub("\n","")
-	end
 	
-		puts "[\e[34m+\e[0m] Crawl of " + target.to_s + "\n"
+		puts "[\e[34m+\e[0m] Crawl of " + target + "\n"
 		
 		puts "[\e[34m+\e[0m] Crawling with gospider" + "\n"
-		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
+		system 'gospider -s "' + target + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
 		
 		puts "[\e[34m+\e[0m] Crawling with hakrawler" + "\n"
-		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
+		system 'echo ' + target + '| hakrawler -proxy http://localhost:8080'
 		
 		puts "[\e[34m+\e[0m] Crawling with gau" + "\n"
-		system 'echo ' + target.to_s + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
+		system 'echo ' + target + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
 		
 	end
 end
@@ -83,23 +79,21 @@ if ARGV[1] == "paramspider"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-	begin
 		target = f.gsub("\n","")
-	end
 	
-		puts "[\e[34m" + i.to_s + "\e[0m] ParamSpider on " + target.to_s
-		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --subs False --output paramspider_results/" + target.to_s + ".txt"
+		puts "[\e[34m" + i + "\e[0m] ParamSpider on " + target
+		system "python ../ParamSpider/paramspider.py --domain " + target + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --subs False --output paramspider_results/" + target + ".txt"
 
-		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
-			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/final.txt"
-			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/final.txt"
+		if File.exists?("paramspider_results/" + target + ".txt") == true
+			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
+			system "type paramspider_results\\" + target + ".txt | anew paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
 		end
 		
 	end
 	
-	puts "[\e[34m+\e[0m] Using trashcompactor on paramspider_results/final.txt"
-	system "type paramspider_results\\final.txt | trashcompactor > paramspider_results/_compact.txt"
-	puts "[\e[34m+\e[0m] saved results in paramspider_results/_compact.txt"
+	puts "[\e[34m+\e[0m] Using trashcompactor on paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
+	system "type paramspider_results\\final.txt | trashcompactor > paramspider_results/" + ARGV[0].gsub('.txt','') + "_compact.txt"
+	puts "[\e[34m+\e[0m] saved results in paramspider_results/" + ARGV[0].gsub('.txt','') + "_compact.txt"
 	
 end
 
@@ -121,16 +115,21 @@ if ARGV[1] == "webscreen"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-	begin
 		target = f.gsub("\n","")
-	end
-	
+		
 		i += 1
 
-		driver.navigate.to target
+		begin
+			driver.navigate.to target
 
-		driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
-		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')).to_s + '.png' 
+			driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')) + '.png')
+			puts "[\e[34m" + i + "\e[0m] Screenshot saved as: webscreen/" + ((target.gsub('//', '')).gsub('/', '_').gsub(':', '_')) + '.png'
+			
+		rescue
+		
+			puts "[\e[34m" + i + "\e[0m] ERROR while trying to take a screenshot of " + target
+			
+		end
 		
 	end
 	
@@ -142,26 +141,24 @@ if ARGV[1] == "amass"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-	begin
 		target = f.gsub("\n","")
-	end
 		
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with amass"
-		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with amass"
+		system "amass enum -brute -active -d " + target + " -o subdomains/" + target + ".txt"
 
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with subfinder"
-		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
+		system "subfinder -d " + target + " -all -o subdomains/" + target + "_subfinder.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
-		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		system "type subdomains\\" + target + "_subfinder.txt | anew subdomains/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
-		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains.py"
+		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target + " -e > subdomains/" + target + "_github.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
-		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target + ".txt"
 
 	end
 	
