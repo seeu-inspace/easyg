@@ -124,8 +124,8 @@ if ARGV[1] == "webscreen"
 		
 			driver.navigate.to target
 
-			driver.save_screenshot('webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').to_s + '.png')
-			puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').to_s + '.png'
+			driver.save_screenshot('webscreen/' + target.gsub(/\w+/, '/' => '_', ':' => '_', '?' => '_', '\\' => '_', '*' => '_', '"' => '_', '<' => '_', '>' => '_', '|' => '_').to_s + '.png')
+			puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + target.gsub(/\w+/, '/' => '_', ':' => '_', '?' => '_', '\\' => '_', '*' => '_', '"' => '_', '<' => '_', '>' => '_', '|' => '_').to_s + '.png'
 			
 		rescue
 		
