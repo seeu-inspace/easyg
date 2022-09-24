@@ -120,6 +120,7 @@ if ARGV[1] == "webscreen"
 		i += 1
 
 		begin
+		
 			driver.navigate.to target
 
 			driver.save_screenshot('webscreen/' + (((target.gsub('/', '_')).gsub(':', '_')).gsub('?', '_')).to_s + '.png')
