@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
 require 'webdrivers'
