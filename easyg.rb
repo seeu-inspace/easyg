@@ -86,15 +86,13 @@ if ARGV[1] == "paramspider"
 		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --subs False --output paramspider_results/" + target.to_s + ".txt"
 
 		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
-			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
-			system "type paramspider_results\\" + target.to_s + ".txt | anew paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
+			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt with anew + trashcompactor"
+			system "type paramspider_results\\" + target.to_s + ".txt | trashcompactor | anew paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
 		end
 		
 	end
 	
-	puts "[\e[34m+\e[0m] Using trashcompactor on paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
-	system "type paramspider_results\\"+ ARGV[0].gsub('.txt','') + "_final.txt | trashcompactor > paramspider_results/" + ARGV[0].gsub('.txt','') + "_compact.txt"
-	puts "[\e[34m+\e[0m] saved results in paramspider_results/" + ARGV[0].gsub('.txt','') + "_compact.txt"
+	puts "[\e[34m+\e[0m] Saved results in paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
 	
 end
 
