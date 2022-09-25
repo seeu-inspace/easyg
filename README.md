@@ -161,9 +161,9 @@ Cool extensions:
 
 ### Bash
 
-Reead a file line by line
+Read a file line by line with a script like `./bash.sh filename`
 ```bash
-file="out.txt"
+file=$1
 while read -r line; do
     echo -e "$line"
 done <$file 
