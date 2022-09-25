@@ -9,6 +9,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Blog / Writeups / News & more](#blog--writeups--news--more)
 - [Safety tips](#safety-tips)
 - [Tools](#tools)
+- [Bash](#bash)
 - [XSS](#xss)
 - [SQLi](#sqli)
 - [Open Redirect](#open-redirect)
@@ -157,6 +158,16 @@ Cool extensions:
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+
+### Bash
+
+Reead a file line by line
+```bash
+file="out.txt"
+while read -r line; do
+    echo -e "$line"
+done <$file 
+```
 
 ### XSS
 
