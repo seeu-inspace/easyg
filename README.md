@@ -90,6 +90,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [PlexTrac](https://plextrac.com/) for reporting
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
+- [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [nmap](https://nmap.org/)
