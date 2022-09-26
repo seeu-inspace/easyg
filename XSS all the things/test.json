@@ -1,0 +1,17 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Consumer API",
+        "description": "API for Presence Management Platform by Solocal",
+        "version": "1.0"
+    },
+    "security": [
+        {
+            "api_token": []
+        }
+    ],
+    "paths": {
+           "/cat<x>":""
+        
+    }
+}
