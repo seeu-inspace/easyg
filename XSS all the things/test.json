@@ -11,7 +11,20 @@
         }
     ],
     "paths": {
-           "/cat<x>":""
-        
+           "/cat<x>":{
+        "get": {
+                "summary": "Returns the list of available categories",
+                "description": "Returns the list of available categories",
+                "parameters": [
+                    {
+                        "name": "language",
+                        "in": "query",
+                        "description": "filter by language (ISO 639-1 Code)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                    }
     }
 }
