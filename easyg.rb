@@ -52,6 +52,12 @@ if ARGV[1] == "httprobe"
 	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
+	puts "[\e[34m+\e[0m] Searching for exposed .git"
+	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
+	
+	puts "[\e[34m+\e[0m] Checking for possible takeovers"
+	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers"
+
 end
 
 if ARGV[1] == "crawl"
@@ -172,7 +178,7 @@ if ARGV[0] == "help"
 	puts "options:"
 	puts " nmap					perform nmap scan against the domains in the <file_input>"
 	puts " firefox				open every entry in <file_input> with firefox"
-	puts " httprobe				check every entry in <file_input> with httprobe"
+	puts " httprobe				check every entry in <file_input> with httprobe + perform some checks with nuclei"
 	puts " crawl					crawl using as targets <file_input>"
 	puts " paramspider				find parameters for every domain in <file_input>"
 	puts " webscreen				take a screenshot of every url in <file_input>"
