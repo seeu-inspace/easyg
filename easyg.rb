@@ -56,7 +56,7 @@ if ARGV[1] == "httprobe"
 	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
 	
 	puts "[\e[34m+\e[0m] Checking for possible takeovers"
-	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers"
+	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers"
 
 end
 
