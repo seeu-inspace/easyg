@@ -53,10 +53,10 @@ if ARGV[1] == "httprobe"
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Searching for exposed .git"
-	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
+	system 'nuclei -l  httprobe/httprobed_' + ARGV[0] + ' -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml'
 	
 	puts "[\e[34m+\e[0m] Checking for possible takeovers"
-	system "nuclei -l  httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers"
+	system 'nuclei -l  httprobe/httprobed_' + ARGV[0] + ' -t %USERPROFILE%\nuclei-templates\takeovers'
 
 end
 
