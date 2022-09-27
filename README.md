@@ -71,9 +71,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Check for Exposed panels `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/exposed-panels`
   - Check for Technologies `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/technologies`
-  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers`
   - Check for CVEs `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/cves`
-  - Check for .git exposure `nuclei -l list.txt -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
@@ -105,6 +103,9 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
+- [nuclei](https://github.com/projectdiscovery/nuclei)
+  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers`
+  - Check for .git exposure `nuclei -l list.txt -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
