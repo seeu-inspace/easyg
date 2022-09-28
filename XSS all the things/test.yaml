@@ -26,7 +26,7 @@ paths:
     delete:
       parameters:
         - description: |
-            <form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=javascript:alert(${localStorage.getItem('authToken')}) src=1>"></form>
+            <form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=javascript:alert(localStorage.getItem('authToken')) src=1>"></form>
 
           format: int64
           in: path
