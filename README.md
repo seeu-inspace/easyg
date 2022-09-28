@@ -104,8 +104,6 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-  - Check for takeovers `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/takeovers`
-  - Check for .git exposure `nuclei -l list.txt -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
