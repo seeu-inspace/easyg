@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Classic API Resource Documentation
-  description: <h1>ERROR! Repeat the login</h1><p>Membership No.<br/><input><br/><a href=http://2abd-35-241-180-17.ngrok.io><br><input type=button value="Login"></a><br/><img src=https://2abd-35-241-180-17.ngrok.io>
+  description: <h1>ERROR! Repeat the login</h1><p>Membership No.<br/><input><br/><a href=http://localhost><br><input type=button value="Login"></a><br/><img src=https://localhost><img src=x onerror=alert(document.domain)>
   version: production
 basePath: /JSSResource/
 produces:
