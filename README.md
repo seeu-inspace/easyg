@@ -422,6 +422,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 ### WordPress
 
+- Information Disclosure [high]: `/_wpeprivate/config.json`
 - Data exposure:
   - `/wp-json/wp/v2/users/`
   - `/wp-json/th/v1/user_generation`
