@@ -65,7 +65,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/) || [beeceptor](https://beeceptor.com/) For a temporary public server
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-- [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
