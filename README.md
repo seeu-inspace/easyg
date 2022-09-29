@@ -9,6 +9,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Blog / Writeups / News & more](#blog--writeups--news--more)
 - [Safety tips](#safety-tips)
 - [Tools](#tools)
+- [Content Discovery](#content-discovery)
 - [Bash](#bash)
 - [XSS](#xss)
 - [SQLi](#sqli)
