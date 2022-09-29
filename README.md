@@ -76,6 +76,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
+- [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
@@ -84,15 +85,12 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
-- [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
+- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [PlexTrac](https://plextrac.com/) for reporting
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
-- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [nmap](https://nmap.org/)
-- [gau](https://github.com/lc/gau)
-- [waymore](https://github.com/xnl-h4ck3r/waymore)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [amass](https://github.com/OWASP/Amass)
