@@ -13,10 +13,6 @@ puts "\e[35m\n
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ 
 \n\e[0m"
 
-if ARGV[1] == "nmap"
-	system "nmap -p 1-65535 -T4 -A -v -Pn -sV -iL " + ARGV[0] + " -oX " + ARGV[0] +  ".xml"
-end
-
 if ARGV[1] == "firefox"
 
 	i = 0
@@ -33,7 +29,7 @@ if ARGV[1] == "firefox"
 		
 		c += 1
 		
-		if c >= 15
+		if c >= 20
 			sleep 30
 			c = 0
 		end
@@ -42,62 +38,19 @@ if ARGV[1] == "firefox"
 
 end
 
-if ARGV[1] == "httprobe"
-
-	if File.directory?('httprobe') == false
-		system "mkdir httprobe"
-	end	
-	
-	puts "[\e[34m+\e[0m] Scan of " + ARGV[0] + " with httprobe"
-	system "type " + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
-	
-	puts "[\e[34m+\e[0m] Starting nuclei"
-	system 'nuclei -l  httprobe/httprobed_' + ARGV[0] + ' -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml -t %USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml %USERPROFILE%\nuclei-templates\vulnerabilities\generic\oob-header-based-interaction.yaml'
-
-end
-
 if ARGV[1] == "crawl"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
 		target = f.gsub("\n","")
-	
-		puts "[\e[34m+\e[0m] Crawl of " + target.to_s + "\n"
 		
-		puts "[\e[34m+\e[0m] Crawling with gospider" + "\n"
-		system 'gospider -s "' + target.to_s + '" -c 10 -d 1 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|pptx|pdf|epub|docx|xlsx|css|txt)"'
+		puts "[\e[34m+\e[0m] Crawling " + target.to_s + " with hakrawler" + "\n"
+		system 'echo ' + target.to_s + '| hakrawler -u -insecure -t 20 -proxy http://localhost:8080'
 		
-		puts "[\e[34m+\e[0m] Crawling with hakrawler" + "\n"
-		system 'echo ' + target.to_s + '| hakrawler -proxy http://localhost:8080'
-		
-		puts "[\e[34m+\e[0m] Crawling with gau" + "\n"
-		system 'echo ' + target.to_s + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt --mc 200 --proxy http://localhost:8080'
+		puts "[\e[34m+\e[0m] Crawling " + target.to_s + " with gospider" + "\n"
+		system 'gospider -s "' + target.to_s + '" -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"'
 		
 	end
-end
-
-if ARGV[1] == "paramspider"
-
-	i = 0
-
-	File.open(ARGV[0],'r').each_line do |f|
-	
-		target = f.gsub("\n","")
-	
-		puts "[\e[34m" + i.to_s + "\e[0m] ParamSpider on " + target.to_s
-		system "python ../ParamSpider/paramspider.py --domain " + target.to_s + " --exclude svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,pptx,pdf,epub,docx,xlsx,css,txt,js,axd --level high --subs False --output paramspider_results/" + target.to_s + ".txt"
-
-		if File.exists?("paramspider_results/" + target.to_s + ".txt") == true
-			puts "[\e[34m+\e[0m] Paramspider eneded at: " + Time.new.inspect
-			puts "[\e[34m+\e[0m] Adding new results discovered to paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt with anew + trashcompactor"
-			system "type paramspider_results\\" + target.to_s + ".txt | trashcompactor | anew paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
-		end
-		
-	end
-	
-	puts "[\e[34m+\e[0m] Saved results in paramspider_results/" + ARGV[0].gsub('.txt','') + "_final.txt"
-	
 end
 
 if ARGV[1] == "webscreen"
@@ -141,14 +94,22 @@ if ARGV[1] == "webscreen"
 	
 end
 
-if ARGV[1] == "amass"
+if ARGV[1] == "assetenum"
+
+	if File.directory?('subdomains') == false
+		system "mkdir subdomains"
+	end
+	
+	if File.directory?('httprobe') == false
+		system "mkdir httprobe"
+	end
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
 		target = f.gsub("\n","")
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with amass"
-		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt"
+		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt -v"
 
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with subfinder"
 		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
@@ -163,8 +124,15 @@ if ARGV[1] == "amass"
 		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target.to_s + ".txt"
+		
+		puts "\n[\e[34m+\e[0m] Saving all results for " + ARGV[0] + " in subdomains/allsubs_" + ARGV[0]
+		system "type subdomains\\" + target.to_s + " | anew subdomains/allsubs_" + ARGV[0]
 
 	end
+	
+	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
+	system "type subdomains/allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 end
 
@@ -173,13 +141,10 @@ if ARGV[0] == "help"
 	puts "Usage: ruby easyg.rb <file_input> <option> \n\n"
 	
 	puts "options:"
-	puts " nmap					perform nmap scan against the domains in the <file_input>"
 	puts " firefox				open every entry in <file_input> with firefox"
-	puts " httprobe				check every entry in <file_input> with httprobe + some checks with nuclei"
 	puts " crawl					crawl using as targets <file_input>"
-	puts " paramspider				find parameters for every domain in <file_input>"
 	puts " webscreen				take a screenshot of every url in <file_input>"
-	puts " amass <github_token>			subdomain discovery\n\n"
+	puts " assetenum <github_token>			subdomain discovery + httprobe + nuclei" + "\n\n"
 	
 	puts "Note: tested on Windows"
 	
