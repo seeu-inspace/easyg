@@ -72,6 +72,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - Check for Exposed panels `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/exposed-panels`
   - Check for Technologies `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/technologies`
   - Check for CVEs `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/cves`
+  - Check for misconfiguration `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/misconfiguration`
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
