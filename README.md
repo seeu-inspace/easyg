@@ -170,6 +170,15 @@ Cool extensions:
 - [SecLists](https://github.com/danielmiessler/SecLists)
 - [wordlists.assetnote.io](https://wordlists.assetnote.io/)
 
+**Custom wordlists**
+- [wordlistgen](https://github.com/ameenmaali/wordlistgen)
+- [Scavenger](https://github.com/0xDexter0us/Scavenger)
+
+**Other tools**
+- [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
+- [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
+- [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
+
 ### Bash
 
 Read a file line by line with a script like `./bash.sh filename`
