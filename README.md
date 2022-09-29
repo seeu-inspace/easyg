@@ -90,20 +90,20 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
+- [trashcompactor](https://github.com/michael1026/trashcompactor)
+- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
+- [nmap](https://nmap.org/)
+- [gau](https://github.com/lc/gau)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
-- [nmap](https://nmap.org/)
 - [amass](https://github.com/OWASP/Amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
 - [github-subdomains.py](https://github.com/gwen001/github-search/blob/master/github-subdomains.py)
-- [gau](https://github.com/lc/gau)
 - [httprobe](https://github.com/tomnomnom/httprobe)
 - [anew](https://github.com/tomnomnom/anew)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
-- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
-- [trashcompactor](https://github.com/michael1026/trashcompactor)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
 
 **Desktop Application Penetration Testing**
