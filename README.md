@@ -165,7 +165,9 @@ Cool extensions:
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
   `./webanalyze -host example.com -crawl 1`
 
-[feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
+**Tools**
+- [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
+- [dirsearch](https://github.com/maurosoria/dirsearch)
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
