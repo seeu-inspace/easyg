@@ -86,13 +86,12 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [PlexTrac](https://plextrac.com/) for reporting
-- [Wappalyzer](https://www.wappalyzer.com/)
-- [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 - [nmap](https://nmap.org/)
 - [gau](https://github.com/lc/gau)
+- [waymore](https://github.com/xnl-h4ck3r/waymore)
 
 Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [amass](https://github.com/OWASP/Amass)
@@ -157,6 +156,19 @@ Cool extensions:
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+
+### Content Discovery
+
+**Check the tech of a target with**
+- [Wappalyzer](https://www.wappalyzer.com/)
+- [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
+  `./webanalyze -host example.com -crawl 1`
+
+[feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
+
+**Wordlists**
+- [SecLists](https://github.com/danielmiessler/SecLists)
+- [wordlists.assetnote.io](https://wordlists.assetnote.io/)
 
 ### Bash
 
