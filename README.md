@@ -68,6 +68,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [LinkFinder](https://github.com/GerbenJavado/LinkFinder) To find links inside `.js`
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
+- [emailfake.com](https://emailfake.com/)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Check for Exposed panels `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/exposed-panels`
   - Check for Technologies `nuclei -l list.txt -t %USERPROFILE%/nuclei-templates/technologies`
