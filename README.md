@@ -64,35 +64,57 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Tools
 
-- [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/) || [beeceptor](https://beeceptor.com/) For a temporary public server
+**For a temporary public server**
+- [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
+- [beeceptor](https://beeceptor.com/)
+
+**For XSS**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
+
+**For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
+
+**For .git exposed**
+- [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
+- [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/`
+- [GitDumper from GitTools](https://github.com/internetwache/GitTools)
+- nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
+
+**To find parameters**
+- [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
+- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
+
+**Asset enumeration**
+- [shuffledns](https://github.com/projectdiscovery/shuffledns)
+- [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
+- [nmap](https://nmap.org/)
+
+**For takeovers**
+- [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
+- [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
+- nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
+
+**For exploitation**
+- [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
+- [sqlmap](https://sqlmap.org/)
+
+**Other**
+- [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
+- [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
+- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
-  - Check for more `-t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
-- [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
-- [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
-- [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
-- [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/` || [GitDumper from GitTools](https://github.com/internetwache/GitTools)
-- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
+  - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
-- [shuffledns](https://github.com/projectdiscovery/shuffledns)
-- [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
-- [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
-- [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
-- [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
-- [ParamSpider](https://github.com/devanshbatham/ParamSpider)
-- [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [PlexTrac](https://plextrac.com/) for reporting
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
-- [nmap](https://nmap.org/)
 
-Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
+**Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
 - [github-subdomains.py](https://github.com/gwen001/github-search/blob/master/github-subdomains.py)
@@ -101,7 +123,8 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [naabu](https://github.com/projectdiscovery/naabu)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
-- [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
+- [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
+- [nuclei](https://github.com/projectdiscovery/nuclei)
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
