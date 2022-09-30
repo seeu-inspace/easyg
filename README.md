@@ -98,6 +98,7 @@ Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)
 - [github-subdomains.py](https://github.com/gwen001/github-search/blob/master/github-subdomains.py)
 - [httprobe](https://github.com/tomnomnom/httprobe)
 - [anew](https://github.com/tomnomnom/anew)
+- [naabu](https://github.com/projectdiscovery/naabu)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings) to take webscreenshots
