@@ -91,7 +91,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [nmap](https://nmap.org/)
 
-**For Javascript Analysis**
+**For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 
