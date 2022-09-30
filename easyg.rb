@@ -162,6 +162,9 @@ if ARGV[1] == "assetenum"
 	
 	puts "[\e[34m+\e[0m] You can find all the results from naabu in naabu/allnaabu_" +  ARGV[0]
 	
+	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei"
+	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
+	
 end
 
 if ARGV[0] == "help"
@@ -172,7 +175,7 @@ if ARGV[0] == "help"
 	puts " firefox				open every entry in <file_input> with firefox"
 	puts " webscreen				take a screenshot of every url in <file_input>"
 	puts " crawl					crawl using as targets <file_input>"
-	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu" + "\n\n"
+	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu + nuclei" + "\n\n"
 	
 	puts "Note: tested on Windows"
 	
