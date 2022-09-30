@@ -144,7 +144,7 @@ if ARGV[1] == "assetenum"
 	
 	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with nmap"
 	system "nmap -p 1-65535 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as nmap/nmap" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as nmap/nmap_" + ARGV[0]
 	
 end
 
