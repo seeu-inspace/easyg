@@ -89,7 +89,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 **Asset enumeration**
 - [shuffledns](https://github.com/projectdiscovery/shuffledns)
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
-- [nmap](https://nmap.org/)
+- [naabu](https://github.com/projectdiscovery/naabu)
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
@@ -124,7 +124,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [github-subdomains.py](https://github.com/gwen001/github-search/blob/master/github-subdomains.py)
 - [httprobe](https://github.com/tomnomnom/httprobe)
 - [anew](https://github.com/tomnomnom/anew)
-- [naabu](https://github.com/projectdiscovery/naabu)
+- [nmap](https://nmap.org/)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
