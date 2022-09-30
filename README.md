@@ -30,21 +30,19 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Blog / Writeups / News & more
 
-- https://pentester.land/list-of-bug-bounty-writeups.html
-- https://hackerone.com/hacktivity
 - https://portswigger.net/research
 - https://www.skeletonscribe.net
 - https://cvetrends.com/
-- https://thehackernews.com/
 - https://wiki.owasp.org/index.php/Testing_Checklist
 - https://packetstormsecurity.com/
-- https://github.com/OlivierLaflamme/Cheatsheet-God
 - https://twitter.com/hashtag/bugbountytips
 - https://securib.ee/
 - https://samcurry.net/
 - https://blog.intigriti.com/hackademy/xss-challenges/
-- https://breached.to/
+- https://hackerone.com/hacktivity
+- https://pentester.land/list-of-bug-bounty-writeups.html
 - https://github.com/juliocesarfort/public-pentesting-reports
+- https://pentestreports.com/
 
 ### Safety tips
 
@@ -150,7 +148,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
 - [Android Studio](https://developer.android.com/studio) Android application development, useful for the emulator
-  - Note: To start the emulator only, use commands such as
+  - Note: to start onlythe emulator, use commands such as
     ```
     cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
     emulator -avd Pixel_4_XL_API_30
@@ -161,24 +159,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 #### Burp suite
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
-
-To modify User-Agent:
-```
-Type: Request header
-Match: ^User-Agent: (.*)$
-Replace: User-Agent: $1 stuff-here
-Comment: stuff-here
-[x] Regex match
-```
-
-To add custom header
-```
-Type: Request header
-Match:
-Replace: X-Bug-Bounty: stuff-here
-Comment: stuff-here
-[ ] Regex match
-```
 
 Cool extensions:
 - [Autorize](https://github.com/PortSwigger/autorize)
@@ -203,8 +183,6 @@ Cool extensions:
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
 - [wordlists.assetnote.io](https://wordlists.assetnote.io/)
-
-**Custom wordlists**
 - [wordlistgen](https://github.com/ameenmaali/wordlistgen)
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
 
@@ -318,16 +296,11 @@ GO
 xp_cmdshell 'COMMAND';
 ```
 
-### Open Redirect
-
-Bypass:
-- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
-
 ### SSRF
 
 SSRF with blacklist-based input filters bypass: Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
 - Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
-- Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose;
+- Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose or the domain `firefox.fr` is a DNS that point to `127.0.0.1`.;
 - Obfuscating blocked strings using URL encoding or case variation.
 
 SRF with whitelist-based input filters bypass
@@ -339,24 +312,25 @@ SRF with whitelist-based input filters bypass
 
 By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
 
+Open Redirect Bypass:
+- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+
 For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
 ```PHP
 <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
 ```
 
-If needed, the domain `firefox.fr` is a DNS that point to `127.0.0.1`.
-
 ### Authentication vulnerabilities
 
-Common Spots:
-- Vulnerabilities in password-based login
-- Vulnerabilities in multi-factor authentication
-  - Two-factor authentication
-  - Bypass
-  - Bruteforce
-- [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
-- [Password reset](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-poisoning-via-middleware)
+- Multi-factor authentication
+  - Try to intercept the response and modify the status to `200`;
+  - Bruteforce.
+- Password reset
+  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token;
+  - Try with headers like `X-Forwarded-Host:`.
 - [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
+- [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
+
 
 ### Access control vulnerabilities and privilege escalation
 
