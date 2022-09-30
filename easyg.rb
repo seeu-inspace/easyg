@@ -3,7 +3,6 @@
 
 require 'webdrivers'
 require 'selenium-webdriver'
-require 'socket'
 
 puts "\e[35m\n 
 ███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ 
@@ -139,28 +138,9 @@ if ARGV[1] == "assetenum"
 	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
-	File.open("subdomains/allsubs_" + ARGV[0],'r').each_line do |f|
-		begin
-			ip=IPSocket::getaddress(f.strip)
-			target = f.gsub("\n","").to_s
-		rescue
-			puts "[\e[31m" + i.to_s + "\e[0m] ERROR " + target + " is an invalid target"
-			ip="unknown"
-		end
-		
-		if ip!="unknown"
-		
-			puts "[\e[34m+\e[0m] Searching for open ports in " + target + " with naabu"
-			system "naabu -host " + target + " -p - -exclude-ports 80,443,81,3000,3000,3001,3001,8000,8080,8443 -o naabu/naabu_" + target + ".txt"
-			puts "[\e[34m+\e[0m] Saving the results to naabu/naabu_" + target + ".txt"
-			
-			system "type naabu\\naabu_" + target + ".txt | anew naabu/allnaabu_" +  ARGV[0]
-		
-		end
-		
-	end
-	
-	puts "[\e[34m+\e[0m] You can find all the results from naabu in naabu/allnaabu_" +  ARGV[0]
+	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with naabu"
+	system "naabu -v -p - -exclude-ports 80,443,81,3000,3000,3001,3001,8000,8080,8443 -retries 1 -timeout 250 -warm-up-time 0 -c 1000 -rate 7000 -l subdomains/allsubs_" + ARGV[0] + " -o naabu/naabu_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei"
 	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
