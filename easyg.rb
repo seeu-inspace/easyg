@@ -122,7 +122,7 @@ if ARGV[1] == "assetenum"
 		system "type subdomains\\" + target + "_subfinder.txt | anew subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains.py"
-		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target + " -e > subdomains/" + target + "_github.txt"
+		system "python ../github-subdomains/github-subdomains.py -t " + ARGV[2] + " -d " + target + " -e > subdomains/" + target + "_github.txt"
 		
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
 		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
@@ -138,12 +138,13 @@ if ARGV[1] == "assetenum"
 	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
-	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with naabu"
-	system "naabu -v -p - -exclude-ports 80,443,81,3000,3000,3001,3001,8000,8080,8443 -retries 1 -timeout 250 -warm-up-time 0 -c 1000 -rate 7000 -l subdomains/allsubs_" + ARGV[0] + " -o naabu/naabu_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in" + ARGV[0]
+	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o nuclei/nuclei_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
-	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei"
-	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml"
+	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with nmap"
+	system "nmap -p 1-65535 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as nmap/nmap" + ARGV[0]
 	
 end
 
