@@ -3,6 +3,7 @@
 
 require 'webdrivers'
 require 'selenium-webdriver'
+require 'socket'
 
 puts "\e[35m\n 
 ███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ 
@@ -20,12 +21,12 @@ if ARGV[1] == "firefox"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-		target = f.gsub("\n","")
+		target = f.gsub("\n","").to_s
 	
 		i += 1
 		
-		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target.to_s
-		system 'start firefox "' + target.to_s + '"'
+		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target
+		system 'start firefox "' + target + '"'
 		
 		c += 1
 		
@@ -36,21 +37,6 @@ if ARGV[1] == "firefox"
 		
 	end
 
-end
-
-if ARGV[1] == "crawl"
-
-	File.open(ARGV[0],'r').each_line do |f|
-	
-		target = f.gsub("\n","")
-		
-		puts "[\e[34m+\e[0m] Crawling " + target.to_s + " with hakrawler" + "\n"
-		system 'echo ' + target.to_s + '| hakrawler -u -insecure -t 20 -proxy http://localhost:8080'
-		
-		puts "[\e[34m+\e[0m] Crawling " + target.to_s + " with gospider" + "\n"
-		system 'gospider -s "' + target.to_s + '" -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"'
-		
-	end
 end
 
 if ARGV[1] == "webscreen"
@@ -71,7 +57,7 @@ if ARGV[1] == "webscreen"
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-		target = f.gsub("\n","")
+		target = f.gsub("\n","").to_s
 		
 		i += 1
 
@@ -84,7 +70,7 @@ if ARGV[1] == "webscreen"
 			
 		rescue
 		
-			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to take a screenshot of " + target.to_s
+			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to take a screenshot of " + target
 			
 		end
 		
@@ -92,6 +78,21 @@ if ARGV[1] == "webscreen"
 	
 	driver.quit
 	
+end
+
+if ARGV[1] == "crawl"
+
+	File.open(ARGV[0],'r').each_line do |f|
+	
+		target = f.gsub("\n","").to_s
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with hakrawler" + "\n"
+		system 'echo ' + target + '| hakrawler -u -insecure -t 20 -proxy http://localhost:8080'
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with gospider" + "\n"
+		system 'gospider -s "' + target + '" -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"'
+		
+	end
 end
 
 if ARGV[1] == "assetenum"
@@ -103,36 +104,63 @@ if ARGV[1] == "assetenum"
 	if File.directory?('httprobe') == false
 		system "mkdir httprobe"
 	end
+	
+	if File.directory?('naabu') == false
+		system "mkdir naabu"
+	end
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
-		target = f.gsub("\n","")
+		target = f.gsub("\n","").to_s
 		
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with amass"
-		system "amass enum -brute -active -d " + target.to_s + " -o subdomains/" + target.to_s + ".txt -v"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with amass"
+		system "amass enum -brute -active -d " + target + " -o subdomains/" + target + ".txt -v"
 
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with subfinder"
-		system "subfinder -d " + target.to_s + " -all -o subdomains/" + target.to_s + "_subfinder.txt"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
+		system "subfinder -d " + target + " -all -o subdomains/" + target + "_subfinder.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
-		system "type subdomains\\" + target.to_s + "_subfinder.txt | anew subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		system "type subdomains\\" + target + "_subfinder.txt | anew subdomains/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target.to_s + " with github-subdomains.py"
-		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target.to_s + " -e > subdomains/" + target.to_s + "_github.txt"
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains.py"
+		system "python github-subdomains.py -t " + ARGV[2] + " -d " + target + " -e > subdomains/" + target + "_github.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target.to_s + ".txt with anew"
-		system "type subdomains\\" + target.to_s + "_github.txt | anew subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target.to_s + ".txt"
+		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Saving all results for " + ARGV[0] + " in subdomains/allsubs_" + ARGV[0]
-		system "type subdomains\\" + target.to_s + " | anew subdomains/allsubs_" + ARGV[0]
+		system "type subdomains\\" + target + " | anew subdomains/allsubs_" + ARGV[0]
 
 	end
 	
 	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
 	system "type subdomains/allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
+	
+	File.open("subdomains/allsubs_" + ARGV[0],'r').each_line do |f|
+		begin
+			ip=IPSocket::getaddress(f.strip)
+			target = f.gsub("\n","").to_s
+		rescue
+			puts "[\e[31m" + i.to_s + "\e[0m] ERROR " + target + " is an invalid target"
+			ip="unknown"
+		end
+		
+		if ip!="unknown"
+		
+			puts "[\e[34m+\e[0m] Searching for open ports in " + target + " with naabu"
+			system "naabu -host " + target + " -p - -exclude-ports 80,443,81,3000,3000,3001,3001,8000,8080,8443 -o naabu/naabu_" + target + ".txt"
+			puts "[\e[34m+\e[0m] Saving the results to naabu/naabu_" + target + ".txt"
+			
+			system "type naabu/naabu_" + target + ".txt | anew naabu/allnaabu_" +  ARGV[0]
+		
+		end
+		
+	end
+	
+	puts "[\e[34m+\e[0m] You can find all the results from naabu in naabu/allnaabu_" +  ARGV[0]
 	
 end
 
@@ -142,9 +170,9 @@ if ARGV[0] == "help"
 	
 	puts "options:"
 	puts " firefox				open every entry in <file_input> with firefox"
-	puts " crawl					crawl using as targets <file_input>"
 	puts " webscreen				take a screenshot of every url in <file_input>"
-	puts " assetenum <github_token>			subdomain discovery + httprobe + nuclei" + "\n\n"
+	puts " crawl					crawl using as targets <file_input>"
+	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu" + "\n\n"
 	
 	puts "Note: tested on Windows"
 	
