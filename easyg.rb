@@ -131,12 +131,12 @@ if ARGV[1] == "assetenum"
 		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Saving all results for " + ARGV[0] + " in subdomains/allsubs_" + ARGV[0]
-		system "type subdomains\\" + target + " | anew subdomains/allsubs_" + ARGV[0]
+		system "type subdomains\\" + target + ".txt | anew subdomains/allsubs_" + ARGV[0]
 
 	end
 	
 	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
-	system "type subdomains/allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 	File.open("subdomains/allsubs_" + ARGV[0],'r').each_line do |f|
@@ -154,7 +154,7 @@ if ARGV[1] == "assetenum"
 			system "naabu -host " + target + " -p - -exclude-ports 80,443,81,3000,3000,3001,3001,8000,8080,8443 -o naabu/naabu_" + target + ".txt"
 			puts "[\e[34m+\e[0m] Saving the results to naabu/naabu_" + target + ".txt"
 			
-			system "type naabu/naabu_" + target + ".txt | anew naabu/allnaabu_" +  ARGV[0]
+			system "type naabu\\naabu_" + target + ".txt | anew naabu/allnaabu_" +  ARGV[0]
 		
 		end
 		
