@@ -208,6 +208,13 @@ Cool extensions:
 - [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
 
+**Google Dorking**
+- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, html;
+- Search also for pdf, xlsx and similar, they may contain some infos;
+- `site:` to target a website and its subdomains;
+- `inurl:&` to search for parameters;
+- `intitle:` to search interesting pages like admin, register, login etc.
+
 ### Bash
 
 Read a file line by line with a script like `./bash.sh filename`
