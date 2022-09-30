@@ -78,9 +78,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 **For .git exposed**
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
-- [GitHack](https://github.com/captain-noob/GitHack) `python GitHack.py http://www.openssl.org/.git/`
-- [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 - nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
+- [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 
 **To find parameters**
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
@@ -96,13 +95,19 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 
 **For takeovers**
-- [SubOver](https://github.com/Ice3man543/SubOver) check for subdomain takeover `subover -l subdomains.txt`
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
 
 **For exploitation**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [sqlmap](https://sqlmap.org/)
+
+**For Reports**
+- [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
+- [CVSS Calculator](https://www.first.org/cvss/calculator/3.1)
+- [PwnDoc](https://github.com/pwndoc/pwndoc)
+- [Vulnrepo](https://vulnrepo.com/home)
+- [PlexTrac](https://plextrac.com/)
 
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
@@ -114,11 +119,9 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
-- [PlexTrac](https://plextrac.com/) for reporting
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
 - [putty](https://www.putty.org/)
-- [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
