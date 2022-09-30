@@ -117,6 +117,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [PlexTrac](https://plextrac.com/) for reporting
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
+- [putty](https://www.putty.org/)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
