@@ -192,7 +192,7 @@ Cool extensions:
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
 
 **Google Dorking**
-- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, html, xsp;
+- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, html, xsp, nsf, form;
 - Search also for pdf, xlsx and similar, they may contain some infos;
 - `site:` to target a website and its subdomains;
 - `inurl:&` to search for parameters;
