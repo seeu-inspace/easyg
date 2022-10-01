@@ -143,7 +143,7 @@ if ARGV[1] == "assetenum"
 	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with nmap"
-	system "nmap -p 1-65535 --exclude-ports 81,3000,3001,8000,8080,8443 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
+	system "nmap -p 1-65535 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as nmap/nmap_" + ARGV[0]
 	
 end
