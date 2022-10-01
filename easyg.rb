@@ -135,7 +135,7 @@ if ARGV[1] == "assetenum"
 	end
 	
 	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
-	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8880 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in" + ARGV[0]
@@ -143,7 +143,7 @@ if ARGV[1] == "assetenum"
 	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with nmap"
-	system "nmap -p 1-65535 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
+	system "nmap -p 1-65535 --exclude-ports 81,3000,3001,8000,8080,8443 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as nmap/nmap_" + ARGV[0]
 	
 end
