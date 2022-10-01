@@ -135,7 +135,7 @@ if ARGV[1] == "assetenum"
 	end
 	
 	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
-	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8880 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in" + ARGV[0]
