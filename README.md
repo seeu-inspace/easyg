@@ -13,7 +13,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Bash](#bash)
 - [XSS](#xss)
 - [SQLi](#sqli)
-- [Open Redirect](#open-redirect)
 - [SSRF](#ssrf)
 - [Authentication vulnerabilities](#authentication-vulnerabilities)
 - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
@@ -25,6 +24,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
 - [IIS - Internet Information Services](#iis---internet-information-services)
+- [Lotus Domino](#lotus-domino)
 - [Network](#network)
 - [Linux](#linux)
 
@@ -506,6 +506,12 @@ https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-I
   ```
 
 Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
+
+### Lotus Domino
+
+- Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
+- Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
+- Fuzzing list: [SecLists/LotusNotes.fuzz.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/LotusNotes.fuzz.txt)
 
 ### Network
 ```
