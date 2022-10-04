@@ -104,8 +104,8 @@ if ARGV[1] == "assetenum"
 		system "mkdir httprobe"
 	end
 	
-	if File.directory?('naabu') == false
-		system "mkdir naabu"
+	if File.directory?('nmap') == false
+		system "mkdir nmap"
 	end
 
 	File.open(ARGV[0],'r').each_line do |f|
@@ -156,7 +156,7 @@ if ARGV[0] == "help"
 	puts " firefox				open every entry in <file_input> with firefox"
 	puts " webscreen				take a screenshot of every url in <file_input>"
 	puts " crawl					crawl using as targets <file_input>"
-	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu + nuclei" + "\n\n"
+	puts " assetenum <github_token>			subdomain discovery + httprobe + nmap + nuclei" + "\n\n"
 	
 	puts "Note: tested on Windows"
 	
