@@ -118,6 +118,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor)
 - [putty](https://www.putty.org/)
+- [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
@@ -191,6 +192,7 @@ Cool extensions:
 - [Directory Importer](https://portswigger.net/bappstore/59a829852f914d5a9edb6dcc919dc4e5)
 - [NGINX Alias Traversal](https://portswigger.net/bappstore/a5fdd2cdffa6410eb530de5a4c294d3a)
 - [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
+- [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
 
 ### Content Discovery
 
@@ -227,6 +229,7 @@ Cool extensions:
 - `site:` to target a website and its subdomains;
 - `inurl:&` to search for parameters;
 - `intitle:` to search interesting pages like admin, register, login etc.
+- [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 
 ### Bash
 
