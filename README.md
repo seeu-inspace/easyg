@@ -194,12 +194,14 @@ Cool extensions:
 
 ### Content Discovery
 
+**Some tips**
+- If the application is ASP.NET, search for `Appsettings.json`
+- Use recursion. If you encounter a `401` response, search with waybackmachine
+
 **Check the tech of a target with**
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
   `./webanalyze -host example.com -crawl 1`
-- If the application is ASP.NET, search for `Appsettings.json`
-- Use recursion. If you encounter a `401` response, search with waybackmachine
 
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
