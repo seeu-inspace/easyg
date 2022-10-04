@@ -66,10 +66,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
 
-**For XSS**
-- [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-- [XSS Hunter](https://xsshunter.com/) for blind XSS
-
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
@@ -83,14 +79,16 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 
-**Asset enumeration**
+**Asset enumeration/discovery**
 - [shuffledns](https://github.com/projectdiscovery/shuffledns)
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [naabu](https://github.com/projectdiscovery/naabu)
+- [BurpSuite Extension - Asset Discover](https://github.com/PortSwigger/asset-discovery)
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
+- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 **For takeovers**
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
@@ -162,12 +160,37 @@ To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
 Cool extensions:
 - [Autorize](https://github.com/PortSwigger/autorize)
-- [InQL](https://github.com/doyensec/inql)
+- [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
-- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+- [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
+- [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
+- [Content Type Converter](https://portswigger.net/bappstore/db57ecbe2cb7446292a94aa6181c9278)
+- [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
+- [Wayback Machine](https://portswigger.net/bappstore/5c7c516c690345c19fbf55b2b2ebeb76)
+- [TokenJar](https://portswigger.net/bappstore/d9e05bf81c8f4bae8a5b0b01955c5578)
+- [Site Map Fetcher](https://portswigger.net/bappstore/93bbecc3da434ef7ba5a5b2b98265169)
+- [PsychoPATH](https://portswigger.net/bappstore/554059e593ce446585574b92344b9675)
+- [File Upload Traverser](https://portswigger.net/bappstore/5f46fe766e9c435992c610160bb53cba)
+- [CMS Scanner](https://portswigger.net/bappstore/1bf95d0be40c447b94981f5696b1a18e)
+- [ParrotNG](https://portswigger.net/bappstore/f99325340a404c67a8de2ce593824e0e)
+- [Paramalyzer](https://portswigger.net/bappstore/0ac13c45adff4e31a3ca8dc76dd6286c)
+- [CSurfer](https://portswigger.net/bappstore/086c6af8b24c40a79a5e99b71df10f11)
+- [J2EEScan](https://portswigger.net/bappstore/7ec6d429fed04cdcb6243d8ba7358880)
+- [Python Scripter](https://portswigger.net/bappstore/eb563ada801346e6bdb7a7d7c5c52583)
+- [Add a custom HTTP header in Burp](https://github.com/PortSwigger/add-custom-header)
+- [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
+- [Additional Scanner Checks](https://portswigger.net/bappstore/a158fd3fc9394253be3aa0bc4c181d1f)
+- [Backslash Powered Scanner](https://portswigger.net/bappstore/9cff8c55432a45808432e26dbb2b41d8)
+- [Additional CSRF Checks](https://portswigger.net/bappstore/2d12070c90cb4a0f91cde0b8927fd606)
+- [Flow](https://portswigger.net/bappstore/ee1c45f4cc084304b2af4b7e92c0a49d)
+- [Command Injection Attacker](https://portswigger.net/bappstore/33e4402eee514724b768c0342abadb8a)
+- [Copy As Python-Requests](https://portswigger.net/bappstore/b324647b6efa4b6a8f346389730df160)
+- [Directory Importer](https://portswigger.net/bappstore/59a829852f914d5a9edb6dcc919dc4e5)
+- [NGINX Alias Traversal](https://portswigger.net/bappstore/a5fdd2cdffa6410eb530de5a4c294d3a)
+- [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
 
 ### Content Discovery
 
@@ -215,6 +238,16 @@ done <$file
 
 ### XSS
 
+**Tools**
+- [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
+- [XSS Hunter](https://xsshunter.com/) for blind XSS
+- [XSS Validator](https://portswigger.net/bappstore/98275a25394a417c9480f58740c1d981)
+
+**CSP bypass**
+- [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
+- [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
+- [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
+
 **Bypasses**
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
 - [JSFuck](http://www.jsfuck.com/)
@@ -222,7 +255,6 @@ done <$file
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
-- CSP evaluator [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - If Privileges are required, see if you can chain the XSS with a CSRF
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 - For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
@@ -325,6 +357,9 @@ For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://
 <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
 ```
 
+Burp extensions:
+- [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
+
 ### Authentication vulnerabilities
 
 - Multi-factor authentication
@@ -423,6 +458,13 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 ```
 
 [PHPGGC](https://github.com/ambionics/phpggc) is a library of unserialize() payloads along with a tool to generate them, from command line or programmatically.
+
+Burp extensions:
+- [Java Deserialization Scanner](https://github.com/federicodotta/Java-Deserialization-Scanner)
+- [Java Serialized Payloads](https://portswigger.net/bappstore/bc737909a5d742eab91544705c14d34f)
+- [GadgetProbe](https://portswigger.net/bappstore/e20cad259d73403bba5ac4e393a8583f)
+- [Freddy, Deserialization Bug Finder](https://portswigger.net/bappstore/ae1cce0c6d6c47528b4af35faebc3ab3)
+- [PHP Object Injection Check](https://portswigger.net/bappstore/24dab228311049d89a27a4d721e17ef7)
 
 ### DLL Hijacking
 
