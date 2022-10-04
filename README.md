@@ -175,14 +175,19 @@ Cool extensions:
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
   `./webanalyze -host example.com -crawl 1`
+- If the application is ASP.NET, search for `Appsettings.json`
+- Use recursion. If you encounter a `401` response, search with waybackmachine
 
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
 - [dirsearch](https://github.com/maurosoria/dirsearch)
+- [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
 - [wordlists.assetnote.io](https://wordlists.assetnote.io/)
+- [content_discovery_all.txt](https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10)
+- [OneListForAll](https://github.com/six2dez/OneListForAll)
 - [wordlistgen](https://github.com/ameenmaali/wordlistgen)
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
 
