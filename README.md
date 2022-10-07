@@ -161,8 +161,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
 Cool extensions:
-- [Autorize](https://github.com/PortSwigger/autorize)
-- [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
@@ -170,7 +168,6 @@ Cool extensions:
 - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
 - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
 - [Content Type Converter](https://portswigger.net/bappstore/db57ecbe2cb7446292a94aa6181c9278)
-- [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
 - [Wayback Machine](https://portswigger.net/bappstore/5c7c516c690345c19fbf55b2b2ebeb76)
 - [TokenJar](https://portswigger.net/bappstore/d9e05bf81c8f4bae8a5b0b01955c5578)
 - [Site Map Fetcher](https://portswigger.net/bappstore/93bbecc3da434ef7ba5a5b2b98265169)
@@ -392,6 +389,12 @@ From a user perspective, access controls can be divided into the following categ
   Mechanisms that restrict access to resources to the users who are specifically allowed to access those resources
 - Context-dependent access controls
   Restrict access to functionality and resources based upon the state of the application or the user's interaction with it
+
+**Tools**
+- [Autorize](https://github.com/PortSwigger/autorize)
+- [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
+- [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
++ check endpoints in JS files (see [tools](#tools))
 
 ### Directory Traversal
 
