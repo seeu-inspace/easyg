@@ -143,7 +143,7 @@ if ARGV[1] == "assetenum"
 	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with naabu"
-	system "naabu -v -p 1-65535 -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -retries 1 -timeout 250 -warm-up-time 0 -c 1000 -rate 7000 -list subdomains/allsubs_" + ARGV[0] + " -o naabu/naabu_" + ARGV[0]
+	system "naabu -v -list subdomains/allsubs_" + ARGV[0] + " -o naabu/naabu_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
 	
 end
