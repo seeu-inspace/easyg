@@ -104,8 +104,8 @@ if ARGV[1] == "assetenum"
 		system "mkdir httprobe"
 	end
 	
-	if File.directory?('nmap') == false
-		system "mkdir nmap"
+	if File.directory?('naabu') == false
+		system "mkdir naabu"
 	end
 
 	File.open(ARGV[0],'r').each_line do |f|
@@ -135,16 +135,16 @@ if ARGV[1] == "assetenum"
 	end
 	
 	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
-	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 > httprobe/httprobed_" + ARGV[0]
+	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > httprobe/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as httprobe/httprobed_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in" + ARGV[0]
 	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o nuclei/nuclei_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
-	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with nmap"
-	system "nmap -p 1-65535 -sV -Pn -n -vv -iL subdomains/allsubs_" + ARGV[0] + " -oX nmap/nmap_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as nmap/nmap_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with naabu"
+	system "naabu -v -p 1-65535 -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -retries 1 -timeout 250 -warm-up-time 0 -c 1000 -rate 7000 -list subdomains/allsubs_" + ARGV[0] + " -o naabu/naabu_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
 	
 end
 
@@ -156,7 +156,7 @@ if ARGV[0] == "help"
 	puts " firefox				open every entry in <file_input> with firefox"
 	puts " webscreen				take a screenshot of every url in <file_input>"
 	puts " crawl					crawl using as targets <file_input>"
-	puts " assetenum <github_token>			subdomain discovery + httprobe + nmap + nuclei" + "\n\n"
+	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu + nuclei" + "\n\n"
 	
 	puts "Note: tested on Windows"
 	
