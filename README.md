@@ -394,7 +394,7 @@ From a user perspective, access controls can be divided into the following categ
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
 - [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
-+ check endpoints in JS files (see [tools](#tools))
+- Check also endpoints in JS files, see [tools](#tools)
 
 ### Directory Traversal
 
