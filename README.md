@@ -85,7 +85,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [BurpSuite Extension - Asset Discover](https://github.com/PortSwigger/asset-discovery)
 - [nmap](https://nmap.org/)
-  - `nmap -p 1-65535 -sV -Pn -n -vv -iL target.txt -oX out.xml` 
+  - `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
