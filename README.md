@@ -135,7 +135,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-  - `nuclei -l httprobe_results.txt -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o out.txt`
+  - `nuclei -l httprobe_results.txt -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o out.txt`
 
 **Desktop Application Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
