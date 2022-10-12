@@ -119,7 +119,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
-- [trashcompactor](https://github.com/michael1026/trashcompactor)
+- [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
+- [uro](https://github.com/s0md3v/uro) declutters url lists
 - [putty](https://www.putty.org/)
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 
