@@ -99,6 +99,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 **For exploitation**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [sqlmap](https://sqlmap.org/)
+- [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
 
 **For Reports**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
