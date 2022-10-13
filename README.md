@@ -144,7 +144,6 @@ Single target
 
 **Asset enumeration/discovery**
 - [shuffledns](https://github.com/projectdiscovery/shuffledns)
-- [all.txt by jhaddix](https://gist.githubusercontent.com/jhaddix/f64c97d0863a78454e44c2f7119c2a6a/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt)
 - [BurpSuite Extension - Asset Discover](https://github.com/PortSwigger/asset-discovery)
 - [nmap](https://nmap.org/)
   - `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
@@ -193,6 +192,7 @@ Single target
 - [amass](https://github.com/OWASP/Amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
+- [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew)
