@@ -204,6 +204,7 @@ Cool extensions:
 **Some tips**
 - If the application is ASP.NET, search for `Appsettings.json`
 - Use recursion. If you encounter a `401` response, search with waybackmachine
+- Search for past reports in the same program
 
 **Check the tech of a target with**
 - [Wappalyzer](https://www.wappalyzer.com/)
