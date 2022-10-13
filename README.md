@@ -193,6 +193,7 @@ Single target
 - [subfinder](https://github.com/projectdiscovery/subfinder)
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
+- [crt.sh](https://crt.sh/)
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew)
