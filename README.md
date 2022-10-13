@@ -127,7 +127,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
-- [github-subdomains.py](https://github.com/gwen001/github-search/blob/master/github-subdomains.py)
+- [github-subdomains](https://github.com/gwen001/github-subdomains)
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew)
