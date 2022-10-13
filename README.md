@@ -305,6 +305,12 @@ Cool extensions:
 - `intitle:` to search interesting pages like admin, register, login etc.
 - [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 
+**GitHub Dorking**
+- sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
+- languages: `json, bash, shell, java etc.`, example `HEROKU_API_KEY language:json`
+- extensions: `extensions: bat, config, ini, env etc.`
+- filename: `netrpc, .git-credentials, .history, .htpasswd, bash_history`
+
 <hr/>
 
 ### Bash
