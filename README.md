@@ -132,7 +132,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew)
 - [naabu](https://github.com/projectdiscovery/naabu)
-  - `naabu -v -list subs.txt --exclude-ports 80,443,81,3000,3001,8000,8080,8443 -o out.txt`
+  - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
+  - `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt`
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
