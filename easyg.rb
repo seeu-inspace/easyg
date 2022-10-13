@@ -122,7 +122,7 @@ if ARGV[1] == "assetenum"
 		system "type subdomains\\" + target + "_subfinder.txt | anew subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains.py"
-		system "python ../github-subdomains/github-subdomains.py -t " + ARGV[2] + " -d " + target + " -e > subdomains/" + target + "_github.txt"
+		system "github-subdomains -t github-token.txt -d " + target + " -o subdomains/" + target + "_github.txt"
 		
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
 		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
@@ -152,12 +152,15 @@ if ARGV[0] == "help"
 
 	puts "Usage: ruby easyg.rb <file_input> <option> \n\n"
 	
-	puts "options:"
-	puts " firefox				open every entry in <file_input> with firefox"
-	puts " webscreen				take a screenshot of every url in <file_input>"
-	puts " crawl					crawl using as targets <file_input>"
-	puts " assetenum <github_token>			subdomain discovery + httprobe + naabu + nuclei" + "\n\n"
+	puts "Options"
+	puts "	firefox					open every entry in <file_input> with firefox"
+	puts "	webscreen				take a screenshot of every url in <file_input>"
+	puts "	crawl					crawl using as targets <file_input>"
+	puts "	assetenum				subdomain discovery + httprobe + naabu + nuclei"
+	puts "	help\n\n"
 	
-	puts "Note: tested on Windows"
-	
+	puts "Notes 
+	create a file called github-token.txt with your github token
+	tested on Windows"
+
 end
