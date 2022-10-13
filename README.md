@@ -86,6 +86,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [BurpSuite Extension - Asset Discover](https://github.com/PortSwigger/asset-discovery)
 - [nmap](https://nmap.org/)
   - `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
+- [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
@@ -99,6 +100,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 **For exploitation**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [sqlmap](https://sqlmap.org/)
+- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
+- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
 
 **For Reports**
@@ -111,18 +114,17 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
-- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
-- [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
-- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 - [uro](https://github.com/s0md3v/uro) declutters url lists
 - [putty](https://www.putty.org/)
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
+- [Impacket](https://github.com/SecureAuthCorp/impacket)
+- [PCredz](https://github.com/lgandx/PCredz)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
