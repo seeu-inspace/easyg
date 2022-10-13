@@ -121,15 +121,18 @@ if ARGV[1] == "assetenum"
 
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
 		system "subfinder -d " + target + " -all -o subdomains/" + target + "_subfinder.txt"
-		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
 		system "type subdomains\\" + target + "_subfinder.txt | anew subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains.py"
 		system "github-subdomains -t github-token.txt -d " + target + " -o subdomains/" + target + "_github.txt"
-		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to " + target + ".txt with anew"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
 		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
+		
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
+		system "gobuster -d " + target + " -v -t 50 -o subdomains/" + target + "_gobuster.txt -w all.txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
+		system "type subdomains\\" + target + "_gobuster.txt | anew subdomains/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target + ".txt"
 		
@@ -147,11 +150,11 @@ if ARGV[1] == "assetenum"
 	puts "[\e[34m+\e[0m] Results saved as nuclei/nuclei_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Searching for open ports in subdomains/allsubs_" + ARGV[0] + " with naabu"
-	system "naabu -v -list subdomains/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o naabu/naabu_" + ARGV[0]
+	system "naabu -v -list subdomains/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o naabu/naabu_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
 	
 	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
-	system "type naabu\naabu_" + ARGV[0] + " | httprobe > naabu/naabu_httprobe_" + ARGV[0]
+	system "type naabu\\naabu_" + ARGV[0] + " | httprobe > naabu/naabu_httprobe_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_httprobe_" + ARGV[0]
 	
 end
