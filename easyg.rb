@@ -150,6 +150,10 @@ if ARGV[1] == "assetenum"
 	system "naabu -v -list subdomains/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o naabu/naabu_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_" + ARGV[0]
 	
+	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
+	system "type naabu\naabu_" + ARGV[0] + " | httprobe > naabu/naabu_httprobe_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as naabu/naabu_httprobe_" + ARGV[0]
+	
 end
 
 if ARGV[0] == "help"
