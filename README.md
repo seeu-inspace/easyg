@@ -304,6 +304,7 @@ Cool extensions:
 - `inurl:&` to search for parameters;
 - `intitle:` to search interesting pages like admin, register, login etc.
 - [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
+- `"Seeing something unexpected? Take a look at the GitHub profile guide." "COMPANY-TARGET" site:http://github.com` [[Reference](https://twitter.com/c3l3si4n/status/1580564006263173122)]
 
 **GitHub Dorking**
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
