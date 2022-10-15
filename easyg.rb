@@ -137,6 +137,29 @@ if ARGV[1] == "assetenum"
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
 		system "type subdomains\\" + target + "_github.txt | anew subdomains/" + target + ".txt"
 		
+		#== crt.sh ==
+		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with crt.sh"
+		
+		begin
+			uri = URI.parse("https://crt.sh/?q=" + target + "&output=json")
+			response = Net::HTTP.get_response(uri)
+			crtsh = JSON.parse((response.body).to_s)
+
+			crtsh_o = File.new("subdomains/" + target + "_crtsh.txt", "w")
+
+			crtsh.each do | f |
+				puts f["common_name"].gsub('*.','').to_s
+				crtsh_o.puts f["common_name"].gsub('*.','').to_s
+			end
+
+			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
+
+			puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
+			system "type subdomains\\" + target + "_crtsh.txt | anew subdomains/" + target + ".txt"
+		rescue
+			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to retrieve information from crt.sh"
+		end
+		
 		#== gobuster + all.txt ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
 		system "gobuster dns -d " + target + " -v -t 50 --no-color -o subdomains/" + target + "_gobuster_tmp.txt -w all.txt"
@@ -156,24 +179,6 @@ if ARGV[1] == "assetenum"
 		
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
 		system "type subdomains\\" + target + "_gobuster.txt | anew subdomains/" + target + ".txt"
-
-		#== crt.sh ==
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with crt.sh"
-		uri = URI.parse("https://crt.sh/?q=" + target + "&output=json")
-		response = Net::HTTP.get_response(uri)
-		crtsh = JSON.parse((response.body).to_s)
-
-		crtsh_o = File.new("subdomains/" + target + "_crtsh.txt", "w")
-
-		crtsh.each do | f |
-			puts f["common_name"].gsub('*.','').to_s
-			crtsh_o.puts f["common_name"].gsub('*.','').to_s
-		end
-
-		crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
-
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
-		system "type subdomains\\" + target + "_crtsh.txt | anew subdomains/" + target + ".txt"
 		
 		#== anew final ==
 		puts "\n[\e[34m+\e[0m] Results saved as subdomains/" + target + ".txt"
@@ -212,7 +217,7 @@ if ARGV[0] == "help"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	webscreen				take a screenshot of every url in <file_input>"
 	puts "	crawl					crawl using as targets <file_input>"
-	puts "	assetenum				subdomain discovery + httprobe + naabu + nuclei"
+	puts "	assetenum				asset enumeration & co."
 	puts "	help\n\n"
 	
 	puts "Notes 
