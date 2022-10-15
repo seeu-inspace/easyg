@@ -154,8 +154,6 @@ if ARGV[1] == "assetenum"
 		File.delete("subdomains/" + target + "_gobuster_tmp.txt") if File.exists? "subdomains/" + target + "_gobuster_tmp.txt"
 		gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 		
-		File.delete("subdomains/" + target + "_gobuster_tmp.txt")
-		
 		puts "\n[\e[34m+\e[0m] Adding new subdomains to subdomains/" + target + ".txt with anew"
 		system "type subdomains\\" + target + "_gobuster.txt | anew subdomains/" + target + ".txt"
 
