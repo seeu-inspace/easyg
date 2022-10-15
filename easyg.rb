@@ -142,16 +142,16 @@ if ARGV[1] == "assetenum"
 		system "gobuster dns -domain " + target + " -v -t 50 -o subdomains/" + target + "_gobuster_tmp.txt -w all.txt"
 		
 		gobuster_o = File.new("subdomains/" + target + "_gobuster.txt", 'w')
-		gobuster_tmp = File.open("subdomains/" target + "_gobuster_tmp.txt",'r')
+		gobuster_tmp = File.open("subdomains/" + target + "_gobuster_tmp.txt",'r')
 		
 		gobuster_tmp.each_line do |f|
-			if .include? "Found: "
+			if f.include? "Found: "
 				gobuster_o.puts f.gsub("Found: ","")
 			end
 		end
 		
 		gobuster_tmp.close unless gobuster_tmp.nil? or gobuster_tmp.closed?
-		File.delete("subdomains/" target + "_gobuster_tmp.txt") if File.exists? "subdomains/" target + "_gobuster_tmp.txt"
+		File.delete("subdomains/" + target + "_gobuster_tmp.txt") if File.exists? "subdomains/" + target + "_gobuster_tmp.txt"
 		gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 		
 		File.delete("subdomains/" + target + "_gobuster_tmp.txt")
