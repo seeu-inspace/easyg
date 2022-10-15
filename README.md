@@ -125,6 +125,8 @@ Single target
 
 ### Tools
 
+- To have multiple email adresses using gmail, you can add a `+` sign after your email's alias. For example: if your email is `janedoe@gmail.com` and you sign up for Twitter you can sign up using `janedoe+twitter@gmail.com`. [[Reference](https://twitter.com/_thegameoflife_/status/1564642697482231813)]
+
 **For a temporary public server**
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
