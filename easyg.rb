@@ -162,7 +162,7 @@ if ARGV[1] == "assetenum"
 		
 		#== gobuster + all.txt ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
-		system "gobuster dns -d " + target + " -v -t 50 --no-color -o subdomains/" + target + "_gobuster_tmp.txt -w all.txt"
+		system "gobuster dns -d " + target + " -v -t 150 --no-color -o subdomains/" + target + "_gobuster_tmp.txt -w all.txt"
 		
 		gobuster_o = File.new("subdomains/" + target + "_gobuster.txt", 'w')
 		gobuster_tmp = File.open("subdomains/" + target + "_gobuster_tmp.txt",'r')
