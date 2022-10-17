@@ -70,6 +70,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 ### Check-lists
 
+- [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
+- [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
+
 #### Testing layers
 
 - [ ] Integrations
