@@ -47,6 +47,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://pentester.land/list-of-bug-bounty-writeups.html
 - https://github.com/juliocesarfort/public-pentesting-reports
 - https://pentestreports.com/
+- https://pentestbook.six2dez.com/
 
 <hr/>
 
@@ -73,6 +74,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
+- [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 
 #### Testing layers
 
@@ -312,6 +314,7 @@ Cool extensions:
 - `intitle:` to search interesting pages like admin, register, login etc.
 - [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 - `"Seeing something unexpected? Take a look at the GitHub profile guide." "COMPANY-TARGET" site:http://github.com` [[Reference](https://twitter.com/c3l3si4n/status/1580564006263173122)]
+- [dorks_hunter](https://github.com/six2dez/dorks_hunter)
 
 **GitHub Dorking**
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
