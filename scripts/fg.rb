@@ -11,7 +11,7 @@ $vulns = JSON.parse('{"SQLI":["id=","page=","report=","dir=","search=","category
 for i in 0..$vulns.keys.length-1 do
 	File.open(ARGV[0],'r').each_line do |f|
 		for j in 0..$vulns[$vulns.keys[i]].size-1 do
-			if f.include? $vulns[$vulns.keys[i]][j]
+			if f.include? "&"+$vulns[$vulns.keys[i]][j] or f.include? "?"+$vulns[$vulns.keys[i]][j]
 				puts "[\e[32m+\e[0m] Possible " + $vulns.keys[i] + " found: " + f
 			end
 		end
