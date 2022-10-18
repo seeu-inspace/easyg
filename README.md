@@ -182,6 +182,9 @@ Single target
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
+- [Corsy](https://github.com/s0md3v/Corsy) Corsy is a lightweight program that scans for all known misconfigurations in CORS implementations
+- [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMD Detection & Exploitation Suite
+- [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 
 **For Reports**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
@@ -201,6 +204,7 @@ Single target
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [persistence-info.github.io](https://persistence-info.github.io/)
+- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
