@@ -43,6 +43,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://twitter.com/hashtag/bugbountytips
 - https://securib.ee/
 - https://samcurry.net/
+  - https://samcurry.net/hacking-apple/ 
 - https://blog.intigriti.com/hackademy/xss-challenges/
 - https://hackerone.com/hacktivity
 - https://pentester.land/list-of-bug-bounty-writeups.html
