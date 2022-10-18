@@ -176,6 +176,7 @@ Single target
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
+- [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 
 **For Reports**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
