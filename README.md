@@ -170,13 +170,18 @@ Single target
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
 
-**For exploitation**
+**To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [sqlmap](https://sqlmap.org/)
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
+- [nuclei](https://github.com/projectdiscovery/nuclei)
+  - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
+  - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
+  - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
+  - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 
 **For Reports**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
@@ -188,10 +193,6 @@ Single target
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
-- [nuclei](https://github.com/projectdiscovery/nuclei)
-  - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
-  - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
-  - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 - [uro](https://github.com/s0md3v/uro) declutters url lists
