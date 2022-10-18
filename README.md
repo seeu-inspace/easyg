@@ -193,6 +193,30 @@ Single target
 - [Vulnrepo](https://vulnrepo.com/home)
 - [PlexTrac](https://plextrac.com/)
 
+**Desktop Application Penetration Testing**
+- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
+- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
+- [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
+- [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile an exe written in VB
+- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
+- [ILSpy](https://github.com/icsharpcode/ILSpy) .NET decompiler
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
+
+**Android**
+
+- [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
+- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
+- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
+- [Genymotion](https://www.genymotion.com/) an android emulator
+- [Android Studio](https://developer.android.com/studio) Android application development, useful for the emulator
+  - Note: to start onlythe emulator, use commands such as
+    ```
+    cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
+    emulator -avd Pixel_4_XL_API_30
+    ```
+- [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar + [jd-gui](https://java-decompiler.github.io/) to see the source of a .jar
+- [jadx-gui](https://github.com/skylot/jadx/releases) another solution to explore the source code of an .apk
+
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
@@ -223,30 +247,6 @@ Single target
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - `nuclei -l httprobe_results.txt -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o out.txt`
-
-**Desktop Application Penetration Testing**
-- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
-- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
-- [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
-- [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile an exe written in VB
-- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
-- [ILSpy](https://github.com/icsharpcode/ILSpy) .NET decompiler
-- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
-
-**Android**
-
-- [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
-- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
-- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
-- [Genymotion](https://www.genymotion.com/) an android emulator
-- [Android Studio](https://developer.android.com/studio) Android application development, useful for the emulator
-  - Note: to start onlythe emulator, use commands such as
-    ```
-    cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
-    emulator -avd Pixel_4_XL_API_30
-    ```
-- [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar + [jd-gui](https://java-decompiler.github.io/) to see the source of a .jar
-- [jadx-gui](https://github.com/skylot/jadx/releases) another solution to explore the source code of an .apk
 
 #### Burp suite
 
