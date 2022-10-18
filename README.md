@@ -49,6 +49,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://github.com/juliocesarfort/public-pentesting-reports
 - https://pentestreports.com/
 - https://pentestbook.six2dez.com/
+- https://xcellerator.github.io/
 
 <hr/>
 
@@ -76,6 +77,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
+- [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 
 #### Testing layers
 
@@ -338,6 +340,8 @@ done <$file
 <hr/>
 
 ### XSS
+
+- [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 
 **Tools**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
