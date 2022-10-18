@@ -302,6 +302,7 @@ Cool extensions:
 - [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
 - [dirsearch](https://github.com/maurosoria/dirsearch)
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
+- [ffuf](https://github.com/ffuf/ffuf)
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
