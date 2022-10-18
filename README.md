@@ -22,6 +22,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Business logic vulnerabilities](#business-logic-vulnerabilities)
 - [CORS](#cors)
 - [Deserialization](#deserialization)
+- [HTTP Host header attacks](#http-host-header-attacks)
 - [DLL Hijacking](#dll-hijacking)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
@@ -592,6 +593,12 @@ Burp extensions:
 - [PHP Object Injection Check](https://portswigger.net/bappstore/24dab228311049d89a27a4d721e17ef7)
 
 <hr/>
+
+### HTTP Host header attacks
+
+- "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
+curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
+- CRLF injection [[Reference]](https://www.acunetix.com/websitesecurity/crlf-injection/), "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
 
 ### DLL Hijacking
 
