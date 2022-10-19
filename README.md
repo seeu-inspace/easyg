@@ -654,11 +654,6 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
 
-**Tools**
-- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-- [AWS CLI](https://aws.amazon.com/it/cli/)
-- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
-
 **Read Permission**
 
 - `aws s3 ls s3://[name_of_bucket]  --no-sign-request`
@@ -677,6 +672,11 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 
 - `aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
 - `aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
+
+**Tools**
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- [AWS CLI](https://aws.amazon.com/it/cli/)
+- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
