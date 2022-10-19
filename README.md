@@ -677,6 +677,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - [AWS CLI](https://aws.amazon.com/it/cli/)
 - [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
+- [Cloud - AWS Pentest](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Cloud%20-%20AWS%20Pentest.md)
 
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
