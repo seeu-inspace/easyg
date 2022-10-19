@@ -191,18 +191,18 @@ if ARGV[1] == "assetenum"
 	end
 	
 	#== httprobe ==
-	puts "[\e[34m+\e[0m] Checking subdomains/allsubs_" + ARGV[0] + " with httprobe"
-	system "type subdomains\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobed_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Checking output/allsubs_" + ARGV[0] + " with httprobe"
+	system "type output\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/httprobed_" + ARGV[0]
 	
 	#== naabu ==
 	puts "[\e[34m+\e[0m] Searching for more open ports in output/allsubs_" + ARGV[0] + " with naabu"
-	system "naabu -v -list subdomains/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + ARGV[0]
+	system "naabu -v -list output/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/naabu_" + ARGV[0]
 	
 	#== naabu | httprobe ==
 	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
-	system "type naabu\\naabu_" + ARGV[0] + " | httprobe > output/naabu_httprobe_" + ARGV[0]
+	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/naabu_httprobe_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/naabu_httprobe_" + ARGV[0]
 	
 	#== nuclei ==
