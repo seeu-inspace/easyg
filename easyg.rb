@@ -186,7 +186,7 @@ if ARGV[1] == "assetenum"
 		
 		puts "\n[\e[34m+\e[0m] Adding the results for " + target + " in output/allsubs_" + ARGV[0]
 		system "type output\\" + target + ".txt | anew output/allsubs_" + ARGV[0]
-		puts "[\e[34m+\e[0m] Results for " + ARGV[0] + " saved as output/allsubs_" + ARGV[0] + ".txt"
+		puts "[\e[34m+\e[0m] Results for " + ARGV[0] + " saved as output/allsubs_" + ARGV[0]
 
 	end
 	
