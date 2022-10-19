@@ -459,7 +459,7 @@ SSRF with blacklist-based input filters bypass: Some applications block input co
 - Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose or the domain `firefox.fr` is a DNS that point to `127.0.0.1`.;
 - Obfuscating blocked strings using URL encoding or case variation.
 
-SRF with whitelist-based input filters bypass
+SSRF with whitelist-based input filters bypass
 - You can embed credentials in a URL before the hostname, using the `@` character. For example: `https://expected-host@evil-host`.
 - You can use the `#` character to indicate a URL fragment. For example: `https://evil-host#expected-host`.
 - You can leverage the DNS naming hierarchy to place required input into a fully-qualified DNS name that you control. For example: `https://expected-host.evil-host`.
