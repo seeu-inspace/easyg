@@ -24,6 +24,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Deserialization](#deserialization)
 - [HTTP Host header attacks](#http-host-header-attacks)
 - [DLL Hijacking](#dll-hijacking)
+- [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
 - [GraphQL](#graphql)
 - [WordPress](#wordpress)
 - [IIS - Internet Information Services](#iis---internet-information-services)
@@ -129,7 +130,7 @@ Single target
       - Binary header
       - Metadata
 - [ ] Where is data stored?
-  - s3 perms
+  - [s3 perms](#abusing-s3-bucket-permissions)
 
 <hr/>
 
@@ -645,6 +646,33 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 - [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
 
 <hr/>
+
+### Abusing S3 Bucket Permissions
+
+Target example: `http://[name_of_bucket].s3.amazonaws.com`
+
+**Read Permission**
+
+- `aws s3 ls s3://[name_of_bucket]  --no-sign-request`
+- `aws s3 ls s3://pyx-pkgs --recursive --human-readable --summarize`
+
+**Write Permission**
+
+`aws s3 cp localfile s3://[name_of_bucket]/test_file.txt –-no-sign-request`
+
+**READ_ACP**
+
+`aws s3api get-bucket-acl --bucket [bucketname] --no-sign`
+`aws s3api get-object-acl --bucket [bucketname] --key index.html --no-sign-request`
+
+**WRITE_ACP**
+
+`aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
+`aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
+
+**Resources**
+- https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
+- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
 
 ### GraphQL
 
