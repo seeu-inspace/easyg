@@ -674,6 +674,8 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
 - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
 
+<hr />
+
 ### GraphQL
 
 To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
