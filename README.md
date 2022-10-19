@@ -658,17 +658,17 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 
 **Write Permission**
 
-`aws s3 cp localfile s3://[name_of_bucket]/test_file.txt –-no-sign-request`
+- `aws s3 cp localfile s3://[name_of_bucket]/test_file.txt –-no-sign-request`
 
 **READ_ACP**
 
-`aws s3api get-bucket-acl --bucket [bucketname] --no-sign`
-`aws s3api get-object-acl --bucket [bucketname] --key index.html --no-sign-request`
+- `aws s3api get-bucket-acl --bucket [bucketname] --no-sign`
+- `aws s3api get-object-acl --bucket [bucketname] --key index.html --no-sign-request`
 
 **WRITE_ACP**
 
-`aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
-`aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
+- `aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
+- `aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
 
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
