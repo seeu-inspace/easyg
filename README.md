@@ -183,7 +183,6 @@ Single target
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
-- [Corsy](https://github.com/s0md3v/Corsy) Corsy is a lightweight program that scans for all known misconfigurations in CORS implementations
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMD Detection & Exploitation Suite
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 
@@ -284,6 +283,7 @@ Cool extensions:
 - [NGINX Alias Traversal](https://portswigger.net/bappstore/a5fdd2cdffa6410eb530de5a4c294d3a)
 - [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
 - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 
 <hr/>
 
@@ -584,6 +584,9 @@ CORS vulnerability with trusted insecure protocols
 </script>
 ```
 
+**Tools**
+- [Corsy](https://github.com/s0md3v/Corsy) Corsy is a lightweight program that scans for all known misconfigurations in CORS implementations
+
 <hr/>
 
 ### Deserialization
@@ -650,6 +653,10 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 ### Abusing S3 Bucket Permissions
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
+
+**Tools**
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- [AWS CLI](https://aws.amazon.com/it/cli/)
 
 **Read Permission**
 
