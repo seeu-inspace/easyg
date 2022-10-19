@@ -52,6 +52,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - https://pentestreports.com/
 - https://pentestbook.six2dez.com/
 - https://xcellerator.github.io/
+- https://persistence-info.github.io/
 
 <hr/>
 
@@ -225,7 +226,6 @@ Single target
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [PCredz](https://github.com/lgandx/PCredz)
-- [persistence-info.github.io](https://persistence-info.github.io/)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
