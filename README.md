@@ -173,7 +173,6 @@ Single target
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
-- [sqlmap](https://sqlmap.org/)
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
@@ -193,9 +192,8 @@ Single target
 - [Vulnrepo](https://vulnrepo.com/home)
 - [PlexTrac](https://plextrac.com/)
 
-**Desktop Application Penetration Testing**
+**Desktop Application / Thick Client Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
-- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
 - [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile an exe written in VB
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
@@ -228,7 +226,6 @@ Single target
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [persistence-info.github.io](https://persistence-info.github.io/)
-- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
@@ -351,11 +348,15 @@ done <$file
 ### XSS
 
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
+- [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
+- For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
+- For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
 **Tools**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [XSS Validator](https://portswigger.net/bappstore/98275a25394a417c9480f58740c1d981)
+- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 
 **CSP bypass**
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
@@ -368,11 +369,7 @@ done <$file
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
-- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - If Privileges are required, see if you can chain the XSS with a CSRF
-- [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
-- For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
-- For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
 
 **Swagger XSS**
 - https://github.com/swagger-api/swagger-ui/issues/1262
@@ -388,7 +385,6 @@ done <$file
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
 **Cross Site Tracing**
-
 If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. Reference: https://owasp.org/www-community/attacks/Cross_Site_Tracing
 
 **Blind XSS**
@@ -396,7 +392,6 @@ If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a
 - Other endpoints: pending review comments, feedback
 
 **DoS**
-
 `%22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D` This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS.
 
 **Payloads**
@@ -423,7 +418,9 @@ If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a
 
 ### SQLi
 
+**Tools**
 - [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [sqlmap](https://sqlmap.org/)
 
 ```
  > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
@@ -620,7 +617,10 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 ### DLL Hijacking
 
-Using Process Monitor (you can find it in the section [Tools](#tools)) set the filters to find missing dlls.<br/><br/>
+**Tools**
+- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
+
+Using Process Monitor, set the filters to find missing dlls.<br/><br/>
   <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
 
 After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
@@ -657,6 +657,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 **Tools**
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - [AWS CLI](https://aws.amazon.com/it/cli/)
+- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 
 **Read Permission**
 
