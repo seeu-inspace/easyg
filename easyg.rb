@@ -207,7 +207,7 @@ if ARGV[1] == "assetenum"
 	
 	#== nuclei ==
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in" + ARGV[0]
-	system "nuclei -l httprobe/httprobed_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
+	system "nuclei -l output/httprobed_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/nuclei_" + ARGV[0]
 	
 end
