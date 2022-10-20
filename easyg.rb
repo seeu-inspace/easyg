@@ -22,22 +22,18 @@ puts "\e[35m\n
 if ARGV[1] == "firefox"
 
 	i = 0
-	c = 0
 
 	File.open(ARGV[0],'r').each_line do |f|
 	
 		target = f.gsub("\n","").to_s
-	
-		i += 1
 		
+		i += 1
+	
 		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target
 		system 'start firefox "' + target + '"'
-		
-		c += 1
-		
-		if c >= 20
+				
+		if i%20==0
 			sleep 30
-			c = 0
 		end
 		
 	end
