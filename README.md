@@ -162,6 +162,8 @@ Single target
 - [nmap](https://nmap.org/)
   - `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
+- [naabu](https://github.com/projectdiscovery/naabu)
+  - `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
@@ -238,7 +240,6 @@ Single target
 - [anew](https://github.com/tomnomnom/anew)
 - [naabu](https://github.com/projectdiscovery/naabu)
   - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
-  - `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt`
 - [gospider](https://github.com/jaeles-project/gospider)
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
@@ -280,7 +281,6 @@ Cool extensions:
 - [NGINX Alias Traversal](https://portswigger.net/bappstore/a5fdd2cdffa6410eb530de5a4c294d3a)
 - [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
 - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
-- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 
 <hr/>
 
@@ -356,6 +356,7 @@ done <$file
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [XSS Validator](https://portswigger.net/bappstore/98275a25394a417c9480f58740c1d981)
+- [Trishul](https://github.com/gauravnarwani97/Trishul)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 
 **CSP bypass**
