@@ -7,15 +7,17 @@ require 'selenium-webdriver'
 require 'net/http'
 require 'uri'
 require 'json'
+require 'socket'
 
 
-puts "\e[35m\n 
+puts "\e[36m\n 
 ███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ 
 ██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝    ██╔══██╗██╔══██╗
 █████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗   ██████╔╝██████╔╝
 ██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║   ██╔══██╗██╔══██╗
 ███████╗██║  ██║███████║   ██║   ╚██████╔╝██╗██║  ██║██████╔╝
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ 
+                   Made with <3 by Riccardo Malatesta (@seeu)
 \n\e[0m"
 
 
@@ -108,14 +110,14 @@ if ARGV[1] == "assetenum"
 		
 		#== amass ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with amass"
-		system "amass enum -brute -active -d " + target + " -o output/" + target + ".txt -v"
+		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
 
 		#== subfinder ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
 		system "subfinder -d " + target + " -all -o output/" + target + "_subfinder.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + ".txt with anew"
-		system "type output\\" + target + "_subfinder.txt | anew output/" + target + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
+		system "type output\\" + target + "_subfinder.txt | anew output/" + target + "_tmp.txt"
 		
 		File.delete("output/" + target + "_subfinder.txt") if File.exists? "output/" + target + "_subfinder.txt"
 		
@@ -123,8 +125,8 @@ if ARGV[1] == "assetenum"
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
 		system "github-subdomains -t github-token.txt -d " + target + " -o output/" + target + "_github.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + ".txt with anew"
-		system "type output\\" + target + "_github.txt | anew output/" + target + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
+		system "type output\\" + target + "_github.txt | anew output/" + target + "_tmp.txt"
 		
 		File.delete("output/" + target + "_github.txt") if File.exists? "output/" + target + "_github.txt"
 		
@@ -145,8 +147,8 @@ if ARGV[1] == "assetenum"
 
 			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
 			
-			puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + ".txt with anew"
-			system "type output\\" + target + "_crtsh.txt | anew output/" + target + ".txt"
+			puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
+			system "type output\\" + target + "_crtsh.txt | anew output/" + target + "_tmp.txt"
 			
 			File.delete("output/" + target + "_crtsh.txt") if File.exists? "output/" + target + "_crtsh.txt"
 			
@@ -171,12 +173,29 @@ if ARGV[1] == "assetenum"
 		File.delete("output/" + target + "_gobuster_tmp.txt") if File.exists? "output/" + target + "_gobuster_tmp.txt"
 		gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + ".txt with anew"
-		system "type output\\" + target + "_gobuster.txt | anew output/" + target + ".txt"
+		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
+		system "type output\\" + target + "_gobuster.txt | anew output/" + target + "_tmp.txt"
 		
 		File.delete("output/" + target + "_gobuster.txt") if File.exists? "output/" + target + "_gobuster.txt"
 		
 		#== anew final ==
+		
+		allsubs_final =File.new("output/" + target + ".txt", 'w')
+		allsubs_tmp = File.open("output/" + target + "_tmp.txt",'r')
+		
+		allsubs_tmp.each_line do |line|
+			begin
+				ip=IPSocket::getaddress(line.strip)
+				new_sub = line.gsub("\n","").to_s
+			rescue
+				ip="unknown"
+			end
+
+			if ip!="unknown"
+				allsubs_final.puts new_sub
+			end
+			
+		end
 		
 		puts "[\e[34m+\e[0m] Results for " + target + " saved as output/" + target + ".txt"
 		
