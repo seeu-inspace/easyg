@@ -231,7 +231,7 @@ Single target
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [PCredz](https://github.com/lgandx/PCredz)
-- [Visual Studio Code](https://code.visualstudio.com/] for Source Code Analysis
+- [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
