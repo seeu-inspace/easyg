@@ -197,6 +197,10 @@ if ARGV[1] == "assetenum"
 			
 		end
 		
+		allsubs_tmp.close unless allsubs_tmp.nil? or allsubs_tmp.closed?
+		File.delete("output/" + target + "_tmp.txt") if File.exists? "output/" + target + "_tmp.txt"
+		allsubs_final.close unless allsubs_final.nil? or allsubs_final.closed?
+		
 		puts "[\e[34m+\e[0m] Results for " + target + " saved as output/" + target + ".txt"
 		
 		puts "\n[\e[34m+\e[0m] Adding the results for " + target + " in output/allsubs_" + ARGV[0]
