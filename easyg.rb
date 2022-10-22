@@ -116,18 +116,14 @@ if ARGV[1] == "assetenum"
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
 		system "subfinder -d " + target + " -all -o output/" + target + "_subfinder.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
 		system "type output\\" + target + "_subfinder.txt | anew output/" + target + "_tmp.txt"
-		
 		File.delete("output/" + target + "_subfinder.txt") if File.exists? "output/" + target + "_subfinder.txt"
 		
 		#== github-subdomains ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
 		system "github-subdomains -t github-token.txt -d " + target + " -o output/" + target + "_github.txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
 		system "type output\\" + target + "_github.txt | anew output/" + target + "_tmp.txt"
-		
 		File.delete("output/" + target + "_github.txt") if File.exists? "output/" + target + "_github.txt"
 		
 		#== crt.sh ==
@@ -147,9 +143,7 @@ if ARGV[1] == "assetenum"
 
 			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
 			
-			puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
 			system "type output\\" + target + "_crtsh.txt | anew output/" + target + "_tmp.txt"
-			
 			File.delete("output/" + target + "_crtsh.txt") if File.exists? "output/" + target + "_crtsh.txt"
 			
 		rescue
@@ -173,37 +167,37 @@ if ARGV[1] == "assetenum"
 		File.delete("output/" + target + "_gobuster_tmp.txt") if File.exists? "output/" + target + "_gobuster_tmp.txt"
 		gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 		
-		puts "\n[\e[34m+\e[0m] Adding new subdomains to output/" + target + "_tmp.txt with anew"
 		system "type output\\" + target + "_gobuster.txt | anew output/" + target + "_tmp.txt"
-		
 		File.delete("output/" + target + "_gobuster.txt") if File.exists? "output/" + target + "_gobuster.txt"
 		
 		#== anew final ==
 		
-		allsubs_final =File.new("output/" + target + ".txt", 'w')
-		allsubs_tmp = File.open("output/" + target + "_tmp.txt",'r')
+		puts "\n[\e[34m+\e[0m] Checking if IPs for the subdomains of " + target + " exist"
 		
+		allsubs_final = File.new("output/" + target + ".txt", 'w')
+		allsubs_tmp = File.open("output/" + target + "_tmp.txt",'r')
+
 		allsubs_tmp.each_line do |line|
 			begin
 				ip=IPSocket::getaddress(line.strip)
-				new_sub = line.gsub("\n","").to_s
 			rescue
 				ip="unknown"
 			end
 
 			if ip!="unknown"
-				allsubs_final.puts new_sub
+				puts line
+				allsubs_final.puts line
 			end
 			
 		end
-		
+
 		allsubs_tmp.close unless allsubs_tmp.nil? or allsubs_tmp.closed?
 		File.delete("output/" + target + "_tmp.txt") if File.exists? "output/" + target + "_tmp.txt"
 		allsubs_final.close unless allsubs_final.nil? or allsubs_final.closed?
-		
+
 		puts "[\e[34m+\e[0m] Results for " + target + " saved as output/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding the results for " + target + " in output/allsubs_" + ARGV[0]
+		puts "\n[\e[34m+\e[0m] Adding the results for " + target + " to output/allsubs_" + ARGV[0]
 		system "type output\\" + target + ".txt | anew output/allsubs_" + ARGV[0]
 		puts "[\e[34m+\e[0m] Results for " + ARGV[0] + " saved as output/allsubs_" + ARGV[0]
 
@@ -243,7 +237,8 @@ if ARGV[0] == "help"
 	puts "	help\n\n"
 	
 	puts "Notes 
-	create a file called github-token.txt with your github token
+	create a file called github-token.txt with your github token in the same dir of easyg
+	+ save all.txt in the same dir as easyg.rb
 	tested on Windows"
 
 end
