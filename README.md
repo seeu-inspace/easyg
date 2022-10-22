@@ -162,6 +162,8 @@ Single target
 - [nmap](https://nmap.org/)
   - `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
+- [crt.sh](https://crt.sh/)
+  - ` cat json.txt | jq -r '.[].common_name' | sed 's/\*//g' | sort -u | rev | cut -d "." -f 1,2 | rev | sort -u | tee out.txt`
 - [naabu](https://github.com/projectdiscovery/naabu)
   - `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
 
