@@ -159,7 +159,7 @@ if ARGV[1] == "assetenum"
 		
 		gobuster_tmp.each_line do |f|
 			if f.include? "Found: "
-				gobuster_o.puts f.gsub("Found: ","")
+				gobuster_o.puts f.gsub("Found: ","").downcase
 			end
 		end
 		
