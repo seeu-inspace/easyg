@@ -82,6 +82,14 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 
+#### Risk markers
+- [ ] Copyright 1995
+- [ ] Server: Apache 2.2
+- [ ] Expider SSL Certificate
+- [ ] "Internal" in hostname
+- [ ] Shodan returns CVEs
+- [ ] Nuclei template matches
+
 #### Testing layers
 
 - [ ] Integrations
