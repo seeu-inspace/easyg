@@ -103,7 +103,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots
-- [ ] Select the interesting targets
+- [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 
 Single target
 - [ ] Test register
