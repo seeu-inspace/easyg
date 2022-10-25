@@ -180,6 +180,7 @@ Single target
 - [naabu](https://github.com/projectdiscovery/naabu)
   - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
 - [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
+- [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
@@ -253,7 +254,6 @@ Single target
 - [amass](https://github.com/OWASP/Amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
-- [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
 - [crt.sh](https://crt.sh/)
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
