@@ -104,10 +104,12 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
+- [ ] Search for CRLF injection, Swagger XSS
+- [ ] Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) > search for injections
 
 Single target
-- [ ] Test register
-- [ ] Test login: 2FA, Password reset, Open Redirect
+- [ ] Test Register
+- [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#upload-functions-check-list)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
