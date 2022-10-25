@@ -9,4 +9,4 @@ File.open(ARGV[0],'r').each_line do |f|
 end
 
 puts "open wsl, use the command 'cat output/" + ARGV[0].gsub('.txt','') + "_pss.txt | uro | tee decluttered.txt'"
-system 'wsl'
+system "wsl"
