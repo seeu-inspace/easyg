@@ -104,8 +104,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
-- [ ] Search for CRLF injection, Swagger XSS
-- [ ] Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) > search for injections
+- [ ] Low-hanging Fruits: 
+      - Search for CRLF injection
+      - Swagger XSS
+      - Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) > search for injections
 
 Single target
 - [ ] Test Register
