@@ -109,7 +109,7 @@ Multiple targets
 - [ ] Low-hanging Fruits: 
       - Search for CRLF injection
       - Swagger XSS
-      - Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) > search for injections
+      - Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) with [pss.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/pss.rb) > [fg.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/fg.rb) > [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 
 Single target
 - [ ] Test Register
@@ -182,6 +182,9 @@ Single target
   - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
 - [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
+- [dnsx](https://github.com/projectdiscovery/dnsx)
+  - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
+- [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
 
 **For JavaScript Analysis**
 - [beautifier.io](https://beautifier.io/)
@@ -378,6 +381,7 @@ done <$file
 
 **Tools**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
+  - [python3 version](https://github.com/L1NT/xsscrapy) 
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
 - [XSS Validator](https://portswigger.net/bappstore/98275a25394a417c9480f58740c1d981)
 - [Trishul](https://github.com/gauravnarwani97/Trishul)
@@ -703,6 +707,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [AWS CLI](https://aws.amazon.com/it/cli/)
 - [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 - [Cloud - AWS Pentest](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Cloud%20-%20AWS%20Pentest.md)
+- [s3enum](https://github.com/koenrh/s3enum)
 
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
