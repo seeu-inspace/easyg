@@ -82,6 +82,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
+- [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 
 #### Risk markers
 - [ ] Copyright 1995
