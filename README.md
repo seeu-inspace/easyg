@@ -199,9 +199,11 @@ Single target
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 - [nuclei](https://github.com/projectdiscovery/nuclei)
+  - Automatic Selection `nuclei -u http://target.io -as` 
   - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
+  - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
