@@ -107,9 +107,9 @@ Multiple targets
 - [ ] Run EasyG assetenum + take screenshots
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 - [ ] Low-hanging Fruits: 
-      - Search for CRLF injection
-      - Swagger XSS
-      - Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) with [pss.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/pss.rb) > [fg.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/fg.rb) > [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
+  - Search for CRLF injection
+  - Swagger XSS
+  - Search params with [ParamSpider](https://github.com/devanshbatham/ParamSpider) with [pss.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/pss.rb) > [fg.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/fg.rb) > [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
 
 Single target
 - [ ] Test Register
