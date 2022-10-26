@@ -32,7 +32,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [IIS - Internet Information Services](#iis---internet-information-services)
   - [Lotus Domino](#lotus-domino)
 
-
+<hr/>
 
 ### <ins>Blog / Writeups / News & more</ins>
 
