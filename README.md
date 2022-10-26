@@ -79,10 +79,10 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
+  - see also the [WordPress section](#wordpress)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
-- [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 
 #### Risk markers
 - [ ] Copyright 1995
@@ -124,6 +124,7 @@ Single target
   - Look for content type json
 - [ ] APIs
   - Methods
+  - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 - [ ]  Account Section
   - Profile
     - Stored XSS 
