@@ -218,6 +218,6 @@ if ARGV[0] == "help"
 	
 	puts "Notes 
 	create a file called github-token.txt with your github token in the same dir of easyg
-	tested on Windows"
+	tested on Windows, change 'type' with 'cat'"
 
 end
