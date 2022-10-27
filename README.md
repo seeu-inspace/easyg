@@ -1,4 +1,12 @@
-# EasyG
+```ruby
+███████╗ █████╗ ███████╗██╗   ██╗ ██████╗  
+██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝ 
+█████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗
+██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║
+███████╗██║  ██║███████║   ██║   ╚██████╔╝
+╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ 
+Made with <3 by Riccardo Malatesta (@seeu)
+```
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it's more than that.
 
