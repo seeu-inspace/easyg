@@ -218,7 +218,6 @@ if ARGV[0] == "help"
 	
 	puts "Notes 
 	create a file called github-token.txt with your github token in the same dir of easyg
-	+ save all.txt in the same dir as easyg.rb
 	tested on Windows"
 
 end
