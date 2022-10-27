@@ -112,7 +112,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 #### Bug bounty
 
 Multiple targets
-- [ ] Run EasyG assetenum + take screenshots
+- [ ] Run EasyG assetenum + take screenshots or open results in firefox
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 - [ ] Low-hanging Fruits: 
   - Search for CRLF injection
