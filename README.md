@@ -40,6 +40,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [IIS - Internet Information Services](#iis---internet-information-services)
   - [Lotus Domino](#lotus-domino)
   - [Git source code exposure](#git-source-code-exposure)
+  - [Subdomain takeover](#subdomain-takeover)
 
 <hr/>
 
@@ -241,10 +242,6 @@ Single target
 - [beautifier.io](https://beautifier.io/)
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-
-**For takeovers**
-- [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
-- nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
@@ -915,3 +912,11 @@ Once you have the source code, look for the secrets within the files.
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
 - nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
 - [GitDumper from GitTools](https://github.com/internetwache/GitTools)
+
+
+
+### <ins>Subdomain takeover</ins>
+
+**Tools**
+- [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
+- nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
