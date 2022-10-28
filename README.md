@@ -89,8 +89,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 - [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
-- [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
-  - see also the [WordPress section](#wordpress)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
@@ -836,9 +834,10 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t %USERPROFILE%/nuclei-templates/technologies/wordpress-detect.yaml`
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
 
-More here: https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
-
-https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-Injection-via-XSS/
+**Resources**
+- https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
+- https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-Injection-via-XSS/
+- [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
 
 
 
