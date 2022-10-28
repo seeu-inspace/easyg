@@ -260,7 +260,6 @@ Single target
 
 **Decompilers**
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile a VB application
-- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
 - [ILSpy](https://github.com/icsharpcode/ILSpy) | [dnSpy](https://github.com/dnSpy/dnSpy) .NET decompilers
 - [Java Decompiler](https://java-decompiler.github.io/)
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
@@ -272,6 +271,7 @@ Single target
 - [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
 - [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
 - [Wireshark](https://www.wireshark.org/)
+- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
 
 **Android**
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
