@@ -185,7 +185,7 @@ if ARGV[1] == "assetenum"
 	
 	#== httprobe ==
 	puts "[\e[34m+\e[0m] Checking output/allsubs_" + ARGV[0] + " with httprobe"
-	system "type output\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobed_" + ARGV[0] + " && type output/httprobed_" + ARGV[0]
+	system "type output\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobed_" + ARGV[0] + " && type output\\httprobed_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/httprobed_" + ARGV[0]
 	
 	#== naabu ==
@@ -195,7 +195,7 @@ if ARGV[1] == "assetenum"
 	
 	#== naabu | httprobe ==
 	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
-	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/naabu_httprobe_" + ARGV[0] + " && type output/naabu_httprobe_" + ARGV[0]
+	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/naabu_httprobe_" + ARGV[0] + " && type output\\naabu_httprobe_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/naabu_httprobe_" + ARGV[0]
 	
 	#== nuclei ==
