@@ -227,10 +227,10 @@ Single target
   - Discover everything + services `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [crt.sh](https://crt.sh/)
+  - [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
   - To find new domains ` cat json.txt | jq -r '.[].common_name' | sed 's/\*//g' | sort -u | rev | cut -d "." -f 1,2 | rev | sort -u | tee out.txt`
 - [naabu](https://github.com/projectdiscovery/naabu)
   - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
-- [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
   - you can use [gb.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/gb.rb)
 - [dnsx](https://github.com/projectdiscovery/dnsx)
@@ -284,7 +284,7 @@ Single target
     emulator -avd Pixel_4_XL_API_30
     ```
 
-**For Reports**
+**For Reporting**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
 - [CVSS Calculator](https://www.first.org/cvss/calculator/3.1)
 - [PwnDoc](https://github.com/pwndoc/pwndoc)
