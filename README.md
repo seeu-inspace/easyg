@@ -181,10 +181,12 @@ Single target
 - [wordlistgen](https://github.com/ameenmaali/wordlistgen)
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
 
-**Other tools**
+**To find more endpoints**
 - [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
 - [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
+- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
+- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 **Google Dorking**
 - `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form;
@@ -236,11 +238,6 @@ Single target
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
-
-**For JavaScript Analysis**
-- [beautifier.io](https://beautifier.io/)
-- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
-- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
@@ -302,6 +299,7 @@ Single target
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
+- [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
