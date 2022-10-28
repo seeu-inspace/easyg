@@ -207,8 +207,6 @@ Single target
 
 ### <ins>Tools</ins>
 
-- To have multiple email adresses using gmail, you can add a `+` sign after your email's alias. For example: if your email is `janedoe@gmail.com` and you sign up for Twitter you can sign up using `janedoe+twitter@gmail.com`. [[Reference](https://twitter.com/_thegameoflife_/status/1564642697482231813)]
-
 **For a temporary public server**
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
@@ -216,6 +214,7 @@ Single target
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
+- To have multiple email adresses using gmail, you can add a `+` sign after your email's alias. For example: if your email is `janedoe@gmail.com` and you sign up for Twitter you can sign up using `janedoe+twitter@gmail.com`. [[Reference](https://twitter.com/_thegameoflife_/status/1564642697482231813)]
 
 **To find parameters**
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
@@ -909,6 +908,8 @@ Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-we
 
 
 ### <ins>Git source code exposure</ins>
+
+Once you have the source code, look for the secrets within the files.
 
 **Tools**
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
