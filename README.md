@@ -22,7 +22,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Burp Suite](#burp-suite)
 - [Network](#network)
 - [Linux](#linux)
-- [Web Hacking](#web-hacking)
+- [Web vulnerabilities](#web-vulnerabilities)
   - [XSS](#xss)
   - [SQLi](#sqli)
   - [SSRF](#ssrf)
@@ -40,7 +40,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Lotus Domino](#lotus-domino)
   - [Git source code exposure](#git-source-code-exposure)
   - [Subdomain takeover](#subdomain-takeover)
-- [Thick client hacking](#thick-client-hacking)
+- [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
 
 <hr/>
@@ -486,7 +486,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 
 
-## Web hacking
+## Web vulnerabilities
 
 ### <ins>XSS</ins>
 
@@ -889,7 +889,7 @@ Once you have the source code, look for the secrets within the files.
 
 
 
-## Thick client hacking
+## Thick client vulnerabilities
 
 ### <ins>DLL Hijacking</ins>
 
