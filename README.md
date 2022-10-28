@@ -122,7 +122,6 @@ Single target
 - [ ] [Upload Functions](#upload-functions-check-list)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
-- [ ] [OWASP Web Application Penetration Checklist v1.1](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Web_Application_Penetration_Checklist_v1_1.pdf)
 - [ ] Content Types
   - Look for multipart-forms
   - Look for content type XML
@@ -130,13 +129,14 @@ Single target
 - [ ] APIs
   - Methods
   - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
-- [ ]  Account Section
+- [ ] Account Section
   - Profile
     - Stored XSS 
   - App Custom Fields 
   - Integrations
     - SSRF, XSS
-- [ ]  Errors
+- [ ] Errors
+- [ ] [OWASP Web Application Penetration Checklist v1.1](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Web_Application_Penetration_Checklist_v1_1.pdf)
 
 #### Upload Functions check-list
 
