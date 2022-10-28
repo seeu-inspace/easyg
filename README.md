@@ -39,6 +39,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [WordPress](#wordpress)
   - [IIS - Internet Information Services](#iis---internet-information-services)
   - [Lotus Domino](#lotus-domino)
+  - [Git source code exposure](#git-source-code-exposure)
 
 <hr/>
 
@@ -215,11 +216,6 @@ Single target
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
-
-**For .git exposed**
-- [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
-- nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
-- [GitDumper from GitTools](https://github.com/internetwache/GitTools)
 
 **To find parameters**
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
@@ -909,3 +905,12 @@ Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-we
 - Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
 - Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
 - Fuzzing list: [SecLists/LotusNotes.fuzz.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/LotusNotes.fuzz.txt)
+
+
+
+### <ins>Git source code exposure</ins>
+
+**Tools**
+- [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
+- nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
+- [GitDumper from GitTools](https://github.com/internetwache/GitTools)
