@@ -530,14 +530,14 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
 **Cross Site Tracing**
-If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. Reference: https://owasp.org/www-community/attacks/Cross_Site_Tracing
+- If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. Reference: https://owasp.org/www-community/attacks/Cross_Site_Tracing
 
 **Blind XSS**
 - Insert a payload in the User-Agent, try with the match/replace rule
 - Other endpoints: pending review comments, feedback
 
 **DoS**
-`%22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D` This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS.
+- `%22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D` This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS.
 
 **Payloads**
 - HTML inj 
