@@ -238,6 +238,7 @@ Single target
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
+- [ASNRECON](https://github.com/orlyjamie/asnrecon)
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
@@ -300,6 +301,14 @@ Single target
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
+- [awesome-threat-intelligence](https://github.com/hslatman/awesome-threat-intelligence)
+- [The Threat Hunter Playbook](https://github.com/OTRF/ThreatHunter-Playbook)
+- [macOS-Security-and-Privacy-Guide](https://github.com/drduh/macOS-Security-and-Privacy-Guide)
+- [lynis](https://github.com/CISOfy/lynis)
+- [security-guide-for-developers](https://github.com/FallibleInc/security-guide-for-developers)
+- [ERNW Repository of Hardening Guides](https://github.com/ernw/hardening)
+- [TTSL](https://github.com/dchrastil/TTSL)
+- [Commix-testbed](https://github.com/commixproject/commix-testbed)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
@@ -618,10 +627,10 @@ Other tips
   <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
   ```
 - If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
+- [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
 
 Burp extensions
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
-
 
 
 ### <ins>Authentication vulnerabilities</ins>
