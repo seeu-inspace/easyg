@@ -336,6 +336,7 @@ Cool extensions:
 - [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
 - [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
 
 
 
