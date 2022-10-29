@@ -118,7 +118,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots or open results in firefox
-- [ ] Select the interesting targets, see [Risk markers](#risk-markers)
+- [ ] Select the interesting targets, see [Risk markers](#risk-markers) + pick 403 responses
 
 Single target
 - [ ] Explore the app
