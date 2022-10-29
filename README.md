@@ -37,7 +37,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Deserialization](#deserialization)
   - [HTTP Host header attacks](#http-host-header-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
-  - [Google Cloud Storage bucket misconfiguration]()
+  - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
   - [GraphQL](#graphql)
   - [WordPress](#wordpress)
   - [IIS - Internet Information Services](#iis---internet-information-services)
