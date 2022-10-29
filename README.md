@@ -480,9 +480,8 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
   - [python3 version](https://github.com/L1NT/xsscrapy) 
 - [XSS Hunter](https://xsshunter.com/) for blind XSS
-- [XSS Validator](https://portswigger.net/bappstore/98275a25394a417c9480f58740c1d981)
-- [Trishul](https://github.com/gauravnarwani97/Trishul)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
+- [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 
 **CSP bypass**
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
