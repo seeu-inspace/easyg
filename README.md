@@ -291,6 +291,7 @@ Single target
 
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
+- [base64encode.org](https://www.base64encode.org/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
