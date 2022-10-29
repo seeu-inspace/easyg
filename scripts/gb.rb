@@ -23,7 +23,7 @@ File.open(ARGV[0],'r').each_line do |f|
 	gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 	
 	puts "\n[\e[34m+\e[0m] Adding the results for " + target + " to output/allsubs_gb_" + ARGV[0]
-	system "type output\\" + target + ".txt | anew output/allsubs_gb_" + ARGV[0]
+	system "type output\\" + target + "_gobuster.txt | anew output/allsubs_gb_" + ARGV[0]
 
 end
 
