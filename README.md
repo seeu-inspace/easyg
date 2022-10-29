@@ -8,7 +8,7 @@
 Made with <3 by Riccardo Malatesta (@seeu)
 ```
 ![License](https://img.shields.io/github/license/seeu-inspace/easyg)
-![Twitter](https://img.shields.io/twitter/follow/seeu_inspace?style=social)
+[![Twitter](https://img.shields.io/twitter/follow/seeu_inspace?style=social)](https://twitter.com/intent/follow?screen_name=seeu_inspace)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 EasyG started out as a script that I use to automate some information gathering tasks for PenTesting and Bug Hunting, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it's more than that.
