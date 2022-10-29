@@ -226,8 +226,6 @@ Single target
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 
 **Asset enumeration/discovery**
-- [shuffledns](https://github.com/projectdiscovery/shuffledns)
-- [BurpSuite Extension - Asset Discover](https://github.com/PortSwigger/asset-discovery)
 - [nmap](https://nmap.org/)
   - Discover everything + services `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
@@ -241,7 +239,6 @@ Single target
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
-- [ASNRECON](https://github.com/orlyjamie/asnrecon)
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
@@ -304,14 +301,6 @@ Single target
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
-- [awesome-threat-intelligence](https://github.com/hslatman/awesome-threat-intelligence)
-- [The Threat Hunter Playbook](https://github.com/OTRF/ThreatHunter-Playbook)
-- [macOS-Security-and-Privacy-Guide](https://github.com/drduh/macOS-Security-and-Privacy-Guide)
-- [lynis](https://github.com/CISOfy/lynis)
-- [security-guide-for-developers](https://github.com/FallibleInc/security-guide-for-developers)
-- [ERNW Repository of Hardening Guides](https://github.com/ernw/hardening)
-- [TTSL](https://github.com/dchrastil/TTSL)
-- [Commix-testbed](https://github.com/commixproject/commix-testbed)
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
@@ -337,33 +326,15 @@ Cool extensions:
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
+- [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
 - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
 - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
-- [Content Type Converter](https://portswigger.net/bappstore/db57ecbe2cb7446292a94aa6181c9278)
-- [Wayback Machine](https://portswigger.net/bappstore/5c7c516c690345c19fbf55b2b2ebeb76)
-- [TokenJar](https://portswigger.net/bappstore/d9e05bf81c8f4bae8a5b0b01955c5578)
-- [Site Map Fetcher](https://portswigger.net/bappstore/93bbecc3da434ef7ba5a5b2b98265169)
-- [PsychoPATH](https://portswigger.net/bappstore/554059e593ce446585574b92344b9675)
-- [File Upload Traverser](https://portswigger.net/bappstore/5f46fe766e9c435992c610160bb53cba)
-- [CMS Scanner](https://portswigger.net/bappstore/1bf95d0be40c447b94981f5696b1a18e)
-- [ParrotNG](https://portswigger.net/bappstore/f99325340a404c67a8de2ce593824e0e)
-- [Paramalyzer](https://portswigger.net/bappstore/0ac13c45adff4e31a3ca8dc76dd6286c)
-- [CSurfer](https://portswigger.net/bappstore/086c6af8b24c40a79a5e99b71df10f11)
-- [J2EEScan](https://portswigger.net/bappstore/7ec6d429fed04cdcb6243d8ba7358880)
-- [Python Scripter](https://portswigger.net/bappstore/eb563ada801346e6bdb7a7d7c5c52583)
-- [Add a custom HTTP header in Burp](https://github.com/PortSwigger/add-custom-header)
-- [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
-- [Additional Scanner Checks](https://portswigger.net/bappstore/a158fd3fc9394253be3aa0bc4c181d1f)
-- [Backslash Powered Scanner](https://portswigger.net/bappstore/9cff8c55432a45808432e26dbb2b41d8)
-- [Additional CSRF Checks](https://portswigger.net/bappstore/2d12070c90cb4a0f91cde0b8927fd606)
-- [Flow](https://portswigger.net/bappstore/ee1c45f4cc084304b2af4b7e92c0a49d)
-- [Command Injection Attacker](https://portswigger.net/bappstore/33e4402eee514724b768c0342abadb8a)
-- [Copy As Python-Requests](https://portswigger.net/bappstore/b324647b6efa4b6a8f346389730df160)
-- [Directory Importer](https://portswigger.net/bappstore/59a829852f914d5a9edb6dcc919dc4e5)
-- [NGINX Alias Traversal](https://portswigger.net/bappstore/a5fdd2cdffa6410eb530de5a4c294d3a)
-- [Wordlist Extractor](https://portswigger.net/bappstore/21df56baa03d499c8439018fe075d3d7)
 - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+- [Autorize](https://github.com/PortSwigger/autorize)
+- [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
+- [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 
 
 
@@ -668,7 +639,7 @@ From a user perspective, access controls can be divided into the following categ
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
 - [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
-- Check also endpoints in JS files, see [tools](#tools)
+- Check also endpoints in JS files
 
 
 
