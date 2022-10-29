@@ -26,3 +26,5 @@ File.open(ARGV[0],'r').each_line do |f|
 	File.delete("output/" + target + "_gobuster.txt") if File.exists? "output/" + target + "_gobuster.txt"
 
 end
+
+system "type output\\" + target + "_gobuster.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobed_gb_" + ARGV[0] + " && type output\\httprobed_" + ARGV[0]
