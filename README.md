@@ -120,6 +120,10 @@ Multiple targets
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 
 Single target
+- [ ] Explore the app
+      + see every functionality
+      + crawl
+      + collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#upload-functions-check-list)
