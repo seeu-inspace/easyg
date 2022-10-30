@@ -328,6 +328,14 @@ Single target
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
+To add a new header
+```
+1. Go to Proxy -> Options -> Match and Replace -> Add
+2. Change Type to Request Header
+3. As the default text says in Match 'leave blank to add a new header'
+4. Put the new header in Replace
+```
+
 Cool extensions:
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
