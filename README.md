@@ -789,12 +789,13 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 
 ### <ins>Google Cloud Storage bucket</ins>
 
-**Tool**
+**Tools**
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - https://github.com/RhinoSecurityLabs/GCPBucketBrute
 
 **Resources**
 - https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
-https://rhinosecuritylabs.com/cloud-security/privilege-escalation-google-cloud-platform-part-2/
+- https://rhinosecuritylabs.com/cloud-security/privilege-escalation-google-cloud-platform-part-2/
 
 
 
