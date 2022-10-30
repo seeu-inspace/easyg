@@ -5,15 +5,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 disable_warnings()
 proxies = {"http": "http://127.0.0.1:8080", "https": "http://127.0.0.1:8080"}
-headers_j = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0'}
-cookie = '0=1'
-
+headers_j = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
+"Cookie": "0=1",}
 
 def sendDetectionRequest(url, urlId):
     try:
         url = url.strip()
         print("[{}] GET {}".format(urlId, url))
-        get(url, verify=False, proxies=proxies, timeout=10, cookies=cookie, headers=headers_j)
+        get(url, verify=False, proxies=proxies, timeout=10, headers=headers_j)
     except Exception as e:
         print(e)
         pass
