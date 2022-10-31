@@ -123,7 +123,7 @@ Multiple targets
 Single target
 - [ ] Recon
   + Explore the app
-  + Use Crawl from EasyG and Paramspider
+  + Use Crawl from EasyG and Burp, use Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discover](#content-discovery))
