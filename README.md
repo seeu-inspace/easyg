@@ -118,13 +118,15 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots or open results in firefox
-- [ ] Select the interesting targets, see [Risk markers](#risk-markers) + pick 403 responses
+- [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 
 Single target
-- [ ] Explore the app
-  + Crawl
+- [ ] Recon
+  + Explore the app
+  + Use Crawl from EasyG and Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
+  + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discover](#content-discovery))
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#upload-functions-check-list)
