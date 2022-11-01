@@ -22,7 +22,7 @@ threads = []
 urlId = 0
 urlFile = open(argv[1], "r", encoding="utf-8")
 urlList = urlFile.readlines()
-with ThreadPoolExecutor(max_workers=15) as executor:
+with ThreadPoolExecutor(max_workers=60) as executor:
     for url in urlList:
         urlId += 1
         threads.append(executor.submit(sendDetectionRequest, url, urlId))
