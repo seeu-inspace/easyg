@@ -907,9 +907,9 @@ Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-we
 
 ### <ins>Git source code exposure</ins>
 
-Once you have the source code, look for the secrets within the files.
+Once you have the source code, look for the secrets within the files. To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog)
 
-**Tools**
+**Other tools**
 - [DotGit](https://github.com/davtur19/DotGit) find if a website has `.git` exposed
 - nuclei template `%USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml`
 - [GitDumper from GitTools](https://github.com/internetwache/GitTools)
