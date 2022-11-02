@@ -280,6 +280,7 @@ Single target
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
 
 **Android**
+- [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
 - [Genymotion](https://www.genymotion.com/) an android emulator
