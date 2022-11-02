@@ -127,7 +127,7 @@ Single target
   + Use Crawl from EasyG and Burp, use Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discover](#content-discovery))
+  + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discovery](#content-discovery))
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#upload-functions-check-list)
