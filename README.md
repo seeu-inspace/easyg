@@ -813,6 +813,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
 - [Cloud - AWS Pentest](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Cloud%20-%20AWS%20Pentest.md)
 - [s3enum](https://github.com/koenrh/s3enum)
+- To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
 
 **Resources**
 - https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
