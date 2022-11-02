@@ -354,6 +354,8 @@ Cool extensions:
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - [AWS Security Checks](https://portswigger.net/bappstore/f078b9254eab40dc8c562177de3d3b2d)
 - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
+- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
+- [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
 
 
 
@@ -624,8 +626,16 @@ Other tips
 - If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
 - [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
 
-Burp extensions
+Automate with Burp
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
+- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f) + [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
+  ```
+  - Type: Request Param Value
+  - Match: ^(https?|ftp)://[^\s/$.?#].[^\s]*$
+  - Replace: http://$collabplz/
+  - Comment: Burp Collab
+  - Regex Match: [x]
+  ```
 
 
 
