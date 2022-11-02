@@ -914,9 +914,9 @@ Once you have the source code, look for the secrets within the files.
 
 
 ### <ins>403 Bypass</ins>
-- [byp4xx](https://github.com/lobuhi/byp4xx) s/o to [m0pam](https://twitter.com/m0pam) for the tip
+- [byp4xx](https://github.com/lobuhi/byp4xx), s/o to [m0pam](https://twitter.com/m0pam) for the tip
 - Search for subdomain with subfinder. Httpx filters subdomains with a 403 response and prints their cname. Test the cname for a bypass
-  `subfinder -d atg.se — silent | httpx -sc -mc 403 -cname` s/o to [drak3hft7](https://twitter.com/drak3hft7) for the tip
+  `subfinder -d atg.se — silent | httpx -sc -mc 403 -cname`, s/o to [drak3hft7](https://twitter.com/drak3hft7) for the tip
 - [403 Bypasser](https://portswigger.net/bappstore/444407b96d9c4de0adb7aed89e826122) Burp extension, test 403 bypasses on the run
 
 
