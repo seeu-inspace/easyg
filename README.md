@@ -44,7 +44,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Lotus Domino](#lotus-domino)
   - [Git source code exposure](#git-source-code-exposure)
   - [Subdomain takeover](#subdomain-takeover)
-  - [403 Bypass](403-bypass)
+  - [403 Bypass](#403-bypass)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
 
