@@ -44,7 +44,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
   - [Lotus Domino](#lotus-domino)
   - [Git source code exposure](#git-source-code-exposure)
   - [Subdomain takeover](#subdomain-takeover)
-  - [403 Bypass](#403-bypass)
+  - [4** Bypass](#4**-bypass)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
 
@@ -944,11 +944,12 @@ Once you have the source code, look for the secrets within the files. To find se
 
 
 
-### <ins>403 Bypass</ins>
+### <ins>4** Bypass</ins>
 - [byp4xx](https://github.com/lobuhi/byp4xx), s/o to [m0pam](https://twitter.com/m0pam) for the tip
 - Search for subdomain with subfinder. Httpx filters subdomains with a 403 response and prints their cname. Test the cname for a bypass
   `subfinder -d atg.se — silent | httpx -sc -mc 403 -cname`, s/o to [drak3hft7](https://twitter.com/drak3hft7) for the tip
 - [403 Bypasser](https://portswigger.net/bappstore/444407b96d9c4de0adb7aed89e826122) Burp extension, test 403 bypasses on the run
+- Replace `HTTP/n` with `HTTP/1.1`, `HTTP/2` or `HTTP/3`
 
 
 ## Thick client vulnerabilities
