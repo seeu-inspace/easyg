@@ -215,6 +215,7 @@ Single target
 - extensions: `extensions: bat, config, ini, env etc.`
 - filename: `netrpc, .git-credentials, .history, .htpasswd, bash_history`
 - [Other dorks](https://github.com/techgaun/github-dorks#list-of-dorks)
+- [GitDorker](https://github.com/obheda12/GitDorker)
 
 
 
