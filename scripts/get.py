@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from sys import argv
 from requests import get
 from urllib3 import disable_warnings
