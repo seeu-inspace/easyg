@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 if File.directory?('output') == false
 	system "mkdir output"
 end
