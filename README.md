@@ -120,6 +120,7 @@ Here I gather all the resources about PenTesting and Bug Bounty Hunting that I f
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots or open results in firefox
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
+- [ ] Check for mobile/desktop applications
 
 Single target
 - [ ] Recon
@@ -147,7 +148,13 @@ Single target
   - Integrations
     - SSRF, XSS
 - [ ] Errors
+
+#### OWASP
 - [ ] [OWASP Web Application Penetration Checklist v1.1](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Web_Application_Penetration_Checklist_v1_1.pdf)
+- [ ] [OWASP Testing Guide v4](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Testing_Guide_v4.pdf)
+- [ ] [OWASP Mobile Application Security Testing Guide (MASTG)](https://github.com/OWASP/owasp-mastg)
+- [ ] [OWASP Mobile Application Security Verification Standard (MASVS)](https://github.com/OWASP/owasp-masvs/)
+- [ ] [OWASP MAS Checklist](https://github.com/OWASP/owasp-mastg/blob/443eb1260e18c4beb76f9c75b34ac8328e3327f2/docs/MAS_checklist.md)
 
 #### Upload Functions check-list
 
