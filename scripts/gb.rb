@@ -14,7 +14,7 @@ File.open(ARGV[0],'r').each_line do |f|
 
 	gobuster_tmp.each_line do |f|
 		if f.include? "Found: "
-	gobuster_o.puts f.gsub("Found: ","").downcase
+	gobuster_o.puts f.gsub("Found: ","")
 		end
 	end
 
