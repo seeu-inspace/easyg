@@ -320,7 +320,6 @@ Single target
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
-- [mubeng](https://github.com/kitabisa/mubeng) fast proxy checker & IP rotator with ease
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
@@ -578,7 +577,9 @@ xp_cmdshell 'COMMAND';
 - [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
 - Rate-limit
   - Bypass with `X-Forwarded-For:127.0.0.1-1000`
-  - IP rotating
+  - IP rotating, you can use
+    - [mubeng](https://github.com/kitabisa/mubeng)
+    - [Burp extension: IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
   - Log in into a valid account to reset the rate-limit
 - Test remember me functionality
 - Web Cache Deception
