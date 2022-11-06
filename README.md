@@ -290,11 +290,11 @@ Single target
 **Android**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
-- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device, as an alternative to burp suite
+- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
 - [Genymotion](https://www.genymotion.com/) an android emulator
 - [Android Studio](https://developer.android.com/studio) Android application development, useful also for the emulator
   - Note: to start only the emulator, use commands such as
-    ```
+    ```cmd
     cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
     emulator -avd Pixel_4_XL_API_30
     ```
@@ -373,7 +373,7 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 ```
 
 **Resources**
-- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of a desktop application
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
 - [Wireshark](https://www.wireshark.org/)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
