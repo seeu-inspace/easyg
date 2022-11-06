@@ -611,11 +611,11 @@ xp_cmdshell 'COMMAND';
 
 ### <ins>Information Disclosure</ins>
 
-- If you need to find UUID from an emai, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
+- If you need to find UUID from an email, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
 
 
 
-### File upload vulnerabilities
+### <ins>File upload vulnerabilities</ins>
 
 **Upload Functions check-list**
 - [ ] Integrations (from 3rd party)
