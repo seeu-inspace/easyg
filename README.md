@@ -865,7 +865,7 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 
 
-### JWT Attacks
+### <ins>JWT Attacks</ins>
 
 **Resources**
 - [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
