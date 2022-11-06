@@ -70,6 +70,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Unsigned binaries](#unsigned-binaries)
   - Direct database access
   - Insecure Windows Service permissions
+  - Insecure SSL/TLS configuration
+  - Unencrypted communications
 
 <hr/>
 
