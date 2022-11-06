@@ -66,6 +66,10 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure service account]
   - [Lack of verificationo of the server certificate]
   - [Missing code obfuscation](#missing-code-obfuscation)
+  - Remote Code Execution via Citrix Escape
+  - [Unsigned binaries](#unsigned-binaries)
+  - Direct database access
+  - Insecure Windows Service permissions
 
 <hr/>
 
@@ -284,7 +288,6 @@ Single target
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
 - [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
 - [Wireshark](https://www.wireshark.org/)
-- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
 
 **Android**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
@@ -1156,21 +1159,33 @@ Sensitive data exposure, key leakage, broken authentication, insecure sessions, 
 
 When dealing with hashing algorithms, the strongest algorithm available should be used (e.g., SHA-512 or at least SHA-256). However, it is always crucial to take into account the precise context in which the hashing algorithm must be used. For instance, it is recommended to utilize contemporary hashing algorithms that have been created especially for securely saving passwords when managing passwords. This indicates that they should be slow (as opposed to fast algorithms like MD5 and SHA-1), and that can be configured by changing the work factor (e.g., PBKDF2 or Bcrypt)
 
+If not configured correctly, the encryption can be not sufficiently secure. An example with AES, an algorithm for symmetric encryption:
+- Cipher-Block-Chaining (CBC) is no longer considered safe when verifiable padding has been applied without first ensuring the integrity of the ciphertext, except for very specific circumstances. If implemented, it can weakens AES encryption.
+
 
 
 ### <ins>Cleartext secrets in memory</ins>
 
 The memory analysis of an application, done when the thick client process is running, can highlight the presence of secrets in cleartext and that can be therefore extracted by any user having access to the machine where the application is hosted.
 
-**Resources**
+**Resource**
 - [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
 
 
 
-### Missing code obfuscation
+### <ins>Missing code obfuscation</ins>
 
 The thick client application's source code is not obfuscated, therefore a hostile user may decompile it and easily comprehend every functionality of the application.
 
 **Resources**
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile a VB application
 - [ILSpy](https://github.com/icsharpcode/ILSpy) | [dnSpy](https://github.com/dnSpy/dnSpy) .NET decompilers
+
+
+
+### <ins>Unsigned binaries</ins>
+
+If an application executable, and/or the imported DLLs, have not been digitally signed, it's possible replace it/them with a tampered version without the user noticing.
+
+**Resource**
+- [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
