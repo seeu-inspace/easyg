@@ -270,7 +270,6 @@ Single target
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
-- [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Automatic Selection `nuclei -u http://target.io -as` 
   - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
@@ -286,9 +285,7 @@ Single target
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
 
 **Desktop Application / Thick Client Penetration Testing**
-- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
-- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
-- [Wireshark](https://www.wireshark.org/)
+- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & more
 
 **Android**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
@@ -315,11 +312,8 @@ Single target
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
-- [uro](https://github.com/s0md3v/uro) declutters url lists
 - [putty](https://www.putty.org/)
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
-- [Impacket](https://github.com/SecureAuthCorp/impacket)
-- [PCredz](https://github.com/lgandx/PCredz)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 
@@ -378,7 +372,11 @@ route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway
 nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
 ```
 
-
+**Resources**
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of a desktop application
+- [Wireshark](https://www.wireshark.org/)
+- [PCredz](https://github.com/lgandx/PCredz)
+- [Impacket](https://github.com/SecureAuthCorp/impacket)
 
 ### <ins>Linux</ins>
 
