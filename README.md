@@ -589,7 +589,7 @@ xp_cmdshell 'COMMAND';
 
 
 
-### Information Disclosure
+### <ins>Information Disclosure</ins>
 
 - If you need to find UUID from an emai, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
 
@@ -670,7 +670,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
-### XXE
+### <ins>XXE</ins>
 
 - Try with xinclude to achieve SSRF or LFI;
   ```XML
