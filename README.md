@@ -28,8 +28,10 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [Directory Traversal](#directory-traversal)
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
+  - [Information Disclosure](#information-disclosure)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
   - [SSRF](#ssrf)
+  - [XXE](#xxe)
   - [XSS](#xss)
   - [CORS](#cors)
   - [Deserialization](#deserialization)
@@ -253,6 +255,7 @@ Single target
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
+- [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
 
 **To find vulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
@@ -586,6 +589,12 @@ xp_cmdshell 'COMMAND';
 
 
 
+### Information Disclosure
+
+- If you need to find UUID from an emai, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
+
+
+
 ### <ins>Access control vulnerabilities and privilege escalation</ins>
 
 In the context of web applications, access control is dependent on authentication and session management:
@@ -648,7 +657,6 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - File uploads
   - Instead of uploading a file, upload a URL. [An example](https://hackerone.com/reports/713)
 
-
 **Automate with Burp**
 - [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
 - [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f) + [AutoRepeater](https://github.com/nccgroup/AutoRepeater) [[Source](https://twitter.com/Bugcrowd/status/1586058991758675969)]
@@ -660,6 +668,17 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   - Regex Match: [x]
   ```
 
+
+
+### XXE
+
+- Try with xinclude to achieve SSRF or LFI;
+  ```XML
+  <?xml version="1.0" encoding="utf-8" ?>
+  <username xmls:xi="https://w3.org/2001/XInclude">
+    <xi:include parse="text" href="file:///c:/windows/win.ini">
+  </username>
+  ```
 
 
 ### <ins>XSS</ins>
