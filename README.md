@@ -854,6 +854,17 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
     - https://attacker.com\.victim.com
     - https://attacker.com/.victim.com
     ```
+- CSRF token stealing via XSS/HTMLi/CORS
+- JSON based
+  - Change the `Content-Type` to `text/plain`, `application/x-www-form-urlencoded`, `multipart/form-data`
+  - Use flash + 307 redirect
+- Guessable CSRF token
+- Clickjacking to strong CSRF token bypass
+- Type juggling
+- Use array, from `csrf=token` to `csrf[]=token`
+- Set the CSRF token to null or add null bytes
+- Check whether CSRF token is sent over http or sent to 3rd party
+- Generate multiple CSRF tokens, pick the static part. Play with the dynamic part
 
 
 
