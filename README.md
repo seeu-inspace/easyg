@@ -35,7 +35,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
   - [XXE injection](#xxe-injection)
   - [Cross-site scripting (XSS)](#cross-site-scripting-xss)
-  - Cross-site request forgery (CSRF)
+  - [Cross-site request forgery (CSRF)](#cross-site-request-forgery-csrf)
   - [Cross-origin resource sharing (CORS)](#cross-origin-resource-sharing-cors)
   - Clickjacking
   - DOM-based vulnerabilities
@@ -804,6 +804,40 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
    ```JavaScript
    %22%20onbeforeinput=alert(document.cookie)%20contenteditable%20alt=%22
    ```
+
+
+
+### <ins>Cross-site request forgery (CSRF)</ins>
+
+- Remove the entire token
+- Use any random but same-length token, or `same-length+1`/`same-length-1`
+- Use another user's token
+- Change from `POST` to `GET` and delete the token
+- If it's a `PUT` or `DELETE` request, try `POST /profile/update?_method=PUT` or
+  ```
+  POST /profile/update HTTP/1.1
+  Host: vuln.com
+  ...
+  
+  _method=PUT
+  ```
+- If the token it's in a custom header, delete the header
+- Change the `Content-Type` to `application/json`, `application/x-url-encoded` or `form-multipart`, `text/html`, `application/xml`
+- If there is double submit token, try CRLF injection
+- Bypassing referrer check
+  - If it's checked but only when it exists, add to the PoC `<meta name="referrer" content="never">` 
+  - Regex Referral bypass
+    ```
+    - https://attacker.com?victim.com
+    - https://attacker.com;victim.com
+    - https://attacker.com/victim.com/../victimPATH
+    - https://victim.com.attacker.com
+    - https://attackervictim.com
+    - https://victim.com@attacker.com
+    - https://attacker.com#victim.com
+    - https://attacker.com\.victim.com
+    - https://attacker.com/.victim.com
+    ```
 
 
 
