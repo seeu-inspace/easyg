@@ -672,7 +672,9 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 **Tools**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
   - [python3 version](https://github.com/L1NT/xsscrapy) 
-- [XSS Hunter](https://xsshunter.com/) for blind XSS
+- For blind XSS
+  - [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
+  - [XSS Hunter](https://xsshunter.com/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 
