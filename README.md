@@ -255,9 +255,8 @@ Single target
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
 
-**To find vulnerabilities**
+**For ulnerabilities**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
-- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [cmd.aspx](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmd.aspx)
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
@@ -868,6 +867,8 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - Check whether CSRF token is sent over http or sent to 3rd party
 - Generate multiple CSRF tokens, pick the static part. Play with the dynamic part
 
+**Resources**
+- [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
 
 
 ### <ins>Cross-origin resource sharing (CORS)</ins>
