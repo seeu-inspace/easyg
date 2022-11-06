@@ -24,16 +24,18 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Network](#network)
 - [Linux](#linux)
 - [Web vulnerabilities](#web-vulnerabilities)
-  - [SQLi](#sqli)
+  - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [Directory Traversal](#directory-traversal)
+  - Command Injection
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
   - [Information Disclosure](#information-disclosure)
-  - [File upload vulnerabilities](#file-upload-vulnerabilities)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
-  - [SSRF](#ssrf)
-  - [XXE](#xxe)
+  - [File upload vulnerabilities](#file-upload-vulnerabilities)
+  - [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
+  - [XXE injection](#xxe-injection)
   - [XSS](#xss)
+  - CSRF
   - [CORS](#cors)
   - [Deserialization](#deserialization)
   - [HTTP Host header attacks](#http-host-header-attacks)
@@ -487,7 +489,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 
 
-### <ins>SQLi</ins>
+### <ins>SQL injection</ins>
 
 **Tools**
 - [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
@@ -615,24 +617,6 @@ xp_cmdshell 'COMMAND';
 
 
 
-### <ins>File upload vulnerabilities</ins>
-
-**Upload Functions check-list**
-- [ ] Integrations (from 3rd party)
-  - XSS
-- [ ] Self Uploads
-  - XML based (Docs/PDF)
-    - SSRF, XSS
-  - Image
-    - XSS, Shell
-      - Name
-      - Binary header
-      - Metadata
-- [ ] Where is data stored?
-  - [s3 perms](#abusing-s3-bucket-permissions)
-
-
-
 ### <ins>Access control vulnerabilities and privilege escalation</ins>
 
 In the context of web applications, access control is dependent on authentication and session management:
@@ -656,7 +640,26 @@ From a user perspective, access controls can be divided into the following categ
 
 
 
-### <ins>SSRF</ins>
+### <ins>File upload vulnerabilities</ins>
+
+**Upload Functions check-list**
+- [ ] Integrations (from 3rd party)
+  - XSS
+- [ ] Self Uploads
+  - XML based (Docs/PDF)
+    - SSRF, XSS
+  - Image
+    - XSS, Shell
+      - Name
+      - Binary header
+      - Metadata
+- [ ] Where is data stored?
+  - [s3 perms](#abusing-s3-bucket-permissions)
+  - [GCS perms](#google-cloud-storage-bucket)
+
+
+
+### <ins>Server-side request forgery (SSRF)</ins>
 
 **SSRF with blacklist-based input filters bypass**
 Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
@@ -708,7 +711,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
-### <ins>XXE</ins>
+### <ins>XXE injection</ins>
 
 - Try with xinclude to achieve SSRF or LFI;
   ```XML
