@@ -332,7 +332,7 @@ Single target
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - `nuclei -l httprobe_results.txt -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o out.txt`
 
-#### Burp suite
+#### <ins>Burp suite</ins>
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
@@ -718,7 +718,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
-### Open redirection
+### <ins>Open redirection</ins>
 
 **Bypasses**
 - https://attacker.com?victim.com
