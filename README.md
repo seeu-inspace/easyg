@@ -29,6 +29,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Directory Traversal](#directory-traversal)
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
   - [Information Disclosure](#information-disclosure)
+  - [File upload vulnerabilities](#file-upload-vulnerabilities)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
   - [SSRF](#ssrf)
   - [XXE](#xxe)
@@ -131,7 +132,7 @@ Single target
   + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discovery](#content-discovery))
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
-- [ ] [Upload Functions](#upload-functions-check-list)
+- [ ] [Upload Functions](#file-upload-vulnerabilities)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
 - [ ] Content Types
@@ -155,22 +156,6 @@ Single target
 - [ ] [OWASP Mobile Application Security Testing Guide (MASTG)](https://github.com/OWASP/owasp-mastg)
 - [ ] [OWASP Mobile Application Security Verification Standard (MASVS)](https://github.com/OWASP/owasp-masvs/)
 - [ ] [OWASP MAS Checklist](https://github.com/OWASP/owasp-mastg/blob/443eb1260e18c4beb76f9c75b34ac8328e3327f2/docs/MAS_checklist.md)
-
-#### Upload Functions check-list
-
-- [ ] Integrations (from 3rd party)
-  - XSS
-- [ ] Self Uploads
-  - XML based (Docs/PDF)
-    - SSRF, XSS
-  - Image
-    - XSS, Shell
-      - Name
-      - Binary header
-      - Metadata
-- [ ] Where is data stored?
-  - [s3 perms](#abusing-s3-bucket-permissions)
-
 
 
 ### <ins>Content Discovery</ins>
@@ -627,6 +612,24 @@ xp_cmdshell 'COMMAND';
 ### <ins>Information Disclosure</ins>
 
 - If you need to find UUID from an emai, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
+
+
+
+### File upload vulnerabilities
+
+**Upload Functions check-list**
+- [ ] Integrations (from 3rd party)
+  - XSS
+- [ ] Self Uploads
+  - XML based (Docs/PDF)
+    - SSRF, XSS
+  - Image
+    - XSS, Shell
+      - Name
+      - Binary header
+      - Metadata
+- [ ] Where is data stored?
+  - [s3 perms](#abusing-s3-bucket-permissions)
 
 
 
