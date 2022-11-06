@@ -34,11 +34,18 @@ EasyG started out as a script that I use to automate some information gathering 
   - [File upload vulnerabilities](#file-upload-vulnerabilities)
   - [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
   - [XXE injection](#xxe-injection)
-  - [XSS](#xss)
-  - CSRF
-  - [CORS](#cors)
-  - [Deserialization](#deserialization)
+  - [Cross-site scripting (XSS)](#cross-site-scripting-xss)
+  - Cross-site request forgery (CSRF)
+  - [Cross-origin resource sharing (CORS)](#cross-origin-resource-sharing-cors)
+  - Clickjacking
+  - DOM-based vulnerabilities
+  - Websockets
+  - [Insecure deserialization](#insecure-deserialization)
+  - Server-side template injection
+  - Web cache poisoning
   - [HTTP Host header attacks](#http-host-header-attacks)
+  - HTTP request smuggling
+  - OAuth authentication
   - [JWT Attacks](#jwt-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
   - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
@@ -722,7 +729,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ```
 
 
-### <ins>XSS</ins>
+### <ins>Cross-site scripting (XSS)</ins>
 
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
@@ -800,7 +807,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
-### <ins>CORS</ins>
+### <ins>Cross-origin resource sharing (CORS)</ins>
 
 **Classic CORS vulnerability**
 ```HTML
@@ -843,7 +850,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
-### <ins>Deserialization</ins>
+### <ins>Insecure deserialization</ins>
 
 **Ysoserial**
 
