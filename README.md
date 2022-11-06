@@ -52,23 +52,22 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Blog / Writeups / News & more</ins>
 
-- https://portswigger.net/research
-- https://www.skeletonscribe.net
-- https://cvetrends.com/
-- https://wiki.owasp.org/index.php/Testing_Checklist
-- https://packetstormsecurity.com/
-- https://twitter.com/hashtag/bugbountytips
-- https://securib.ee/
-- https://samcurry.net/
-  - https://samcurry.net/hacking-apple/ 
-- https://blog.intigriti.com/hackademy/xss-challenges/
-- https://hackerone.com/hacktivity
-- https://pentester.land/list-of-bug-bounty-writeups.html
-- https://github.com/juliocesarfort/public-pentesting-reports
-- https://pentestreports.com/
-- https://pentestbook.six2dez.com/
-- https://xcellerator.github.io/
-- https://persistence-info.github.io/
+- [PortSwigger/research](https://portswigger.net/research)
+- [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
+- [CVE trends](https://cvetrends.com/)
+- [Packet Storm](https://packetstormsecurity.com/)
+- [Securibee](https://securib.ee/)
+- [Sam Curry](https://samcurry.net/)
+  - [Hacking Apple](https://samcurry.net/hacking-apple/)
+- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
+- [HackerOne.com/hacktivity](https://hackerone.com/hacktivity)
+- [List of bug-bounty writeups](https://pentester.land/list-of-bug-bounty-writeups.html)
+- [Pentest reports](https://pentestreports.com/)
+- [Public pentesting reports](https://github.com/juliocesarfort/public-pentesting-reports)
+- [pentestbook.six2dez.com](https://pentestbook.six2dez.com/)
+- [TheXcellerator](https://xcellerator.github.io/)
+- [persistence-info.github.io](https://persistence-info.github.io/)
+- [Facebook-BugBounty-Writeups](https://github.com/jaiswalakshansh/Facebook-BugBounty-Writeups)
 
 
 
@@ -150,8 +149,8 @@ Single target
 - [ ] Errors
 
 #### OWASP
-- [ ] [OWASP Web Application Penetration Checklist v1.1](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Web_Application_Penetration_Checklist_v1_1.pdf)
-- [ ] [OWASP Testing Guide v4](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Testing_Guide_v4.pdf)
+- [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+- [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 - [ ] [OWASP Mobile Application Security Testing Guide (MASTG)](https://github.com/OWASP/owasp-mastg)
 - [ ] [OWASP Mobile Application Security Verification Standard (MASVS)](https://github.com/OWASP/owasp-masvs/)
 - [ ] [OWASP MAS Checklist](https://github.com/OWASP/owasp-mastg/blob/443eb1260e18c4beb76f9c75b34ac8328e3327f2/docs/MAS_checklist.md)
