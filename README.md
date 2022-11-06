@@ -62,6 +62,10 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure application design](#insecure-application-design)
   - [Weak Hashing Algorithms](#weak-hashing-algorithms)
   - [Cleartext secrets in memory](#cleartext-secrets-in-memory)
+  - [Hardcoded secrets]
+  - [Insecure service account]
+  - [Lack of verificationo of the server certificate]
+  - [Missing code obfuscation](#missing-code-obfuscation)
 
 <hr/>
 
@@ -271,8 +275,6 @@ Single target
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 
 **Decompilers**
-- [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile a VB application
-- [ILSpy](https://github.com/icsharpcode/ILSpy) | [dnSpy](https://github.com/dnSpy/dnSpy) .NET decompilers
 - [Java Decompiler](https://java-decompiler.github.io/)
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
@@ -1162,3 +1164,13 @@ The memory analysis of an application, done when the thick client process is run
 
 **Resources**
 - [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
+
+
+
+### Missing code obfuscation
+
+The thick client application's source code is not obfuscated, therefore a hostile user may decompile it and easily comprehend every functionality of the application.
+
+**Resources**
+- [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile a VB application
+- [ILSpy](https://github.com/icsharpcode/ILSpy) | [dnSpy](https://github.com/dnSpy/dnSpy) .NET decompilers
