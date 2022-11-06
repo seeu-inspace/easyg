@@ -1147,7 +1147,7 @@ If this is not possible, it is desirable to provide read-only users and read/wri
 
 
 
-### Weak Hashing Algorithms
+### <ins>Weak Hashing Algorithms</ins>
 
 Sensitive data exposure, key leakage, broken authentication, insecure sessions, and spoofing attacks can all be caused by improper application of encryption methods. Some hashing or encryption techniques, such MD5 and RC4, are known to be insecure and are not advised for use.
 
@@ -1155,7 +1155,7 @@ When dealing with hashing algorithms, the strongest algorithm available should b
 
 
 
-### Cleartext secrets in memory
+### <ins>Cleartext secrets in memory</ins>
 
 The memory analysis of an application, done when the thick client process is running, can highlight the presence of secrets in cleartext and that can be therefore extracted by any user having access to the machine where the application is hosted.
 
