@@ -59,6 +59,9 @@ EasyG started out as a script that I use to automate some information gathering 
   - [4** Bypass](#4-bypass)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
+  - [Insecure application design](#insecure-application-design)
+  - [Weak Hashing Algorithms](#weak-hashing-algorithms)
+  - [Cleartext secrets in memory](#cleartext-secrets-in-memory)
 
 <hr/>
 
@@ -278,7 +281,6 @@ Single target
 
 **Desktop Application / Thick Client Penetration Testing**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & co.
-- [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
 - [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/) to monitor the network interactions of an application
 - [Wireshark](https://www.wireshark.org/)
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
@@ -1132,3 +1134,30 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 **Resources**
 - [hijacklibs.net](https://hijacklibs.net/)
 - [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
+
+
+
+### <ins>Insecure application design</ins>
+
+The application design is based on a two-tier architecture. In particular, the thick client application installed on the workstation communicates directly with a backend DBMS without the use of an application server.
+
+The best option, from a security perspective, is designing and implementing a three-tier architecture in which the thick client connects with an intermediary layer (an application server), which in turn communicates with the database. A secure channel must be used for all communications, with only secure protocols (such TLS, HTTPS, etc.), and preferebli with Certificate Pinning.
+
+If this is not possible, it is desirable to provide read-only users and read/write users distinct privileges at the DBMS layer. This would stop vertical privilege escalation even if a read-only user were to access the database directly and try to edit the data.
+
+
+
+### Weak Hashing Algorithms
+
+Sensitive data exposure, key leakage, broken authentication, insecure sessions, and spoofing attacks can all be caused by improper application of encryption methods. Some hashing or encryption techniques, such MD5 and RC4, are known to be insecure and are not advised for use.
+
+When dealing with hashing algorithms, the strongest algorithm available should be used (e.g., SHA-512 or at least SHA-256). However, it is always crucial to take into account the precise context in which the hashing algorithm must be used. For instance, it is recommended to utilize contemporary hashing algorithms that have been created especially for securely saving passwords when managing passwords. This indicates that they should be slow (as opposed to fast algorithms like MD5 and SHA-1), and that can be configured by changing the work factor (e.g., PBKDF2 or Bcrypt)
+
+
+
+### Cleartext secrets in memory
+
+The memory analysis of an application, done when the thick client process is running, can highlight the presence of secrets in cleartext and that can be therefore extracted by any user having access to the machine where the application is hosted.
+
+**Resources**
+- [Process Hacker](https://processhacker.sourceforge.io/) It helps to dump the exe memory and see what sensitive data is there
