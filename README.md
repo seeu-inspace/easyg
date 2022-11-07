@@ -77,7 +77,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Reentrancy Vulnerabilities](#reentrancy-vulnerabilities)
   - [Authorization issues](#authorization-issues)
   - [Use of components with known vulnerabilities](#use-of-components-with-known-vulnerabilities)
-  - [Weak Randomness](#bad-randomness)
+  - [Bad Randomness](#bad-randomness)
 
 <hr/>
 
