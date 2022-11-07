@@ -67,9 +67,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
   - [Insecure SSL/TLS configuration](#insecure-ssltls-configuration)
   - [Remote Code Execution via Citrix Escape](#remote-code-execution-via-citrix-escape)
-  - Direct database access
-  - Insecure Windows Service permissions
-  - Unencrypted communications
+  - [Direct database access](#direct-database-access)
+  - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
 
 <hr/>
 
@@ -1218,3 +1217,19 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 **Resources**
 - [PowerShell](https://github.com/PowerShell/Powershell)
 - [Two RCEs are better than one: write-up of an interesting lateral movement](https://medium.com/@seeu-inspace/two-rces-are-better-than-one-write-up-of-an-interesting-lateral-movement-66a52d42e075)
+
+
+
+### <ins>Direct database access</ins>
+
+If it's found that standard users have direct access to the database, there is the possibility for users to read and write data that is not otherwise accessible through the client application.
+
+If the SQL server requires a Windows User access, use the command `runas /user:localadmin <SQL-SERVER-MANAGEMENT-STUDIO>`
+
+
+
+### <ins>Insecure Windows Service permissions</ins>
+
+Windows service executable might be configured with insecure permissions. Services configured to use an executable with weak permissions are vulnerable to privilege escalation attacks.
+
+Unprivileged users have the ability to change or replace the executable with arbitrary code, which would then be run the following time the service is launched. This can lead to privilege escalation depending on the user the service is running as.
