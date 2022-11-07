@@ -966,7 +966,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 ```
 
 **Classic PoC + XSS**
-```
+```HTML
 <style>
   iframe {
     position:relative;
