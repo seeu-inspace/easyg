@@ -27,7 +27,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [Directory Traversal](#directory-traversal)
-  - Command Injection
+  - Command Injection https://github.com/commixproject/commix-testbed
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
   - [Information Disclosure](#information-disclosure)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
