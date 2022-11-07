@@ -65,7 +65,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Hardcoded secrets](#missing-code-obfuscation)
   - [Unsigned binaries](#unsigned-binaries)
   - [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
-  - Insecure SSL/TLS configuration
+  - [Insecure SSL/TLS configuration](#insecure-ssltls-configuration)
   - Remote Code Execution via Citrix Escape
   - Direct database access
   - Insecure Windows Service permissions
@@ -1199,6 +1199,8 @@ Without effective certificate control, an attacker who is capable of conducting 
 
 
 ### <ins>Insecure SSL/TLS configuration</ins>
+
+During the SSL/TLS negotiation, SSL/TLS connections may be set up to offer outdated protocols and cipher suites that are susceptible to known security flaws. The data transmitted between the server and the client could potentially be read or modified in this case if an attacker is able to intercept the communication.
 
 **Resource**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & more
