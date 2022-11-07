@@ -186,7 +186,7 @@ if ARGV[1] == "assetenum"
 	#== httprobe ==
 	puts "[\e[34m+\e[0m] Checking output/allsubs_" + ARGV[0] + " with httprobe"
 	system "type output\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobe_" + ARGV[0] + " && type output\\httprobe_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as output/httprobed_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Results saved as output/httprobe_" + ARGV[0]
 	
 	#== naabu ==
 	puts "[\e[34m+\e[0m] Searching for more open ports in output/allsubs_" + ARGV[0] + " with naabu"
@@ -200,7 +200,7 @@ if ARGV[1] == "assetenum"
 	
 	#== nuclei ==
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in " + ARGV[0]
-	system "nuclei -l output/httprobed_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
 	puts "[\e[34m+\e[0m] Results saved as output/nuclei_" + ARGV[0]
 	
 end
