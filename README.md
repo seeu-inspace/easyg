@@ -307,7 +307,6 @@ Single target
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
-- [putty](https://www.putty.org/)
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
@@ -373,6 +372,7 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 - [Wireshark](https://www.wireshark.org/)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
+- [putty](https://www.putty.org/)
 
 ### <ins>Linux</ins>
 
