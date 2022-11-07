@@ -1111,8 +1111,8 @@ Once you have the source code, look for the secrets within the files. To find se
 **Tool**
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
 
-Using Process Monitor, set the filters to find missing dlls.<br/><br/>
-  <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/procmon-config.png" alt="procmon-config">
+Using Process Monitor, add these the filters to find missing dlls.<br/><br/>
+  <img src="https://github.com/seeu-inspace/easyg/blob/main/img/procmon-config-add.png" alt="procmon-config">
 
 After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
 
