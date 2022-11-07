@@ -62,15 +62,13 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure application design](#insecure-application-design)
   - [Weak Hashing Algorithms](#weak-hashing-algorithms)
   - [Cleartext secrets in memory](#cleartext-secrets-in-memory)
-  - [Missing code obfuscation](#missing-code-obfuscation)
+  - [Hardcoded secrets](#missing-code-obfuscation)
   - [Unsigned binaries](#unsigned-binaries)
-  - Hardcoded secrets
-  - Insecure service account
-  - Lack of verification of the server certificate
+  - [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
+  - Insecure SSL/TLS configuration
   - Remote Code Execution via Citrix Escape
   - Direct database access
   - Insecure Windows Service permissions
-  - Insecure SSL/TLS configuration
   - Unencrypted communications
 
 <hr/>
@@ -152,7 +150,7 @@ Single target
   + Use Crawl from EasyG and Burp, use Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + Find more endpoints with xnLinkFinder, Apkleak and Source2Url (see [Content Discovery](#content-discovery))
+  + Find more endpoints with Apkleak, Source2Url and see [Content Discovery](#content-discovery))
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
@@ -283,9 +281,6 @@ Single target
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
-
-**Desktop Application / Thick Client Penetration Testing**
-- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & more
 
 **Android**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
@@ -670,6 +665,9 @@ From a user perspective, access controls can be divided into the following categ
 - [ ] Where is data stored?
   - [s3 perms](#abusing-s3-bucket-permissions)
   - [GCS perms](#google-cloud-storage-bucket)
+
+**Resource**
+- [How I earned $500 by uploading a file: write-up of one of my first bug bounty](https://medium.com/@seeu-inspace/how-i-earned-500-by-uploading-a-file-write-up-of-one-of-my-first-bug-bounty-c174cf8ea553)
 
 
 
@@ -1173,9 +1171,9 @@ The memory analysis of an application, done when the thick client process is run
 
 
 
-### <ins>Missing code obfuscation</ins>
+### <ins>Hardcoded secrets</ins>
 
-The thick client application's source code is not obfuscated, therefore a hostile user may decompile it and easily comprehend every functionality of the application.
+Sometimes, the thick client application's source code is not obfuscated, therefore a hostile user may decompile it and easily comprehend every functionality of the application. It's also possible that more can be found, like credentials and api keys.
 
 **Resources**
 - [VB Decompiler](https://www.vb-decompiler.org/products.htm) decompile a VB application
@@ -1189,3 +1187,18 @@ If an application executable, and/or the imported DLLs, has not been digitally s
 
 **Resource**
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
+
+
+
+### <ins>Lack of verification of the server certificate</ins>
+
+Due to the fact that the client does not verify the TLS certificate presented by the back-end, it's possible to intercept also HTTPS communications managed by the thick client application.
+
+Without effective certificate control, an attacker who is capable of conducting a Man in the Middle attack can provide a self-signed certificate and the application will accept it, invalidating the protection provided by the TLS connection.
+
+
+
+### <ins>Insecure SSL/TLS configuration</ins>
+
+**Resource**
+- [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & more
