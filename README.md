@@ -350,6 +350,7 @@ Cool extensions:
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
 - [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
+- [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
 - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
 - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
