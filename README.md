@@ -215,7 +215,7 @@ Single target
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 **Google Dorking**
-- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form;
+- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form,swf;
 - Search also for pdf, xlsx and similar, they may contain some infos;
 - `site:` to target a website and its subdomains;
 - `inurl:&` to search for parameters;
