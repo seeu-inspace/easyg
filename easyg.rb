@@ -4,8 +4,8 @@
 
 require 'webdrivers'
 require 'selenium-webdriver'
-require 'net/http'
 require 'uri'
+require 'net/http'
 require 'json'
 require 'socket'
 
@@ -19,6 +19,17 @@ puts "\e[36m\n
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ 
                    Made with <3 by Riccardo Malatesta (@seeu)
 \n\e[0m"
+
+def delete_if_empty(file)
+
+	if File.zero?(file)
+		puts "[\e[34m+\e[0m] No result found"
+		File.delete(file) if File.exists?(file)
+	else
+		puts "[\e[34m+\e[0m] Results added at " + file
+	end
+	
+end
 
 
 if ARGV[1] == "firefox"
@@ -191,17 +202,22 @@ if ARGV[1] == "assetenum"
 	#== naabu ==
 	puts "[\e[34m+\e[0m] Searching for more open ports in output/allsubs_" + ARGV[0] + " with naabu"
 	system "naabu -v -list output/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as output/naabu_" + ARGV[0]
+	delete_if_empty "output/naabu_" + ARGV[0]
 	
 	#== naabu | httprobe ==
 	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
-	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_" + ARGV[0] + " && type output\\httprobe_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results added at output/httprobe_" + ARGV[0]
+	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
+	delete_if_empty "naabu/httprobe_naabu_" + ARGV[0]
 	
 	#== nuclei ==
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as output/nuclei_" + ARGV[0]
+	delete_if_empty "naabu/nuclei_" + ARGV[0]
+	
+	#== check for log4j ==
+	puts "[\e[34m+\e[0m] Checking for log4j in " + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + "-as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
+	delete_if_empty "naabu/log4j_" + ARGV[0]
 	
 end
 
