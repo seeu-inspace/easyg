@@ -66,7 +66,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Unsigned binaries](#unsigned-binaries)
   - [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
   - [Insecure SSL/TLS configuration](#insecure-ssltls-configuration)
-  - Remote Code Execution via Citrix Escape
+  - [Remote Code Execution via Citrix Escape](#remote-code-execution-via-citrix-escape)
   - Direct database access
   - Insecure Windows Service permissions
   - Unencrypted communications
@@ -1204,3 +1204,17 @@ During the SSL/TLS negotiation, SSL/TLS connections may be set up to offer outda
 
 **Resource**
 - [testssl.sh](https://testssl.sh/) useful for checking outdated ciphers & more
+
+
+
+### <ins>Remote Code Execution via Citrix Escape</ins>
+
+If Citrix is present and you have access to it, there are multiple ways you can achieve Remote Code Execution:
+- Try to upload a PowerShell
+- Search for a functionality that opens a dialog box. Insert the path for `cmd` and `PowerShell` and see if they pop-up
+- In a dialog box, see if the right-click is allowed. Play with the functionality to achieve RCE, like creating a `.bat` and running it or upload files
+- Upload [Process Hacker](https://processhacker.sourceforge.io/) and see if you find [Cleartext secrets in memory](#cleartext-secrets-in-memory)
+
+**Resources**
+- [PowerShell](https://github.com/PowerShell/Powershell)
+- [Two RCEs are better than one: write-up of an interesting lateral movement](https://medium.com/@seeu-inspace/two-rces-are-better-than-one-write-up-of-an-interesting-lateral-movement-66a52d42e075)
