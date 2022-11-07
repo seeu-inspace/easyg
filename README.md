@@ -62,12 +62,12 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure application design](#insecure-application-design)
   - [Weak Hashing Algorithms](#weak-hashing-algorithms)
   - [Cleartext secrets in memory](#cleartext-secrets-in-memory)
+  - [Missing code obfuscation](#missing-code-obfuscation)
+  - [Unsigned binaries](#unsigned-binaries)
   - Hardcoded secrets
   - Insecure service account
   - Lack of verification of the server certificate
-  - [Missing code obfuscation](#missing-code-obfuscation)
   - Remote Code Execution via Citrix Escape
-  - [Unsigned binaries](#unsigned-binaries)
   - Direct database access
   - Insecure Windows Service permissions
   - Insecure SSL/TLS configuration
