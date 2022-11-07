@@ -1109,7 +1109,7 @@ Once you have the source code, look for the secrets within the files. To find se
 
 ### <ins>DLL Hijacking</ins>
 
-**Tools**
+**Tool**
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
 
 Using Process Monitor, set the filters to find missing dlls.<br/><br/>
@@ -1184,7 +1184,7 @@ The thick client application's source code is not obfuscated, therefore a hostil
 
 ### <ins>Unsigned binaries</ins>
 
-If an application executable, and/or the imported DLLs, have not been digitally signed, it's possible replace it/them with a tampered version without the user noticing.
+If an application executable, and/or the imported DLLs, has not been digitally signed, it's possible replace it with a tampered version without the user noticing.
 
 **Resource**
 - [Sigcheck](https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck) check the signature of an executable
