@@ -20,6 +20,12 @@ puts "\e[36m\n
                    Made with <3 by Riccardo Malatesta (@seeu)
 \n\e[0m"
 
+
+def adding_anew(file_tmp,file_final)
+	system "type " + file_tmp.gsub('/','\\') + " | anew " + file_final
+	File.delete(file_tmp) if File.exists? file_tmp
+end
+
 def delete_if_empty(file)
 
 	if File.zero?(file)
@@ -30,7 +36,6 @@ def delete_if_empty(file)
 	end
 	
 end
-
 
 if ARGV[1] == "firefox"
 
@@ -127,15 +132,13 @@ if ARGV[1] == "assetenum"
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
 		system "subfinder -d " + target + " -all -o output/" + target + "_subfinder.txt"
 		
-		system "type output\\" + target + "_subfinder.txt | anew output/" + target + "_tmp.txt"
-		File.delete("output/" + target + "_subfinder.txt") if File.exists? "output/" + target + "_subfinder.txt"
+		adding_anew("output/" + target + "_subfinder.txt", "output/" + target + "_tmp.txt")
 		
 		#== github-subdomains ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
 		system "github-subdomains -t github-token.txt -d " + target + " -o output/" + target + "_github.txt"
 		
-		system "type output\\" + target + "_github.txt | anew output/" + target + "_tmp.txt"
-		File.delete("output/" + target + "_github.txt") if File.exists? "output/" + target + "_github.txt"
+		adding_anew("output/" + target + "_github.txt", "output/" + target + "_tmp.txt")
 		
 		#== crt.sh ==
 		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with crt.sh"
@@ -154,11 +157,10 @@ if ARGV[1] == "assetenum"
 
 			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
 			
-			system "type output\\" + target + "_crtsh.txt | anew output/" + target + "_tmp.txt"
-			File.delete("output/" + target + "_crtsh.txt") if File.exists? "output/" + target + "_crtsh.txt"
+			adding_anew("output/" + target + "_crtsh.txt", "output/" + target + "_tmp.txt")
 			
 		rescue
-			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to retrieve information from crt.sh"
+			puts "[\e[31m+\e[0m] ERROR while trying to retrieve information from crt.sh"
 		end
 		
 		#== anew final ==
@@ -205,19 +207,21 @@ if ARGV[1] == "assetenum"
 	delete_if_empty "output/naabu_" + ARGV[0]
 	
 	#== naabu | httprobe ==
-	puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
-	system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
-	delete_if_empty "naabu/httprobe_naabu_" + ARGV[0]
+	if File.exists? "output/naabu_" + ARGV[0]
+		puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
+		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
+		delete_if_empty "naabu/httprobe_naabu_" + ARGV[0]
+	end
 	
 	#== nuclei ==
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -o output/nuclei_" + ARGV[0]
-	delete_if_empty "naabu/nuclei_" + ARGV[0]
+	delete_if_empty "output/nuclei_" + ARGV[0]
 	
 	#== check for log4j ==
 	puts "[\e[34m+\e[0m] Checking for log4j in " + ARGV[0]
-	system "nuclei -l output/httprobe_" + ARGV[0] + "-as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
-	delete_if_empty "naabu/log4j_" + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
+	delete_if_empty "output/log4j_" + ARGV[0]
 	
 end
 
