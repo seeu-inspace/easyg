@@ -1246,6 +1246,9 @@ Impact
 - Perform web cache poisoning
 - Perform web cache deception
 
+**Resource**
+- [HTTP Request Smuggler](https://portswigger.net/bappstore/aaaa60ef945341e8a450217a54a11646)
+
 
 
 ### <ins>JWT Attacks</ins>
