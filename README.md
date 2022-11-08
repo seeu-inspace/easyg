@@ -119,6 +119,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
+- [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
 
 #### Risk markers
 - [ ] Copyright 1995
