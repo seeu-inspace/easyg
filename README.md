@@ -1561,6 +1561,10 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 - Try access with the account `sa:RPSsql12345`
 - Intercept the requests and see if there is an [Insecure application design](#insecure-application-design). In that case, it might be possible to perform a Direct database access, SQLi or Remote Code Execution
 
+**Resources**
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
+- [Wireshark](https://www.wireshark.org/)
+
 
 
 ### <ins>Insecure Windows Service permissions</ins>
