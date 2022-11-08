@@ -1134,6 +1134,31 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 
 
+### <ins>OAuth authentication</ins>
+
+How OAuth 2.0 works:
+- `Client application` The website or web application that wants to access the user's data;
+- `Resource owner` The user whose data the client application wants to access;
+- `OAuth service provider` The website or application that controls the user's data and access to it. They support OAuth by providing an API for interacting with both an authorization server and a resource server.
+
+**[OAuth flow](https://portswigger.net/web-security/oauth/grant-types)**
+<img src="[https://github.com/seeu-inspace/easyg/blob/main/img/procmon-config-add.png](https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/oauth-authorization-code-flow.jpg)" alt="oauth-flow">
+
+Following standard endpoints:
+- `/.well-known/oauth-authorization-server`
+- `/.well-known/openid-configuration`
+
+Vulnerabilities in the client application
+- Improper implementation of the implicit grant type
+- Flawed CSRF protection
+
+Vulnerabilities in the OAuth service
+- Leaking authorization codes and access tokens
+- Flawed scope validation
+- Unverified user registration
+
+
+
 ### <ins>Abusing S3 Bucket Permissions</ins>
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
