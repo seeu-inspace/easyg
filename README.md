@@ -1572,6 +1572,7 @@ Unprivileged users have the ability to change or replace the executable with arb
 
 ### <ins>Code injection</ins>
 - Check for classic HTML injections and [XSS injections](cross-site-scripting-xss)
+  - Try to use a `SSID` as a vector for an XSS injection
 - Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
 
 
