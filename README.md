@@ -1078,6 +1078,13 @@ Any web security vulnerability might arise in relation to WebSockets:
 
 ### <ins>Insecure deserialization</ins>
 
+How to spot Insecure deserialization
+- PHP example
+  `O:4:"User":2:{s:4:"name":s:6:"carlos"; s:10:"isLoggedIn":b:1;}`
+- Java objects always begin with the same bytes 
+  - Hex `ac` `ed`
+  - Base64 `rO0`
+
 **Ysoserial**
 
 Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
