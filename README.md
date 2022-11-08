@@ -46,7 +46,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Web cache poisoning](#web-cache-poisoning)
   - [HTTP Host header attacks](#http-host-header-attacks)
   - HTTP request smuggling
-  - OAuth authentication
+  - [OAuth authentication](#oauth-authentication)
   - [JWT Attacks](#jwt-attacks)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
   - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
