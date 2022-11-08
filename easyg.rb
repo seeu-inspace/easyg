@@ -208,9 +208,9 @@ if ARGV[1] == "assetenum"
 	
 	#== naabu | httprobe ==
 	if File.exists? "output/naabu_" + ARGV[0]
-		puts "[\e[34m+\e[0m] Checking for hidden web ports in naabu/naabu_" + ARGV[0]
+		puts "[\e[34m+\e[0m] Checking for hidden web ports in output/naabu_" + ARGV[0]
 		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
-		delete_if_empty "naabu/httprobe_naabu_" + ARGV[0]
+		delete_if_empty "output/httprobe_naabu_" + ARGV[0]
 	end
 	
 	#== nuclei ==
