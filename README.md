@@ -191,6 +191,7 @@ Single target
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
   `./webanalyze -host example.com -crawl 1`
+- [Shodan](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap)
 
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
