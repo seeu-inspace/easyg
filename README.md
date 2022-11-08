@@ -1142,7 +1142,8 @@ How OAuth 2.0 works:
 - `OAuth service provider` The website or application that controls the user's data and access to it. They support OAuth by providing an API for interacting with both an authorization server and a resource server.
 
 **[OAuth flow](https://portswigger.net/web-security/oauth/grant-types)**
-<img src="[https://github.com/seeu-inspace/easyg/blob/main/img/procmon-config-add.png](https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/oauth-authorization-code-flow.jpg)" alt="oauth-flow">
+
+<img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/oauth-authorization-code-flow.jpg" alt="oauth-flow">
 
 Following standard endpoints:
 - `/.well-known/oauth-authorization-server`
