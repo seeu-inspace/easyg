@@ -69,6 +69,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Remote Code Execution via Citrix Escape](#remote-code-execution-via-citrix-escape)
   - [Direct database access](#direct-database-access)
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
+  - [Code injection](#code-injection)
 
 <hr/>
 
@@ -1554,9 +1555,10 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 
 ### <ins>Direct database access</ins>
 
-If it's found that standard users have direct access to the database, there is the possibility for users to read and write data that is not otherwise accessible through the client application.
-
-If the SQL server requires a Windows User access, use the command `runas /user:localadmin <SQL-SERVER-MANAGEMENT-STUDIO>`
+- If it's found that standard users have direct access to the database, there is the possibility for users to read and write data that is not otherwise accessible through the client application.
+- If the SQL server requires a Windows User access, use the command `runas /user:localadmin <SQL-SERVER-MANAGEMENT-STUDIO>`
+- Try access with the account `sa:RPSsql12345`
+- Intercept the requests and see if there is an [Insecure application design](#insecure-application-design). In that case, it might be possible to perform a Direct database access, SQLi or Remote Code Execution
 
 
 
@@ -1565,3 +1567,11 @@ If the SQL server requires a Windows User access, use the command `runas /user:l
 Windows service executable might be configured with insecure permissions. Services configured to use an executable with weak permissions are vulnerable to privilege escalation attacks.
 
 Unprivileged users have the ability to change or replace the executable with arbitrary code, which would then be run the following time the service is launched. This can lead to privilege escalation depending on the user the service is running as.
+
+
+
+### <ins>Code injection</ins>
+- Check for classic HTML injections and [XSS injections](cross-site-scripting-xss)
+- Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
+
+
