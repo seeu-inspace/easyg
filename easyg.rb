@@ -221,7 +221,7 @@ if ARGV[1] == "assetenum"
 	#== check for log4j ==
 	puts "[\e[34m+\e[0m] Checking for log4j in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
-	delete_if_empty "output/log4j_" + ARGV[0]
+	delete_if_empty "output/nuclei_log4j_" + ARGV[0]
 	
 end
 
