@@ -362,6 +362,7 @@ Cool extensions:
 - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
 - [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
 - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
+- [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
 
 
@@ -1283,8 +1284,24 @@ Impact
 
 ### <ins>JWT Attacks</ins>
 
-**Resource**
+A JWT consists of a `header`, a `payload`, and a `signature`. Each part is separated by a dot.<br/>
+ 
+Common attacks
+- Accepting tokens with no signature
+- Brute-forcing secret keys using [hashcat](https://hashcat.net/wiki/doku.php?id=frequently_asked_questions#how_do_i_install_hashcat)
+  - You need a valid JWT and a [wordlist](https://github.com/wallarm/jwt-secrets/blob/master/jwt.secrets.list)
+  - `hashcat -a 0 -m 16500 <jwt> <wordlist>`
+  - If any of the signatures match, hashcat will give you an output like this `<jwt>:<identified-secret>` along with other details
+  - Once identified the secret key, you can use it to generate a valid signature for any JWT header and payload that you like. See [Signing JWTs](https://portswigger.net/web-security/jwt/working-with-jwts-in-burp-suite#signing-jwts)
+- Injecting self-signed JWTs via the `jwk`, `jku` or `kid` parameter
+- Change Content-Type in `cty` to achieve XXE and deserialization attacks
+- `x5c` (X.509 Certificate Chain) can lead to [CVE-2017-2800](https://talosintelligence.com/vulnerability_reports/TALOS-2017-0293) and [CVE-2018-2633](https://mbechler.github.io/2018/01/20/Java-CVE-2018-2633/)
+- [JWT algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion)
+
+**Resources**
 - [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
+  - [Checklist](https://github.com/ticarpi/jwt_tool/wiki/Attack-Methodology)
+- [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
 
 
