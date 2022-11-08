@@ -114,7 +114,8 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Check-lists</ins>
 
-- [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
@@ -285,6 +286,8 @@ Single target
 
 **Android**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
+- [apps.evozi.com](https://apps.evozi.com/apk-downloader/) Download APKs
+- [apk-dl.com](http://apk-dl.com/) Download APKs
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
 - [Genymotion](https://www.genymotion.com/) an android emulator
@@ -651,7 +654,24 @@ Ways of injecting OS commands
 
 ### <ins>Information Disclosure</ins>
 
+What is information disclosure?
+- Data about other users, such as usernames or financial information
+- Sensitive commercial or business data
+- Technical details about the website and its infrastructure
+
+What are some examples of information disclosure?
+- Revealing the names of hidden directories, their structure, and their contents via a robots.txt file or directory listing
+- Providing access to source code files via temporary backups
+- Explicitly mentioning database table or column names in error messages
+- Unnecessarily exposing highly sensitive information, such as credit card details
+- Hard-coding API keys, IP addresses, database credentials, and so on in the source code
+- Hinting at the existence or absence of resources, usernames, and so on via subtle differences in application behavior
 - If you need to find UUID from an email, try to register the user and see if in the response it's disclosed. [[Reference](https://twitter.com/intigriti/status/1217794181982302208)]
+
+How do information disclosure vulnerabilities arise?
+- Failure to remove internal content from public content
+- Insecure configuration of the website and related technologies
+- Flawed design and behavior of the application
 
 
 
