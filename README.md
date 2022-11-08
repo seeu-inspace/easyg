@@ -323,7 +323,8 @@ Single target
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-  - `nuclei -l httprobe_results.txt -t %USERPROFILE%\nuclei-templates\takeovers -t %USERPROFILE%\nuclei-templates\exposures\configs\git-config.yaml -o out.txt`
+  - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o out.txt`
+  - `nuclei -l list.txt -as -tags log4j -o output.txt`
 
 #### <ins>Burp suite</ins>
 
