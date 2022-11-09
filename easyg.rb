@@ -213,10 +213,7 @@ if ARGV[1] == "assetenum"
 		delete_if_empty "output/httprobe_naabu_" + ARGV[0]
 	end
 	
-	#== nuclei ==
-	
-	system "nuclei -update -ut"
-	
+	#== nuclei ==	
 	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o output/nuclei_" + ARGV[0]
 	delete_if_empty "output/nuclei_" + ARGV[0]
