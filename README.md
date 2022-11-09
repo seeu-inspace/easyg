@@ -295,7 +295,9 @@ Single target
 
 **Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
 - [amass](https://github.com/OWASP/Amass)
+  - `amass enum -brute -active -d target -o output/target.txt -v` 
 - [subfinder](https://github.com/projectdiscovery/subfinder)
+  - `subfinder -d target -all -o output/target_subfinder.txt"`
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
 - [crt.sh](https://crt.sh/)
 - [httprobe](https://github.com/tomnomnom/httprobe)
@@ -304,7 +306,9 @@ Single target
 - [naabu](https://github.com/projectdiscovery/naabu)
   - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
 - [gospider](https://github.com/jaeles-project/gospider)
+  - `gospider -s target -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"`
 - [hakrawler](https://github.com/hakluke/hakrawler)
+  - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o out.txt`
@@ -482,13 +486,13 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 ### <ins>Mobile</ins>
 
-**FlappyBird_structure.apk**
-├── **AndroidManifest.xml** meta-information about the app
-├── **META-INF/** a manifest of metadata information
-├── **classes.dex** contains the Java libraries that the application uses
-├── **lib/** compiled native libraries used by the app
-├── **res/** It can store resource files such as pictures, XML files, etc.
-├── **assets/** application assets
+**FlappyBird_structure.apk**<br/>
+├── **AndroidManifest.xml** meta-information about the app<br/>
+├── **META-INF/** a manifest of metadata information<br/>
+├── **classes.dex** contains the Java libraries that the application uses<br/>
+├── **lib/** compiled native libraries used by the app<br/>
+├── **res/** It can store resource files such as pictures, XML files, etc.<br/>
+├── **assets/** application assets<br/>
 └── **resources.arsc** contains compiled resources in a binary format
 
 **Android tools**
