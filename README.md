@@ -114,8 +114,6 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Check-lists</ins>
 
-- [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
-- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
@@ -172,14 +170,13 @@ Single target
   - Integrations
     - SSRF, XSS
 - [ ] Errors
-
-#### OWASP
 - [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 - [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
-- [ ] [OWASP Mobile Application Security Testing Guide (MASTG)](https://github.com/OWASP/owasp-mastg)
-- [ ] [OWASP Mobile Application Security Verification Standard (MASVS)](https://github.com/OWASP/owasp-masvs/)
-- [ ] [OWASP MAS Checklist](https://github.com/OWASP/owasp-mastg/blob/443eb1260e18c4beb76f9c75b34ac8328e3327f2/docs/MAS_checklist.md)
 
+**Mobile**
+- [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
+- [OWASP Mobile Application Security](https://mas.owasp.org/)
 
 ### <ins>Content Discovery</ins>
 
