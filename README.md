@@ -23,6 +23,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Burp Suite](#burp-suite)
 - [Network](#network)
 - [Linux](#linux)
+- [Mobile](#mobile)
 - [Web vulnerabilities](#web-vulnerabilities)
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
