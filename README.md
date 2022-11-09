@@ -275,25 +275,6 @@ Single target
   - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 
-**Decompilers**
-- [Java Decompiler](https://java-decompiler.github.io/)
-- [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
-- [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
-- [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
-
-**Android**
-- [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
-- [apps.evozi.com](https://apps.evozi.com/apk-downloader/) Download APKs
-- [apk-dl.com](http://apk-dl.com/) Download APKs
-- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
-- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
-- [Genymotion](https://www.genymotion.com/) an android emulator
-- [Android Studio](https://developer.android.com/studio) Android application development, useful also for the emulator
-  - Note: to start only the emulator, use commands such as
-    ```cmd
-    cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
-    emulator -avd Pixel_4_XL_API_30
-    ```
 
 **For Reporting**
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
@@ -376,6 +357,8 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [putty](https://www.putty.org/)
+
+
 
 ### <ins>Linux</ins>
 
@@ -494,6 +477,37 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 /var/log/httpd/access.log                             Apache access log file typical path.
 /etc/fstab                                            File system mounts.
 ```
+
+
+
+### <ins>Mobile</ins>
+
+**FlappyBird_structure.apk**
+├── **AndroidManifest.xml** meta-information about the app
+├── **META-INF/** a manifest of metadata information
+├── **classes.dex** contains the Java libraries that the application uses
+├── **lib/** compiled native libraries used by the app
+├── **res/** It can store resource files such as pictures, XML files, etc.
+├── **assets/** application assets
+└── **resources.arsc** contains compiled resources in a binary format
+
+**Android tools**
+- [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
+- [apps.evozi.com](https://apps.evozi.com/apk-downloader/) Download APKs
+- [apk-dl.com](http://apk-dl.com/) Download APKs
+- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
+- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
+- [Genymotion](https://www.genymotion.com/) an android emulator
+- [Android Studio](https://developer.android.com/studio) Android application development, useful also for the emulator
+  - Note: to start only the emulator, use commands such as
+    ```cmd
+    cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
+    emulator -avd Pixel_4_XL_API_30
+    ```
+- [Java Decompiler](https://java-decompiler.github.io/)
+- [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
+- [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
+- [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
 
 
 
