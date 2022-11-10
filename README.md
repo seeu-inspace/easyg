@@ -75,7 +75,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 <hr/>
 
-### <ins>Blog / Writeups / News & more</ins>
+## Blog / Writeups / News & more
 
 - [PortSwigger/research](https://portswigger.net/research)
 - [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
@@ -96,7 +96,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 
 
-### <ins>Safety tips</ins>
+## Safety tips
 
 - For RCE 
   - Never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed.
@@ -114,7 +114,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 
 
-### <ins>Check-lists</ins>
+## Check-lists
 
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
@@ -122,7 +122,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
 
-#### Risk markers
+### <ins>Risk markers</ins>
 - [ ] Copyright 1995
 - [ ] Server: Apache 2.2
 - [ ] Expider SSL Certificate
@@ -130,7 +130,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Shodan returns CVEs
 - [ ] Nuclei template matches
 
-#### Testing layers
+### <ins>Testing layers</ins>
 
 - [ ] Integrations
 - [ ] Application Libraries (usually JavaScript)
@@ -139,7 +139,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
-#### Bug bounty
+### <ins>Bug bounty</ins>
 
 Multiple targets
 - [ ] Run EasyG assetenum + take screenshots or open results in firefox
@@ -180,7 +180,7 @@ Single target
 - [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
 - [OWASP Mobile Application Security](https://mas.owasp.org/)
 
-### <ins>Content Discovery</ins>
+## Content Discovery
 
 **Some tips**
 - If the application is ASP.NET, search for `Appsettings.json`
@@ -234,7 +234,7 @@ Single target
 
 
 
-### <ins>Tools</ins>
+## Tools
 
 **For a temporary public server**
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
@@ -316,7 +316,7 @@ Single target
   - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o out.txt`
   - `nuclei -l list.txt -as -tags log4j -o output.txt`
 
-#### <ins>Burp suite</ins>
+### <ins>Burp suite</ins>
 
 To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
 
@@ -350,7 +350,7 @@ Cool extensions:
 
 
 
-### <ins>Network</ins>
+## Network
 ```
 ip route add <net_address_in_cdr> via <interface_gateway>
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
@@ -366,7 +366,7 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 
 
 
-### <ins>Linux</ins>
+## Linux
 
 **Linux Commands**
 ```
@@ -486,7 +486,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 
 
-### <ins>Mobile</ins>
+## Mobile
 
 **FlappyBird_structure.apk**<br/>
 ├── **AndroidManifest.xml** meta-information about the app<br/>
@@ -517,7 +517,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 
 
-## <ins>Source code review</ins>
+## Source code review
 - Search for known dangerous functions used on user-supplied input
   - example, `eval(` can cause command injection without proper sanitization
 - Search for hardcoded credentials such as API keys, encryption keys and database passwords
@@ -528,7 +528,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - Search for outdated dependencies
 - Search for revealing comments
 
-Digging deeeper
+**Digging deeeper**
 - Prioritize functions like authentication, autorization, PII etc.
   - example: disclosing PII in the logs, from [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
     <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_172648.png">
@@ -536,7 +536,7 @@ Digging deeeper
     <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_173028.png">
 - Follow any code that deals with user input
 
-Automation
+**Automation**
 - Use SAST tools
 - Use SCA tools
 - Use secret scanners
@@ -544,6 +544,7 @@ Automation
 
 **Resources**
 - [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
+- [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/)
 - [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
 - [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
