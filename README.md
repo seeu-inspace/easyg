@@ -24,6 +24,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile)
+- [Source code review](#source-code-review)
 - [Web vulnerabilities](#web-vulnerabilities)
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
@@ -513,6 +514,39 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
+
+
+
+## <ins>Source code review</ins>
+- Search for known dangerous functions used on user-supplied input
+  - example, `eval(` can cause command injection without proper sanitization
+- Search for hardcoded credentials such as API keys, encryption keys and database passwords
+  - many API keys start with the same format (ex. AWS keys usually start with `AKIA`), search for patterns
+    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_171255.png">
+	from [ServletTarPit.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/ServletTarPit.java), [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
+- Search for weak cryptography or hashing algorithms
+- Search for outdated dependencies
+- Search for revealing comments
+
+Digging deeeper
+- Prioritize functions like authentication, autorization, PII etc.
+  - example: disclosing PII in the logs, from [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
+    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_172648.png">
+  - example: SQL injection in [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
+    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_173028.png">
+- Follow any code that deals with user input
+
+Automation
+- Use SAST tools
+- Use SCA tools
+- Use secret scanners
+- Then test the results manually
+
+**Resources**
+- [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
+- [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
+- [TruffleHog](https://github.com/trufflesecurity/trufflehog)
+- [GitLeaks](https://github.com/zricethezav/gitleaks)
 
 
 
