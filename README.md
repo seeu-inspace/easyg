@@ -1196,7 +1196,7 @@ Any web security vulnerability might arise in relation to WebSockets:
 - Some blind vulnerabilities reached via WebSockets might only be detectable using out-of-band (OAST) techniques;
 - If attacker-controlled data is transmitted via WebSockets to other application users, then it might lead to XSS or other client-side vulnerabilities.
 
-**Cross-site WebSocket hijacking (CSRF missing**
+**Cross-site WebSocket hijacking (CSRF missing)**
 ```
 <script>
   websocket = new WebSocket('wss://websocket-URL');
