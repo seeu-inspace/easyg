@@ -139,16 +139,16 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
-### <ins>Bug bounty</ins>
 
-Multiple targets
+### <ins>Multiple targets</ins>
 - [ ] Run EasyG assetenum + take screenshots or open results in firefox
 - [ ] Select the interesting targets, see [Risk markers](#risk-markers)
 - [ ] Check for mobile/desktop applications
 
-Single target
+### <ins>Single target</ins>
 - [ ] Recon
   + Explore the app
+  + Search for documentation
   + Use Crawl from EasyG and Burp, use Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
@@ -172,10 +172,14 @@ Single target
   - Integrations
     - SSRF, XSS
 - [ ] Errors
+  - Change POST to GET
+- [ ] [Test CSRF](#cross-site-request-forgery-csrf)
+- [ ] Check if caching is implemented and how
+- [ ] Check Cross-domain interactions
 - [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 - [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 
-**Mobile**
+### <ins>Mobile</ins>
 - [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
 - [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
 - [OWASP Mobile Application Security](https://mas.owasp.org/)
