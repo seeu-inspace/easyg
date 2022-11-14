@@ -152,7 +152,7 @@ EasyG started out as a script that I use to automate some information gathering 
   + Use Crawl from EasyG and Burp, use Paramspider
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + Find more endpoints with Apkleak, Source2Url and see [Content Discovery](#content-discovery))
+  + Find more endpoints with Apkleak, Source2Url and see [Content Discovery](#content-discovery)
 - [ ] Test Register
 - [ ] Test Login: 2FA, Password reset, Open Redirect & co.
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
