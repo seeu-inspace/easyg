@@ -210,12 +210,17 @@ if ARGV[1] == "assetenum"
 	if File.exists? "output/naabu_" + ARGV[0]
 		puts "[\e[34m+\e[0m] Checking for hidden web ports in output/naabu_" + ARGV[0]
 		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
+		
 		delete_if_empty "output/httprobe_naabu_" + ARGV[0]
+		
+		if File.exists? "output/httprobe_naabu_" + ARGV[0]
+			adding_anew("output/httprobe_naabu_" + ARGV[0], "output/httprobe_" + ARGV[0])
+		end
 	end
 	
 	#== nuclei ==	
-	puts "[\e[34m+\e[0m] Checking for exposed .git and takeovers with nuclei in " + ARGV[0]
-	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o output/nuclei_" + ARGV[0]
+	puts "[\e[34m+\e[0m] Checking with nuclei in " + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -o output/nuclei_" + ARGV[0]
 	delete_if_empty "output/nuclei_" + ARGV[0]
 	
 	#== check for log4j ==
