@@ -254,6 +254,11 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ParamSpider](https://github.com/devanshbatham/ParamSpider)
 
 **Asset enumeration/discovery**
+- [amass](https://github.com/OWASP/Amass)
+  - `amass enum -brute -active -d target -o output/target.txt -v` 
+- [subfinder](https://github.com/projectdiscovery/subfinder)
+  - `subfinder -d target -all -o output/target_subfinder.txt"`
+- [github-subdomains](https://github.com/gwen001/github-subdomains)
 - [nmap](https://nmap.org/)
   - Discover everything + services `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
@@ -262,14 +267,27 @@ EasyG started out as a script that I use to automate some information gathering 
   - To find new domains ` cat json.txt | jq -r '.[].common_name' | sed 's/\*//g' | sort -u | rev | cut -d "." -f 1,2 | rev | sort -u | tee out.txt`
 - [naabu](https://github.com/projectdiscovery/naabu)
   - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
+  - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
-  - you can use [gb.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/gb.rb)
+  - [gb.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/gb.rb)
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
+- [httprobe](https://github.com/tomnomnom/httprobe)
+  - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 
-**For ulnerabilities**
+
+**Crawling**
+- [gospider](https://github.com/jaeles-project/gospider)
+  - `gospider -s target -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"`
+- [hakrawler](https://github.com/hakluke/hakrawler)
+  - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
+- [Katana](https://github.com/projectdiscovery/katana)
+  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
+
+
+**For vulnerabilities**
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
@@ -278,7 +296,9 @@ EasyG started out as a script that I use to automate some information gathering 
   - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
+  - Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb) `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -o out.txt`
   - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
+  - log4j `nuclei -l list.txt -as -tags log4j -o output.txt`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 
 
@@ -288,6 +308,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [PwnDoc](https://github.com/pwndoc/pwndoc)
 - [Vulnrepo](https://vulnrepo.com/home)
 - [PlexTrac](https://plextrac.com/)
+
 
 **Other**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
@@ -299,27 +320,8 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 - [FuzzCoupons](https://github.com/sbrws/FuzzCoupons)
-
-**Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb)**
-- [amass](https://github.com/OWASP/Amass)
-  - `amass enum -brute -active -d target -o output/target.txt -v` 
-- [subfinder](https://github.com/projectdiscovery/subfinder)
-  - `subfinder -d target -all -o output/target_subfinder.txt"`
-- [github-subdomains](https://github.com/gwen001/github-subdomains)
-- [crt.sh](https://crt.sh/)
-- [httprobe](https://github.com/tomnomnom/httprobe)
-  - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew)
-- [naabu](https://github.com/projectdiscovery/naabu)
-  - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
-- [gospider](https://github.com/jaeles-project/gospider)
-  - `gospider -s target -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"`
-- [hakrawler](https://github.com/hakluke/hakrawler)
-  - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
-- [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
-- [nuclei](https://github.com/projectdiscovery/nuclei)
-  - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -o out.txt`
-  - `nuclei -l list.txt -as -tags log4j -o output.txt`
+
 
 ### <ins>Burp suite</ins>
 
