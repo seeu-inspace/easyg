@@ -318,7 +318,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Selenium](https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-  - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -o out.txt`
+  - `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -o out.txt`
   - `nuclei -l list.txt -as -tags log4j -o output.txt`
 
 ### <ins>Burp suite</ins>
