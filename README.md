@@ -215,7 +215,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
 - [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
-- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 
 **Google Dorking**
@@ -285,6 +284,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Katana](https://github.com/projectdiscovery/katana)
   - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
+- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 
 
 **For vulnerabilities**
