@@ -1015,6 +1015,9 @@ Manually testing for XXE vulnerabilities generally involves
    ```JavaScript
    %22%20onbeforeinput=alert(document.cookie)%20contenteditable%20alt=%22
    ```
+ - ```JavaScript
+   1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
+   ```
 
 
 
