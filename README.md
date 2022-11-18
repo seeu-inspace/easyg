@@ -219,13 +219,20 @@ EasyG started out as a script that I use to automate some information gathering 
 
 **Google Dorking**
 - `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form,swf;
-- Search also for pdf, xlsx and similar, they may contain some infos;
+- Search also for pdf, xlsx, bak and similar, they may contain some infos;
 - `site:` to target a website and its subdomains;
 - `inurl:&` to search for parameters;
 - `intitle:` to search interesting pages like admin, register, login etc.
 - [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 - `"Seeing something unexpected? Take a look at the GitHub profile guide." "COMPANY-TARGET" site:http://github.com` [[Reference](https://twitter.com/c3l3si4n/status/1580564006263173122)]
 - [dorks_hunter](https://github.com/six2dez/dorks_hunter)
+- `intext:"© copyright COMPANY YEAR"` [[Reference](https://twitter.com/intigriti/status/1592497655774871553)]
+- `site:target.com intext:login intext:username intext:password`
+- Exposed .git `intext:"index of /.git" "parent directory"`
+- Search for s3 buckets `site:.s3.amazonaws.com "COMPANY"`
+- Find CVEs, like CVE-2019-9647 `intext:"Powered by Gila CMS"`
+- Errors `site:target.com intext:"Warning: mysql_num_rows()"`
+- `intitle:"Index of /" + ".htaccess"`
 
 **GitHub Dorking**
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
