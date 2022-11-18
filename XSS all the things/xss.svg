@@ -5,6 +5,5 @@
    <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" />
    <script type="text/javascript">
       alert(document.domain);
-	alert(document.cookie);
    </script>
 </svg>
