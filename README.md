@@ -64,7 +64,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure application design](#insecure-application-design)
   - [Weak Hashing Algorithms](#weak-hashing-algorithms)
   - [Cleartext secrets in memory](#cleartext-secrets-in-memory)
-  - [Hardcoded secrets](#missing-code-obfuscation)
+  - [Hardcoded secrets](#hardcoded-secrets)
   - [Unsigned binaries](#unsigned-binaries)
   - [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
   - [Insecure SSL/TLS configuration](#insecure-ssltls-configuration)
@@ -72,8 +72,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Direct database access](#direct-database-access)
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
   - [Code injection](#code-injection)
-
-<hr/>
 
 ## Blog / Writeups / News & more
 
