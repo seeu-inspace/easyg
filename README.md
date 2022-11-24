@@ -1666,6 +1666,7 @@ BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
 **Resources**
 - [hijacklibs.net](https://hijacklibs.net/)
 - [Save the Environment (Variable)](https://www.wietzebeukema.nl/blog/save-the-environment-variables)
+- [Spartacus DLL Hijacking](https://github.com/Accenture/Spartacus)
 
 
 
