@@ -1029,7 +1029,7 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   <svg/onload=alert(0)>
   ```
-- Unusual events: 
+- Unusual events
   - `onpointerrawupdate=` (Chrome only)
   - `onmouseleave=`
 
