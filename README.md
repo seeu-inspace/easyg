@@ -848,6 +848,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - https://attacker.com\.victim.com
 - https://attacker.com/.victim.com
 - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
+- https://www.victim.com/redir/r.php?redirectUri=https://evilsite%E3%80%82com%23.victim.com/
 
 
 
