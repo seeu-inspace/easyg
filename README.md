@@ -967,7 +967,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
-- If Privileges are required, see if you can chain the XSS with a CSRF
+- If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
 - [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
