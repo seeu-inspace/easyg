@@ -951,7 +951,7 @@ Manually testing for XXE vulnerabilities generally involves
 
 ### <ins>Cross-site scripting (XSS)</ins>
 
-**Tools**
+**Resources**
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
   - [python3 version](https://github.com/L1NT/xsscrapy) 
 - For blind XSS
@@ -959,11 +959,7 @@ Manually testing for XXE vulnerabilities generally involves
   - [XSS Hunter](https://xsshunter.com/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
-
-**CSP bypass**
-- [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
-- [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
-- [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
+- [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 
 **Bypasses**
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
@@ -972,6 +968,9 @@ Manually testing for XXE vulnerabilities generally involves
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - If Privileges are required, see if you can chain the XSS with a CSRF
+- [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
+- [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
+- [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
 
 **Swagger XSS**
 - https://github.com/swagger-api/swagger-ui/issues/1262
@@ -993,9 +992,6 @@ Manually testing for XXE vulnerabilities generally involves
 - Insert a payload in the User-Agent, try with the match/replace rule
 - Other endpoints: pending review comments, feedback
 
-**DoS**
-- `%22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D` This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS.
-
 **Payloads**
 - HTML inj 
   ```HTML
@@ -1003,11 +999,11 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
-- For **mobile applications**: try use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
-- For **desktop applications**: try use as a vector the SSID with a payload like `"/><img src=x onerror=alert(1)>`
+- For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
+- For **desktop applications**: 
 - iframe + base64 encoded SVG 
   ```HTML
-  <iframe src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgoKPHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwyNTUpO3N0cm9rZS13aWR0aDozO3N0cm9rZTpyZ2IoMCwwLDApIiAvPgogICA8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+CiAgICAgIGFsZXJ0KGRvY3VtZW50LmRvbWFpbik7CiAgICAgIGFsZXJ0KGRvY3VtZW50LmNvb2tpZSk7CiAgIDwvc2NyaXB0Pgo8L3N2Zz4="></iframe>
+  <iframe src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgoKPHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwyNTUpO3N0cm9rZS13aWR0aDozO3N0cm9rZTpyZ2IoMCwwLDApIiAvPgogICA8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+CiAgICAgIGFsZXJ0KGRvY3VtZW50LmRvbWFpbik7CiAgIDwvc2NyaXB0Pgo8L3N2Zz4="></iframe>
   ```
 - Cookie stealers
   - ```JavaScript
@@ -1030,8 +1026,12 @@ Manually testing for XXE vulnerabilities generally involves
   <svg/onload=alert(0)>
   ```
 - Unusual events
-  - `onpointerrawupdate=` (Chrome only)
-  - `onmouseleave=`
+  - `onpointerrawupdate` (Chrome only)
+  - `onmouseleave`
+- This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS
+  ```
+  %22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D
+  ```
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
@@ -1780,7 +1780,6 @@ Unprivileged users have the ability to change or replace the executable with arb
 
 ### <ins>Code injection</ins>
 - Check for classic HTML injections and [XSS](cross-site-scripting-xss)
-  - Try to use a `SSID` as a vector for an XSS
+  - Try to use a `SSID` as a vector for an XSS with a payload like `"/><img src=x onerror=alert(1)>`
 - Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
-
 
