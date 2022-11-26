@@ -326,6 +326,8 @@ EasyG started out as a script that I use to automate some information gathering 
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 - [FuzzCoupons](https://github.com/sbrws/FuzzCoupons)
 - [anew](https://github.com/tomnomnom/anew)
+- [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
+- [Flipper Zero](https://flipperzero.one/)
 
 
 ### <ins>Burp suite</ins>
