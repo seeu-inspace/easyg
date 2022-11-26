@@ -1584,10 +1584,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 ### <ins>IIS - Internet Information Services</ins>
-
-- Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
 - Check if `trace.axd` is enabled
-- [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
 - Search for
   ```
   Views/web.config
@@ -1598,9 +1595,11 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   System.Web.Optimization.dll
   System.Web.Routing.dll
   ```
+- [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
 
-Reference: https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
-
+**Resources**
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
+- Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
 
 
 ### <ins>Lotus Domino</ins>
