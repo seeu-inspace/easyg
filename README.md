@@ -292,7 +292,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 
 
-**For vulnerabilities**
+**Vulnerabilities**
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
 - [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
@@ -328,6 +328,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [anew](https://github.com/tomnomnom/anew)
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
+- [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
 
 
 ### <ins>Burp suite</ins>
@@ -582,6 +583,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
                   --tables (to see db)
                   -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
                   --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
+		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3
 ```
 
 **Some payloads**
