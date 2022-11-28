@@ -329,6 +329,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
+- [TTSL tool to scrape LinkedIn](https://github.com/dchrastil/TTSL)
 
 
 ### <ins>Burp suite</ins>
