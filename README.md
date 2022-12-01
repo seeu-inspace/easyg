@@ -72,6 +72,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Direct database access](#direct-database-access)
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
   - [Code injection](#code-injection)
+- [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
+  - [Prompt Injection](#prompt-injection)
 
 ## Blog / Writeups / News & more
 
@@ -1807,3 +1809,14 @@ Unprivileged users have the ability to change or replace the executable with arb
   - Try to use a `SSID` as a vector for an XSS with a payload like `"/><img src=x onerror=alert(1)>`
 - Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
 
+
+
+## Artificial intelligence vulnerabilities
+
+### <ins>Prompt Injection</ins>
+
+**Prompt Injection** is when an AI that follows textual instructions (a "prompt") to complete a job gets deceived by hostile, adversarial human input to do a task that was not its original goal. To test it, inject the text `Ignore previous directions`.
+
+Some examples:
+- ["Exploiting GPT-3 prompts with malicious inputs that order the model to ignore its previous directions"](https://twitter.com/goodside/status/1569128808308957185)
+- ["OpenAI’s ChatGPT is susceptible to prompt injection — say the magic words, “Ignore previous directions”, and it will happily divulge to you OpenAI’s proprietary prompt"](https://twitter.com/goodside/status/1598253337400717313)
