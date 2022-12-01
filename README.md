@@ -977,17 +977,22 @@ Manually testing for XXE vulnerabilities generally involves
 - For blind XSS
   - [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
   - [XSS Hunter](https://xsshunter.com/)
-- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
+- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
+- [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+- [XSS mindmap by Jhaddix](https://raw.githubusercontent.com/jhaddix/XSS.png/master/XSS2.png)
+- [Brute XSS](https://brutelogic.com.br/blog/)
+- [Book of BugBounty Tips - Cross Site Scripting (XSS)](https://gowsundar.gitbook.io/book-of-bugbounty-tips/cross-site-scripting-xss)
 
 **Bypasses**
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
 - [JSFuck](http://www.jsfuck.com/)
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
-- [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
+
+**CSP**
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
 - [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
