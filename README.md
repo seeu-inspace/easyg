@@ -24,6 +24,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Single target](#single-target) 
   - [Mobile](#mobile)
 - [Content Discovery](#content-discovery)
+  - [Google Dorking](#google-dorking)
+  - [GitHub Dorking](#github-dorking)
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
 - [Network](#network)
@@ -232,7 +234,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 
-**Google Dorking**
+### <ins>Google Dorking</ins>
 - `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form,swf;
 - Search also for pdf, xlsx, bak and similar, they may contain some infos;
 - `site:` to target a website and its subdomains;
@@ -249,7 +251,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - Errors `site:target.com intext:"Warning: mysql_num_rows()"`
 - `intitle:"Index of /" + ".htaccess"`
 
-**GitHub Dorking**
+### <ins>GitHub Dorking</ins>
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
 - languages: `json, bash, shell, java etc.`, example `HEROKU_API_KEY language:json`
 - extensions: `extensions: bat, config, ini, env etc.`
