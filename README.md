@@ -15,7 +15,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Index</ins>
 
-- [Blog / Writeups / News & more](#blog--writeups--news--more)
+- [Resources](#resources)
 - [Safety tips](#safety-tips)
 - [Check-lists](#check-lists)
 - [Content Discovery](#content-discovery)
@@ -75,7 +75,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 
-## Blog / Writeups / News & more
+## Resources
 
 - [PortSwigger/research](https://portswigger.net/research)
 - [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
@@ -203,6 +203,15 @@ EasyG started out as a script that I use to automate some information gathering 
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ffuf](https://github.com/ffuf/ffuf)
 
+**Crawling**
+- [gospider](https://github.com/jaeles-project/gospider)
+  - `gospider -s target -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"`
+- [hakrawler](https://github.com/hakluke/hakrawler)
+  - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
+- [Katana](https://github.com/projectdiscovery/katana)
+  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
+- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
+
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
 - [wordlists.assetnote.io](https://wordlists.assetnote.io/)
@@ -216,6 +225,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
+- [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 
 **Google Dorking**
 - `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form,swf;
@@ -282,28 +292,15 @@ EasyG started out as a script that I use to automate some information gathering 
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
-
-
-**Crawling**
-- [gospider](https://github.com/jaeles-project/gospider)
-  - `gospider -s target -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"`
-- [hakrawler](https://github.com/hakluke/hakrawler)
-  - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
-- [Katana](https://github.com/projectdiscovery/katana)
-  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
-- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
+- [anew](https://github.com/tomnomnom/anew) to add only new subdomains
 
 
 **Vulnerabilities**
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
-- [SearchSploit](https://github.com/offensive-security/exploitdb#searchsploit) Port services vulnerability checks
-- [CMSeeK](https://github.com/Tuhinshubhra/CMSeeK) CMS Detection & Exploitation Suite
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Automatic Selection `nuclei -u http://target.io -as` 
-  - Check for Exposed panels `%USERPROFILE%\nuclei-templates\exposed-panels`
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
-  - Used in [easyg.rb](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb) `nuclei -l httprobe_results.txt  -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -o out.txt`
   - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
   - log4j `nuclei -l list.txt -as -tags log4j -o output.txt`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
@@ -322,16 +319,10 @@ EasyG started out as a script that I use to automate some information gathering 
 - [base64encode.org](https://www.base64encode.org/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
-- [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
-- [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
-- [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 - [FuzzCoupons](https://github.com/sbrws/FuzzCoupons)
-- [anew](https://github.com/tomnomnom/anew)
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
-- [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
-- [TTSL tool to scrape LinkedIn](https://github.com/dchrastil/TTSL)
 
 
 ### <ins>Burp suite</ins>
@@ -366,7 +357,11 @@ Cool extensions:
 - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
-
+Browser extensions:
+- [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
+- [Wappalyzer](https://www.wappalyzer.com/)
+- [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
+- [DotGit](https://github.com/davtur19/DotGit)
 
 ## Network
 ```
@@ -566,8 +561,10 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
 - [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/)
 - [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
-- [TruffleHog](https://github.com/trufflesecurity/trufflehog)
+- [TruffleHog]([https://github.com/trufflesecurity/trufflehog](https://github.com/trufflesecurity/trufflehog))
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
+- [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
+- [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 
 
 
