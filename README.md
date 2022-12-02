@@ -561,7 +561,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
 - [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/)
 - [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
-- [TruffleHog]([https://github.com/trufflesecurity/trufflehog](https://github.com/trufflesecurity/trufflehog))
+- [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
