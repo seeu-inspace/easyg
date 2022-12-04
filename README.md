@@ -550,7 +550,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
   - example, `eval(` can cause command injection without proper sanitization
 - Search for hardcoded credentials such as API keys, encryption keys and database passwords
   - many API keys start with the same format (ex. AWS keys usually start with `AKIA`), search for patterns
-    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_171255.png">
+    <img src="img/Screenshot_20221110_171255.png">
 	from [ServletTarPit.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/ServletTarPit.java), [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
 - Search for weak cryptography or hashing algorithms
 - Search for outdated dependencies
@@ -559,9 +559,9 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 **Digging deeeper**
 - Prioritize functions like authentication, autorization, PII etc.
   - example: disclosing PII in the logs, from [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
-    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_172648.png">
+    <img src="img/Screenshot_20221110_172648.png">
   - example: SQL injection in [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
-    <img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/Screenshot_20221110_173028.png">
+    <img src="img/Screenshot_20221110_173028.png">
 - Follow any code that deals with user input
 
 **Automation**
@@ -1508,7 +1508,7 @@ How OAuth 2.0 works:
 
 **[OAuth flow](https://portswigger.net/web-security/oauth/grant-types)**
 
-<img src="https://raw.githubusercontent.com/seeu-inspace/easyg/main/img/oauth-authorization-code-flow.jpg" alt="oauth-flow">
+<img src="img/oauth-authorization-code-flow.jpg" alt="oauth-flow">
 
 Following standard endpoints:
 - `/.well-known/oauth-authorization-server`
