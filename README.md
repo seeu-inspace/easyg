@@ -85,8 +85,9 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ## Resources
 
-- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
 - [pentestbook.six2dez.com](https://pentestbook.six2dez.com/)
+- [Book of Bug Bounty Tips](https://gowsundar.gitbook.io/book-of-bugbounty-tips/)
+- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
 - [Bug bounty platforms](https://github.com/disclose/bug-bounty-platforms)
 
 **Blogs**
@@ -996,6 +997,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [XSS mindmap by Jhaddix](https://raw.githubusercontent.com/jhaddix/XSS.png/master/XSS2.png)
 - [Brute XSS](https://brutelogic.com.br/blog/)
 - [Book of BugBounty Tips - Cross Site Scripting (XSS)](https://gowsundar.gitbook.io/book-of-bugbounty-tips/cross-site-scripting-xss)
+- [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 
 **Bypasses**
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
@@ -1034,7 +1036,6 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
   ```
-- [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 - For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
 - For **desktop applications**: 
