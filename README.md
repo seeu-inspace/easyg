@@ -79,28 +79,34 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Direct database access](#direct-database-access)
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
   - [Code injection](#code-injection)
+  - [Windows persistence](#windows-persistence)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 
 ## Resources
 
-- [PortSwigger/research](https://portswigger.net/research)
-- [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
-- [CVE trends](https://cvetrends.com/)
-- [Packet Storm](https://packetstormsecurity.com/)
-- [Securibee](https://securib.ee/)
+- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
+- [pentestbook.six2dez.com](https://pentestbook.six2dez.com/)
+- [Bug bounty platforms](https://github.com/disclose/bug-bounty-platforms)
+
+**Blogs**
 - [Sam Curry](https://samcurry.net/)
   - [Hacking Apple](https://samcurry.net/hacking-apple/)
-- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
-- [HackerOne.com/hacktivity](https://hackerone.com/hacktivity)
-- [List of bug-bounty writeups](https://pentester.land/list-of-bug-bounty-writeups.html)
+- [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
+- [TheXcellerator](https://xcellerator.github.io/)
+- [Securibee](https://securib.ee/beelog/)
+
+**Reports**
 - [Pentest reports](https://pentestreports.com/)
 - [Public pentesting reports](https://github.com/juliocesarfort/public-pentesting-reports)
-- [pentestbook.six2dez.com](https://pentestbook.six2dez.com/)
-- [TheXcellerator](https://xcellerator.github.io/)
-- [persistence-info.github.io](https://persistence-info.github.io/)
 - [Facebook-BugBounty-Writeups](https://github.com/jaiswalakshansh/Facebook-BugBounty-Writeups)
+- [List of bug-bounty writeups](https://pentester.land/list-of-bug-bounty-writeups.html)
+- [HackerOne.com/hacktivity](https://hackerone.com/hacktivity)
 
+**News**
+- [CVE trends](https://cvetrends.com/)
+- [Packet Storm](https://packetstormsecurity.com/)
+- [PortSwigger/research](https://portswigger.net/research)
 
 
 ## Safety tips
@@ -1813,6 +1819,12 @@ Unprivileged users have the ability to change or replace the executable with arb
   - Try to use a `SSID` as a vector for an XSS with a payload like `"/><img src=x onerror=alert(1)>`
 - Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
 
+
+### <ins>Windows persistence</ins>
+
+**Resources**
+- [persistence-info.github.io](https://persistence-info.github.io/)
+- [PayloadsAllTheThings/Windows - Persistence](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md)
 
 
 ## Artificial intelligence vulnerabilities
