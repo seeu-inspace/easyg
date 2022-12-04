@@ -7,11 +7,11 @@
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝
 Made with <3 by Riccardo Malatesta (@seeu)
 ```
-[![License](https://img.shields.io/github/license/seeu-inspace/easyg)](https://github.com/seeu-inspace/easyg/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/seeu-inspace/easyg)](LICENSE)
 [![Twitter](https://img.shields.io/twitter/follow/seeu_inspace?style=social)](https://twitter.com/intent/follow?screen_name=seeu_inspace)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
-EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](https://github.com/seeu-inspace/easyg/blob/main/easyg.rb). Now it's more than that. Here I gather all the resources about PenTesting and Bug Bounty Hunting (and more) that I find interesting: notes, payloads, tools & co.
+EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](easyg.rb). Now it's more than that. Here I gather all the resources about PenTesting and Bug Bounty Hunting (and more) that I find interesting: notes, payloads, tools & co.
 
 ### <ins>Index</ins>
 
@@ -298,7 +298,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
   - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
-  - [gb.rb](https://github.com/seeu-inspace/easyg/blob/main/scripts/gb.rb)
+  - [gb.rb](scripts/gb.rb)
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
@@ -1683,7 +1683,7 @@ Once you have the source code, look for the secrets within the files. To find se
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
 
 Using Process Monitor, add these the filters to find missing dlls.<br/><br/>
-  <img src="https://github.com/seeu-inspace/easyg/blob/main/img/procmon-config-add.png" alt="procmon-config">
+  <img src="img/procmon-config-add.png" alt="procmon-config">
 
 After that, insert the dll in the position of the missing ones with the same name. An example of a dll:
 
