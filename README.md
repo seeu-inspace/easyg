@@ -125,7 +125,7 @@ EasyG started out as a script that I use to automate some information gathering 
     ```HTML
     <!-- PoC by seeu -->
     ```
- - For disabled functionalities, activate them try:
+ - [[Resource](https://twitter.com/Rhynorater/status/1599797037586796544)] For disabled functionalities, activate them try:
    ```JavaScript
    javascript:document.querySelectorAll("*[disabled]").forEach((a)=>{a.removeAttribute("disabled")})
    ```
