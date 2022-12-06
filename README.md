@@ -998,6 +998,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [Brute XSS](https://brutelogic.com.br/blog/)
 - [Book of BugBounty Tips - Cross Site Scripting (XSS)](https://gowsundar.gitbook.io/book-of-bugbounty-tips/cross-site-scripting-xss)
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
+- [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
 
 **Bypasses**
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
