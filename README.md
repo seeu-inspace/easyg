@@ -171,9 +171,24 @@ EasyG started out as a script that I use to automate some information gathering 
   + See every functionality
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + Find more endpoints with Apkleak, Source2Url and see [Content Discovery](#content-discovery)
-- [ ] Test Register
-- [ ] Test Login: 2FA, Password reset, Open Redirect & co.
+  + Follow the [Testing layers](#testing-layers)
+- [ ] Authentication
+  - [ ] Test Register
+    - Look for [Blind XSS and Stored XSS](#cross-site-scripting-xss)
+  - [ ] Account Section
+    - Profile
+      - Stored [XSS](#cross-site-scripting-xss)
+    - App Custom Fields 
+    - Integrations
+      - [SSRF](#server-side-request-forgery-ssrf), [XSS](#cross-site-scripting-xss)
+  - [ ] Test Login
+    - 2FA
+    - Password reset
+    - Open Redirect
+    - & co.
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
+- [ ] Feedback function
+  - Look for [Blind XSS](#cross-site-scripting-xss)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
 - [ ] Content Types
@@ -183,12 +198,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] APIs
   - Methods
   - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
-- [ ] Account Section
-  - Profile
-    - Stored XSS 
-  - App Custom Fields 
-  - Integrations
-    - SSRF, XSS
 - [ ] Errors
   - Change POST to GET
 - [ ] [Test CSRF](#cross-site-request-forgery-csrf)
