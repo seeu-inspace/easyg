@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 #https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 
-
-require 'webdrivers'
-require 'selenium-webdriver'
 require 'uri'
 require 'net/http'
 require 'json'
@@ -56,65 +53,6 @@ if ARGV[1] == "firefox"
 		
 	end
 
-end
-
-if ARGV[1] == "webscreen"
-
-	i = 0
-
-	if File.directory?('webscreen') == false
-		system "mkdir webscreen"
-	end
-	
-	options = Selenium::WebDriver::Chrome::Options.new
-	options.add_argument('--ignore-certificate-errors')
-	options.add_argument('--disable-popup-blocking')
-	options.add_argument('--disable-translate')
-	options.add_argument('--ignore-certificate-errors-spki-list')
-
-	driver = Selenium::WebDriver.for :chrome, options: options
-
-	File.open(ARGV[0],'r').each_line do |f|
-	
-		target = f.gsub("\n","").to_s
-		
-		i += 1
-
-		begin
-		
-			driver.navigate.to target
-
-			driver.save_screenshot('webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png')
-			puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png'
-			
-		rescue
-		
-			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to take a screenshot of " + target
-			
-		end
-		
-	end
-	
-	driver.quit
-	
-end
-
-if ARGV[1] == "crawl"
-
-	File.open(ARGV[0],'r').each_line do |f|
-	
-		target = f.gsub("\n","").to_s
-		
-		puts "[\e[34m+\e[0m] Crawling " + target + " with hakrawler" + "\n"
-		system 'echo ' + target + '| hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"'
-		
-		puts "[\e[34m+\e[0m] Crawling " + target + " with gospider" + "\n"
-		system 'gospider -s "' + target + '" -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 --cookie "0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"'
-		
-		puts "[\e[34m+\e[0m] Crawling " + target + " with katana" + "\n"
-		system 'katana -u "' + target + '" -jc -kf -aff -proxy http://127.0.0.1:8080"'
-		
-	end
 end
 
 if ARGV[1] == "assetenum"
@@ -238,8 +176,6 @@ if ARGV[0] == "help"
 	
 	puts "Options"
 	puts "	firefox					open every entry in <file_input> with firefox"
-	puts "	webscreen				take a screenshot of every url in <file_input>"
-	puts "	crawl					crawl using as targets <file_input>"
 	puts "	assetenum				asset enumeration & co."
 	puts "	help\n\n"
 	
