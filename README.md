@@ -149,7 +149,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Nuclei template matches
 
 ### <ins>Testing layers</ins>
-
 - [ ] Integrations
 - [ ] Application Libraries (usually JavaScript)
 - [ ] Application: Custom Code or COTS
@@ -157,21 +156,22 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
-
 ### <ins>Multiple targets</ins>
-- [ ] Run EasyG assetenum + take screenshots or open results in firefox
-- [ ] Select the interesting targets, see [Risk markers](#risk-markers)
+- [ ] Run EasyG assetenum
+- [ ] Select the interesting targets
+  - See [Risk markers](#risk-markers)
+  - Pass the subdomains to Burp Suite
+  - Open them in firefox
 - [ ] Check for mobile/desktop applications
 
 ### <ins>Single target</ins>
 - [ ] Recon
-  + Explore the app
-  + Search for documentation
-  + Use Crawl from EasyG and Burp, use Paramspider
-  + See every functionality
+  + Explore the app, see and every functionality (eventually search for documentation)
+  + Crawl with Burp Suite and [other tools](#content-discovery)
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + Find more endpoints with Apkleak, Source2Url and see [Content Discovery](#content-discovery)
-  + Follow the [Testing layers](#testing-layers)
+  + Find more endpoints with [Google Dorking](#google-dorking) and see [Content Discovery](#content-discovery)
+    + If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
+  + Check the [Testing layers](#testing-layers)
 - [ ] Authentication
   - [ ] Test Register
     - Look for [Blind XSS and Stored XSS](#cross-site-scripting-xss)
@@ -182,12 +182,12 @@ EasyG started out as a script that I use to automate some information gathering 
     - Integrations
       - [SSRF](#server-side-request-forgery-ssrf), [XSS](#cross-site-scripting-xss)
   - [ ] Test Login
-    - 2FA
-    - Password reset
+    - Password reset poisoning
+    - 2FA bypass
     - Open Redirect
-    - & co.
+  - [ ] See [Authentication Vulnerabilities](#authentication-vulnerabilities)
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
-- [ ] Feedback function
+- [ ] Feedback functions
   - Look for [Blind XSS](#cross-site-scripting-xss)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
