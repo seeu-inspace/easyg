@@ -174,7 +174,7 @@ EasyG started out as a script that I use to automate some information gathering 
   + Check the [Testing layers](#testing-layers)
 - [ ] Authentication
   - See [Authentication vulnerabilities](#authentication-vulnerabilities)
-  - [ ] Account Section
+  - Account Section
     - Profile
       - Stored or Blind [XSS](#cross-site-scripting-xss)
     - App Custom Fields
@@ -688,7 +688,7 @@ xp_cmdshell 'COMMAND';
    "qwerty",
    ...
   ```
-- Search for [Open Redirect](#open-redirect) in login and register
+- Search for [Open Redirect](#open-redirection) in login and register
 
 
 ### <ins>Directory Traversal</ins>
