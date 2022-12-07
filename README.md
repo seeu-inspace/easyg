@@ -161,31 +161,25 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Select the interesting targets
   - See [Risk markers](#risk-markers)
   - Pass the subdomains to Burp Suite
-  - Open them in firefox
+  - Then, open them in firefox
 - [ ] Check for mobile/desktop applications
+  - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 
 ### <ins>Single target</ins>
 - [ ] Recon
-  + Explore the app, see and every functionality (eventually search for documentation)
+  + Explore the app, see and every functionality (eventually, search for documentation)
   + Crawl with Burp Suite and [other tools](#content-discovery)
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + Find more endpoints with [Google Dorking](#google-dorking) and see [Content Discovery](#content-discovery)
-    + If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
   + Check the [Testing layers](#testing-layers)
 - [ ] Authentication
-  - [ ] Test Register
-    - Look for [Blind XSS and Stored XSS](#cross-site-scripting-xss)
+  - See [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [ ] Account Section
     - Profile
-      - Stored [XSS](#cross-site-scripting-xss)
-    - App Custom Fields 
+      - Stored or Blind [XSS](#cross-site-scripting-xss)
+    - App Custom Fields
     - Integrations
       - [SSRF](#server-side-request-forgery-ssrf), [XSS](#cross-site-scripting-xss)
-  - [ ] Test Login
-    - Password reset poisoning
-    - 2FA bypass
-    - Open Redirect
-  - [ ] See [Authentication Vulnerabilities](#authentication-vulnerabilities)
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
 - [ ] Feedback functions
   - Look for [Blind XSS](#cross-site-scripting-xss)
@@ -693,7 +687,8 @@ xp_cmdshell 'COMMAND';
    "password",
    "qwerty",
    ...
-  ``` 
+  ```
+- Search for [Open Redirect](#open-redirect) in login and register
 
 
 ### <ins>Directory Traversal</ins>
