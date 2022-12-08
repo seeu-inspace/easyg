@@ -16,7 +16,7 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Index</ins>
 
 - [Resources](#resources)
-- [Safety tips](#safety-tips)
+- [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
   - [Risk markers](#risk-markers)
   - [Testing layers](#testing-layers)
@@ -110,7 +110,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [PortSwigger/research](https://portswigger.net/research)
 
 
-## Safety tips
+## Useful tips
 
 - For RCE 
   - Never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed.
@@ -125,10 +125,10 @@ EasyG started out as a script that I use to automate some information gathering 
     ```HTML
     <!-- PoC by seeu -->
     ```
- - [[Resource](https://twitter.com/Rhynorater/status/1599797037586796544)] For disabled functionalities, activate them with:
-   ```JavaScript
-   javascript:document.querySelectorAll("*[disabled]").forEach((a)=>{a.removeAttribute("disabled")})
-   ```
+- [[Resource](https://twitter.com/Rhynorater/status/1599797037586796544)] For disabled functionalities, activate them with:
+  ```JavaScript
+  javascript:document.querySelectorAll("*[disabled]").forEach((a)=>{a.removeAttribute("disabled")})
+  ```
 
 
 
