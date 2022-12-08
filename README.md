@@ -323,7 +323,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
   - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
-  - log4j `nuclei -l list.txt -as -tags log4j -o output.txt`
+  - To use tags combined with automatic selection `nuclei -l list.txt -as -tags log4j -o output.txt`
   - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 
 
