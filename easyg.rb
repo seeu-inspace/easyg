@@ -108,7 +108,7 @@ if ARGV[1] == "assetenum"
 		
 		#== github-subdomains ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
-		system "github-subdomains -t github-token.txt -d " + target + " -o output/" + target + "_github.txt"
+		system "github-subdomains -t %GITHUB_TOKEN% -d " + target + " -o output/" + target + "_github.txt"
 		
 		adding_anew("output/" + target + "_github.txt", "output/" + target + "_tmp.txt")
 		
@@ -194,10 +194,15 @@ if ARGV[1] == "assetenum"
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels -o output/nuclei_" + ARGV[0]
 	delete_if_empty "output/nuclei_" + ARGV[0]
 	
-	#== check for log4j ==
-	puts "[\e[36m+\e[0m] Checking for log4j in " + ARGV[0]
+	#== check for log4j with Nuclei ==
+	puts "[\e[36m+\e[0m] Checking for log4j in " + ARGV[0] + " with Nuclei"
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
 	delete_if_empty "output/nuclei_log4j_" + ARGV[0]
+	
+	#== check for CVEs with Nuclei ==
+	puts "[\e[36m+\e[0m] Checking for CVEs in " + ARGV[0] + " with Nuclei"
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -as -tags cve -o output/nuclei_cves_" + ARGV[0]
+	delete_if_empty "output/nuclei_cves_" + ARGV[0]
 	
 end
 
@@ -212,7 +217,7 @@ if ARGV[0] == "help"
 	puts "	help\n\n"
 	
 	puts "Notes 
-	create a file called github-token.txt with your github token in the same dir of easyg
+	set the GITHUB_TOKEN for github-subdomains
 	tested on Windows, change 'type' with 'cat'"
 
 end
