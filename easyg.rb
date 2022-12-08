@@ -74,7 +74,7 @@ if ARGV[1] == "gettoburp"
 			}
 
 			Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
-				puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri
+				puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri.to_s
 				i += 1
 				http.request(req)
 			end
