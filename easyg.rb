@@ -26,10 +26,10 @@ end
 def delete_if_empty(file)
 
 	if File.zero?(file)
-		puts "[\e[34m+\e[0m] No result found"
+		puts "[\e[36m+\e[0m] No result found"
 		File.delete(file) if File.exists?(file)
 	else
-		puts "[\e[34m+\e[0m] Results added at " + file
+		puts "[\e[36m+\e[0m] Results added at " + file
 	end
 	
 end
@@ -44,13 +44,44 @@ if ARGV[1] == "firefox"
 		
 		i += 1
 	
-		puts "[\e[34m" + i.to_s + "\e[0m] Firefox open > " + target
+		puts "[\e[36m#{i.to_s}\e[0m] Firefox open > " + target
 		system 'start firefox "' + target + '"'
 				
 		if i%20==0
 			sleep 30
 		end
 		
+	end
+
+end
+
+if ARGV[1] == "gettoburp"
+
+	proxy_host = '127.0.0.1'
+	proxy_port = '8080'
+	i = 0
+
+	File.open(ARGV[0],'r').each_line do |f|
+		begin
+			uri = URI.parse(f.gsub("\n","").to_s)
+			proxy = Net::HTTP::Proxy(proxy_host, proxy_port)
+
+			req = Net::HTTP::Get.new(uri.request_uri)
+
+			ssl_options = {
+				:use_ssl => true,
+				:verify_mode => OpenSSL::SSL::VERIFY_NONE
+			}
+
+			Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
+				puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri
+				i += 1
+				http.request(req)
+			end
+
+		rescue Exception => e
+			puts "[\e[31m+\e[0m] ERROR: " + e.message
+		end
 	end
 
 end
@@ -66,23 +97,23 @@ if ARGV[1] == "assetenum"
 		target = f.gsub("\n","").to_s
 		
 		#== amass ==
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with amass"
+		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
 		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
 
 		#== subfinder ==
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
+		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
 		system "subfinder -d " + target + " -all -o output/" + target + "_subfinder.txt"
 		
 		adding_anew("output/" + target + "_subfinder.txt", "output/" + target + "_tmp.txt")
 		
 		#== github-subdomains ==
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
+		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
 		system "github-subdomains -t github-token.txt -d " + target + " -o output/" + target + "_github.txt"
 		
 		adding_anew("output/" + target + "_github.txt", "output/" + target + "_tmp.txt")
 		
 		#== crt.sh ==
-		puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with crt.sh"
+		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with crt.sh"
 		
 		begin
 			uri = URI.parse("https://crt.sh/?q=" + target + "&output=json")
@@ -100,13 +131,13 @@ if ARGV[1] == "assetenum"
 			
 			adding_anew("output/" + target + "_crtsh.txt", "output/" + target + "_tmp.txt")
 			
-		rescue
-			puts "[\e[31m+\e[0m] ERROR while trying to retrieve information from crt.sh"
+		rescue Exception => e
+			puts "[\e[31m+\e[0m] ERROR: " + e.message
 		end
 		
 		#== anew final ==
 		
-		puts "\n[\e[34m+\e[0m] Checking if IPs for the subdomains of " + target + " exist"
+		puts "\n[\e[36m+\e[0m] Checking if IPs for the subdomains of " + target + " exist"
 		
 		allsubs_final = File.new("output/" + target + ".txt", 'w')
 		allsubs_tmp = File.open("output/" + target + "_tmp.txt",'r')
@@ -129,42 +160,42 @@ if ARGV[1] == "assetenum"
 		File.delete("output/" + target + "_tmp.txt") if File.exists? "output/" + target + "_tmp.txt"
 		allsubs_final.close unless allsubs_final.nil? or allsubs_final.closed?
 
-		puts "[\e[34m+\e[0m] Results for " + target + " saved as output/" + target + ".txt"
+		puts "[\e[36m+\e[0m] Results for " + target + " saved as output/" + target + ".txt"
 		
-		puts "\n[\e[34m+\e[0m] Adding the results for " + target + " to output/allsubs_" + ARGV[0]
+		puts "\n[\e[36m+\e[0m] Adding the results for " + target + " to output/allsubs_" + ARGV[0]
 		system "type output\\" + target + ".txt | anew output/allsubs_" + ARGV[0]
-		puts "[\e[34m+\e[0m] Results for " + ARGV[0] + " saved as output/allsubs_" + ARGV[0]
+		puts "[\e[36m+\e[0m] Results for " + ARGV[0] + " saved as output/allsubs_" + ARGV[0]
 
 	end
 	
 	#== httprobe ==
-	puts "[\e[34m+\e[0m] Checking output/allsubs_" + ARGV[0] + " with httprobe"
+	puts "[\e[36m+\e[0m] Checking output/allsubs_" + ARGV[0] + " with httprobe"
 	system "type output\\allsubs_" + ARGV[0] + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobe_" + ARGV[0] + " && type output\\httprobe_" + ARGV[0]
-	puts "[\e[34m+\e[0m] Results saved as output/httprobe_" + ARGV[0]
+	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + ARGV[0]
 	
 	#== naabu ==
-	puts "[\e[34m+\e[0m] Searching for more open ports in output/allsubs_" + ARGV[0] + " with naabu"
+	puts "[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + ARGV[0] + " with naabu"
 	system "naabu -v -list output/allsubs_" + ARGV[0] + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + ARGV[0]
 	delete_if_empty "output/naabu_" + ARGV[0]
 	
 	#== naabu | httprobe ==
 	if File.exists? "output/naabu_" + ARGV[0]
-		puts "[\e[34m+\e[0m] Checking for hidden web ports in output/naabu_" + ARGV[0]
+		puts "[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_" + ARGV[0]
 		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
 		
 		if File.exists? "output/httprobe_naabu_" + ARGV[0]
 			adding_anew("output/httprobe_naabu_" + ARGV[0], "output/httprobe_" + ARGV[0])
-			puts "[\e[34m+\e[0m] Results added at output/httprobe_" + ARGV[0]
+			puts "[\e[36m+\e[0m] Results added at output/httprobe_" + ARGV[0]
 		end
 	end
 	
 	#== nuclei ==	
-	puts "[\e[34m+\e[0m] Checking with nuclei in " + ARGV[0]
+	puts "[\e[36m+\e[0m] Checking with nuclei in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels -o output/nuclei_" + ARGV[0]
 	delete_if_empty "output/nuclei_" + ARGV[0]
 	
 	#== check for log4j ==
-	puts "[\e[34m+\e[0m] Checking for log4j in " + ARGV[0]
+	puts "[\e[36m+\e[0m] Checking for log4j in " + ARGV[0]
 	system "nuclei -l output/httprobe_" + ARGV[0] + " -as -tags log4j -o output/nuclei_log4j_" + ARGV[0]
 	delete_if_empty "output/nuclei_log4j_" + ARGV[0]
 	
@@ -176,6 +207,7 @@ if ARGV[0] == "help"
 	
 	puts "Options"
 	puts "	firefox					open every entry in <file_input> with firefox"
+	puts "	gettoburp				for every entry in <file_input> send a GET request"
 	puts "	assetenum				asset enumeration & co."
 	puts "	help\n\n"
 	
