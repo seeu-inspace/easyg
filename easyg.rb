@@ -92,7 +92,7 @@ if ARGV[1] == "gettoburp"
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
 		
-			redirect = 2
+			redirect = 4
 		
 			res = request_fun(URI.parse(f.gsub("\n","").to_s))
 			
