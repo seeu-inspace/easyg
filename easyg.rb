@@ -76,9 +76,7 @@ if ARGV[1] == "firefox"
 		puts "[\e[36m#{i.to_s}\e[0m] Firefox open > " + target
 		system 'start firefox "' + target + '"'
 				
-		if i%20==0
-			sleep 30
-		end
+		sleep 30 if i%20==0
 		
 	end
 
@@ -92,7 +90,7 @@ if ARGV[1] == "gettoburp"
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
 		
-			redirect = 4
+			redirect = 2
 		
 			res = request_fun(URI.parse(f.gsub("\n","").to_s))
 			
@@ -115,10 +113,8 @@ end
 
 if ARGV[1] == "assetenum"
 
-	if File.directory?('output') == false
-		system "mkdir output"
-	end
-
+	system "mkdir output" if File.directory?('output') == false
+	
 	File.open(ARGV[0],'r').each_line do |f|
 	
 		target = f.gsub("\n","").to_s
