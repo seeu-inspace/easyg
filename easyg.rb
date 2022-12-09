@@ -36,6 +36,24 @@ def delete_if_empty(file)
 	
 end
 
+def request_fun(uri, proxy_host, proxy_port, ssl_options)
+	
+	headers = {
+		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
+		"Cookie": "0=1"
+	}
+
+	res = nil
+	req = Net::HTTP::Get.new(uri.request_uri, headers)
+		
+	Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
+		res = http.request(req)
+	end
+
+	return res
+
+end
+
 
 if ARGV[1] == "firefox"
 
@@ -60,24 +78,6 @@ end
 
 
 if ARGV[1] == "gettoburp"
-
-	def request_fun(uri, proxy_host, proxy_port, ssl_options)
-	
-		headers = {
-			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
-			"Cookie": "0=1"
-		}
-
-		res = nil
-		req = Net::HTTP::Get.new(uri.request_uri, headers)
-		
-		Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
-			res = http.request(req)
-		end
-
-		return res
-
-	end
 	
 	proxy_host = '127.0.0.1'
 	proxy_port = '8080'
