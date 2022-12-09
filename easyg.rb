@@ -85,7 +85,7 @@ end
 
 if ARGV[1] == "gettoburp"
 	
-	i = 1
+	i = 0
 	
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
