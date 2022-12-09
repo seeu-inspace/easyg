@@ -161,7 +161,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Select the interesting targets
   - See [Risk markers](#risk-markers)
   - Pass the subdomains to Burp Suite
-  - Open them in firefox
+  - Open them in Firefox
 - [ ] Check for mobile/desktop applications
   - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 
