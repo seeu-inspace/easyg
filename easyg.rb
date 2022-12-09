@@ -18,10 +18,12 @@ puts "\e[36m\n
 \n\e[0m"
 
 
+
 def adding_anew(file_tmp,file_final)
 	system "type " + file_tmp.gsub('/','\\') + " | anew " + file_final
 	File.delete(file_tmp) if File.exists? file_tmp
 end
+
 
 def delete_if_empty(file)
 
@@ -33,6 +35,7 @@ def delete_if_empty(file)
 	end
 	
 end
+
 
 if ARGV[1] == "firefox"
 
@@ -55,28 +58,48 @@ if ARGV[1] == "firefox"
 
 end
 
+
 if ARGV[1] == "gettoburp"
 
+	def request_fun(uri, proxy_host, proxy_port, ssl_options)
+	
+		headers = {
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
+			"Cookie": "0=1"
+		}
+
+		res = nil
+		req = Net::HTTP::Get.new(uri.request_uri, headers)
+		
+		Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
+			res = http.request(req)
+		end
+
+		return res
+
+	end
+	
 	proxy_host = '127.0.0.1'
 	proxy_port = '8080'
-	i = 0
+	i = 1
+
+	ssl_options = {
+		:use_ssl => true,
+		:verify_mode => OpenSSL::SSL::VERIFY_NONE
+	}
 
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
 			uri = URI.parse(f.gsub("\n","").to_s)
-			proxy = Net::HTTP::Proxy(proxy_host, proxy_port)
-
-			req = Net::HTTP::Get.new(uri.request_uri)
-
-			ssl_options = {
-				:use_ssl => true,
-				:verify_mode => OpenSSL::SSL::VERIFY_NONE
-			}
-
-			Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
-				puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri.to_s
-				i += 1
-				http.request(req)
+			res = request_fun(uri, proxy_host, proxy_port, ssl_options)
+			
+			puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri.to_s
+			i += 1
+			
+			if res.is_a?(Net::HTTPRedirection)
+				uri = URI.parse(res['location'])
+				puts "    Redirecting to > " + uri.to_s
+				res = request_fun(uri, proxy_host, proxy_port, ssl_options)
 			end
 
 		rescue Exception => e
@@ -85,6 +108,7 @@ if ARGV[1] == "gettoburp"
 	end
 
 end
+
 
 if ARGV[1] == "assetenum"
 
@@ -205,6 +229,7 @@ if ARGV[1] == "assetenum"
 	delete_if_empty "output/nuclei_cves_" + ARGV[0]
 	
 end
+
 
 if ARGV[0] == "help"
 
