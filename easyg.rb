@@ -90,16 +90,14 @@ if ARGV[1] == "gettoburp"
 
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
-			uri = URI.parse(f.gsub("\n","").to_s)
-			res = request_fun(uri, proxy_host, proxy_port, ssl_options)
+			res = request_fun(URI.parse(f.gsub("\n","").to_s), proxy_host, proxy_port, ssl_options)
 			
-			puts "[\e[36m#{i.to_s}\e[0m] GET > " + uri.to_s
+			puts "[\e[36m#{i.to_s}\e[0m] GET > " + f.gsub("\n","").to_s
 			i += 1
 			
 			if res.is_a?(Net::HTTPRedirection)
-				uri = URI.parse(res['location'])
-				puts "    Redirecting to > " + uri.to_s
-				res = request_fun(uri, proxy_host, proxy_port, ssl_options)
+				puts "    Redirecting to > " + res['location'].to_s
+				res = request_fun(URI.parse(res['location']), proxy_host, proxy_port, ssl_options)
 			end
 
 		rescue Exception => e
