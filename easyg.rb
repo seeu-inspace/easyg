@@ -36,16 +36,24 @@ def delete_if_empty(file)
 	
 end
 
-def request_fun(uri, proxy_host, proxy_port, ssl_options)
+def request_fun(uri)
+	
+	proxy_host = '127.0.0.1'
+	proxy_port = '8080'
 	
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
 		"Cookie": "0=1"
 	}
+	
+	ssl_options = {
+		:use_ssl => true,
+		:verify_mode => OpenSSL::SSL::VERIFY_NONE
+	}
 
 	res = nil
 	req = Net::HTTP::Get.new(uri.request_uri, headers)
-		
+	
 	Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
 		res = http.request(req)
 	end
@@ -79,25 +87,22 @@ end
 
 if ARGV[1] == "gettoburp"
 	
-	proxy_host = '127.0.0.1'
-	proxy_port = '8080'
 	i = 1
-
-	ssl_options = {
-		:use_ssl => true,
-		:verify_mode => OpenSSL::SSL::VERIFY_NONE
-	}
-
+	
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
-			res = request_fun(URI.parse(f.gsub("\n","").to_s), proxy_host, proxy_port, ssl_options)
+		
+			redirect = 2
+		
+			res = request_fun(URI.parse(f.gsub("\n","").to_s))
 			
 			puts "[\e[36m#{i.to_s}\e[0m] GET > " + f.gsub("\n","").to_s
 			i += 1
 			
-			if res.is_a?(Net::HTTPRedirection)
+			while res.is_a?(Net::HTTPRedirection) && redirect > 0
 				puts "    Redirecting to > " + res['location'].to_s
-				res = request_fun(URI.parse(res['location']), proxy_host, proxy_port, ssl_options)
+				res = request_fun(URI.parse(res['location']))
+				redirect -= 1
 			end
 
 		rescue Exception => e
