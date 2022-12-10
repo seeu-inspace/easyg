@@ -143,7 +143,7 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Risk markers</ins>
 - [ ] Copyright 1995
 - [ ] Server: Apache 2.2
-- [ ] Expider SSL Certificate
+- [ ] Expired SSL Certificate
 - [ ] "Internal" in hostname
 - [ ] Shodan returns CVEs
 - [ ] Nuclei template matches
