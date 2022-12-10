@@ -85,7 +85,7 @@ end
 
 if ARGV[1] == "gettoburp"
 	
-	i = 0
+	i = 1
 	
 	File.open(ARGV[0],'r').each_line do |f|
 		begin
@@ -214,7 +214,7 @@ if ARGV[1] == "assetenum"
 	
 	#== nuclei ==	
 	puts "[\e[36m+\e[0m] Checking with nuclei in " + ARGV[0]
-	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels -o output/nuclei_" + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels -t %USERPROFILE%/nuclei-templates/miscellaneous/old-copyright.yaml -o output/nuclei_" + ARGV[0]
 	delete_if_empty "output/nuclei_" + ARGV[0]
 	
 	#== check for log4j with Nuclei ==
