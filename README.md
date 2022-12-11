@@ -108,6 +108,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [CVE trends](https://cvetrends.com/)
 - [Packet Storm](https://packetstormsecurity.com/)
 - [PortSwigger/research](https://portswigger.net/research)
+- [all InfoSec news](https://allinfosecnews.com/)
 
 
 ## Useful tips
