@@ -397,6 +397,7 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
 - [putty](https://www.putty.org/)
+- [MobaXterm](https://mobaxterm.mobatek.net/)
 - [proxychains](https://github.com/haad/proxychains)
   - [learning hacking? DON'T make this mistake!! (hide yourself with Kali Linux and ProxyChains)](https://www.youtube.com/watch?v=qsA8zREbt6g)
 
