@@ -4,9 +4,7 @@ require 'selenium-webdriver'
 
 i = 0
 
-if File.directory?('webscreen') == false
-	system "mkdir webscreen"
-end
+system "mkdir webscreen" if File.directory?('webscreen') == false
 	
 options = Selenium::WebDriver::Chrome::Options.new
 options.add_argument('--ignore-certificate-errors')
