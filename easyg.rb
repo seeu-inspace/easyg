@@ -222,7 +222,7 @@ if ARGV[0] == "help"
 	puts "Options"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
-	puts "	assetenum				asset enumeration & co."
+	puts "	assetenum				asset enumeration"
 	puts "	help\n\n"
 	
 	puts "Notes 
