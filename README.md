@@ -26,6 +26,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
+- OWASP
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
 - [Network](#network)
