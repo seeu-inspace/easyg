@@ -195,11 +195,9 @@ EasyG started out as a script that I use to automate some information gathering 
   - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 - [ ] Errors
   - Change POST to GET
-- [ ] [Test CSRF](#cross-site-request-forgery-csrf)
-- [ ] Check if caching is implemented and how
-- [ ] Check Cross-domain interactions
 - [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 - [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
+- [ ] Look at the index of this repo and see if you missed anything interesting
 
 ### <ins>Mobile</ins>
 - [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
