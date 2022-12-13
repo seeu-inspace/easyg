@@ -16,6 +16,7 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Index</ins>
 
 - [Resources](#resources)
+  - [Web3 resources](#web3-resources)
 - [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
   - [Risk markers](#risk-markers)
@@ -29,6 +30,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - OWASP
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
+  - [Web3 tools](#web3-tools)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile-1)
@@ -111,6 +113,51 @@ EasyG started out as a script that I use to automate some information gathering 
 - [PortSwigger/research](https://portswigger.net/research)
 - [all InfoSec news](https://allinfosecnews.com/)
 
+### <ins>Web3 resources</ins>
+
+**Smart contract weakness classification**
+- [Smart Contract Weakness Classification and Test Cases (SWC) Registry](https://swcregistry.io/)
+- [Smart Contract Security Verification Standard (SCSVS)](https://securing.github.io/SCSVS/)
+- [Decentralized Application Security Project (DASP) Top 10](https://dasp.co/)
+- [Ethereum Smart Contract Best Practices | Attacks](https://consensys.github.io/smart-contract-best-practices/attacks/)
+
+**Public security audits**
+- [OpenZeppelin's public security audits](https://blog.openzeppelin.com/security-audits/)
+- [Halborn's public security audits](https://github.com/HalbornSecurity/PublicReports/tree/master/Solidity%20Smart%20Contract%20Audits)
+- [Oak Security's public security audits](https://github.com/oak-security/audit-reports)
+- [code4rena Audit Reports](https://code4rena.com/reports/)
+- [Web3 Security Library | Bugfix Reviews](https://github.com/immunefi-team/Web3-Security-Library/tree/main/BugFixReviews)
+- [Audit Hero findings](https://audit-hero.com/search-findings)
+- [Secureum's substack](https://secureum.substack.com/)
+- [The Auditor Book](https://theauditorbook.com/)
+- [Blockchain Security Audit List](https://github.com/0xNazgul/Blockchain-Security-Audit-List)
+
+**Blogs**
+- [Immunefi's blog](https://immunefi.medium.com/)
+- [OpenZeppelin's blog](https://blog.openzeppelin.com/)
+- [Halborn's blog](https://halborn.com/blog/)
+- [SlowMist's blog](https://slowmist.medium.com/)
+- [PWNING](https://pwning.mirror.xyz/)
+- [samczsun's blog](https://samczsun.com/)
+
+**Rekt updates**
+- [rekt.news](https://rekt.news/)
+- [DeFi Hacks Analysis - Root Cause](https://wooded-meter-1d8.notion.site/0e85e02c5ed34df3855ea9f3ca40f53b?v=22e5e2c506ef4caeb40b4f78e23517ee)
+
+**Newsletters**
+- [The Daily Gwei](https://thedailygwei.substack.com/)
+- [Blockchain Threat Intelligence](https://newsletter.blockthreat.io/)
+- [Week in Ethereum News](https://weekinethereumnews.com/)
+- [HashingBits](https://quillaudits.substack.com/)
+
+**Other resources**
+- [Web3 Security Library](https://github.com/immunefi-team/Web3-Security-Library)
+- [Simple Security Toolkit](https://github.com/nascentxyz/simple-security-toolkit)
+- [Non-EVM blockchains](https://defillama.com/chains/Non-EVM)
+- [Awesome Ethereum Security](https://github.com/crytic/awesome-ethereum-security)
+- [Secureum](https://www.youtube.com/c/SecureumVideos)
+- [Blocksec CTFs](https://github.com/blockthreat/blocksec-ctfs)
+- [Smart Contract Auditing Heuristics](https://github.com/OpenCoreCH/smart-contract-auditing-heuristics)
 
 ## Useful tips
 
@@ -378,11 +425,23 @@ Cool extensions:
 - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
-Browser extensions:
+Browser extensions
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [DotGit](https://github.com/davtur19/DotGit)
+
+
+### <ins>Web3 tools</ins>
+
+- [Remix](https://remix-project.org/)
+- [Truffle Suite](https://trufflesuite.com/docs/)
+  - [Truffle](https://trufflesuite.com/docs/truffle/)
+  - [Ganache](https://trufflesuite.com/ganache/)
+  - [Drizzle](https://trufflesuite.com/docs/drizzle/)
+  - [Truffle for VSCode](https://trufflesuite.com/docs/vscode-ext/)
+- [dapp.tools](https://dapp.tools/)
+  - [seth](https://github.com/dapphub/dapptools/tree/master/src/seth)
 
 ## Network
 ```
