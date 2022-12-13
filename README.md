@@ -30,7 +30,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - OWASP
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
-  - [Web3 tools](#web3-tools)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile-1)
@@ -425,23 +424,13 @@ Cool extensions:
 - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
-Browser extensions
+Browser extensions:
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [DotGit](https://github.com/davtur19/DotGit)
 
 
-### <ins>Web3 tools</ins>
-
-- [Remix](https://remix-project.org/)
-- [Truffle Suite](https://trufflesuite.com/docs/)
-  - [Truffle](https://trufflesuite.com/docs/truffle/)
-  - [Ganache](https://trufflesuite.com/ganache/)
-  - [Drizzle](https://trufflesuite.com/docs/drizzle/)
-  - [Truffle for VSCode](https://trufflesuite.com/docs/vscode-ext/)
-- [dapp.tools](https://dapp.tools/)
-  - [seth](https://github.com/dapphub/dapptools/tree/master/src/seth)
 
 ## Network
 ```
