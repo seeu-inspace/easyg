@@ -830,6 +830,11 @@ From a user perspective, access controls can be divided into the following categ
 
 ### <ins>Server-side request forgery (SSRF)</ins>
 
+**Resources**
+- [SSRF Mindmap](https://xmind.app/m/eJm7bd/#)
+- [How I made $31500 by submitting a bug to Facebook](https://medium.com/@win3zz/how-i-made-31500-by-submitting-a-bug-to-facebook-d31bb046e204)
+- [SSRFmap](https://github.com/swisskyrepo/SSRFmap)
+
 **SSRF with blacklist-based input filters bypass**
 Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
 - Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
