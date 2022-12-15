@@ -16,7 +16,6 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Index</ins>
 
 - [Resources](#resources)
-  - [Web3 resources](#web3-resources)
 - [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
   - [Risk markers](#risk-markers)
