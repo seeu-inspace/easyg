@@ -604,8 +604,9 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 
 **Tools**
 - [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
-- [sqlmap](https://sqlmap.org/)
+- [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
 
+[**sqlmap**](https://sqlmap.org/)
 ```
  > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
                   --tables (to see db)
