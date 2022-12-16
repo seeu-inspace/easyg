@@ -196,7 +196,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - Change POST to GET
 - [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 - [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
-- [ ] Look at the index of this repo and see if you missed anything interesting
+- [ ] [Look at the index of this repo](#index) and see if you missed anything interesting
 
 ## Content Discovery
 
