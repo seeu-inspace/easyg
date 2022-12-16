@@ -534,6 +534,12 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 ├── **assets/** application assets<br/>
 └── **resources.arsc** contains compiled resources in a binary format
 
+**Data storage** search for PII unencrypted in
+- [ ] Phone system logs
+- [ ] Webkit cache
+- [ ] Dbs, plists, etc.
+- [ ] Hardcoded in the binary
+
 **Android tools**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
 - [apps.evozi.com](https://apps.evozi.com/apk-downloader/) Download APKs
@@ -605,7 +611,9 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
                   --tables (to see db)
                   -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
                   --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
-		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3
+		  -l (to parse a Burp log file)
+		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
+		  --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
 ```
 
 **Some payloads**
