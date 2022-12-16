@@ -198,11 +198,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 - [ ] Look at the index of this repo and see if you missed anything interesting
 
-### <ins>Mobile</ins>
-- [Mobile Application Penetration Testing Cheatsheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
-- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
-- [OWASP Mobile Application Security](https://mas.owasp.org/)
-
 ## Content Discovery
 
 **Some tips**
@@ -539,6 +534,11 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 - [ ] Webkit cache
 - [ ] Dbs, plists, etc.
 - [ ] Hardcoded in the binary
+
+**Resources**
+- [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
+- [OWASP Mobile Application Security](https://mas.owasp.org/)
 
 **Android tools**
 - [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
