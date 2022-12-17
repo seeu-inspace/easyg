@@ -803,6 +803,7 @@ From a user perspective, access controls can be divided into the following categ
 ### <ins>File upload vulnerabilities</ins>
 
 **Upload Functions check-list**
+- [ ] Check if the method `PUT` is enabled
 - [ ] Integrations (from 3rd party)
   - XSS
 - [ ] Self Uploads
@@ -830,9 +831,28 @@ From a user perspective, access controls can be divided into the following categ
 - shell.php\u563b.png
 - shell.php%E5%98%BB.png
 
-**Resource**
-- [How I earned $500 by uploading a file: write-up of one of my first bug bounty](https://medium.com/@seeu-inspace/how-i-earned-500-by-uploading-a-file-write-up-of-one-of-my-first-bug-bounty-c174cf8ea553)
+**multipart/form-data POST request**
+```HTTP
+POST / HTTP/2
+Host: example.io
+Content-Type: multipart/form-data; boundary=---------------------------374598703146120535182333328
+Content-Length: 342
 
+-----------------------------374598703146120535182333328
+Content-Disposition: form-data; name="key"
+
+general
+-----------------------------374598703146120535182333328
+Content-Disposition: form-data; name="file"; filename="file.pdf"
+Content-Type: application/pdf
+
+$content$
+-----------------------------374598703146120535182333328--
+```
+
+**Resources**
+- [Common MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
+- [How I earned $500 by uploading a file: write-up of one of my first bug bounty](https://seeu-inspace.medium.com/how-i-earned-500-by-uploading-a-file-write-up-of-one-of-my-first-bug-bounty-c174cf8ea553)
 
 
 ### <ins>Server-side request forgery (SSRF)</ins>
