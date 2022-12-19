@@ -1036,11 +1036,10 @@ Manually testing for XXE vulnerabilities generally involves
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
-- [XSS mindmap by Jhaddix](https://raw.githubusercontent.com/jhaddix/XSS.png/master/XSS2.png)
-- [Brute XSS](https://brutelogic.com.br/blog/)
-- [Book of BugBounty Tips - Cross Site Scripting (XSS)](https://gowsundar.gitbook.io/book-of-bugbounty-tips/cross-site-scripting-xss)
-- [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
-- [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
+- Articles
+  - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
+  - [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
+  - [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
 
 **CSP**
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
