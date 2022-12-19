@@ -924,9 +924,8 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - https://attacker.com\.victim.com
 - https://attacker.com/.victim.com
 - https://subdomain.victim.com/r/redir?url=https%3A%2F%2Fvictim.com%40ATTACKER_WEBSITE.COM?x=subdomain.victim.com%2f
-- https://www.victim.com/redir/r.php?redirectUri=https://evilsite%E3%80%82com%23.victim.com/
-- https://www.victim.com/redir/r.php?redirectUri=/%0d/evilsite.com/
-- https://attackerE3%80%82%23.victim.com/
+- https://www.victim.com/redir/r.php?redirectUri=https://attacker%E3%80%82com%23.victim.com/
+- https://www.victim.com/redir/r.php?redirectUri=/%0d/attacker.com/
 
 
 ### <ins>XXE injection</ins>
