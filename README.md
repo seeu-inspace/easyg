@@ -334,6 +334,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
 - [FuzzCoupons](https://github.com/sbrws/FuzzCoupons)
+- [Exploit Database](https://www.exploit-db.com/)
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
 
