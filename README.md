@@ -211,8 +211,11 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Shodan](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap)
 
 **Tools**
-- [feroxbuster](https://github.com/epi052/feroxbuster) `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
+- [feroxbuster](https://github.com/epi052/feroxbuster)
+  - `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
 - [dirsearch](https://github.com/maurosoria/dirsearch)
+  - `dirsearch -l list.txt -x 404,500,501,502,503 -e * -t 10`
+  - `dirsearch -u target.io -x 404,500,501,502,503 -e * -t 10`
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ffuf](https://github.com/ffuf/ffuf)
 
