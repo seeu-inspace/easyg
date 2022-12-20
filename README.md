@@ -306,6 +306,8 @@ EasyG started out as a script that I use to automate some information gathering 
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew) to add only new subdomains
+- [httpx](https://github.com/projectdiscovery/httpx)
+  - `type scope.txt | httpx -sc -mc 404`
 
 
 **Vulnerabilities**
