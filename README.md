@@ -314,6 +314,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 
 **Vulnerabilities**
+- [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [nuclei](https://github.com/projectdiscovery/nuclei)
   - Automatic Selection `nuclei -u http://target.io -as` 
