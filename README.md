@@ -85,7 +85,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 **Blogs**
 - [Skeleton Scribe (albinowax)](https://www.skeletonscribe.net)
-' [PortSwigger Research](https://portswigger.net/research)
+- [PortSwigger Research](https://portswigger.net/research)
 
 **Reports**
 - [Pentest reports](https://pentestreports.com/)
