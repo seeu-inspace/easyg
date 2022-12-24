@@ -204,9 +204,10 @@ if ARGV[1] == "assetenum"
 	#== naabu | httprobe ==
 	if File.exists? "output/naabu_" + ARGV[0]
 		puts "[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_" + ARGV[0]
-		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0] + " && type output\\httprobe_naabu_" + ARGV[0]
+		system "type output\\naabu_" + ARGV[0] + " | httprobe > output/httprobe_naabu_" + ARGV[0]
 		
 		if File.exists? "output/httprobe_naabu_" + ARGV[0]
+			system "type output\\httprobe_naabu_" + ARGV[0]
 			adding_anew("output/httprobe_naabu_" + ARGV[0], "output/httprobe_" + ARGV[0])
 			puts "[\e[36m+\e[0m] Results added at output/httprobe_" + ARGV[0]
 		end
