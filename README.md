@@ -156,6 +156,10 @@ EasyG started out as a script that I use to automate some information gathering 
     - Integrations
       - [SSRF](#server-side-request-forgery-ssrf), [XSS](#cross-site-scripting-xss)
 - [ ] [Upload Functions](#file-upload-vulnerabilities)
+- [ ] Email functions, check if you can send emails from the target
+  - [ ] Spoofing
+  - [ ] HTML Injection
+  - [ ] [XSS](#cross-site-scripting-xss)
 - [ ] Feedback functions
   - Look for [Blind XSS](#cross-site-scripting-xss)
 - [ ] Broken Access Control, IDOR & co
@@ -1037,7 +1041,7 @@ Manually testing for XXE vulnerabilities generally involves
 - If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
 
 **Payloads**
-- HTML inj 
+- HTML injection
   ```HTML
   <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
   ```
