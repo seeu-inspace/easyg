@@ -8,6 +8,7 @@
 Made with <3 by Riccardo Malatesta (@seeu)
 ```
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![eth](https://img.shields.io/badge/ETH-riccardomalatesta.eth-blue)](https://etherscan.io/address/riccardomalatesta.eth)
 
 EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](easyg.rb). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
