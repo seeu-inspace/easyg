@@ -7,7 +7,6 @@
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝
 Made with <3 by Riccardo Malatesta (@seeu)
 ```
-[![License](https://img.shields.io/github/license/seeu-inspace/easyg)](LICENSE)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![eth](https://img.shields.io/badge/ETH-riccardomalatesta.eth-blue)](https://etherscan.io/address/riccardomalatesta.eth)
 
