@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 #https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu
 
 require 'uri'
 require 'net/http'
@@ -143,7 +144,7 @@ if ARGV[1] == "assetenum"
 			response = Net::HTTP.get_response(uri)
 			crtsh = JSON.parse((response.body).to_s)
 
-			crtsh_o = File.new("subdomains/" + target + "_crtsh.txt", "w")
+			crtsh_o = File.new("output/" + target + "_crtsh.txt", "w")
 
 			crtsh.each do | f |
 				puts f["common_name"].gsub('*.','').to_s
@@ -156,6 +157,37 @@ if ARGV[1] == "assetenum"
 			
 		rescue Exception => e
 			puts "[\e[31m+\e[0m] ERROR: " + e.message
+		end
+		
+		#== gobuster ==
+		
+		if ARGV[2] == "gb"
+		
+			uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
+			response = Net::HTTP.get_response(uri)
+			alltxt = (response.body).to_s
+			File.open('all.txt', 'w') { |file| file.write(alltxt) }
+		
+			puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
+			system "gobuster dns -d " + target + " -v -t 250 --no-color --wildcard -o output/" + target + "_gobuster_tmp.txt -w all.txt"
+
+			gobuster_o = File.new("output/" + target + "_gobuster.txt", 'w')
+			gobuster_tmp = File.open("output/" + target + "_gobuster_tmp.txt",'r')
+
+			gobuster_tmp.each_line do |f|
+				if f.include? "Found: "
+					gobuster_o.puts f.gsub("Found: ","")
+				end
+			end
+
+			gobuster_tmp.close unless gobuster_tmp.nil? or gobuster_tmp.closed?
+			File.delete("output/" + target + "_gobuster_tmp.txt") if File.exists? "output/" + target + "_gobuster_tmp.txt"
+			
+			gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
+			adding_anew("output/" + target + "_gobuster.txt", "output/" + target + "_tmp.txt")
+			
+			File.delete("all.txt") if File.exists? "all.txt"
+		
 		end
 		
 		#== anew final ==
@@ -223,7 +255,7 @@ if ARGV[0] == "help"
 	puts "Options"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
-	puts "	assetenum				asset enumeration"
+	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
 	puts "	help\n\n"
 	
 	puts "Notes 
