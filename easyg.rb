@@ -148,7 +148,9 @@ if ARGV[1] == "assetenum"
 
 			crtsh.each do | f |
 				puts f["common_name"].gsub('*.','').to_s
-				crtsh_o.puts f["common_name"].gsub('*.','').to_s
+				if f.include? "." + target
+					crtsh_o.puts f["common_name"].gsub('*.','').to_s
+				end
 			end
 
 			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
