@@ -165,10 +165,12 @@ if ARGV[1] == "assetenum"
 		
 		if ARGV[2] == "gb"
 		
-			uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
-			response = Net::HTTP.get_response(uri)
-			alltxt = (response.body).to_s
-			File.open('all.txt', 'w') { |file| file.write(alltxt) }
+			if !File.exists? "all.txt"
+				uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
+				response = Net::HTTP.get_response(uri)
+				alltxt = (response.body).to_s
+				File.open('all.txt', 'w') { |file| file.write(alltxt) }
+			end
 		
 			puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
 			system "gobuster dns -d " + target + " -v -t 250 --no-color --wildcard -o output/" + target + "_gobuster_tmp.txt -w all.txt"
@@ -187,9 +189,7 @@ if ARGV[1] == "assetenum"
 			
 			gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
 			adding_anew("output/" + target + "_gobuster.txt", "output/" + target + "_tmp.txt")
-			
-			File.delete("all.txt") if File.exists? "all.txt"
-		
+
 		end
 		
 		#== anew final ==
