@@ -208,7 +208,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [hakrawler](https://github.com/hakluke/hakrawler)
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Katana](https://github.com/projectdiscovery/katana)
-  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080"`
+  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080" -H "Cookie: 0=1"`
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
