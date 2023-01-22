@@ -239,6 +239,13 @@ EasyG started out as a script that I use to automate some information gathering 
 - Find CVEs, like CVE-2019-9647 `intext:"Powered by Gila CMS"`
 - Errors `site:target.com intext:"Warning: mysql_num_rows()"`
 - `intitle:"Index of /" + ".htaccess"`
+- [Google Dorks - Cloud Storage:](https://mobile.twitter.com/TakSec/status/1616852760141627393)
+  ```
+  site:http://s3.amazonaws.com "target.com"
+  site:http://blob.core.windows.net "target.com"
+  site:http://googleapis.com "target.com"
+  site:http://drive.google.com "target.com"
+  ```
 
 ### <ins>GitHub Dorking</ins>
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
