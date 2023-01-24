@@ -66,6 +66,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Git source code exposure](#git-source-code-exposure)
   - [Subdomain takeover](#subdomain-takeover)
   - [4** Bypass](#4-bypass)
+  - [Application level Denial of Service](#application-level-denial-of-service)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -1700,6 +1701,18 @@ Once you have the source code, look for the secrets within the files. To find se
 - [403 Bypasser](https://portswigger.net/bappstore/444407b96d9c4de0adb7aed89e826122) Burp extension, test 403 bypasses on the run
 - Replace `HTTP/n` with `HTTP/1.1`, `HTTP/2` or `HTTP/3`
 - Change the request from `GET` to `POST` or viceversa
+
+
+
+### <ins>Application level Denial of Service</ins>
+
+- If the application gives the possibility to download data, try to download too much data
+  - If there are restrictions, try to bypass
+- In file uploads, try to upload huge files
+- In chat section, try to send big messages and see how the application behaves
+- [Regular expression Denial of Service - ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
+  - search for [`RegExp()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+
 
 
 ## Thick client vulnerabilities
