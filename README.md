@@ -1712,6 +1712,14 @@ Once you have the source code, look for the secrets within the files. To find se
 - In chat section, try to send big messages and see how the application behaves
 - [Regular expression Denial of Service - ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
   - search for [`RegExp()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+- Long Password DoS Attack (Note: the value of password is hashed and then stored in Databases)
+  - Check for length restriction and play with it
+  - If there is no restriction, test until the application slows down
+  - [password.txt](https://raw.githubusercontent.com/KathanP19/HowToHunt/master/Application_Level_DoS/Password.txt)
+- Long string DoS
+- DoS against a victim
+  - Sending a reset link might disable an user's account, spam to prevent the user from accessing their account
+  - Multiple wrong passwords might disable an user's account
 
 
 
