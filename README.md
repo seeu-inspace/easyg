@@ -9,8 +9,6 @@ Made with <3 by Riccardo Malatesta (@seeu)
 ```
 [![License](https://img.shields.io/github/license/seeu-inspace/easyg)](LICENSE)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![eth](https://img.shields.io/badge/ETH-riccardomalatesta.eth-blue)](https://etherscan.io/address/riccardomalatesta.eth)
-[![Twitter](https://img.shields.io/twitter/follow/seeu_inspace?style=social)](https://twitter.com/intent/follow?screen_name=seeu_inspace)
 
 EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](easyg.rb). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
@@ -326,6 +324,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Exploit Database](https://www.exploit-db.com/)
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
+- [Create a random text file](https://onlinefiletools.com/generate-random-text-file)
 
 
 ### <ins>Burp suite</ins>
