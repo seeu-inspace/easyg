@@ -360,6 +360,7 @@ Cool extensions:
 - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 - [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
+- [Burp Bounty](https://burpbounty.net/)
 
 Browser extensions:
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
