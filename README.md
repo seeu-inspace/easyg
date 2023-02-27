@@ -17,7 +17,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Resources](#resources)
 - [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
-  - [Risk markers](#risk-markers)
   - [Testing layers](#testing-layers)
   - [Multiple targets](#multiple-targets)
   - [Single target](#single-target)
