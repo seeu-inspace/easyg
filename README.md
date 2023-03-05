@@ -25,6 +25,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [GitHub Dorking](#github-dorking)
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
+  - [EasyG](#easyg)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile)
@@ -367,6 +368,21 @@ Browser extensions:
 - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [DotGit](https://github.com/davtur19/DotGit)
 
+
+
+### <ins>EasyG</ins>
+
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
+
+- [scripts](scripts/)
+  - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
+  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
+  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
+  - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
+  - [zip.py](scripts/zip.py) create custom zip files
+- [lists](lists/)
+  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
+- [shells](shells/) to test file uploads
 
 
 ## Network
