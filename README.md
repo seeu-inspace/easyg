@@ -424,8 +424,8 @@ host -l domain.com nameserver                         Perform a DNS zone transfe
 nbtstat -A x.x.x.x                                    Get hostname for IP address.
 ip addr add 192.168.2.22/24 dev eth0                  Adds a hidden IP address to Linux, does not show up when performing an ifconfig.
 tcpkill -9 host google.com                            Blocks access to google.com from the host machine.
-echo \"1\" > /proc/sys/net/ipv4/ip_forward              Enables IP forwarding, turns Linux box into a router – handy for routing traffic through a box.
-echo \"8.8.8.8\" > /etc/resolv.conf                     Use Google DNS.  
+echo \"1\" > /proc/sys/net/ipv4/ip_forward            Enables IP forwarding, turns Linux box into a router – handy for routing traffic through a box.
+echo \"8.8.8.8\" > /etc/resolv.conf                   Use Google DNS.  
 ```
 
 **Linux User Management**
@@ -435,7 +435,7 @@ id                                                    Shows currently logged in 
 last                                                  Shows last logged in users.
 mount                                                 Show mounted drives.
 df -h                                                 Shows disk usage in human readable output.
-echo \"user:passwd\" | chpasswd                         Reset password in one line.
+echo \"user:passwd\" | chpasswd                       Reset password in one line.
 getent passwd                                         List users on Linux.
 strings /usr/local/bin/blah                           Shows contents of none text files, e.g. whats in a binary.
 uname -ar                                             Shows running kernel version.
