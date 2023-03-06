@@ -407,7 +407,9 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 
 ## Linux
 
-**Linux Commands**
+Note: a lot of these commands are from [RTFM: Red Team Field Manual](https://www.goodreads.com/en/book/show/21419959) by Ben Clark and from [PEN-200: Penetration Testing with Kali Linux](https://www.offsec.com/courses/pen-200/) by Offensive Security.
+
+**Linux Services and Networking**
 ```
 netstat -tulpn                                        Show Linux network ports with process ID’s (PIDs)
 watch ss -stplu                                       Watch TCP, UDP open ports in real time with socket summary.
@@ -425,7 +427,10 @@ nbtstat -A x.x.x.x                                    Get hostname for IP addres
 ip addr add 192.168.2.22/24 dev eth0                  Adds a hidden IP address to Linux, does not show up when performing an ifconfig.
 tcpkill -9 host google.com                            Blocks access to google.com from the host machine.
 echo \"1\" > /proc/sys/net/ipv4/ip_forward            Enables IP forwarding, turns Linux box into a router – handy for routing traffic through a box.
-echo \"8.8.8.8\" > /etc/resolv.conf                   Use Google DNS.  
+echo \"8.8.8.8\" > /etc/resolv.conf                   Use Google DNS.
+sudo systemctl start ssh                              Start the SSH service in Kali.
+sudo ss -antlp | grep sshd                            Confirm that SSH has been started and is running.
+sudo systemctl enable ssh                             Configure SSH to start at boot time.
 ```
 
 **Linux User Management**
@@ -455,6 +460,13 @@ base64 < input-file > output-file                     Base64 encodes input file 
 base64 -d < input-file > output-file                  Base64 decodes input file and outputs a Base64 decoded file called output-file.
 touch -r ref-file new-file                            Creates a new file using the timestamp data from the reference file, drop the -r to simply create a file.
 rm -rf                                                Remove files and directories without prompting for confirmation.
+mkdir -p pt/{recon,exploit,report}                    This command will create a directory pt and inside of it the directories recon, exploit and report.
+ls /etc/apache2/wwwold/*.conf                         Display files with certain criteria.
+ls -a                                                 -a option is used to display all files.
+ls -1                                                 Display each file in a single line.
+ls -l                                                 Shows detailed information about the files and directories in a directory.
+pwd                                                   Print the current directory.
+cd ~                                                  Return to the home directory.
 ```
 
 **Misc Commands**
@@ -468,7 +480,13 @@ kill -9 $$                                            Kill current session.
 chown user:group blah                                 Change owner of file or dir.
 chown -R user:group blah                              Change owner of file or dir and all underlying files / dirs – recersive chown.
 chmod 600 file                                        Change file / dir permissions, see [Linux File System Permissons](#linux-file-system-permissions) for details.
-ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
+ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history.
+man -k '^passwd$'                                     See the documentation of a command. Use the flag -k for keyword research.
+man 5 passwd                                          See the page 5 of the documentation.
+apropos descr                                         See wich description from docs matches the input for apropos.
+locate sbd.exe                                        Locate "sbd.exe".
+sudo find / -name sbd*                                Perform recursive search starting from root file system directory and look for files that starts with "sbd".
+which sbd                                             Search in $PATH "sbd".
 ```
 
 **Linux File System Permissions**
@@ -500,8 +518,7 @@ ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history
 /sbin                                                 Programs for use by the system and the system administrator.
 /tmp                                                  Temporary space for use by the system, cleaned upon reboot.
 /usr                                                  Programs, libraries, documentation etc. for all user-related programs.
-/var                                                  Storage for all variable files and temporary files created by users, such as log files, mail queue,
-                                                      print spooler. Web servers, Databases etc.
+/var                                                  Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler. Web servers, Databases etc.
 ```
 
 **Linux Interesting Files / Directories**
