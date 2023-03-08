@@ -435,6 +435,8 @@ sudo systemctl start apache2                             Start the apache servic
 sudo ss -antlp | grep apache                             Confirm that apache has been started and is running.
 sudo systemctl enable apache2                            Enable apache to start at boot time.
 systemctl list-unit-files                                Displaying all available services.
+ps -fe                                                   Common ps syntax to list all the processes currently running; f: display full format listing (UID, PID, PPID, etc.), e: select all processes, C: select by command name
+sudo tail -f /var/log/apache2/access.log                 Monitoring the Apache log file using tail command.
 ```
 
 **Linux User Management**
@@ -448,7 +450,6 @@ echo \"user:passwd\" | chpasswd                          Reset password in one l
 getent passwd                                            List users on Linux.
 strings /usr/local/bin/blah                              Shows contents of none text files, e.g. whats in a binary.
 uname -ar                                                Shows running kernel version.
-PATH=$PATH:/my/new-path                                  Add a new PATH, handy for local FS manipulation.
 history                                                  Show bash history, commands the user has entered previously.
 ```
 
@@ -475,6 +476,10 @@ cd ~                                                     Return to the home dire
 echo "test1" > test.txt                                  Saves "test1" in the new file "test.txt".
 echo "test2" >> test.txt                                 Add in a new line "test2" in the file "test.txt".
 echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extracting fields from a stream using a multi-character separator in awk.
+comm scan-a.txt scan-b.txt                               Compare files.
+diff -c scan-a.txt scan-b.txt                            Compare files, context format.
+diff -u scan-a.txt scan-b.txt                            Compare files, unified format.
+vimdiff scan-a.txt scan-b.txt                            Compare files using vim.
 ```
 
 **Misc Commands**
@@ -522,6 +527,7 @@ cat test.txt | wc -m                                     Piping the output of th
 export vartest=8.8.8.8                                   Declare an environment variable.
 env                                                      See all declared environment variables.
 $$                                                       Display the ID of the current shell instance.
+PATH=$PATH:/my/new-path                                  Add a new PATH, handy for local FS manipulation.
 $PATH                                                    List of directories for the shell to locate executable files.
 $USER                                                    Current user.
 $PWD                                                     Current directory path.
@@ -547,7 +553,7 @@ $HOME                                                    Home directory path.
 /sbin                                                    Programs for use by the system and the system administrator.
 /tmp                                                     Temporary space for use by the system, cleaned upon reboot.
 /usr                                                     Programs, libraries, documentation etc. for all user-related programs.
-/var                                                     Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler. Web servers, Databases etc.
+/var                                                     Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler, Web servers, Databases etc.
 ```
 
 **Linux Interesting Files / Directories**
