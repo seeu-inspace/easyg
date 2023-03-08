@@ -431,6 +431,10 @@ echo \"8.8.8.8\" > /etc/resolv.conf                   Use Google DNS.
 sudo systemctl start ssh                              Start the SSH service in Kali.
 sudo ss -antlp | grep sshd                            Confirm that SSH has been started and is running.
 sudo systemctl enable ssh                             Configure SSH to start at boot time.
+sudo systemctl start apache2                          Start the apache service in Kali.
+sudo ss -antlp | grep apache                          Confirm that apache has been started and is running.
+sudo systemctl enable apache2                         Enable apache to start at boot time.
+systemctl list-unit-files                             Displaying all available services.
 ```
 
 **Linux User Management**
@@ -467,6 +471,10 @@ ls -1                                                 Display each file in a sin
 ls -l                                                 Shows detailed information about the files and directories in a directory.
 pwd                                                   Print the current directory.
 cd ~                                                  Return to the home directory.
+echo "test1" > test.txt                               Saves "test1" in the new file "test.txt".
+echo "test2" >> test.txt                              Add in a new line "test2" in the file "test.txt".
+wc -m < test.txt                                      Feeding the wc command with the < operator.
+cat test.txt | wc -m                                  Piping the output of the cat command into wc.
 ```
 
 **Misc Commands**
@@ -487,6 +495,11 @@ apropos descr                                         See wich description from 
 locate sbd.exe                                        Locate "sbd.exe".
 sudo find / -name sbd*                                Perform recursive search starting from root file system directory and look for files that starts with "sbd".
 which sbd                                             Search in $PATH "sbd".
+apt-cache search pure-ftpd                            Search for the pure-ftpd application.
+apt show resource-agents                              Examine information related to the resource-agents package.
+sudo apt install pure-ftpd                            apt install the pure-ftpd application.
+sudo apt remove --purge pure-ftpd                     apt remove –purge to completely remove the pure-ftpd application.
+sudo dpkg -i man-db_2.7.0.2-5_amd64.deb               dpkg -i to install the man-db application.
 ```
 
 **Linux File System Permissions**
@@ -497,6 +510,17 @@ which sbd                                             Search in $PATH "sbd".
 666 rw-rw-rw-                                         All users can read and write but not execute.
 644 rw-r--r--                                         Owner can read and write, everyone else can read.
 600 rw-------                                         Owner can read and write, everyone else has no access.
+```
+
+**Linux environment variables**
+```
+export vartest=8.8.8.8                                Declare an environment variable.
+env                                                   See all declared environment variables.
+$$                                                    Display the ID of the current shell instance.
+$PATH                                                 List of directories for the shell to locate executable files.
+$USER                                                 Current user.
+$PWD                                                  Current directory path.
+$HOME                                                 Home directory path.
 ```
 
 **Linux Directories**
@@ -539,7 +563,6 @@ which sbd                                             Search in $PATH "sbd".
 /var/log/httpd/access.log                             Apache access log file typical path.
 /etc/fstab                                            File system mounts.
 ```
-
 
 
 ## Mobile
