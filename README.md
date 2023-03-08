@@ -411,157 +411,162 @@ Note: a lot of these commands are from [RTFM: Red Team Field Manual](https://www
 
 **Linux Services and Networking**
 ```
-netstat -tulpn                                        Show Linux network ports with process ID’s (PIDs)
-watch ss -stplu                                       Watch TCP, UDP open ports in real time with socket summary.
-lsof -i                                               Show established connections.
-macchanger -m MACADDR INTR                            Change MAC address on KALI Linux.
-ifconfig eth0 192.168.2.1/24                          Set IP address in Linux.
-ifconfig eth0:1 192.168.2.3/24                        Add IP address to existing network interface in Linux.
-ifconfig eth0 hw ether MACADDR                        Change MAC address in Linux using ifconfig.
-ifconfig eth0 mtu 1500                                Change MTU size Linux using ifconfig, change 1500 to your desired MTU.
-dig -x 192.168.1.1                                    Dig reverse lookup on an IP address.
-host 192.168.1.1                                      Reverse lookup on an IP address, in case dig is not installed.
-dig @192.168.2.2 domain.com -t AXFR                   Perform a DNS zone transfer using dig.
-host -l domain.com nameserver                         Perform a DNS zone transfer using host.
-nbtstat -A x.x.x.x                                    Get hostname for IP address.
-ip addr add 192.168.2.22/24 dev eth0                  Adds a hidden IP address to Linux, does not show up when performing an ifconfig.
-tcpkill -9 host google.com                            Blocks access to google.com from the host machine.
-echo \"1\" > /proc/sys/net/ipv4/ip_forward            Enables IP forwarding, turns Linux box into a router – handy for routing traffic through a box.
-echo \"8.8.8.8\" > /etc/resolv.conf                   Use Google DNS.
-sudo systemctl start ssh                              Start the SSH service in Kali.
-sudo ss -antlp | grep sshd                            Confirm that SSH has been started and is running.
-sudo systemctl enable ssh                             Configure SSH to start at boot time.
-sudo systemctl start apache2                          Start the apache service in Kali.
-sudo ss -antlp | grep apache                          Confirm that apache has been started and is running.
-sudo systemctl enable apache2                         Enable apache to start at boot time.
-systemctl list-unit-files                             Displaying all available services.
+netstat -tulpn                                           Show Linux network ports with process ID’s (PIDs)
+watch ss -stplu                                          Watch TCP, UDP open ports in real time with socket summary.
+lsof -i                                                  Show established connections.
+macchanger -m MACADDR INTR                               Change MAC address on KALI Linux.
+ifconfig eth0 192.168.2.1/24                             Set IP address in Linux.
+ifconfig eth0:1 192.168.2.3/24                           Add IP address to existing network interface in Linux.
+ifconfig eth0 hw ether MACADDR                           Change MAC address in Linux using ifconfig.
+ifconfig eth0 mtu 1500                                   Change MTU size Linux using ifconfig, change 1500 to your desired MTU.
+dig -x 192.168.1.1                                       Dig reverse lookup on an IP address.
+host 192.168.1.1                                         Reverse lookup on an IP address, in case dig is not installed.
+dig @192.168.2.2 domain.com -t AXFR                      Perform a DNS zone transfer using dig.
+host -l domain.com nameserver                            Perform a DNS zone transfer using host.
+nbtstat -A x.x.x.x                                       Get hostname for IP address.
+ip addr add 192.168.2.22/24 dev eth0                     Adds a hidden IP address to Linux, does not show up when performing an ifconfig.
+tcpkill -9 host google.com                               Blocks access to google.com from the host machine.
+echo \"1\" > /proc/sys/net/ipv4/ip_forward               Enables IP forwarding, turns Linux box into a router – handy for routing traffic through a box.
+echo \"8.8.8.8\" > /etc/resolv.conf                      Use Google DNS.
+sudo systemctl start ssh                                 Start the SSH service in Kali.
+sudo ss -antlp | grep sshd                               Confirm that SSH has been started and is running.
+sudo systemctl enable ssh                                Configure SSH to start at boot time.
+sudo systemctl start apache2                             Start the apache service in Kali.
+sudo ss -antlp | grep apache                             Confirm that apache has been started and is running.
+sudo systemctl enable apache2                            Enable apache to start at boot time.
+systemctl list-unit-files                                Displaying all available services.
 ```
 
 **Linux User Management**
 ```
-whoami                                                Shows currently logged in user on Linux.
-id                                                    Shows currently logged in user and groups for the user.
-last                                                  Shows last logged in users.
-mount                                                 Show mounted drives.
-df -h                                                 Shows disk usage in human readable output.
-echo \"user:passwd\" | chpasswd                       Reset password in one line.
-getent passwd                                         List users on Linux.
-strings /usr/local/bin/blah                           Shows contents of none text files, e.g. whats in a binary.
-uname -ar                                             Shows running kernel version.
-PATH=$PATH:/my/new-path                               Add a new PATH, handy for local FS manipulation.
-history                                               Show bash history, commands the user has entered previously.
+whoami                                                   Shows currently logged in user on Linux.
+id                                                       Shows currently logged in user and groups for the user.
+last                                                     Shows last logged in users.
+mount                                                    Show mounted drives.
+df -h                                                    Shows disk usage in human readable output.
+echo \"user:passwd\" | chpasswd                          Reset password in one line.
+getent passwd                                            List users on Linux.
+strings /usr/local/bin/blah                              Shows contents of none text files, e.g. whats in a binary.
+uname -ar                                                Shows running kernel version.
+PATH=$PATH:/my/new-path                                  Add a new PATH, handy for local FS manipulation.
+history                                                  Show bash history, commands the user has entered previously.
 ```
 
 **Linux File Commands**
 ```
-df -h blah                                            Display size of file / dir Linux.
-diff file1 file2                                      Compare / Show differences between two files on Linux.
-md5sum file                                           Generate MD5SUM Linux.
-md5sum -c blah.iso.md5                                Check file against MD5SUM on Linux, assuming both file and .md5 are in the same dir.
-file blah                                             Find out the type of file on Linux, also displays if file is 32 or 64 bit.
-dos2unix                                              Convert Windows line endings to Unix / Linux.
-base64 < input-file > output-file                     Base64 encodes input file and outputs a Base64 encoded file called output-file.
-base64 -d < input-file > output-file                  Base64 decodes input file and outputs a Base64 decoded file called output-file.
-touch -r ref-file new-file                            Creates a new file using the timestamp data from the reference file, drop the -r to simply create a file.
-rm -rf                                                Remove files and directories without prompting for confirmation.
-mkdir -p pt/{recon,exploit,report}                    This command will create a directory pt and inside of it the directories recon, exploit and report.
-ls /etc/apache2/wwwold/*.conf                         Display files with certain criteria.
-ls -a                                                 -a option is used to display all files.
-ls -1                                                 Display each file in a single line.
-ls -l                                                 Shows detailed information about the files and directories in a directory.
-pwd                                                   Print the current directory.
-cd ~                                                  Return to the home directory.
-echo "test1" > test.txt                               Saves "test1" in the new file "test.txt".
-echo "test2" >> test.txt                              Add in a new line "test2" in the file "test.txt".
-wc -m < test.txt                                      Feeding the wc command with the < operator.
-cat test.txt | wc -m                                  Piping the output of the cat command into wc.
+df -h blah                                               Display size of file / dir Linux.
+diff file1 file2                                         Compare / Show differences between two files on Linux.
+md5sum file                                              Generate MD5SUM Linux.
+md5sum -c blah.iso.md5                                   Check file against MD5SUM on Linux, assuming both file and .md5 are in the same dir.
+file blah                                                Find out the type of file on Linux, also displays if file is 32 or 64 bit.
+dos2unix                                                 Convert Windows line endings to Unix / Linux.
+base64 < input-file > output-file                        Base64 encodes input file and outputs a Base64 encoded file called output-file.
+base64 -d < input-file > output-file                     Base64 decodes input file and outputs a Base64 decoded file called output-file.
+touch -r ref-file new-file                               Creates a new file using the timestamp data from the reference file, drop the -r to simply create a file.
+rm -rf                                                   Remove files and directories without prompting for confirmation.
+mkdir -p pt/{recon,exploit,report}                       This command will create a directory pt and inside of it the directories recon, exploit and report.
+ls /etc/apache2/wwwold/*.conf                            Display files with certain criteria.
+ls -a                                                    -a option is used to display all files.
+ls -1                                                    Display each file in a single line.
+ls -l                                                    Shows detailed information about the files and directories in a directory.
+ls -la /usr/bin | grep zip                               Searching for any file(s) in /usr/bin containing “zip”.
+pwd                                                      Print the current directory.
+cd ~                                                     Return to the home directory.
+echo "test1" > test.txt                                  Saves "test1" in the new file "test.txt".
+echo "test2" >> test.txt                                 Add in a new line "test2" in the file "test.txt".
+echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extracting fields from a stream using a multi-character separator in awk.
 ```
 
 **Misc Commands**
 ```
-init 6                                                Reboot Linux from the command line.
-gcc -o output.c input.c                               Compile C code.
-gcc -m32 -o output.c input.c                          Cross compile C code, compile 32 bit binary on 64 bit Linux.
-unset HISTORYFILE                                     Disable bash history logging.
-rdesktop X.X.X.X                                      Connect to RDP server from Linux.
-kill -9 $$                                            Kill current session.
-chown user:group blah                                 Change owner of file or dir.
-chown -R user:group blah                              Change owner of file or dir and all underlying files / dirs – recersive chown.
-chmod 600 file                                        Change file / dir permissions, see [Linux File System Permissons](#linux-file-system-permissions) for details.
-ssh user@X.X.X.X | cat /dev/null > ~/.bash_history    Clear bash history.
-man -k '^passwd$'                                     See the documentation of a command. Use the flag -k for keyword research.
-man 5 passwd                                          See the page 5 of the documentation.
-apropos descr                                         See wich description from docs matches the input for apropos.
-locate sbd.exe                                        Locate "sbd.exe".
-sudo find / -name sbd*                                Perform recursive search starting from root file system directory and look for files that starts with "sbd".
-which sbd                                             Search in $PATH "sbd".
-apt-cache search pure-ftpd                            Search for the pure-ftpd application.
-apt show resource-agents                              Examine information related to the resource-agents package.
-sudo apt install pure-ftpd                            apt install the pure-ftpd application.
-sudo apt remove --purge pure-ftpd                     apt remove –purge to completely remove the pure-ftpd application.
-sudo dpkg -i man-db_2.7.0.2-5_amd64.deb               dpkg -i to install the man-db application.
+init 6                                                   Reboot Linux from the command line.
+gcc -o output.c input.c                                  Compile C code.
+gcc -m32 -o output.c input.c                             Cross compile C code, compile 32 bit binary on 64 bit Linux.
+unset HISTORYFILE                                        Disable bash history logging.
+rdesktop X.X.X.X                                         Connect to RDP server from Linux.
+kill -9 $$                                               Kill current session.
+chown user:group blah                                    Change owner of file or dir.
+chown -R user:group blah                                 Change owner of file or dir and all underlying files / dirs – recersive chown.
+chmod 600 file                                           Change file / dir permissions, see [Linux File System Permissons](#linux-file-system-permissions) for details.
+ssh user@X.X.X.X | cat /dev/null > ~/.bash_history       Clear bash history.
+man -k '^passwd$'                                        See the documentation of a command. Use the flag -k for keyword research.
+man 5 passwd                                             See the page 5 of the documentation.
+apropos descr                                            See wich description from docs matches the input for apropos.
+locate sbd.exe                                           Locate "sbd.exe".
+sudo find / -name sbd*                                   Perform recursive search starting from root file system directory and look for files that starts with "sbd".
+which sbd                                                Search in $PATH "sbd".
+apt-cache search pure-ftpd                               Search for the pure-ftpd application.
+apt show resource-agents                                 Examine information related to the resource-agents package.
+sudo apt install pure-ftpd                               apt install the pure-ftpd application.
+sudo apt remove --purge pure-ftpd                        apt remove –purge to completely remove the pure-ftpd application.
+sudo dpkg -i man-db_2.7.0.2-5_amd64.deb                  dpkg -i to install the man-db application.
+echo "I need to try hard" | sed 's/hard/harder/'         Replacing a word in the output stream.
+echo "Hack.The.World."| cut -f 3 -d "."                  Extracting fields from the echo command output using cut.
+cut -d ":" -f 1 /etc/passwd                              Extracting usernames from /etc/passwd using cut.
+wc -m < test.txt                                         Feeding the wc command with the < operator.
+cat test.txt | wc -m                                     Piping the output of the cat command into wc.
 ```
 
 **Linux File System Permissions**
 ```
-777 rwxrwxrwx                                         No restriction, global WRX any user can do anything.
-755 rwxr-xr-x                                         Owner has full access, others can read and execute the file.
-700 rwx------                                         Owner has full access, no one else has access.
-666 rw-rw-rw-                                         All users can read and write but not execute.
-644 rw-r--r--                                         Owner can read and write, everyone else can read.
-600 rw-------                                         Owner can read and write, everyone else has no access.
+777 rwxrwxrwx                                            No restriction, global WRX any user can do anything.
+755 rwxr-xr-x                                            Owner has full access, others can read and execute the file.
+700 rwx------                                            Owner has full access, no one else has access.
+666 rw-rw-rw-                                            All users can read and write but not execute.
+644 rw-r--r--                                            Owner can read and write, everyone else can read.
+600 rw-------                                            Owner can read and write, everyone else has no access.
 ```
 
 **Linux environment variables**
 ```
-export vartest=8.8.8.8                                Declare an environment variable.
-env                                                   See all declared environment variables.
-$$                                                    Display the ID of the current shell instance.
-$PATH                                                 List of directories for the shell to locate executable files.
-$USER                                                 Current user.
-$PWD                                                  Current directory path.
-$HOME                                                 Home directory path.
+export vartest=8.8.8.8                                   Declare an environment variable.
+env                                                      See all declared environment variables.
+$$                                                       Display the ID of the current shell instance.
+$PATH                                                    List of directories for the shell to locate executable files.
+$USER                                                    Current user.
+$PWD                                                     Current directory path.
+$HOME                                                    Home directory path.
 ```
 
 **Linux Directories**
 ```
-/                                                     / also know as “slash” or the root.
-/bin                                                  Common programs, shared by the system, the system administrator and the users.
-/boot                                                 Boot files, boot loader (grub), kernels, vmlinuz
-/dev                                                  Contains references to system devices, files with special properties.
-/etc                                                  Important system config files.
-/home                                                 Home directories for system users.
-/lib                                                  Library files, includes files for all kinds of programs needed by the system and the users.
-/lost+found                                           Files that were saved during failures are here.
-/mnt                                                  Standard mount point for external file systems.
-/media                                                Mount point for external file systems (on some distros).
-/net                                                  Standard mount point for entire remote file systems – nfs.
-/opt                                                  Typically contains extra and third party software.
-/proc                                                 A virtual file system containing information about system resources.
-/root                                                 root users home dir.
-/sbin                                                 Programs for use by the system and the system administrator.
-/tmp                                                  Temporary space for use by the system, cleaned upon reboot.
-/usr                                                  Programs, libraries, documentation etc. for all user-related programs.
-/var                                                  Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler. Web servers, Databases etc.
+/                                                        / also know as “slash” or the root.
+/bin                                                     Common programs, shared by the system, the system administrator and the users.
+/boot                                                    Boot files, boot loader (grub), kernels, vmlinuz
+/dev                                                     Contains references to system devices, files with special properties.
+/etc                                                     Important system config files.
+/home                                                    Home directories for system users.
+/lib                                                     Library files, includes files for all kinds of programs needed by the system and the users.
+/lost+found                                              Files that were saved during failures are here.
+/mnt                                                     Standard mount point for external file systems.
+/media                                                   Mount point for external file systems (on some distros).
+/net                                                     Standard mount point for entire remote file systems – nfs.
+/opt                                                     Typically contains extra and third party software.
+/proc                                                    A virtual file system containing information about system resources.
+/root                                                    root users home dir.
+/sbin                                                    Programs for use by the system and the system administrator.
+/tmp                                                     Temporary space for use by the system, cleaned upon reboot.
+/usr                                                     Programs, libraries, documentation etc. for all user-related programs.
+/var                                                     Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler. Web servers, Databases etc.
 ```
 
 **Linux Interesting Files / Directories**
 ```
-/etc/passwd                                           Contains local Linux users.
-/etc/shadow                                           Contains local account password hashes.
-/etc/group                                            Contains local account groups.
-/etc/init.d/                                          Contains service init script – worth a look to see whats installed.
-/etc/hostname                                         System hostname.
-/etc/network/interfaces                               Network interfaces.
-/etc/resolv.conf                                      System DNS servers.
-/etc/profile                                          System environment variables.
-~/.ssh/                                               SSH keys.
-~/.bash_history                                       Users bash history log.
-/var/log/                                             Linux system log files are typically stored here.
-/var/adm/                                             UNIX system log files are typically stored here.
-/var/log/apache2/access.log                           Apache access log file typical path.
-/var/log/httpd/access.log                             Apache access log file typical path.
-/etc/fstab                                            File system mounts.
+/etc/passwd                                              Contains local Linux users.
+/etc/shadow                                              Contains local account password hashes.
+/etc/group                                               Contains local account groups.
+/etc/init.d/                                             Contains service init script – worth a look to see whats installed.
+/etc/hostname                                            System hostname.
+/etc/network/interfaces                                  Network interfaces.
+/etc/resolv.conf                                         System DNS servers.
+/etc/profile                                             System environment variables.
+~/.ssh/                                                  SSH keys.
+~/.bash_history                                          Users bash history log.
+/var/log/                                                Linux system log files are typically stored here.
+/var/adm/                                                UNIX system log files are typically stored here.
+/var/log/apache2/access.log                              Apache access log file typical path.
+/var/log/httpd/access.log                                Apache access log file typical path.
+/etc/fstab                                               File system mounts.
 ```
 
 
