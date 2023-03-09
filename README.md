@@ -510,6 +510,12 @@ echo "Hack.The.World."| cut -f 3 -d "."                  Extracting fields from 
 cut -d ":" -f 1 /etc/passwd                              Extracting usernames from /etc/passwd using cut.
 wc -m < test.txt                                         Feeding the wc command with the < operator.
 cat test.txt | wc -m                                     Piping the output of the cat command into wc.
+wget -O report_w.pdf https://of.io/report.pdf            Downloading a file through wget.
+curl -o report_c.pdf https://of.io/report.pdf            Downloading a file with curl.
+axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Downloading a file with axel; -n: number of multiple connections to use, -a: more concise progress indicator, -o specify a different file name for the downloaded file
+alias lsa='ls -la'                                       Create an alias "lsa" to execute the command "ls -la".
+alias mkdir='ping -c 1 localhost'                        Creating an alias that overrides the mkdir command.
+unalias mkdir                                            Unsetting an alias.
 ```
 
 **Linux File System Permissions**
@@ -526,12 +532,16 @@ cat test.txt | wc -m                                     Piping the output of th
 ```
 export vartest=8.8.8.8                                   Declare an environment variable.
 env                                                      See all declared environment variables.
-$$                                                       Display the ID of the current shell instance.
+$$                                                       Env var; Display the ID of the current shell instance.
+$PATH                                                    Env var; List of directories for the shell to locate executable files.
 PATH=$PATH:/my/new-path                                  Add a new PATH, handy for local FS manipulation.
-$PATH                                                    List of directories for the shell to locate executable files.
-$USER                                                    Current user.
-$PWD                                                     Current directory path.
-$HOME                                                    Home directory path.
+$USER                                                    Env var; Current user.
+$PWD                                                     Env var; Current directory path.
+$HOME                                                    Env var; Home directory path.
+HISTCONTROL                                              Env var; Defines whether or not to remove duplicate commands.
+export HISTCONTROL=ignoredups                            Remove duplicates from our bash history.
+export HISTIGNORE="&:ls:[bf]g:exit:history"              Filter basic, common commands.
+export HISTTIMEFORMAT='%F %T '                           Include the date/time in our bash history.
 ```
 
 **Linux Directories**
