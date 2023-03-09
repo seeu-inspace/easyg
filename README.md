@@ -330,6 +330,7 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Burp Suite</ins>
 
 - To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
+- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
 - To add a new header
   ```
   1. Go to Proxy -> Options -> Match and Replace -> Add
