@@ -472,7 +472,7 @@ ls -1                                                    Display each file in a 
 ls -l                                                    Shows detailed information about the files and directories in a directory.
 ls -la /usr/bin | grep zip                               Searching for any file(s) in /usr/bin containing “zip”.
 pwd                                                      Print the current directory.
-cd ~                                                     Return to the home directory.
+cd ~                                                     Return to the home/user directory.
 echo "test1" > test.txt                                  Saves "test1" in the new file "test.txt".
 echo "test2" >> test.txt                                 Add in a new line "test2" in the file "test.txt".
 echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extracting fields from a stream using a multi-character separator in awk.
@@ -516,16 +516,7 @@ axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Downloading a file with
 alias lsa='ls -la'                                       Create an alias "lsa" to execute the command "ls -la".
 alias mkdir='ping -c 1 localhost'                        Creating an alias that overrides the mkdir command.
 unalias mkdir                                            Unsetting an alias.
-```
-
-**Linux File System Permissions**
-```
-777 rwxrwxrwx                                            No restriction, global WRX any user can do anything.
-755 rwxr-xr-x                                            Owner has full access, others can read and execute the file.
-700 rwx------                                            Owner has full access, no one else has access.
-666 rw-rw-rw-                                            All users can read and write but not execute.
-644 rw-r--r--                                            Owner can read and write, everyone else can read.
-600 rw-------                                            Owner can read and write, everyone else has no access.
+cat ~/.bashrc                                            Examining the .bashrc default file, the system-wide file for Bash settings located at /etc/bash.bashrc
 ```
 
 **Linux environment variables**
@@ -542,6 +533,16 @@ HISTCONTROL                                              Env var; Defines whethe
 export HISTCONTROL=ignoredups                            Remove duplicates from our bash history.
 export HISTIGNORE="&:ls:[bf]g:exit:history"              Filter basic, common commands.
 export HISTTIMEFORMAT='%F %T '                           Include the date/time in our bash history.
+```
+
+**Linux File System Permissions**
+```
+777 rwxrwxrwx                                            No restriction, global WRX any user can do anything.
+755 rwxr-xr-x                                            Owner has full access, others can read and execute the file.
+700 rwx------                                            Owner has full access, no one else has access.
+666 rw-rw-rw-                                            All users can read and write but not execute.
+644 rw-r--r--                                            Owner can read and write, everyone else can read.
+600 rw-------                                            Owner can read and write, everyone else has no access.
 ```
 
 **Linux Directories**
