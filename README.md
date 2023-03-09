@@ -516,7 +516,7 @@ axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Downloading a file with
 alias lsa='ls -la'                                       Create an alias "lsa" to execute the command "ls -la".
 alias mkdir='ping -c 1 localhost'                        Creating an alias that overrides the mkdir command.
 unalias mkdir                                            Unsetting an alias.
-cat ~/.bashrc                                            Examining the .bashrc default file, the system-wide file for Bash settings located at /etc/bash.bashrc
+cat ~/.bashrc                                            Examining the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc".
 ```
 
 **Linux environment variables**
