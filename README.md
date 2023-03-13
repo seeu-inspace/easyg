@@ -29,6 +29,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [PowerShell](#powershell)
   - [WireShark](#wireshark)
   - [Tcpdump](#tcpdump)
+  - [Bash scripting](#bash-scripting)
   - [Others](#others)
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
@@ -551,6 +552,13 @@ tcpdump -nX -r packets.pcap                                                     
    - `ACK` and `PSH` are represented by the fourth and fifth bits of the 14th byte
    - Turning on these bits would result in `00011000` = `24` in decimal, verify it with `echo "$((2#00011000))"`
 3. To display packets that have the ACK or PSH flags set: `sudo tcpdump -A -n 'tcp[13] = 24' -r packets.pcap`
+
+
+### <ins>Bash scripting</ins>
+
+- Grep all the subdomains for `target.com` from `index.html`: `grep -o '[^/]*\.target\.com' index.html | sort -u > list.txt`
+- Get the IPs from lisst.txt: `for url in $(cat list.txt); do host $url; done | grep "has address" | cut -d " " -f 4 | sort -u`
+- [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
 
 
 ### <ins>Others</ins>
