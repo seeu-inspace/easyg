@@ -30,7 +30,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Socat](#socat)
   - [PowerShell](#powershell)
   - [Others](#others)
-- [Network](#network)
+- [Networking](#networking)
 - [Linux](#linux)
 - [Mobile](#mobile)
 - [Source code review](#source-code-review)
@@ -476,7 +476,8 @@ powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAH
 - [Create a random text file](https://onlinefiletools.com/generate-random-text-file)
 
 
-## Network
+## Networking
+
 ```
 ip route add <net_address_in_cdr> via <interface_gateway>
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
