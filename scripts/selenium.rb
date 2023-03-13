@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
+
 require 'webdrivers'
 require 'selenium-webdriver'
 
 i = 0
+image_paths = []
 
 system "mkdir webscreen" if File.directory?('webscreen') == false
 	
@@ -24,8 +26,10 @@ File.open(ARGV[0],'r').each_line do |f|
 		
 		driver.navigate.to target
 
-		driver.save_screenshot('webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png')
-		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: webscreen/" + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png'
+		image_path = 'webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png'
+		driver.save_screenshot(image_path)
+		puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: #{image_path}"
+		image_paths << image_path
 			
 	rescue
 		
@@ -36,3 +40,14 @@ File.open(ARGV[0],'r').each_line do |f|
 end
 	
 driver.quit
+
+# Create an HTML gallery with all the screenshots
+File.open('gallery.html', 'w') do |html|
+	html.write('<html><body><center>')
+	
+	image_paths.each do |path|
+		html.write("<b>" + path.gsub('webscreen/', '_').gsub('__','://').gsub('.png','').gsub('_','') + "</b><br/><img src=\"#{path}\" width=\"600\"><br><br/><br/>")
+	end
+	
+	html.write('</center></body></html>')
+end
