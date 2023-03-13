@@ -385,6 +385,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
   - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
   - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
+  - [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
   - [zip.py](scripts/zip.py) create custom zip files
 - [shells](shells/) to test file uploads
@@ -594,6 +595,9 @@ tcpdump -nX -r packets.pcap                                                     
 
 
 **Vulnerabilities**
+- [SearchSploit](https://www.exploit-db.com/searchsploit)
+  - `searchsploit afd windows -w -t`; `-w` to return the URL for https://www.exploitdb.com, `-t` to search the exploit title
+  - [Download all the desired exploits using some Bash-fu](scripts/searchsploit&download.sh)
 - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [nuclei](https://github.com/projectdiscovery/nuclei)
