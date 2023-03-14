@@ -3,7 +3,7 @@ import socket
 import sys
 
 if len(sys.argv) != 3:
-    print("Usage: vrfy.py <IP> <usernames_file>")
+    print("Usage: smtp_vrfy.py <IP> <usernames_file>")
     sys.exit(0)
   
 target_ip = input("Enter the IP address of the target: ")
