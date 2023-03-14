@@ -36,6 +36,15 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Notes](#notes)
   - [Tools](#tools-1)
   - [User Information Gathering](#user-information-gathering)
+- [Active Information Gathering](#active-information-gathering)
+  - [DNS Enumeration](#dns-enumeration)
+  - [Port Scanning](#port-scanning)
+    - [Netcat](#netcat-1)
+    - [Nmap](#nmap)
+    - [Masscan](#masscan)
+  - [SMB Enumeration](#smb-enumeration)
+  - [NFS Enumeration](#nfs-enumeration)
+  - [SNMP Enumeration](#snmp-enumeration)
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
@@ -717,6 +726,179 @@ theharvester -d targetcorp.com -b google                  -d specify target doma
 Malicious hackers frequently post stolen passwords on Pastebin or other less reputable websites. This is useful for generating wordlists.
 
 An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
+
+
+
+## Active Information Gathering
+
+### <ins>DNS Enumeration</ins>
+
+**host command**
+```
+host www.targetcorp.com                         Find the A host record
+host -t mx www.targetcorp.com                   Find the MX record
+host -t txt www.targetcorp.com                  Find the TXT record
+host -l <domain name> <dns server address>      Perform a DNS zone transfer; -l: list zone
+```
+
+**Brute force forward DNS name lookups** using a list like `possible_subs.txt` containing common hostnames (see [SecLists](https://github.com/danielmiessler/SecLists)):
+```
+for ip in $(cat possible_subs.txt); do host $ip.megacorpone.com; done
+```
+
+**Brute force reverse DNS names**
+```
+for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
+```
+
+**Tools**
+- DNSRecon
+  ```
+  dnsrecon -d zonetransfer.com -t axfr                      Perform a zone transfer; -t: specify the type of enumeration to perform
+  dnsrecon -d zonetransfer.com -D ~/list.txt -t brt         Brute forcing hostnames
+  ```
+- DNSenum
+  ```
+  dnsenum zonetransfer.me                                   Perform a zone transfer
+  ```
+- [zone_transfer.sh](scripts/zone_transfer.sh), DNS zone transfer script
+
+
+### <ins>Port Scanning</ins>
+
+#### **Netcat**
+```
+nc -nvv -w 1 -z 10.11.1.220 3388-3390                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 10.11.1.115 160-162                        Use netcat to perform an UDP port scan
+```
+
+#### **Nmap**
+
+```
+nmap 10.11.1.110                                                     Simple nmap scan
+nmap -p 1-65535 10.11.1.110                                          Scan all the ports
+nmap -sS 10.11.1.110                                                 Stealth / SYN Scanning (will not appear in any application logs)
+nmap -sT 10.11.1.110                                                 TCP connect scan
+nmap -sU 10.11.1.110                                                 UDP scan
+nmap -sS -sU 10.11.1.110                                             Perform a combined UDP and SYN scan
+nmap -sn 10.11.1.110                                                 Perform a network sweep
+nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml        Discover everything including running services using a list of targets
+nmap -sn <net_address_in_cdr>                                        Check hosts alive, adding -A you gather more info for a target
+nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt      Perform a top twenty port scan, save the output in greppable format
+nmap -O 10.11.1.110                                                  OS fingerprinting
+nmap -sV -sT -A 10.11.1.110                                          Banner Grabbing, Service Enumeration
+
+Find live hosts
+---------------
+nmap -v -sn 10.11.1.1-254 -oG ping-sweep.txt
+grep Up ping-sweep.txt | cut -d " " -f 2
+
+Find web servers using port 80
+------------------------------
+nmap -p 80 10.11.1.1-254 -oG web-sweep.txt
+grep open web-sweep.txt | cut -d " " -f 2
+
+
+Nmap Scripting Engine (NSE)
+---------------------------
+nmap --script-help dns-zone-transfer                                  View information about a script, in this case "dns-zone-transfer"
+nmap 10.11.1.110 --script=smb-os-discovery                            OS fingerprinting (SMB services)
+nmap --script=dns-zone-transfer -p 53 ns2.zonetransfer.com            Perform a DNS zone transfer
+```
+
+#### **Masscan**
+
+```
+masscan -p80 10.0.0.0/8                                               Look for all web servers using port 80 within a class A subnet
+masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate specify the desired rate of packet transmission
+                                                                      -e specify the raw network interface to use
+                                                                      --router-ip specify the IP address for the appropriate gateway
+```
+
+### <ins>SMB Enumeration</ins>
+
+**Use nmap to scan for the NetBIOS service**<br/>
+`nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254`
+
+**Use nbtscan to collect additional NetBIOS information**<br/>
+`sudo nbtscan -r 10.11.1.0/24`
+
+**Find various nmap SMB NSE scripts**<br/>
+`ls -1 /usr/share/nmap/scripts/smb*`<br/>
+Example: `nmap -v -p 139, 445 --script=smb-os-discovery 10.11.1.117`
+
+**Determining whether a host is vulnerable to the MS08_067 vulnerability**<br/>
+`nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 10.11.1.5`<br/>
+Note: the script parameter `unsafe=1`, the scripts that will run are almost guaranteed to crash a vulnerable system
+
+
+### <ins>NFS Enumeration</ins>
+
+**Find and identify hosts that have portmapper/rpcbind running using nmap**<br/>
+`nmap -v -p 111 10.11.1.1-254`
+
+**Query rpcbind in order to get registered services**<br/>
+`nmap -sV -p 111 --script=rpcinfo 10.11.1.1-254`
+
+**Nmap NFS NSE Scripts**<br/>
+`ls -1 /usr/share/nmap/scripts/nfs*`<br/>
+Run all these scripts with `nmap -p 111 --script nfs* 10.11.1.117`
+
+**Example of entire /home directory shared**
+```
+Mount the directory and access the NFS share
+--------------------------------------------
+mkdir home
+sudo mount -o nolock 10.11.1.72:/home ~/home/
+cd home/ && ls
+
+Add a local user
+----------------
+sudo adduser pwn                                         Add the new user "pwn"
+sudo sed -i -e 's/1001/1014/g' /etc/passwd               Change the sed of the "pwn" user
+cat /etc/passwd | grep pwn                               Verify that the changes have been made
+```
+
+
+### <ins>SMTP Enumeration</ins>
+
+**Interesting commands**
+- `VRFY` request asks the server to verify an email address
+- `EXPN` asks the server for the membership of a mailing list
+
+**Use nc to validate SMTP users**<br/>
+`nc -nv 10.11.1.217 25`
+
+**Script for SMTP user enumeration**
+[smtp_vrfy.py](scripts/smtp_vrfy.py) usage: `smtp_vrfy.py <IP> <usernames_file>`
+
+
+### <ins>SNMP Enumeration</ins>
+
+**Use nmap to perform a SNMP scan**<br/>
+`sudo nmap -sU --open -p 161 10.11.1.1-254 -oG open-snmp.txt`
+
+**Use onesixtyone to brute force community strings**
+1. Build a text file containing community strings
+   ```
+   echo public > community
+   echo private >> community
+   echo manager >> community
+   ```
+2. Build a text file containing IP addresses to scan<br/>
+   `for ip in $(seq 1 254); do echo 10.11.1.$ip; done > ips`
+3. Use [onesixtyone](https://github.com/trailofbits/onesixtyone)<br/>
+   `onesixtyone -c community -i ips`
+
+Note: Provided we at least know the SNMP read-only community string (in most cases is "public")<br/>
+**Use snmpwalk to enumerate**<br/>
+- The entire MIB tree: `snmpwalk -c public -v1 -t 10 10.11.1.14`
+  - `-c`: specify the community string
+  - `-v`: specify the SNMP version number
+  - `-t 10` to increase the timeout period to 10 seconds
+-  Windows users: `snmpwalk -c public -v1 10.11.1.14 1.3.6.1.4.1.77.1.2.25`
+- Windows processes: `snmpwalk -c public -v1 10.11.1.73 1.3.6.1.2.1.25.4.2.1.2`
+- Installed software: `snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2`
 
 
 
