@@ -158,9 +158,9 @@ EasyG started out as a script that I use to automate some information gathering 
 #### **Single target**
 - [ ] Recon
   + Explore the app, see and every functionality (eventually, search for documentation)
-  + Crawl with Burp Suite and [other tools](#content-discovery)
+  + Crawl with Burp Suite
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + Find more endpoints with [Google Dorking](#google-dorking) and see [Content Discovery](#content-discovery)
+  + [Content Discovery](#content-discovery), use tools, [Google Dorking](#google-dorking) and [GitHub Dorking](#github-dorking)
   + Check the [Testing layers](#testing-layers)
 - [ ] Authentication
   - See [Authentication vulnerabilities](#authentication-vulnerabilities)
