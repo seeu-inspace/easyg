@@ -394,6 +394,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   - [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
   - [zip.py](scripts/zip.py) create custom zip files
+  - [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 - [shells](shells/) to test file uploads
 
 
