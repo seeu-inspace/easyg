@@ -3,25 +3,30 @@ import socket
 import sys
 
 if len(sys.argv) != 3:
-    print ("Usage: smtp_vrfy.py <IP> <username>")
+    print("Usage: vrfy.py <IP> <usernames_file>")
     sys.exit(0)
   
-name = input("Insert the target ")
+target_ip = input("Enter the IP address of the target: ")
 
-# Create a Socket
+# Create a socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Connect to the Server
-connect = s.connect((sys.argv[1],25))
+# Connect to the server
+server_address = (sys.argv[1], 25)
+s.connect(server_address)
 
 # Receive the banner
 banner = s.recv(1024)
-print (banner)
+print(banner)
 
-# VRFY a user
-s.send('VRFY ' + sys.argv[2] + '\r\n')
-result = s.recv(1024)
-print (result)
+# VRFY a list of users
+with open(sys.argv[2], 'r') as f:
+    usernames = f.read().splitlines()
+
+for username in usernames:
+    s.send('VRFY ' + username + '\r\n')
+    result = s.recv(1024)
+    print(result)
 
 # Close the socket
 s.close()
