@@ -18,8 +18,9 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
   - [Testing layers](#testing-layers)
-  - [Multiple targets](#multiple-targets)
-  - [Single target](#single-target)
+  - [Bug Bounty Hunting](#bug-bounty-hunting)
+    - [Multiple targets](#multiple-targets)
+    - [Single target](#single-target)
 - [Linux](#linux)
 - [Tools](#tools)
   - [EasyG](#easyg)
@@ -144,7 +145,9 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
-### <ins>Multiple targets</ins>
+### <ins>Bug Bounty Hunting</ins>
+
+#### **Multiple targets**
 - [ ] Run EasyG assetenum
 - [ ] Select the interesting targets
   - Pass the subdomains to Burp Suite
@@ -152,7 +155,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Check for mobile/desktop applications
   - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 
-### <ins>Single target</ins>
+#### **Single target**
 - [ ] Recon
   + Explore the app, see and every functionality (eventually, search for documentation)
   + Crawl with Burp Suite and [other tools](#content-discovery)
