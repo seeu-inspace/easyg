@@ -636,6 +636,8 @@ tcpdump -nX -r packets.pcap                                                     
 
 
 
+
+
 ## Content Discovery
 
 **Some tips**
@@ -647,7 +649,7 @@ tcpdump -nX -r packets.pcap                                                     
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [Webanalyze](https://github.com/rverton/webanalyze) Port of Wappalyzer for command line
   `./webanalyze -host example.com -crawl 1`
-- [Shodan](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap)
+- [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster)
@@ -682,10 +684,12 @@ tcpdump -nX -r packets.pcap                                                     
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 
 ### <ins>Google Dorking</ins>
-- `ext:` to search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form,swf;
-- Search also for pdf, xlsx, bak and similar, they may contain some infos;
-- `site:` to target a website and its subdomains;
-- `inurl:&` to search for parameters;
+- `ext:` search for: php, php3, aspx, asp, jsp, xhtml, phtml, html, xsp, nsf, form, swf
+- `filetype:` search for filetypes like html or php
+- `-filetype:html` omit filetype `html`
+- Search also for pdf, xlsx, bak and similar, they may contain some infos
+- `site:` to target a website and its subdomains
+- `inurl:&` to search for parameters
 - `intitle:` to search interesting pages like admin, register, login etc.
 - `"Seeing something unexpected? Take a look at the GitHub profile guide." "COMPANY-TARGET" site:http://github.com` [[Reference](https://twitter.com/c3l3si4n/status/1580564006263173122)]
 - `intext:"© copyright COMPANY YEAR"` [[Reference](https://twitter.com/intigriti/status/1592497655774871553)]
@@ -695,6 +699,7 @@ tcpdump -nX -r packets.pcap                                                     
 - Find CVEs, like CVE-2019-9647 `intext:"Powered by Gila CMS"`
 - Errors `site:target.com intext:"Warning: mysql_num_rows()"`
 - `intitle:"Index of /" + ".htaccess"`
+- `intitle:"index of" "parent directory"` directory listing
 - [Google Dorks - Cloud Storage:](https://mobile.twitter.com/TakSec/status/1616852760141627393)
   ```
   site:http://s3.amazonaws.com "target.com"
@@ -702,12 +707,13 @@ tcpdump -nX -r packets.pcap                                                     
   site:http://googleapis.com "target.com"
   site:http://drive.google.com "target.com"
   ```
+- [Google Hacking Database](https://www.exploit-db.com/google-hacking-database)
 
 ### <ins>GitHub Dorking</ins>
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
 - languages: `json, bash, shell, java etc.`, example `HEROKU_API_KEY language:json`
 - extensions: `extensions: bat, config, ini, env etc.`
-- filename: `netrpc, .git-credentials, .history, .htpasswd, bash_history`
+- filename: `netrpc, .git-credentials, .history, .htpasswd, bash_history`, example `filename:users`
 - [Other dorks](https://github.com/techgaun/github-dorks#list-of-dorks)
 
 
