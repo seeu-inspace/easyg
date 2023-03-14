@@ -381,7 +381,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 ### <ins>EasyG</ins>
 
-[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu.
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe and naabu. Install the necessary tools with [install.bat](install.bat) or [install.sh](install.sh) and then run `ruby easyg.rb help`.
 
 - [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
 - [lists](lists/)
