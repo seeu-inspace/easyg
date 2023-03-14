@@ -394,8 +394,9 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
   - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
   - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
-  - [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
+  - [searchsploit&download.sh](scripts/searchsploit&download.sh) download all the desired exploits using some Bash-fu
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
+  - [smtp_vrfy.py](scripts/smtp_vrfy.py) script for SMTP user enumeration
   - [zip.py](scripts/zip.py) create custom zip files
   - [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 - [shells](shells/) to test file uploads
