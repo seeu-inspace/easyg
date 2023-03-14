@@ -262,6 +262,6 @@ if ARGV[0] == "help"
 	
 	puts "Notes 
 	set the GITHUB_TOKEN for github-subdomains
-	tested on Windows, change 'type' with 'cat'"
+	tested on Windows, change 'type' with 'cat' and '\\' with '/' for paths"
 
 end
