@@ -592,8 +592,6 @@ tcpdump -nX -r packets.pcap                                                     
 - [subfinder](https://github.com/projectdiscovery/subfinder)
   - `subfinder -d target -all -o output/target_subfinder.txt"`
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
-- [nmap](https://nmap.org/)
-  - Discover everything + services `nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml` 
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [crt.sh](https://crt.sh/)
   - [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
