@@ -1130,14 +1130,14 @@ NSE scripts can be found in the `/usr/share/nmap/scripts/` directory. Here you c
 
 ### <ins>Nikto</ins>
 
-You can find it here: [Nikto](https://github.com/sullo/nikto).
+You can find it here: [sullo/nikto](https://github.com/sullo/nikto).
 
 **An example of usage**
 `nikto -host=http://www.targetcorp.com -maxtime=30s`
 
 ### <ins>Nuclei</ins>
 
-You can find it here: [nuclei](https://github.com/projectdiscovery/nuclei).
+You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei).
 
 **Automatic Selection**<br/>
 `nuclei -u http://target.io -as`
@@ -1153,6 +1153,12 @@ You can find it here: [nuclei](https://github.com/projectdiscovery/nuclei).
 
 **Use tags combined with automatic selection**<br/>
 `nuclei -l list.txt -as -tags log4j -o output.txt`
+
+**Check for: takeovers, .git exposed, crlf-injection, swaggers, exposed panels and old copyrights**<br/>
+`nuclei -l target.txt -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels -t %USERPROFILE%/nuclei-templates/miscellaneous/old-copyright.yaml -stats -o output/nuclei_target`
+
+**Check for log4j**<br/>
+`nuclei -l target.txt -as -tags log4j,cve -stats -o output/nuclei_2_target`
 
 ## Web vulnerabilities
 
