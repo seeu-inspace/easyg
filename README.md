@@ -56,6 +56,8 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Vulnerability Scanning](#vulnerability-scanning)
   - [Nessus](#nessus)
   - [Nmap](#nmap-1)
+  - [Nikto](#nikto)
+  - [Nuclei](#nuclei)
 - [Web vulnerabilities](#web-vulnerabilities)
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
@@ -1126,6 +1128,31 @@ NSE scripts can be found in the `/usr/share/nmap/scripts/` directory. Here you c
 **Using NSE’s “vuln” scripts**<br/>
 `sudo nmap --script vuln 10.11.1.100`
 
+### <ins>Nikto</ins>
+
+You can find it here: [Nikto](https://github.com/sullo/nikto).
+
+**An example of usage**
+`nikto -host=http://www.targetcorp.com -maxtime=30s`
+
+### <ins>Nuclei</ins>
+
+You can find it here: [nuclei](https://github.com/projectdiscovery/nuclei).
+
+**Automatic Selection**<br/>
+`nuclei -u http://target.io -as`
+
+**Check for Technologies**<br/>
+`%USERPROFILE%\nuclei-templates\technologies`
+
+**Check for more: misconfiguration, CVEs and CNVD**<br/>
+`-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
+
+**Use it in a workflow**<br/>
+`cat subdomains.txt | httpx | nuclei -t technologies`
+
+**Use tags combined with automatic selection**<br/>
+`nuclei -l list.txt -as -tags log4j -o output.txt`
 
 ## Web vulnerabilities
 
