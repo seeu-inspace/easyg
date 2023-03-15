@@ -51,6 +51,9 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Networking](#networking)
 - [Mobile](#mobile)
 - [Source code review](#source-code-review)
+- [Vulnerability Scanning](#vulnerability-scanning)
+  - [Nessus](#nessus)
+  - [Nmap](#nmap-1)
 - [Web vulnerabilities](#web-vulnerabilities)
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
@@ -1078,10 +1081,45 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 
 
+## Vulnerability Scanning
+
+### <ins>Nessus</ins>
+
+Run Nessus and navigate to `http://localhost:8834`
+
+**Defining targets**<br/>
+Top-right, click "New Scan"
+- Basic Network Scan: general scan containing a number of tests that may be used against different target types
+  - Arguments: a name for the scan and a list of targets (an IP address, an IP range, or comma-delimited FQDN or IP list)
+- Credentialed Patch Audit: authenticated scan that enumerates missing patches
+- Web Application Tests: specialized scan for locating published Web application security vulnerabilities
+- Spectre and Meltdown: targeted scan for [Meltdown](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)) and [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) vulnerabilities
+
+**Configuring scan definitions**<br/>
+- Ports to scan
+  - In "Discovery" > "Scan Type" you can change the ports to scan
+  - "Discovery" > "Port Scanning" to select more specific options
+- Turn off Host discovery (save time and scan more quietly)
+  - "Discovery" > "Host Discovery" under the "Settings" tab > deselect "Ping the remote host"
+
+**Authenticated scanning**<br/>
+From a new scan, click in the "Credentials" tab.
+
+**Scanning with Individual Nessus Plugins**<br/>
+From the "Plugins tab" you can select multiple options (a family of plugin) in the left column or one by one in the right column.
+
+### <ins>Nmap</ins>
+
+NSE scripts can be found in the `/usr/share/nmap/scripts/` directory. Here you can find `script.db`, a file that serves as an index to all of the scripts.
+
+**Grep for scripts in the "vuln" and "exploit" categories**<br/>
+`cat script.db | grep '"vuln"\|"exploit"'`
+
+**Using NSE’s “vuln” scripts**<br/>
+`sudo nmap --script vuln 10.11.1.100`
+
 
 ## Web vulnerabilities
-
-
 
 ### <ins>SQL injection</ins>
 
