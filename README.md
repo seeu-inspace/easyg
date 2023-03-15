@@ -622,20 +622,14 @@ tcpdump -nX -r packets.pcap                                                     
 - [crt.sh](https://crt.sh/)
   - [Crtsh-Fetcher](https://github.com/m0pam/crtsh-fetcher)
   - To find new domains ` cat json.txt | jq -r '.[].common_name' | sed 's/\*//g' | sort -u | rev | cut -d "." -f 1,2 | rev | sort -u | tee out.txt`
-- [naabu](https://github.com/projectdiscovery/naabu)
-  - Discover everything faster `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt` 
-  - `naabu -v -list subs.txt -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -stats -o out.txt`
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
-- [httprobe](https://github.com/tomnomnom/httprobe)
-  - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [anew](https://github.com/tomnomnom/anew) to add only new subdomains
 - [httpx](https://github.com/projectdiscovery/httpx)
-  - `type scope.txt | httpx -sc -mc 404`
-
+  - `type scope.txt | httpx -sc -mc 404` find `404` pages
 
 **Vulnerabilities**
 - [SearchSploit](https://www.exploit-db.com/searchsploit)
@@ -643,12 +637,6 @@ tcpdump -nX -r packets.pcap                                                     
   - [Download all the desired exploits using some Bash-fu](scripts/searchsploit&download.sh)
 - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
-- [nuclei](https://github.com/projectdiscovery/nuclei)
-  - Automatic Selection `nuclei -u http://target.io -as` 
-  - Check for Technologies `%USERPROFILE%\nuclei-templates\technologies`
-  - Check for more `-t %USERPROFILE%\nuclei-templates\misconfiguration -t %USERPROFILE%\nuclei-templates\cves -t %USERPROFILE%\nuclei-templates\cnvd`
-  - Use it in a workflow `cat subdomains.txt | httpx | nuclei -t technologies`
-  - To use tags combined with automatic selection `nuclei -l list.txt -as -tags log4j -o output.txt`
 
 
 **For Reporting**
@@ -826,6 +814,14 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
                                                                       -e specify the raw network interface to use
                                                                       --router-ip specify the IP address for the appropriate gateway
 ```
+
+#### Other tools
+
+- [httprobe](https://github.com/tomnomnom/httprobe) designed to find web servers
+  - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
+- [naabu](https://github.com/projectdiscovery/naabu) a fast port scanner
+  - A simple usage using a list of subdomains: `naabu -v -list subs.txt -stats -o out.txt`
+  - Discover everything faster, excluding some ports maybe already checked: `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt`  
 
 ### <ins>SMB Enumeration</ins>
 
