@@ -43,6 +43,7 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Netcat](#netcat-1)
     - [Nmap](#nmap)
     - [Masscan](#masscan)
+    - [Other tools](#other-tools)
   - [SMB Enumeration](#smb-enumeration)
   - [NFS Enumeration](#nfs-enumeration)
   - [SNMP Enumeration](#snmp-enumeration)
