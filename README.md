@@ -425,33 +425,36 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   3. As the default text says in Match 'leave blank to add a new header'
   4. Put the new header in Replace
   ```
-- Cool extensions:
-  - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
-  - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
-  - [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
-  - [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
-  - [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
-  - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
-  - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
-  - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
-  - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
-  - [Autorize](https://github.com/PortSwigger/autorize)
-    - [Auth Analyzer](https://portswigger.net/bappstore/7db49799266c4f85866f54d9eab82c89)
-  - [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
-  - [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
-  - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-  - [AWS Security Checks](https://portswigger.net/bappstore/f078b9254eab40dc8c562177de3d3b2d)
-  - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
-  - [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
-  - [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
-  - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
-  - [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
-  - [Burp Bounty](https://burpbounty.net/)
-- Browser extensions:
-  - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
-  - [Wappalyzer](https://www.wappalyzer.com/)
-  - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
-  - [DotGit](https://github.com/davtur19/DotGit)
+
+**Cool extensions**
+- [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
+- [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
+- [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
+- [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
+- [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
+- [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+- [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
+- [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
+- [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+- [Autorize](https://github.com/PortSwigger/autorize)
+  - [Auth Analyzer](https://portswigger.net/bappstore/7db49799266c4f85866f54d9eab82c89)
+- [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
+- [BurpJSLinkFinder](https://github.com/PortSwigger/js-link-finder)
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- [AWS Security Checks](https://portswigger.net/bappstore/f078b9254eab40dc8c562177de3d3b2d)
+- [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
+- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
+- [AutoRepeater](https://github.com/nccgroup/AutoRepeater)
+- [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
+- [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
+- [Burp Bounty](https://burpbounty.net/)
+
+**Browser extensions**
+- [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
+- [Wappalyzer](https://www.wappalyzer.com/)
+- [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
+- [DotGit](https://github.com/davtur19/DotGit)
+- If you are using FireFox, you could use [FoxyProxy](https://getfoxyproxy.org/)
 
 
 ### <ins>Netcat</ins>
@@ -924,6 +927,8 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [dirsearch](https://github.com/maurosoria/dirsearch)
   - `dirsearch -l list.txt -x 404,500,501,502,503 -e *`
   - `dirsearch -u target.io -x 404,500,501,502,503 -e *`
+- [DIRB](https://salsa.debian.org/pkg-security-team/dirb)
+  - `dirb http://www.target.com -r -z 10`
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ffuf](https://github.com/ffuf/ffuf)
 
