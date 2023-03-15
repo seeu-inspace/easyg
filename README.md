@@ -461,8 +461,9 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 **Browser extensions**
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
 - [Wappalyzer](https://www.wappalyzer.com/)
-- [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [DotGit](https://github.com/davtur19/DotGit)
+- [Cookie-Editor](https://cookie-editor.cgagnier.ca/)
+- [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - If you are using FireFox, you could use [FoxyProxy](https://getfoxyproxy.org/)
 
 
