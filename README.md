@@ -645,12 +645,13 @@ tcpdump -nX -r packets.pcap                                                     
 - [httpx](https://github.com/projectdiscovery/httpx)
   - `type scope.txt | httpx -sc -mc 404` find `404` pages
 
-**Vulnerabilities**
+**Exploits**
 - [SearchSploit](https://www.exploit-db.com/searchsploit)
   - `searchsploit afd windows -w -t`; `-w` to return the URL for https://www.exploitdb.com, `-t` to search the exploit title
   - [Download all the desired exploits using some Bash-fu](scripts/searchsploit&download.sh)
-- [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
-- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
+- [Packet Storm](https://packetstormsecurity.com)
+- [BugTraq](https://bugtraq.securityfocus.com/archive)
+- [National Vulnerability Database](https://nvd.nist.gov/)
 
 
 **For Reporting**
@@ -670,7 +671,7 @@ tcpdump -nX -r packets.pcap                                                     
 - [USB Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky)
 - [Flipper Zero](https://flipperzero.one/)
 - [Create a random text file](https://onlinefiletools.com/generate-random-text-file)
-
+- [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 
 
 ## Passive Information Gathering (OSINT)
