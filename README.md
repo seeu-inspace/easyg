@@ -652,6 +652,8 @@ tcpdump -nX -r packets.pcap                                                     
 - [Packet Storm](https://packetstormsecurity.com)
 - [BugTraq](https://bugtraq.securityfocus.com/archive)
 - [National Vulnerability Database](https://nvd.nist.gov/)
+- [Browser Exploitation Framework (BeEF)](https://beefproject.com/)
+- [The Metasploit Framework](https://www.metasploit.com/)
 
 
 **For Reporting**
