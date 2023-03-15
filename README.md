@@ -19,6 +19,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Check-lists](#check-lists)
   - [Testing layers](#testing-layers)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
+    - [Toolset](#toolset)
     - [Multiple targets](#multiple-targets)
     - [Single target](#single-target)
 - [Linux](#linux)
@@ -148,6 +149,11 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
+
+### <ins>Toolset</ins>
+- [ ] [EasyG](#easyg) and all the connected tools
+- [ ] [Burp Suite](#burp-suite) and all the extensions
+- [ ] [Kali Linux](https://www.kali.org/) since it has everything you need
 
 ### <ins>Testing layers</ins>
 - [ ] Integrations
