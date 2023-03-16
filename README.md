@@ -609,14 +609,16 @@ tcpdump -nX -r packets.pcap                                                     
 
 ### <ins>Others</ins>
 
-**For a temporary public server**
-- [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
-- [beeceptor](https://beeceptor.com/)
+**For a temporary server**
 - `python -m SimpleHTTPServer 7331`
 - `python3 -m http.server 7331`
 - `php -S 0.0.0.0:8000`
 - `ruby -run -e httpd . -p 9000`
 - `busybox httpd -f -p 10000`
+
+**For a temporary public server**
+- [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
+- [beeceptor](https://beeceptor.com/)
 
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
