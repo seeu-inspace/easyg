@@ -457,6 +457,9 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   3. As the default text says in Match 'leave blank to add a new header'
   4. Put the new header in Replace
   ```
+- Analyze better the results from Intruder with Settings > "Grep - Extract"
+  - Manually select in the response the value that you want to track in a new column in the results
+
 
 **Cool extensions**
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
