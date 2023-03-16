@@ -17,9 +17,10 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Resources](#resources)
 - [Useful tips](#useful-tips)
 - [Check-lists](#check-lists)
+  - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
+  - [Penetration Testing cycle](#penetration-testing-cycle)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
-    - [Toolset](#toolset)
     - [Multiple targets](#multiple-targets)
     - [Single target](#single-target)
 - [Linux](#linux)
@@ -170,6 +171,15 @@ EasyG started out as a script that I use to automate some information gathering 
 - [ ] Application Framework
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
+
+### <ins>Penetration Testing cycle</ins>
+
+1. Information gathering ([Passive Information Gathering (OSINT)](#passive-information-gathering-osint))
+3. Servize enumeration ([Active Information Gathering](#active-information-gathering), [Content Discovery](#content-discovery))
+4. Cicle
+   - Penetration
+   - Maintaining access (Trojans)
+5. House keeping (Cleaning up rootkits)
 
 ### <ins>Bug Bounty Hunting</ins>
 
