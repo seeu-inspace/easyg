@@ -1564,6 +1564,12 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 	</svg>
     ```
 
+**Common payloads**
+- `http://127.0.0.1`
+- `http://localhost/`
+- `http://169.254.169.254/`
+- `http://169.254.169.254/latest/meta-data/`
+- `http://metadata.google.internal/`
 
 
 ### <ins>Open redirection</ins>
