@@ -642,7 +642,7 @@ tcpdump -nX -r packets.pcap                                                     
 ### <ins>Bash scripting</ins>
 
 - Grep all the subdomains for `target.com` from `index.html`: `grep -o '[^/]*\.target\.com' index.html | sort -u > list.txt`
-- Get the IPs from lisst.txt: `for url in $(cat list.txt); do host $url; done | grep "has address" | cut -d " " -f 4 | sort -u`
+- Get the IPs from list.txt: `for url in $(cat list.txt); do host $url; done | grep "has address" | cut -d " " -f 4 | sort -u`
 - [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
 - [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 
