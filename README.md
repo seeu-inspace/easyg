@@ -113,6 +113,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
   - [Code injection](#code-injection)
   - [Windows persistence](#windows-persistence)
+- [Buffer Overflows](#buffer-overflows)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 
