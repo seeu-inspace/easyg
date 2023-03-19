@@ -2671,6 +2671,8 @@ Unprivileged users have the ability to change or replace the executable with arb
   - Note: usually, `<port vulnserver>` is `9999`
 - [Kali](https://www.kali.org/)
 - See also [Buffer Overflows Made Easy | The Cyber Mentor](https://www.youtube.com/playlist?list=PLLKT__MCUeix3O0DPbmuaRuR_4Hxo4m3G)
+- [mingw-w64](https://www.mingw-w64.org/), a cross-compiler for programs written to be compiled in Windows. With it you can compile them in an OS like Linux
+  - Example of usage: `i686-w64-mingw32-gcc 42341.c -o syncbreeze_exploit.exe -lws2_32`
 
 **Issues**
 - From [Finding the right module](#finding-the-right-module) I had to use python2 instead of python3
