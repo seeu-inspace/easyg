@@ -476,7 +476,6 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
-- [Taborator](https://portswigger.net/bappstore/c9c37e424a744aa08866652f63ee9e0f)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 - [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
 - [Burp Bounty](https://burpbounty.net/)
