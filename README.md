@@ -1193,7 +1193,7 @@ You can find it here: [sullo/nikto](https://github.com/sullo/nikto).
 
 ### <ins>Nuclei</ins>
 
-You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei).
+You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei). See also: "[The Ultimate Guide to Finding Bugs With Nuclei by ProjectDiscovery](https://blog.projectdiscovery.io/ultimate-nuclei-guide/)"
 
 **Automatic Selection**<br/>
 `nuclei -u http://target.io -as`
