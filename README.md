@@ -1806,7 +1806,7 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   <a href="jAvAsCrIpT:alert(1)">payload</a>
   ```
-
+- Can't use `alert`, `confirm` or `prompt`? Try `print()`! [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)]
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
