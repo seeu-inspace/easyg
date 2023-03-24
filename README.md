@@ -155,6 +155,10 @@ EasyG started out as a script that I use to automate some information gathering 
 - [PortSwigger/research](https://portswigger.net/research)
 - [all InfoSec news](https://allinfosecnews.com/)
 
+**Newsletter**
+- [Bug Bytes](https://blog.intigriti.com/category/bugbytes/)
+- [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
+
 ## Useful tips
 
 - For RCE 
