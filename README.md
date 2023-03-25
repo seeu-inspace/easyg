@@ -728,6 +728,7 @@ tcpdump -nX -r packets.pcap                                                     
 - [PwnDoc](https://github.com/pwndoc/pwndoc)
 - [Vulnrepo](https://vulnrepo.com/home)
 - [PlexTrac](https://plextrac.com/)
+- [Offensive Security Exam Report Template in Markdown](https://github.com/noraj/OSCP-Exam-Report-Template-Markdown)
 
 
 **Misc tools**
