@@ -460,7 +460,8 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   1. Get IPs in access.log, count the frequency and sort them: `cat access.log | cut -d " " -f 1 | sort | uniq -c | sort -urn`
   2. From the log file, pick one IP:  `cat access.log | grep '108.38.224.98' | cut -d "\"" -f 2 | uniq -c`
   3. Further inspect user's behavior: `cat access.log | grep '108.38.224.98' | grep '/admin ' | sort -u`
-
+- [Mounting a Shared Folder on a Linux Computer](https://docs.qnap.com/operating-system/qts/4.5.x/en-us/GUID-445D5C06-7E5A-4232-AC76-CDAF48EDB655.html)
+  - `mount <NAS Ethernet Interface IP>:/share/<Shared Folder Name> <Directory to Mount>`
 
 ## Tools
 
