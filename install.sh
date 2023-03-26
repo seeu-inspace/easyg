@@ -10,4 +10,5 @@ else
 	go install -v github.com/tomnomnom/anew@latest
 	go install -v github.com/tomnomnom/httprobe@latest
 	go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+	go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 fi
