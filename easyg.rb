@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei
 
 require 'uri'
 require 'net/http'
@@ -121,8 +121,8 @@ if ARGV[1] == "assetenum"
 		target = f.gsub("\n","").to_s
 		
 		#== amass ==
-		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		#puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
+		#system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
 
 		#== subfinder ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
@@ -246,6 +246,11 @@ if ARGV[1] == "assetenum"
 			puts "[\e[36m+\e[0m] Results added at output/httprobe_" + ARGV[0]
 		end
 	end
+	
+	#== nuclei ==	
+	puts "[\e[36m+\e[0m] Checking with nuclei in " + ARGV[0]
+	system "nuclei -l output/httprobe_" + ARGV[0] + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + ARGV[0]
+	delete_if_empty "output/nuclei_" + ARGV[0]
 	
 end
 
