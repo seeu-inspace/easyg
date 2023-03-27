@@ -690,6 +690,10 @@ tcpdump -nX -r packets.pcap                                                     
 - [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 
 
+
+
+
+
 ### <ins>Others</ins>
 
 **For a temporary server**
@@ -738,7 +742,6 @@ tcpdump -nX -r packets.pcap                                                     
 - [BugTraq](https://bugtraq.securityfocus.com/archive)
 - [National Vulnerability Database](https://nvd.nist.gov/)
 - [Browser Exploitation Framework (BeEF)](https://beefproject.com/)
-- [The Metasploit Framework](https://www.metasploit.com/)
 
 
 **For Reporting**
