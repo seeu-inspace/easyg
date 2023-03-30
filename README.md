@@ -123,16 +123,8 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Password Attacks](#password-attacks)
     - [Wordlists](#wordlists)
     - [Password Cracking](#password-cracking)
-      - [John the Ripper](#john-the-ripper)
-      - [Ophcrack](#ophcrack)
-    - [Common Network Service Attack Methods](#common-network-service-attack-methods)
-      - [Medusa, HTTP htaccess Attack](#medusa-http-htaccess-attack)
-      - [Crowbar, Remote Desktop Protocol Attack](#crowbar-remote-desktop-protocol-attack)
-      - [THC Hydra, SSH Attack](#thc-hydra-ssh-attack)
-      - [THC Hydra, HTTP POST Attack](#thc-hydra-http-post-attack)
+    - [Network Service Attack](#network-service-attack)
     - [Leveraging Password Hashes](#leveraging-password-hashes)
-      - [mimikatz](#mimikatz)
-      - [Pass-the-Hash](#pass-the-hash)
   - [Buffer Overflow](#buffer-overflow)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
@@ -2896,7 +2888,7 @@ Examples of usage:
 3. Click on the `Crack` button
 
 
-#### <ins>Common Network Service Attack Methods</ins>
+#### <ins>Network Service Attack</ins>
 
 **Tools**
 - [Medusa](http://h.foofus.net/?page_id=51)
