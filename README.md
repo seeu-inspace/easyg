@@ -1134,7 +1134,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - Errors `site:target.com intext:"Warning: mysql_num_rows()"`
 - `intitle:"Index of /" + ".htaccess"`
 - `intitle:"index of" "parent directory"` directory listing
-- [Google Dorks - Cloud Storage:](https://mobile.twitter.com/TakSec/status/1616852760141627393)
+- [Google Dorks - Cloud Storage:](https://twitter.com/TakSec/status/1616852760141627393)
   ```
   site:http://s3.amazonaws.com "target.com"
   site:http://blob.core.windows.net "target.com"
@@ -1194,12 +1194,13 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
 - [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
 - [OWASP Mobile Application Security](https://mas.owasp.org/)
 
-**Android tools**
-- [m.apkpure.com](https://m.apkpure.com/it/) Download APKs
-- [apps.evozi.com](https://apps.evozi.com/apk-downloader/) Download APKs
-- [apk-dl.com](http://apk-dl.com/) Download APKs
-- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
-- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
+**Download APKs**
+- [m.apkpure.com](https://m.apkpure.com/it/)
+- [apps.evozi.com](https://apps.evozi.com/apk-downloader/)
+- [apk-dl.com](http://apk-dl.com/) 
+
+**Emulators**
+- [Noxplayer](https://www.bignox.com/)
 - [Genymotion](https://www.genymotion.com/) an android emulator
 - [Android Studio](https://developer.android.com/studio) Android application development, useful also for the emulator
   - Note: to start only the emulator, use commands such as
@@ -1207,11 +1208,17 @@ nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more inf
     cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
     emulator -avd Pixel_4_XL_API_30
     ```
+
+**Android tools**
+- [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
+- [frida](https://github.com/frida/frida/)
+- [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
 - [Java Decompiler](https://java-decompiler.github.io/)
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
-
+- [APK-MITM](https://github.com/shroudedcode/apk-mitm) removes certificate pinning
+- [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
 
 ## Source code review
 - Search for known dangerous functions used on user-supplied input
