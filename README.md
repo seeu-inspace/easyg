@@ -12,6 +12,7 @@ Made with <3 by Riccardo Malatesta (@seeu)
 
 EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](easyg.rb). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
+
 ## Table of Contents
 
 - [Resources](#resources)
@@ -627,6 +628,10 @@ powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAH
 **Misc operations**
 - Follow TCP stream: `Right-click` > `Follow` > `TCP Stream`
 
+- [Display Filter Reference](https://www.wireshark.org/docs/dfref/)
+- [Wireshark User’s Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
+
+
 ### <ins>Tcpdump</ins>
 
 ```
@@ -1154,11 +1159,62 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 
 ## Networking
 
+Checking the routing table
 ```
-ip route add <net_address_in_cdr> via <interface_gateway>
-route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway> (Windows)
-nmap -sn <net_address_in_cdr> | Check hosts alive, adding -A you gather more info for a target
+ip route        on Linux box
+route print     on Windows
+netstat -r      on Mac OSX
 ```
+
+Discover the MAC address
+```
+ip addr         on Linux
+ipconfig /all   on Windows
+ifconfig        on MacOS
+```
+
+Check ARP cache
+```
+ip neighbour    on Linux
+apr -a          on Windows
+arp             on *nix OS
+```
+
+Check listening ports and the current TCP connections
+```
+netstat -ano    on Windows
+netstat -tunp   on Linux
+
+on MacOS
+--------
+netstat -p tcp -p udp
+lsof -n -i4TCP -i4UDP
+```
+
+Add new routes
+```
+ip route add <net_address_in_cdr> via <interface_gateway>                             on Linux
+route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway>     on Windows
+nmap -sn <net_address_in_cdr>                                                         Check hosts alive, adding -A you gather more info for a target
+```
+
+Well-known Ports
+| Service       | Port          |
+| ---           | ---           |
+| SMTP          | 25            |
+| SSH           | 22            |
+| POP3          |  110          |
+| IMAP          | 143           |
+| HTTP          | 80            |
+| HTTPS         | 443           |
+| NETBIOS       | 137, 138, 139 |
+| SFTP          | 115           |
+| Telnet        | 23            |
+| FTP           | 21            |
+| RDP           | 3389          |
+| MySQL         | 3306          |
+| MS SQL Server | 1433          |
+
 
 **Resources**
 - [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
