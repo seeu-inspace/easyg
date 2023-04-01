@@ -43,6 +43,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
   - [Notes](#notes)
   - [Tools](#tools-1)
+  - [Target validation](#target-validation)
   - [User Information Gathering](#user-information-gathering)
 - [Active Information Gathering](#active-information-gathering)
   - [DNS Enumeration](#dns-enumeration)
@@ -202,8 +203,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - Job Information
   - Employees
   - Pictures
-- Target validation
-  - WHOIS, nslookup, dnsrecon
+- [Target validation](#target-validation)
 - Data breaches
   - HaveIBeenPwned, Breach-Parse, WeLeakInfo
 
@@ -871,6 +871,14 @@ keyscan_stop              stop the keystroke sniffer
 
 ### <ins>Tools</ins>
 
+- [Pastebin](https://pastebin.com/)
+- [Stack Overflow](https://stackoverflow.com/)
+- [Information Gathering Frameworks](https://osintframework.com/)
+- [Maltego](https://www.maltego.com/)
+
+### <ins>Target validation</ins>
+
+- Use `WHOIS`, `nslookup` and `dnsrecon`
 - [searchdns.netcraft.com](https://searchdns.netcraft.com/)
   - Search for registration information and site technology entries
 - [Recon-ng](https://github.com/lanmaster53/recon-ng)
@@ -899,31 +907,28 @@ keyscan_stop              stop the keystroke sniffer
   - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [Security Headers Scanner](https://securityheaders.com/)
 - [SSL Server Test](https://www.ssllabs.com/ssltest/)
-- [Pastebin](https://pastebin.com/)
-- Social media tools
-  - [Social Searcher](https://www.social-searcher.com/)
-  - [Twofi](https://digi.ninja/projects/twofi.php)
-  - [linkedin2username](https://github.com/initstring/linkedin2username)
-- [Stack Overflow](https://stackoverflow.com/)
-- [Information Gathering Frameworks](https://osintframework.com/)
-- [Maltego](https://www.maltego.com/)
 
 ### <ins>User Information Gathering</ins>
 
 Note: A company may only approve tests of its own systems. Personal devices, outside email, and social media accounts used by employees often do not come under this authorisation.
 
-**Email Harvesting, [theHarvester](https://github.com/laramies/theHarvester)**
+#### Email Harvesting
 
-```
-theharvester -d targetcorp.com -b google                  -d specify target domain, -b set data source to search
-```
+- [theHarvester](https://github.com/laramies/theHarvester)**
+  ```
+  theharvester -d targetcorp.com -b google                  -d specify target domain, -b set data source to search
+  ```
 
-**Password Dumps**
+#### Password Dumps
 
 Malicious hackers frequently post stolen passwords on Pastebin or other less reputable websites. This is useful for generating wordlists.
+- An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
 
-An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
+#### Social media tools
 
+- [Social Searcher](https://www.social-searcher.com/)
+- [Twofi](https://digi.ninja/projects/twofi.php)
+- [linkedin2username](https://github.com/initstring/linkedin2username)
 
 
 ## Active Information Gathering
