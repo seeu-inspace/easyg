@@ -193,12 +193,18 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Penetration Testing cycle</ins>
 
-1. Information gathering ([Passive Information Gathering (OSINT)](#passive-information-gathering-osint))
-3. Servize enumeration ([Active Information Gathering](#active-information-gathering), [Content Discovery](#content-discovery))
+1. Information gathering 
+   - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
+3. Servize enumeration
+   - [Active Information Gathering](#active-information-gathering)
+   - [Content Discovery](#content-discovery)
+   - [Vulnerability Scanning](#vulnerability-scanning)
 4. Cicle
    - Penetration
    - Maintaining access (Trojans)
-5. House keeping (Cleaning up rootkits)
+5. House keeping
+   - Cleaning up rootkits
+   - Covering tracks
 
 ### <ins>Bug Bounty Hunting</ins>
 
