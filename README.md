@@ -206,7 +206,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Target validation](#target-validation)
 - [User Information Gathering](#user-information-gathering)
 
-#### <ins>2. Servize enumeration</ins>
+#### <ins>2. Service enumeration</ins>
 - [Active Information Gathering](#active-information-gathering)
 - Finding subdomains
   - [Google Fu](#google-dorking)
