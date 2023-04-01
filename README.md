@@ -204,6 +204,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - Employees
   - Pictures
 - [Target validation](#target-validation)
+- [User Information Gathering](#user-information-gathering)
 
 #### <ins>2. Servize enumeration</ins>
 - [Active Information Gathering](#active-information-gathering)
