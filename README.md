@@ -204,8 +204,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - Employees
   - Pictures
 - [Target validation](#target-validation)
-- Data breaches
-  - HaveIBeenPwned, Breach-Parse, WeLeakInfo
 
 #### <ins>2. Servize enumeration</ins>
 - [Active Information Gathering](#active-information-gathering)
@@ -929,6 +927,14 @@ Malicious hackers frequently post stolen passwords on Pastebin or other less rep
 - [Social Searcher](https://www.social-searcher.com/)
 - [Twofi](https://digi.ninja/projects/twofi.php)
 - [linkedin2username](https://github.com/initstring/linkedin2username)
+
+
+#### Data breaches
+
+- [HaveIBeenPwned](https://haveibeenpwned.com/)
+- [Breach-Parse](https://github.com/hmaverickadams/breach-parse)
+- [WeLeakInfo](https://mobile.twitter.com/weleakinfo)
+
 
 
 ## Active Information Gathering
