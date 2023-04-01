@@ -193,18 +193,38 @@ EasyG started out as a script that I use to automate some information gathering 
 
 ### <ins>Penetration Testing cycle</ins>
 
-1. Information gathering 
-   - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
-3. Servize enumeration
-   - [Active Information Gathering](#active-information-gathering)
-   - [Content Discovery](#content-discovery)
-   - [Vulnerability Scanning](#vulnerability-scanning)
-4. Cicle
-   - Penetration
-   - Maintaining access (Trojans)
-5. House keeping
-   - Cleaning up rootkits
-   - Covering tracks
+#### <ins>1. Information gathering</ins>
+- [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
+- Location information
+  - Satellite images
+  - Drone recon
+  - Bulding layout
+- Job Information
+  - Employees
+  - Pictures
+- Target validation
+  - WHOIS, nslookup, dnsrecon
+- Data breaches
+  - HaveIBeenPwned, Breach-Parse, WeLeakInfo
+
+#### <ins>2. Servize enumeration</ins>
+- [Active Information Gathering](#active-information-gathering)
+- Finding subdomains
+  - [Google Fu](#google-dorking)
+  - [EasyG](#easyg)
+- Fingerprinting
+  - nmap, Wappalyzer, WhatWeb, BuiltWith, Netcat
+- [Content Discovery](#content-discovery)
+- [Vulnerability Scanning](#vulnerability-scanning)
+
+#### <ins>3. Cicle</ins>
+- Penetration
+- Maintaining access (Trojans)
+
+#### <ins>4. House keeping</ins>
+- Cleaning up rootkits
+- Covering tracks
+
 
 ### <ins>Bug Bounty Hunting</ins>
 
