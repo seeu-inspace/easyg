@@ -1143,7 +1143,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 
 - Port `22`, connect with
   - `ssh <ip>`, `ssh <ip> -oKexAlgorithms=+<option>`, ``ssh <ip> -oKexAlgorithms=+<option>` -c <cipher>`
-  - [putty](https://www.putty.org/)
+  - [PuTTY](https://www.putty.org/)
 - Search for a banner, to get more info
 
 ## Content Discovery
