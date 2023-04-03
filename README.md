@@ -474,7 +474,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 ### <ins>EasyG</ins>
 
-[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](install.bat) or [install.sh](install.sh) and then run `ruby easyg.rb help`.
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](install.bat) or [install.sh](install.sh) and then run `ruby easyg.rb`.
 
 - [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
 - [lists](lists/)
@@ -870,7 +870,6 @@ keyscan_stop              stop the keystroke sniffer
 
 ### <ins>Tools</ins>
 
-- [Pastebin](https://pastebin.com/)
 - [Stack Overflow](https://stackoverflow.com/)
 - [Information Gathering Frameworks](https://osintframework.com/)
 - [Maltego](https://www.maltego.com/)
@@ -917,11 +916,14 @@ Note: A company may only approve tests of its own systems. Personal devices, out
   ```
   theharvester -d targetcorp.com -b google                  -d specify target domain, -b set data source to search
   ```
+- [hunter.io](https://hunter.io/)
+- [Phonebook.cz](https://phonebook.cz/)
+- [voilanorbert.com](https://www.voilanorbert.com/)
+- [Clearbit](https://clearbit.com/)
 
-#### Password Dumps
-
-Malicious hackers frequently post stolen passwords on Pastebin or other less reputable websites. This is useful for generating wordlists.
-- An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
+Verify email addresses
+- [Email Hippo](https://tools.emailhippo.com/)
+- [Email Checker](https://email-checker.net/)
 
 #### Social media tools
 
@@ -935,7 +937,11 @@ Malicious hackers frequently post stolen passwords on Pastebin or other less rep
 - [HaveIBeenPwned](https://haveibeenpwned.com/)
 - [Breach-Parse](https://github.com/hmaverickadams/breach-parse)
 - [WeLeakInfo](https://mobile.twitter.com/weleakinfo)
+- [Dehashed](https://www.dehashed.com/)
+  - [Hashes.com](https://hashes.com/en/decrypt/hash)
 
+Malicious hackers frequently post stolen passwords on [Pastebin](https://pastebin.com/) or other less reputable websites. This is useful for generating wordlists.
+- An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
 
 
 ## Active Information Gathering
