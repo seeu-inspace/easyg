@@ -56,6 +56,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [NFS Enumeration](#nfs-enumeration)
   - [SNMP Enumeration](#snmp-enumeration)
   - [HTTP / HTTPS enumeration](#http--https-enumeration)
+  - [SSH enumeration](#ssh-enumeration)
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
@@ -1138,6 +1139,12 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
     cat naabu.txt | httprobe > results.txt
     ```
 
+### <ins>SSH enumeration</ins>
+
+- Port `22`, connect with
+  - `ssh <ip>`, `ssh <ip> -oKexAlgorithms=+<option>`, ``ssh <ip> -oKexAlgorithms=+<option>` -c <cipher>`
+  - [putty](https://www.putty.org/)
+- Search for a banner, to get more info
 
 ## Content Discovery
 
