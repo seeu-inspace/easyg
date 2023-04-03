@@ -17,6 +17,7 @@ EasyG started out as a script that I use to automate some information gathering 
 
 - [Resources](#resources)
 - [Useful tips](#useful-tips)
+  - [Glossary](#glossary)
 - [Check-lists](#check-lists)
   - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
@@ -172,6 +173,16 @@ EasyG started out as a script that I use to automate some information gathering 
     <!-- PoC by seeu -->
     ```
 
+#### Glossary
+
+- [Session hijacking](https://owasp.org/www-community/attacks/Session_hijacking_attack)
+- [Session fixation](https://owasp.org/www-community/attacks/Session_fixation)
+
+Shells
+- Shell: we open a shell on the client
+- Reverse shell: we make the target connect to us with a shell
+- Bind shell: the target has a listener running and the attacker connects to it in order to get a shell
+
 
 ## Check-lists
 
@@ -180,6 +191,7 @@ EasyG started out as a script that I use to automate some information gathering 
 - [Regexp Security Cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
 ### <ins>Toolset</ins>
 - [ ] [EasyG](#easyg) and all the connected tools
