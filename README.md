@@ -55,6 +55,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [SMB Enumeration](#smb-enumeration)
   - [NFS Enumeration](#nfs-enumeration)
   - [SNMP Enumeration](#snmp-enumeration)
+  - [HTTP / HTTPS enumeration](#http--https-enumeration)
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
@@ -1125,6 +1126,17 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - Windows processes: `snmpwalk -c public -v1 10.11.1.73 1.3.6.1.2.1.25.4.2.1.2`
 - Installed software: `snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2`
 
+
+### <ins>HTTP / HTTPS enumeration</ins>
+
+- [httprobe](https://github.com/tomnomnom/httprobe)
+  - example: `cat subdomains.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output.txt`
+- [naabu](https://github.com/projectdiscovery/naabu) + [httprobe](https://github.com/tomnomnom/httprobe), to find hidden web ports
+  - example
+    ``` 
+    naabu -v -list subdomains.txt  -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o naabu.txt
+    cat naabu.txt | httprobe > results.txt
+    ```
 
 
 ## Content Discovery
