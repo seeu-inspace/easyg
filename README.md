@@ -200,11 +200,11 @@ EasyG started out as a script that I use to automate some information gathering 
   - Satellite images
   - Drone recon
   - Bulding layout
-- Job Information
-  - Employees
-  - Pictures
 - [Target validation](#target-validation)
 - [User Information Gathering](#user-information-gathering)
+  - Job Information
+    - Employees
+    - Pictures
 
 #### <ins>2. Service enumeration</ins>
 - [Active Information Gathering](#active-information-gathering)
@@ -212,7 +212,7 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Google Fu](#google-dorking)
   - [EasyG](#easyg)
 - Fingerprinting
-  - nmap, Wappalyzer, WhatWeb, BuiltWith, Netcat
+  - [nmap](#nmap), [Wappalyzer](https://www.wappalyzer.com/), [WhatWeb](https://github.com/urbanadventurer/WhatWeb), [BuiltWith](https://builtwith.com/)
 - [Content Discovery](#content-discovery)
 - [Vulnerability Scanning](#vulnerability-scanning)
 
@@ -971,7 +971,9 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
   dnsenum zonetransfer.me                                   Perform a zone transfer
   ```
 - [zone_transfer.sh](scripts/zone_transfer.sh), DNS zone transfer script
-
+- [Wappalyzer](https://www.wappalyzer.com/)
+- [WhatWeb](https://github.com/urbanadventurer/WhatWeb)
+- [BuiltWith](https://builtwith.com/)
 
 ### <ins>Port Scanning</ins>
 
