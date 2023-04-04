@@ -795,7 +795,7 @@ keyscan_stop              stop the keystroke sniffer
 
 **Migrate your meterpreter process**
 - `ps` view all running processes and then pick one
-- `migrate PID` migrate the process to PID
+- `migrate <PID>` migrate the process to a target PID
 
 **Use mimikatz from meterpreter**
 - `load kiwi` run the extension kiwi
