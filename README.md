@@ -2991,14 +2991,9 @@ Examples of usage:
 #### <ins>Password Cracking</ins>
 
 **Tools**
-- [Metasploit](https://www.metasploit.com/)
 - [John the Ripper](https://www.openwall.com/john/)
 - [Hashcat](https://hashcat.net/hashcat/)
 - [Ophcrack](https://ophcrack.sourceforge.io/)
-
-#### Metasploit
-
-- SSH Brute force: `scanner/ssh/ssh_login`
 
 #### John the Ripper
 - Note for Linux-based systems: first use the unshadow utility to combine the passwd and shadow files from the compromised system `unshadow passwd-file.txt shadow-file.txt > unshadowed.txt`
@@ -3022,10 +3017,15 @@ Examples of usage:
 #### <ins>Network Service Attack</ins>
 
 **Tools**
+- [Metasploit](https://www.metasploit.com/)
 - [Medusa](http://h.foofus.net/?page_id=51)
 - [Spray](https://github.com/Greenwolf/Spray)
 - [Crowbar](https://github.com/galkan/crowbar)
 - [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
+
+#### Metasploit
+
+- SSH Brute force: `scanner/ssh/ssh_login`
 
 #### Medusa, HTTP htaccess Attack
 
