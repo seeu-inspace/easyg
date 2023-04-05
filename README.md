@@ -2991,10 +2991,15 @@ Examples of usage:
 #### <ins>Password Cracking</ins>
 
 **Tools**
+- [Metasploit](https://www.metasploit.com/)
 - [John the Ripper](https://www.openwall.com/john/)
 - [Hashcat](https://hashcat.net/hashcat/)
 - [Ophcrack](https://ophcrack.sourceforge.io/)
-  
+
+#### Metasploit
+
+- SSH Brute force: `scanner/ssh/ssh_login`
+
 #### John the Ripper
 - Note for Linux-based systems: first use the unshadow utility to combine the passwd and shadow files from the compromised system `unshadow passwd-file.txt shadow-file.txt > unshadowed.txt`
 - `john -incremental -users:<user list> <file to crack>` pure brute force attack, you can use `-user:<username>` to target a specific user
