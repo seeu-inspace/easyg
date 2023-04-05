@@ -156,6 +156,12 @@ EasyG started out as a script that I use to automate some information gathering 
 **Newsletter**
 - [Bug Bytes](https://blog.intigriti.com/category/bugbytes/)
 - [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
+- [The Unsupervised Learning Newsletter](https://danielmiessler.com/newsletter/)
+- [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
+- [TLDR Newsletter](https://tldr.tech/)
+- [Sharing What Matters In Security - securibee](https://securib.ee/newsletter/)
+- [Vulnerable U](https://vulnu.beehiiv.com/)
+- [The Security, Funded Newsletter](https://securityfunded.com/)
 
 ## Useful tips
 
