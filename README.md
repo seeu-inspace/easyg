@@ -172,8 +172,9 @@ EasyG started out as a script that I use to automate some information gathering 
     ```HTML
     <!-- PoC by seeu -->
     ```
+- For Metasploit: the port `4444` is very common with Metasploit, so this can trigger some warnings. Consider using another port if the exploit doesn't work.
 
-#### Glossary
+### <ins>Glossary</ins>
 
 - [Session hijacking](https://owasp.org/www-community/attacks/Session_hijacking_attack)
 - [Session fixation](https://owasp.org/www-community/attacks/Session_fixation)
