@@ -3113,7 +3113,7 @@ HTTP POST Attack
   - Example of usage: `i686-w64-mingw32-gcc 42341.c -o syncbreeze_exploit.exe -lws2_32`
 
 **Issues**
-- From [Finding the right module](#finding-the-right-module) I had to use python2 instead of python3
+- For the following scripts, use python2 instead of python3
 - ["Problems attach Immunity to Vulnserver on Windows 10"](https://www.reddit.com/r/hacking/comments/ohg5t0/problems_attach_immunity_to_vulnserver_on_windows/): `Don't start vulnserver, start Immunity as Admin, File > Open > vulnserver.exe, push "play"`.
 
 **Steps to conduct a Buffer Overflow**
