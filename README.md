@@ -124,6 +124,10 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Code injection](#code-injection)
   - [Windows persistence](#windows-persistence)
 - [System Attacks](#system-attacks)
+  - [Information gathering](#information-gathering)
+    - [Tools](#tools-2)
+    - [Windows](#windows)
+    - [Linux](#linux-1)
   - [Password Attacks](#password-attacks)
     - [Wordlists](#wordlists)
     - [Password Cracking](#password-cracking)
@@ -2963,6 +2967,122 @@ Unprivileged users have the ability to change or replace the executable with arb
 - [PayloadsAllTheThings/Windows - Persistence](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md)
 
 ## System Attacks
+
+### <ins>Information gathering</ins>
+
+#### Tools
+- [PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation](https://github.com/carlospolop/PEASS-ng)
+  - [Windows Privilege Escalation Awesome Scripts](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+    - [Checklist - Local Windows Privilege Escalation](https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation) 
+  - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+    - [Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation)
+- [Windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check)
+  - `windows-privesc-check2.exe -h`
+  - `windows-privesc-check2.exe --dump -G`
+- [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
+  - `./unix-privesc-check`
+  - `./unix-privesc-check standard > output.txt`
+- [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
+- [Mingw-w64](https://www.mingw-w64.org/)
+
+#### Windows
+```PowerShell
+<# gather information about current user #>
+whoami
+net user <user>
+whoami /priv
+
+<# gather user context information #>
+id
+
+<# discover other user accounts on the system #>
+net user
+
+<# enumerate the Hostname #>
+hostname
+
+<# enumerate the Operating System Version and Architecture #>
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+
+<# enumerate running processes and services #>
+tasklist /SVC
+
+<# enumerate networking information #>
+ipconfig /all
+route print
+netstat -ano
+
+<# enumerate firewall status and rules #>
+netsh advfirewall show currentprofile
+netsh advfirewall firewall show rule name=all
+
+<# enumerate scheduled tasks #>
+schtasks /query /fo LIST /v
+
+<# enumerate installed applications and patch levels #>
+wmic product get name, version, vendor
+wmic qfe get Caption, Description, HotFixID, InstalledOn
+
+<# enumerate readable/writable files and directories #>
+accesschk.exe -uws "Everyone" "C:\Program Files"
+PS C:\> Get-ChildItem "C:\Program Files" -Recurse | Get-ACL | ?{$_.AccessToString -match "Everyone\sAllow\s\sModify"}
+
+<# enumerate unmounted disks #>
+mountvol
+
+<# enumerate device drivers and Kernel modules #>
+PS C:\> driverquery.exe /v /fo csv | ConvertFrom-CSV | Select-Object ‘Display Name’, ‘Start Mode’, Path
+PS C:\> Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName, DriverVersion, Manufacturer | Where-Object {$_.DeviceName -like "*VMware*"}
+
+<# enumerating binaries that AutoElevate #>
+reg query HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer
+reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
+```
+
+#### Linux
+```bash
+# enumerate users
+cat /etc/passwd
+
+# enumerate the Hostname
+hostname
+
+# enumerate the Operating System Version and Architecture
+cat /etc/issue
+cat /etc/*-release
+uname -a
+
+# enumerate running processes and services
+ps axu
+
+# enumerate networking information
+ip a
+/sbin/route
+ss -anp
+
+# enumerate scheduled tasks
+ls -lah /etc/cron*
+cat /etc/crontab
+
+# enumerate installed applications and patch levels
+dpkg -l
+
+# enumerate readable/writable files and directories
+find / -writable -type d 2>/dev/null
+
+# enumerate unmounted disks
+cat /etc/fstab
+mount
+/bin/lsblk
+
+# enumerate device drivers and kernel modules
+lsmod
+/sbin/modinfo libata
+
+# enumerating binaries that AutoElevate
+find / -perm -u=s -type f 2>/dev/null
+```
+
 
 ### <ins>Password Attacks</ins>
 
