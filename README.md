@@ -1584,6 +1584,7 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 - [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
 - [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
 - [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
+- [Ghauri](https://github.com/r0oth3x49/ghauri)
 
 **sqlmap**
 ```
