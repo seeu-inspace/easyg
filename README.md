@@ -2982,6 +2982,7 @@ Unprivileged users have the ability to change or replace the executable with arb
 - [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
   - `./unix-privesc-check`
   - `./unix-privesc-check standard > output.txt`
+- [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
 - [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
 - [Mingw-w64](https://www.mingw-w64.org/)
 
