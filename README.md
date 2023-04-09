@@ -3069,8 +3069,14 @@ cat /etc/crontab
 # enumerate installed applications and patch levels
 dpkg -l
 
+# find all writable files in /etc
+find /etc -maxdepth 1 -writable -type f
+
+# find all readable files in /etc
+find /etc -maxdepth 1 -readable -type f
+
 # enumerate readable/writable files and directories
-find / -writable -type d 2>/dev/null
+find / -writable -type d 2> /dev/null
 
 # enumerate unmounted disks
 cat /etc/fstab
