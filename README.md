@@ -139,7 +139,7 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Netsh](#netsh)
     - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
   - [Linux Privilege Escalation](#linux-privilege-escalation)
-    - [Resources](#resources)
+    - [Resources](#resources-1)
     - [Service Exploits](#service-exploits)
     - [Weak File Permissions](#weak-file-permissions)
     - [Sudo](#sudo)
