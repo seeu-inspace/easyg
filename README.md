@@ -2991,19 +2991,8 @@ Unprivileged users have the ability to change or replace the executable with arb
 
 #### Tools
 - [PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation](https://github.com/carlospolop/PEASS-ng)
-  - [Windows Privilege Escalation Awesome Scripts](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
-    - [Checklist - Local Windows Privilege Escalation](https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation) 
-  - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
-    - [Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation)
-- [Windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check)
-  - `windows-privesc-check2.exe -h`
-  - `windows-privesc-check2.exe --dump -G`
-- [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
-  - `./unix-privesc-check`
-  - `./unix-privesc-check standard > output.txt`
 - [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
 - [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
-- [Mingw-w64](https://www.mingw-w64.org/)
 
 #### Windows
 ```PowerShell
