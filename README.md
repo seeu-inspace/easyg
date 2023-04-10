@@ -125,7 +125,6 @@ EasyG started out as a script that I use to automate some information gathering 
   - [Windows persistence](#windows-persistence)
 - [System Attacks](#system-attacks)
   - [Information gathering](#information-gathering)
-    - [Tools](#tools-2)
     - [Windows](#windows)
     - [Linux](#linux-1)
   - [Password Attacks](#password-attacks)
@@ -2988,11 +2987,6 @@ Unprivileged users have the ability to change or replace the executable with arb
 ## System Attacks
 
 ### <ins>Information gathering</ins>
-
-#### Tools
-- [PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation](https://github.com/carlospolop/PEASS-ng)
-- [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
-- [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
 
 #### Windows
 ```PowerShell
