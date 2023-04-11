@@ -140,6 +140,7 @@ EasyG started out as a script that I use to automate some information gathering 
     - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
   - [Linux Privilege Escalation](#linux-privilege-escalation)
     - [Resources](#resources-1)
+    - [Strategy](#strategy)
     - [Service Exploits](#service-exploits)
     - [Weak File Permissions](#weak-file-permissions)
     - [Sudo](#sudo)
@@ -3332,7 +3333,7 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - [LinEnum](https://github.com/rebootuser/LinEnum)
   - [Reverse Shell Generator - rsg](https://github.com/mthbernardes/rsg)
 
-### <ins>Strategy</ins>
+#### <ins>Strategy</ins>
 1. Check your user with `id` and `whoami`
 2. Run [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration) with increasing levels
    - starting from lvl `0` to `2`, `./lse.sh -l 0`
