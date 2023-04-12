@@ -1862,6 +1862,7 @@ $content$
 
 **Resources**
 - [Common MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
+- [ASHX shell](https://gist.github.com/merttasci/82100f2ef904dfe810416fd3cb48be5c), see [mert's tweet](https://twitter.com/mertistaken/status/1646171743206121474)
 - [How I earned $500 by uploading a file: write-up of one of my first bug bounty](https://seeu-inspace.medium.com/how-i-earned-500-by-uploading-a-file-write-up-of-one-of-my-first-bug-bounty-c174cf8ea553)
 
 
