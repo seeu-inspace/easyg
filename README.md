@@ -255,6 +255,7 @@ Payloads
 - [ ] [Kali Linux](https://www.kali.org/) since it has everything you need
 
 ### <ins>Testing layers</ins>
+See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020!](https://www.youtube.com/watch?v=p4JgIu1mceI)
 - [ ] Integrations
 - [ ] Application Libraries (usually JavaScript)
 - [ ] Application: Custom Code or COTS
