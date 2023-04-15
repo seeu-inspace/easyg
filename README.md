@@ -1391,6 +1391,7 @@ An example
 
 
 #### Well-known Ports
+
 | Service       | Port          |
 | ---           | ---           |
 | SMTP          | 25            |
@@ -1407,6 +1408,7 @@ An example
 | MySQL         | 3306          |
 | MS SQL Server | 1433          |
 
+See also: ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.com/2022/08/04/open-port-vulnerabilities-list/)
 
 ## Mobile
 
