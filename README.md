@@ -2341,7 +2341,7 @@ How to spot Insecure deserialization
   - Hex `ac` `ed`
   - Base64 `rO0`
  - .NET vulnerable deserarilaztion libraries: BinaryFormatter, SoapFormatter, NetDataContractSerializer, LosFormatter, ObjectStateFormatter
-  - BinaryFormatter serialized objects usually starts with `AAEAAAD`
+ - BinaryFormatter serialized objects usually starts with `AAEAAAD`
 
 **Ysoserial**
 
