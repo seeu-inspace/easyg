@@ -3868,7 +3868,7 @@ Note: This attack works on Windows 7, 8, early versions of Windows 10, and their
 - See also: [Buffer Overflow Prep](https://tryhackme.com/room/bufferoverflowprep)
 
 **Issues**
-- ["Problems attach Immunity to Vulnserver on Windows 10"](https://www.reddit.com/r/hacking/comments/ohg5t0/problems_attach_immunity_to_vulnserver_on_windows/): `Don't start vulnserver, start Immunity as Admin, File > Open > vulnserver.exe, push "play"`.
+- ["Problems attach Immunity to Vulnserver on Windows 10"](https://www.reddit.com/r/hacking/comments/ohg5t0/problems_attach_immunity_to_vulnserver_on_windows/): Don't start vulnserver, start Immunity as Admin, File > Open > vulnserver.exe, push "play".
 
 **Steps to conduct a Buffer Overflow**
 1. [Spiking](#spiking)
