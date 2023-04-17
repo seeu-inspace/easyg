@@ -136,7 +136,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Port Redirection and Tunneling](#port-redirection-and-tunneling)
     - [Port Forwarding](#port-forwarding)
     - [SSH Tunneling](#ssh-tunneling)
-    - [Plix.exe](#plixexe)
+    - [Plink.exe](#plinkexe)
     - [Netsh](#netsh)
     - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
   - [Linux Privilege Escalation](#linux-privilege-escalation)
@@ -3318,7 +3318,7 @@ HTTP POST Attack
    - `sudo proxychains nmap --top-ports=20 -sT -Pn 192.168.1.223`
 
 
-### <ins>Plix.exe</ins>
+### <ins>Plink.exe</ins>
 
 The general format is: `plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`
 
