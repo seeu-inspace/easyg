@@ -3341,7 +3341,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
 Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
 
 1. To begin building our tunnel, create a local SSH-based port forward between the compromised Linux machine and the Windows remote desktop target
-   - `ssh -L 0.0.0.0:8888:192.168.1.110:3389 student@127.0.0.1`
+   - `ssh -L 0.0.0.0:8888:192.168.1.110:3389 user@127.0.0.1`
    - `ss -antp | grep "8888"`
 2. Create an HTTPTunnel out to our Attacker Linux machine in order to slip our traffic past the HTTP-only protocol restriction
    - `hts --forward-port localhost:8888 1234`
