@@ -555,11 +555,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
   - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
   - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
-  - [searchsploit&download.sh](scripts/searchsploit&download.sh) download all the desired exploits using some Bash-fu
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
-  - [smtp_vrfy.py](scripts/smtp_vrfy.py) script for SMTP user enumeration
-  - [zip.py](scripts/zip.py) create custom zip files
-  - [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 - [shells](shells/) to test file uploads
 
 
@@ -763,8 +759,6 @@ tcpdump -nX -r packets.pcap                                                     
 
 - Grep all the subdomains for `target.com` from `index.html`: `grep -o '[^/]*\.target\.com' index.html | sort -u > list.txt`
 - Get the IPs from list.txt: `for url in $(cat list.txt); do host $url; done | grep "has address" | cut -d " " -f 4 | sort -u`
-- [searchsploit&download.sh](scripts/searchsploit&download.sh) Download all the desired exploits using some Bash-fu
-- [zone_transfer.sh](scripts/zone_transfer.sh) DNS zone transfer script
 
 
 
@@ -896,10 +890,10 @@ keyscan_stop              stop the keystroke sniffer
 - [httpx](https://github.com/projectdiscovery/httpx)
   - `type scope.txt | httpx -sc -mc 404` find `404` pages
 
+
 **Exploits**
 - [SearchSploit](https://www.exploit-db.com/searchsploit)
   - `searchsploit afd windows -w -t`; `-w` to return the URL for https://www.exploitdb.com, `-t` to search the exploit title
-  - [Download all the desired exploits using some Bash-fu](scripts/searchsploit&download.sh)
 - [Packet Storm](https://packetstormsecurity.com)
 - [BugTraq](https://bugtraq.securityfocus.com/archive)
 - [National Vulnerability Database](https://nvd.nist.gov/)
@@ -1049,7 +1043,6 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
   ```
   dnsenum zonetransfer.me                                   Perform a zone transfer
   ```
-- [zone_transfer.sh](scripts/zone_transfer.sh), DNS zone transfer script
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [WhatWeb](https://github.com/urbanadventurer/WhatWeb)
 - [BuiltWith](https://builtwith.com/)
@@ -1166,9 +1159,6 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 
 **Use nc to validate SMTP users**<br/>
 `nc -nv 10.11.1.217 25`
-
-**Script for SMTP user enumeration**
-[smtp_vrfy.py](scripts/smtp_vrfy.py) usage: `smtp_vrfy.py <IP> <usernames_file>`
 
 
 ### <ins>SNMP Enumeration</ins>
