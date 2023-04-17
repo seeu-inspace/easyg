@@ -12,7 +12,7 @@ Made with <3 by Riccardo Malatesta (@seeu)
 
 EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](easyg.rb). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
-I try as much as possible to link to the various sources or inspiration for these notes. A large part of these notes are from: [PTS v4](https://blog.elearnsecurity.com/introducing-the-ptsv4-training-course.html), [PortSwigger Web Security Academy](https://portswigger.net/web-security), [TryHackMe](https://tryhackme.com/), [Jhaddix](https://twitter.com/Jhaddix), [The Cyber Mentor](https://www.thecybermentor.com/), [NahamSec](https://www.youtube.com/@NahamSec) (and [NahamCon](https://www.nahamcon.com/)), InfoSec Twitter and many other amazing people.
+I try as much as possible to link to the various sources or inspiration for these notes. A large part of these notes are from: [PTS v4](https://blog.elearnsecurity.com/introducing-the-ptsv4-training-course.html), [PortSwigger Web Security Academy](https://portswigger.net/web-security), [PEN-200](https://www.offsec.com/courses/pen-200/), [TryHackMe](https://tryhackme.com/), [Jhaddix](https://twitter.com/Jhaddix), [The Cyber Mentor](https://www.thecybermentor.com/), [NahamSec](https://www.youtube.com/@NahamSec) (and [NahamCon](https://www.nahamcon.com/)), InfoSec Twitter and many other amazing people.
 
 ## Table of Contents
 
