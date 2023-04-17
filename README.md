@@ -1155,10 +1155,13 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 **Interesting commands**
 - `VRFY` request asks the server to verify an email address
 - `EXPN` asks the server for the membership of a mailing list
+- Use telnet to connect to the target `telnet <IP> <PORT> ` to gather information
 
 **Use nc to validate SMTP users**<br/>
 `nc -nv <IP> 25`
 
+**Use nmap for SMTP enumeration**<br/>
+`nmap -p 25 --script =smtp-enum-users <IP>`
 
 ### <ins>SNMP Enumeration</ins>
 
@@ -3302,6 +3305,8 @@ HTTP POST Attack
 
 
 ### <ins>SSH Tunneling</ins>
+
+See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/academy/ssh/tunneling-example)
 
 #### SSH Local Port Forwarding
 - `ssh -N -L [bind_address:]port:host:hostport [username@address]`
