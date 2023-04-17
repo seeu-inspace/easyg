@@ -550,10 +550,9 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 - [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
 - [lists](lists/)
-  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster
+  - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster, created witht he help of [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [scripts](scripts/)
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
-  - [nuclei_checks.rb](scripts/nuclei_checks.rb) perform some nuclei scans with a list of targets as an input
   - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
   - [selenium.rb](scripts/selenium.rb) take screenshots from a list of targets as an input
 - [shells](shells/) to test file uploads
