@@ -19,6 +19,7 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Resources](#resources)
 - [Useful tips](#useful-tips)
   - [Glossary](#glossary)
+  - [Client-specific key areas of concern](#client-specific-key-areas-of-concern)
 - [Check-lists](#check-lists)
   - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
@@ -239,6 +240,15 @@ Payloads
   - example: `windows/meterpreter/reverse_tcp`
 - Non-staged: Sends exploit all at once, larger in size and won't always work
   - example: `windows/meterpreter_reverse_tcp`
+
+### <ins>Client-specific key areas of concern</ins>
+- [HIPAA](https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html), a framework that governs medical data in the US
+- [PCI](https://www.pcisecuritystandards.org/), a framework that governs credit card and payment processing
+- [GDPR](https://gdpr-info.eu/), a Regulation in EU law on data protection and privacy in the EU and the European Economic Area
+  - Examples
+    - ["Twitter fined ~$550K over a data breach in Ireland’s first major GDPR decision"](https://techcrunch.com/2020/12/15/twitter-fined-550k-over-a-data-breach-in-irelands-first-major-gdpr-decision/), [Tweet from Whitney Merrill](https://twitter.com/wbm312/status/1645497243708067841)
+    - See also: [Increasing your bugs with the impact of the GDPR](https://www.youtube.com/watch?v=7JiOqXIZHy0)
+
 
 ## Check-lists
 
