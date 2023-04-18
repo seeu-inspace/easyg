@@ -275,6 +275,8 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 ### <ins>Penetration Testing cycle</ins>
 
+#### <ins>0. Defining the Scope</ins>
+
 #### <ins>1. Information gathering</ins>
 - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
 - Location information
@@ -299,12 +301,18 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 #### <ins>3. Cicle</ins>
 - Penetration
+  - Initial Foothold
+  - Privilege Escalation
+  - Lateral Movement
 - Maintaining access (Trojans)
 
 #### <ins>4. House keeping</ins>
 - Cleaning up rootkits
 - Covering tracks
 
+#### <ins>5. Results</ins>
+- Reporting / Analysis
+- Lessons Learned / Remediation
 
 ### <ins>Bug Bounty Hunting</ins>
 
