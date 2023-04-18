@@ -1299,6 +1299,9 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
   site:http://drive.google.com "target.com"
   ```
 - [Google Hacking Database](https://www.exploit-db.com/google-hacking-database)
+- [DorkSearch.com](https://dorksearch.com/)
+- [Refine web searches | Google](https://support.google.com/websearch/answer/2466433?hl=en)
+
 
 ### <ins>GitHub Dorking</ins>
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
