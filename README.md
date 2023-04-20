@@ -1327,28 +1327,28 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [Winfo](https://packetstormsecurity.com/search/?q=winfo&s=files)
 - [enum4linux](https://www.kali.org/tools/enum4linux/)
 
-Checking the routing table
+#### Checking the routing table
 ```
 ip route        on Linux box
 route print     on Windows
 netstat -r      on Mac OSX
 ```
 
-Discover the MAC address
+#### Discover the MAC address
 ```
 ip addr         on Linux
 ipconfig /all   on Windows
 ifconfig        on MacOS
 ```
 
-Check ARP cache
+#### Check ARP cache
 ```
 ip neighbour    on Linux
 apr -a          on Windows
 arp             on *nix OS
 ```
 
-Check listening ports and the current TCP connections
+#### Check listening ports and the current TCP connections
 ```
 netstat -ano    on Windows
 netstat -tunp   on Linux
@@ -1359,7 +1359,7 @@ netstat -p tcp -p udp
 lsof -n -i4TCP -i4UDP
 ```
 
-Add new routes
+#### Add new routes
 ```
 ip route add <net_address_in_cdr> via <interface_gateway>                             on Linux
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway>     on Windows
