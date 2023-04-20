@@ -478,7 +478,7 @@ unalias mkdir                                            Unsett an alias
 cat ~/.bashrc                                            Examin the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc"
 chmod +x                                                 Make a file executable
 xfreerdp /u:<user> /p:<password> /cert:ignore /v:<ip>    Connect with RDP
-desktop -u <user> -p <password> <ip>                     Connect with RDP
+rdesktop -u <user> -p <password> <ip>                    Connect with RDP
 ```
 
 <ins>**Linux environment variables**</ins>
