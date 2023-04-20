@@ -448,7 +448,6 @@ init 6                                                   Reboot Linux from the c
 gcc -o output.c input.c                                  Compile C code
 gcc -m32 -o output.c input.c                             Cross compile C code, compile 32 bit binary on 64 bit Linux
 unset HISTORYFILE                                        Disable bash history logging
-rdesktop X.X.X.X                                         Connect to RDP server from Linux
 kill -9 $$                                               Kill current session
 chown user:group blah                                    Change owner of file or dir
 chown -R user:group blah                                 Change owner of file or dir and all underlying files / dirs – recersive chown
@@ -479,6 +478,7 @@ unalias mkdir                                            Unsett an alias
 cat ~/.bashrc                                            Examin the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc"
 chmod +x                                                 Make a file executable
 xfreerdp /u:<user> /p:<password> /cert:ignore /v:<ip>    Connect with RDP
+desktop -u <user> -p <password> <ip>                     Connect with RDP
 ```
 
 <ins>**Linux environment variables**</ins>
