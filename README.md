@@ -1421,7 +1421,21 @@ An example
 | MySQL         | 3306          |
 | MS SQL Server | 1433          |
 
-See also: [Common Port Vulnerabilities](#common-port-vulnerabilities)
+#### Common Port Vulnerabilities
+
+See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.com/2022/08/04/open-port-vulnerabilities-list/)
+
+| Ports | Vulnerabilities |
+| ---  | --- |
+| 20, 21 (FTP) | - Brute-forcing <br/>- Anonymous authentication (`anonymous` as username and password) <br/>- Cross-site scripting <br/>- Directory traversal attacks |
+| 22 (SSH) | - leaked SSH keys <br/>- Brute-forcing |
+| 23 (Telnet) | - Brute-forcing <br/>- Spoofing <br/>-Credential sniffing |
+| 25 (SMTP) | - Spoofing <br/>- Spamming |
+| 53 (DNS) | - DDoS |
+| 137, 139 (NetBIOS over TCP) 445 (SMB) | - [EternalBlue](https://www.cisecurity.org/wp-content/uploads/2019/01/Security-Primer-EternalBlue.pdf) <br/>- Capturing NTLM hashes <br/>- Brute-force |
+| 80, 443, 8080 and 8443 (HTTP and HTTPS) | - Cross-site Scripting (XSS) <br/>- SQL injections <br/>- Cross-Site Request Forgeries (CSRF) <br/>- DDoS |
+| 1433,1434 and 3306 (SQL Server and MySQL) | - Default configurations <br/>- DDoS |
+| 3389 (Remote Desktop) | - [BlueKeep](https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2019-0708) <br/>- Leaked or weak user authentication |
 
 ## Mobile
 
@@ -3215,22 +3229,6 @@ Examples of usage:
 - [Spray](https://github.com/Greenwolf/Spray)
 - [Crowbar](https://github.com/galkan/crowbar)
 - [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
-
-#### Common Port Vulnerabilities
-
-See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.com/2022/08/04/open-port-vulnerabilities-list/)
-
-| Ports | Vulnerabilities |
-| ---  | --- |
-| 20, 21 (FTP) | - Brute-forcing <br/>- Anonymous authentication (`anonymous` as username and password) <br/>- Cross-site scripting <br/>- Directory traversal attacks |
-| 22 (SSH) | - leaked SSH keys <br/>- Brute-forcing |
-| 23 (Telnet) | - Brute-forcing <br/>- Spoofing <br/>-Credential sniffing |
-| 25 (SMTP) | - Spoofing <br/>- Spamming |
-| 53 (DNS) | - DDoS |
-| 137, 139 (NetBIOS over TCP) 445 (SMB) | - [EternalBlue](https://www.cisecurity.org/wp-content/uploads/2019/01/Security-Primer-EternalBlue.pdf) <br/>- Capturing NTLM hashes <br/>- Brute-force |
-| 80, 443, 8080 and 8443 (HTTP and HTTPS) | - Cross-site Scripting (XSS) <br/>- SQL injections <br/>- Cross-Site Request Forgeries (CSRF) <br/>- DDoS |
-| 1433,1434 and 3306 (SQL Server and MySQL) | - Default configurations <br/>- DDoS |
-| 3389 (Remote Desktop) | - [BlueKeep](https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2019-0708) <br/>- Leaked or weak user authentication |
 
 
 #### Metasploit
