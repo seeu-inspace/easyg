@@ -2795,6 +2795,9 @@ Once you have the source code, look for the secrets within the files. To find se
   - Sending a reset link might disable an user's account, spam to prevent the user from accessing their account
   - Multiple wrong passwords might disable an user's account
 
+### <ins>APIs attacks</ins>
+
+Common API path convention: `/api_name/v1`
 
 
 ## Client-Side Attacks
