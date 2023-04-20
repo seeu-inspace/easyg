@@ -1510,7 +1510,7 @@ See also: [Common Port Vulnerabilities](#common-port-vulnerabilities)
 
 ### <ins>Nessus</ins>
 
-Run Nessus and navigate to `http://localhost:8834`
+Run Nessus with `sudo systemctl start nessusd.service` and navigate to `http://localhost:8834`
 
 **Defining targets**<br/>
 Top-right, click "New Scan"
