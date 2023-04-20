@@ -1075,18 +1075,18 @@ nc -nv -u -z -w 1 <IP> <PORT-RANGE>                      Use netcat to perform a
 #### **Nmap**
 
 ```
-nmap <IP>                                                     Simple nmap scan
-nmap -p 1-65535 <IP>                                          Scan all the ports
-nmap -sS <IP>                                                 Stealth / SYN Scanning (will not appear in any application logs)
-nmap -sT <IP>                                                 TCP connect scan
-nmap -sU <IP>                                                 UDP scan
-nmap -sS -sU <IP>                                             Perform a combined UDP and SYN scan
-nmap -sn <IP>                                                 Perform a network sweep
+nmap <IP>                                                            Simple nmap scan
+nmap -p 1-65535 <IP>                                                 Scan all the ports
+nmap -sS <IP>                                                        Stealth / SYN Scanning (will not appear in any application logs)
+nmap -sT <IP>                                                        TCP connect scan
+nmap -sU <IP>                                                        UDP scan
+nmap -sS -sU <IP>                                                    Perform a combined UDP and SYN scan
+nmap -sn <IP>                                                        Perform a network sweep
 nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml        Discover everything including running services using a list of targets
 nmap -sn <net_address_in_cdr>                                        Check hosts alive, adding -A you gather more info for a target
 nmap -sT -A --top-ports=20 10.10.1.1-254 -oG top-port-sweep.txt      Perform a top twenty port scan, save the output in greppable format
-nmap -O <IP>                                                  OS fingerprinting
-nmap -sV -sT -A <IP>                                          Banner Grabbing, Service Enumeration
+nmap -O <IP>                                                         OS fingerprinting
+nmap -sV -sT -A <IP>                                                 Banner Grabbing, Service Enumeration
 
 Find live hosts
 ---------------
