@@ -1532,7 +1532,7 @@ See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.c
 
 ### <ins>Nessus</ins>
 
-Run Nessus with `sudo systemctl start nessusd.service` and navigate to `http://localhost:8834`
+[Run Nessus](https://docs.tenable.com/nessus/Content/StartOrStopNessus.htm) and navigate to `http://localhost:8834`
 
 **Defining targets**<br/>
 Top-right, click "New Scan"
