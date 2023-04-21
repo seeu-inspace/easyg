@@ -1084,6 +1084,7 @@ nmap -sS -sU <IP>                                                    Perform a c
 nmap -sn <IP>                                                        Perform a network sweep
 nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml        Discover everything including running services using a list of targets
 nmap -sn <net_address_in_cdr>                                        Check hosts alive, adding -A you gather more info for a target
+nmap -sT -A <IP-range>                                               Banner grabbing and/or service enumeration
 nmap -sT -A --top-ports=20 <IP-range> -oG top-port-sweep.txt         Perform a top twenty port scan, save the output in greppable format
 nmap -O <IP>                                                         OS fingerprinting
 nmap -sV -sT -A <IP>                                                 Banner Grabbing, Service Enumeration
