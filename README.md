@@ -1105,6 +1105,7 @@ nmap --script-help dns-zone-transfer                                  View infor
 nmap <IP> --script=smb-os-discovery                                   OS fingerprinting (SMB services)
 nmap --script=dns-zone-transfer -p 53 ns2.zonetransfer.com            Perform a DNS zone transfer
 nmap --script http-headers <IP>                                       OS fingerprinting (HTTP supported headers)
+nmap --script http-title <IP>
 ```
 
 #### **Masscan**
