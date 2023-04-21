@@ -1098,7 +1098,6 @@ Find web servers using port 80
 nmap -p 80 10.10.1.1-254 -oG web-sweep.txt
 grep open web-sweep.txt | cut -d " " -f 2
 
-
 Nmap Scripting Engine (NSE)
 ---------------------------
 nmap --script-help dns-zone-transfer                                  View information about a script, in this case "dns-zone-transfer"
