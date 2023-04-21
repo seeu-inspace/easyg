@@ -1178,7 +1178,10 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 **Interesting commands**
 - `VRFY` request asks the server to verify an email address
 - `EXPN` asks the server for the membership of a mailing list
-- Use telnet to connect to the target `telnet <IP> <PORT> ` to gather information
+- Use telnet to connect to the target to gather information
+  - `telnet <IP> 25`
+- Port scanning with Powershell
+  - `Test-NetConnection -Port 25 <IP>`
 
 **Use nc to validate SMTP users**<br/>
 `nc -nv <IP> 25`
@@ -1189,7 +1192,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 ### <ins>SNMP Enumeration</ins>
 
 **Use nmap to perform a SNMP scan**<br/>
-`sudo nmap -sU --open -p 161 10.11.1.1-254 -oG open-snmp.txt`
+`sudo nmap -sU --open -p 161 <IP-range> -oG open-snmp.txt`
 
 **Use onesixtyone to brute force community strings**
 1. Build a text file containing community strings
@@ -1199,7 +1202,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
    echo manager >> community
    ```
 2. Build a text file containing IP addresses to scan<br/>
-   `for ip in $(seq 1 254); do echo 10.11.1.$ip; done > ips`
+   `for ip in $(seq 1 254); do echo 192.168.45.$ip; done > ips`
 3. Use [onesixtyone](https://github.com/trailofbits/onesixtyone)<br/>
    `onesixtyone -c community -i ips`
 
