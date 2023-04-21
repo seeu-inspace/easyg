@@ -1121,7 +1121,10 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
 - [naabu](https://github.com/projectdiscovery/naabu) a fast port scanner
   - A simple usage using a list of subdomains: `naabu -v -list subs.txt -stats -o out.txt`
-  - Discover everything faster, excluding some ports maybe already checked: `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt`  
+  - Discover everything faster, excluding some ports maybe already checked: `naabu -l 1.txt -v -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o 1_o.txt`
+- **Powershell**
+  - SMB port scanning `Test-NetConnection -Port 445 <IP>`
+  - `1..1024 | % {echo ((New-Object Net.Sockets.TcpClient).Connect("<IP>", $_)) "TCP port $_ is open"} 2>$null`
 
 ### <ins>SMB Enumeration</ins>
 
