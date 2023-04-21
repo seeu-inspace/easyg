@@ -1084,18 +1084,18 @@ nmap -sS -sU <IP>                                                    Perform a c
 nmap -sn <IP>                                                        Perform a network sweep
 nmap -p 1-65535 -sV -T4 -Pn -n -vv -iL target.txt -oX out.xml        Discover everything including running services using a list of targets
 nmap -sn <net_address_in_cdr>                                        Check hosts alive, adding -A you gather more info for a target
-nmap -sT -A --top-ports=20 10.10.1.1-254 -oG top-port-sweep.txt      Perform a top twenty port scan, save the output in greppable format
+nmap -sT -A --top-ports=20 <IP-range> -oG top-port-sweep.txt         Perform a top twenty port scan, save the output in greppable format
 nmap -O <IP>                                                         OS fingerprinting
 nmap -sV -sT -A <IP>                                                 Banner Grabbing, Service Enumeration
 
 Find live hosts
 ---------------
-nmap -v -sn 10.10.1.1-254 -oG ping-sweep.txt
+nmap -v -sn <IP-range> -oG ping-sweep.txt
 grep Up ping-sweep.txt | cut -d " " -f 2
 
 Find web servers using port 80
 ------------------------------
-nmap -p 80 10.10.1.1-254 -oG web-sweep.txt
+nmap -p 80 <IP-range> -oG web-sweep.txt
 grep open web-sweep.txt | cut -d " " -f 2
 
 Nmap Scripting Engine (NSE)
@@ -1103,6 +1103,7 @@ Nmap Scripting Engine (NSE)
 nmap --script-help dns-zone-transfer                                  View information about a script, in this case "dns-zone-transfer"
 nmap <IP> --script=smb-os-discovery                                   OS fingerprinting (SMB services)
 nmap --script=dns-zone-transfer -p 53 ns2.zonetransfer.com            Perform a DNS zone transfer
+nmap --script http-headers <IP>                                       OS fingerprinting (HTTP supported headers)
 ```
 
 #### **Masscan**
