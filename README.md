@@ -2815,6 +2815,17 @@ Once you have the source code, look for the secrets within the files. To find se
 
 Common API path convention: `/api_name/v1`
 
+#### Bruteforce APIs paths with gobuster
+
+1. Create a pattern file
+   ```
+   echo {GOBUSTER}/v1 > patterns
+   echo {GOBUSTER}/v2 >> patterns
+   echo {GOBUSTER}/v3 >> patterns
+   ```
+2. Run the command `gobuster dir -u <TARGET> -w /usr/share/wordlists/wordlist.txt -p patterns`
+3. Inspect the endpoints fuond with `curl` and use recursion
+
 
 ## Client-Side Attacks
 
