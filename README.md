@@ -107,6 +107,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Subdomain takeover](#subdomain-takeover)
   - [4** Bypass](#4-bypass)
   - [Application level Denial of Service](#application-level-denial-of-service)
+  - [APIs attacks](#apis-attacks)
 - [Client-Side Attacks](#client-side-attacks)
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
