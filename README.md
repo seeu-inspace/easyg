@@ -2083,6 +2083,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
 - [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
+- [How to craft an XSS payload to create an admin user in WordPress](https://shift8web.ca/2018/01/craft-xss-payload-create-admin-user-in-wordpress-user/)
 
 #### <ins>Resources</ins>
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
@@ -2094,6 +2095,7 @@ Manually testing for XXE vulnerabilities generally involves
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
+- [JSCompress](https://jscompress.com/)
 
 #### <ins>Bypasses</ins>
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
