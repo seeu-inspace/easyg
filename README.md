@@ -1559,6 +1559,8 @@ From the "Plugins tab" you can select multiple options (a family of plugin) in t
 
 NSE scripts can be found in the `/usr/share/nmap/scripts/` directory. Here you can find `script.db`, a file that serves as an index to all of the scripts.
 - Check also: [CVE-2021-41773 NSE Script](https://github.com/RootUp/PersonalStuff/blob/master/http-vuln-cve-2021-41773.nse)
+  - `sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" <IP>`
+
 
 **How to add new scripts**
 1. Copy the file in `/usr/share/nmap/scripts/`
