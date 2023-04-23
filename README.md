@@ -1635,7 +1635,7 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 **How to identify SQL injections**
 - Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
 
-**Some payloads for Blind SQL injections detection**
+**Blind SQL injections detection**
 - ```SQL
   0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
   ```
