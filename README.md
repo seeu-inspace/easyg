@@ -1621,6 +1621,8 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - `select version();` retrieve the db version
 - `select system_user();` inspecting the current session's user
 - `show databases;` list all available databases
+  - `USE databasetmp` use the `databasetmp` database
+  - `SHOW TABLES`
 - `SELECT user, authentication_string FROM mysql.user WHERE user = 'rooter';` inspect user `rooter`'s encrypted password
 
 **MSSQL**
@@ -1628,7 +1630,7 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - `SELECT @@version;` retrieve the db version
 - `SELECT name FROM sys.databases;` list all available databases
 - `SELECT * FROM tempdb.information_schema.tables;` inspect the available tables in the `tempdb` database
-- `select * from tempdb.dbo.users;`
+- `SELECT * from tempdb.dbo.users;`
 
 **How to identify SQL injections**
 - Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
