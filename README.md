@@ -1616,7 +1616,22 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
 - [Ghauri](https://github.com/r0oth3x49/ghauri)
 
-**How to identify SQL injections**: Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
+**MySQL**
+- `mysql -u root -p'root' -h <IP> -P 3306` connect to the database
+- `select version();` retrieve the db version
+- `select system_user();` inspecting the current session's user
+- `show databases;` list all available databases
+- `SELECT user, authentication_string FROM mysql.user WHERE user = 'rooter';` inspect user `rooter`'s encrypted password
+
+**MSSQL**
+- `impacket-mssqlclient <user>:<password>@<IP> -windows-auth` connect to remote instance via Impacket
+- `SELECT @@version;` retrieve the db version
+- `SELECT name FROM sys.databases;` list all available databases
+- `SELECT * FROM tempdb.information_schema.tables;` inspect the available tables in the `tempdb` database
+- `select * from tempdb.dbo.users;`
+
+**How to identify SQL injections**
+- Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
 
 **Some payloads for Blind SQL injections detection**
 - ```SQL
