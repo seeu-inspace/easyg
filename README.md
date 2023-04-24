@@ -2874,7 +2874,7 @@ Common API path convention: `/api_name/v1`
 **Passive Client Information Gathering**
 - Search with Google, social media and forum websites
 - Search for IPs and other sensible information
-- Retrieve metadata from files
+- Search for file in the target's websites with `dirsearch` or `gobuster`, retrieve metadata from files
   - `exiftool -a -u brochure.pdf`
 
 **Active Client Information Gathering**
