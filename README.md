@@ -1714,6 +1714,7 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 		  --parse-errors --current-db --invalid-logical --invalid-bignum --invalid-string --risk 3		  
 		  --force-ssl --threads 5 --level 1 --risk 1 --tamper=space2comment
 ```
+- 
 
 **How to fix SQL injections**: Use parameterized queries/prepared statements to protect against SQL injections by isolating user input from SQL code. They add placeholders for user input in SQL statements, creating a layer of isolation and preventing user input from affecting SQL code.
 
