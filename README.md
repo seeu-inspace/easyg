@@ -2874,6 +2874,8 @@ Common API path convention: `/api_name/v1`
 **Passive Client Information Gathering**
 - Search with Google, social media and forum websites
 - Search for IPs and other sensible information
+- Retrieve metadata from files
+  - `exiftool -a -u brochure.pdf`
 
 **Active Client Information Gathering**
 - Make direct contact with the target machine or its users
@@ -2883,6 +2885,8 @@ Common API path convention: `/api_name/v1`
   - [Fingerprintjs2](https://github.com/fingerprintjs/fingerprintjs)
     - Change permissions on the `fp` directory `sudo chown www-data:www-data fp` to make `/fp/js.php` work
   - [Parse User Agents](https://developers.whatismybrowser.com/)
+
+
 
 ### <ins>HTML applications</ins>
 
