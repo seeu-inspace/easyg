@@ -2889,7 +2889,7 @@ Common API path convention: `/api_name/v1`
   - [Fingerprintjs2](https://github.com/fingerprintjs/fingerprintjs)
     - Change permissions on the `fp` directory `sudo chown www-data:www-data fp` to make `/fp/js.php` work
   - [Parse User Agents](https://developers.whatismybrowser.com/)
-
+- Use [Canarytokens](https://canarytokens.org/generate) and Social Engineering to retrieve information from a target
 
 
 ### <ins>HTML applications</ins>
