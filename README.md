@@ -883,6 +883,16 @@ keyscan_stop              stop the keystroke sniffer
 - [XAMPP](https://www.apachefriends.org/) + [ngrok](https://ngrok.com/)
 - [beeceptor](https://beeceptor.com/)
 
+**For a temporary FTP server**
+- Host: `python -m pyftpdlib -w`
+- Client:
+  ```
+  ftp
+  open <IP> 2121
+  anonymous
+  
+  ```
+
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
 - [temp-mail.org](https://temp-mail.org/en/)
