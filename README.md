@@ -4263,6 +4263,9 @@ On Immunity, using mona, type
 
 ### <ins>Shellter</ins>
 
+Note
+- [An important tip for Shellter usage](https://www.shellterproject.com/an-important-tip-for-shellter-usage/)
+
 Example of usage
 1. Select Auto mode with `A`
 2. Selecting a target PE in shellter and performing a backup, in this case the WinRAR installer: `/home/kali/Desktop/winrar-x32-621.exe`
