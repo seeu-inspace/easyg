@@ -1006,6 +1006,7 @@ keyscan_stop              stop the keystroke sniffer
   - [Shodan for Chrome](https://chrome.google.com/webstore/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap) and [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan_io/)
 - [Security Headers Scanner](https://securityheaders.com/)
 - [SSL Server Test](https://www.ssllabs.com/ssltest/)
+- [DMARC Inspector](https://dmarcian.com/dmarc-inspector/)
 
 ### <ins>User Information Gathering</ins>
 
