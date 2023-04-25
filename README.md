@@ -2994,6 +2994,7 @@ Library files consist of three major parts written in XML to specify the paramet
 - Library locations
 
 1. Run a WebDAV share in the attacker machine
+   - `/home/kali/.local/bin/wsgidav --host=0.0.0.0 --port=80 --auth=anonymous --root /home/kali/WebDAV/`
 2. Create the following Windows Library File in a Window machine
    <br/><i>config.Library-ms</i>
    ```xml
