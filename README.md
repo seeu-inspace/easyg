@@ -3391,7 +3391,7 @@ Other rules
 - `Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue` search for KeePass database files
 - `keepass2john Database.kdbx > keepass.hash` format KeePass database for Hashcat with keepass2john
   - remove `Database:` from `keepass.hash`
-- `hashcat -m 13400 keepass.hash` crack the KeePass database hash
+- `hashcat -m 13400 keepass.hash wordlist.txt -r hashcat.rule --force` crack the KeePass database hash
   - find the mode of KeePass in Hashcat with `hashcat --help | grep -i "KeePass"`
 
 
