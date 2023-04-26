@@ -3406,9 +3406,10 @@ Examples of usage:
 - `hydra -L users.txt -P pass.txt <service://server> <options>` launch a dictionary attack
   - `hydra -L users.txt -P pass.txt telnet://target.server` Telnet example
   - `hydra -L users.txt -P pass.txt http-get://target.server` Password protected web resource
+  - Specify a port with `-s <PORT>` in <options>
 
 SSH Attack
-- `hydra -l user -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
+- `hydra -l <user> -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
   - `-l` specify the target username
   - `-P` specify a wordlist
   - `protocol://IP` o specify the target protocol and IP address respectively
