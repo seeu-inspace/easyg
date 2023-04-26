@@ -3340,6 +3340,28 @@ Examples of usage:
 - Passwords between four and six characters in length, containing only the characters 0-9 and A-F: `crunch 4 6 0123456789ABCDEF -o crunch.txt`
 - Use a pre-defined character-set with `-f` and include `mixalpha` to  include all lower and upper case letters `crunch 4 6 -f /usr/share/crunch/charset.lst mixalpha -o crunch.txt`
 
+**Mutating wordlists**
+
+When password policies are implemented, it is helpful to remove password policies that are guaranteed to fail from the worlist. Starting from a wordlist called `demo.txt`
+- `sed -i '/^1/d' demo.txt` remove all number sequences
+
+Many people just append a "1" to the end of an existing password when creating a password with a number value. Create a rule file with $1 that adds a "1" to each password in our wordlist.
+- Add a rule for hashcat with `echo \$1 > demo.rule`
+
+Many people have a tendency to capitalize the initial character in a password when they are required to use an upper case character.
+- Add a rule with `echo '$1\nc' > demo.rule`
+  - Note: each line in the file is interpreted as a new rule
+
+For special characters:
+- `$1 c $!` to have `Password1!`
+- `$! $1 c` to have `Password!1`
+
+Other rules
+- Test the rules with `hashcat -r demo.rule --stdout demo.txt`
+- `/usr/share/hashcat/rules` in Kali
+- See: [rule_based_attack [hashcat wiki]](https://hashcat.net/wiki/doku.php?id=rule_based_attack)
+
+
 #### <ins>Password Cracking</ins>
 
 **Tools**
