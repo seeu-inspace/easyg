@@ -3450,7 +3450,7 @@ HTTP POST Attack
 **Tools**
 - [Sample password hash encoding strings](https://openwall.info/wiki/john/sample-hashes)
 - [hashID](https://psypanda.github.io/hashID/)
-  - `hashid c43ee559d69bc7f691fe2fbfe8a5ef0a`
+- [hash-identifier](https://www.kali.org/tools/hash-identifier/)
 - [mimikatz](https://blog.3or.de/mimikatz-deep-dive-on-lsadumplsa-patch-and-inject.html)
 - [fgdump](http://foofus.net/goons/fizzgig/fgdump/downloads.htm)
 - [Credential Editor](https://www.ampliasecurity.com/research/windows-credentials-editor/)
@@ -3463,6 +3463,11 @@ HTTP POST Attack
 - Windows NT-based systems, up to and including Windows 2003, store two different password hashes: LAN Manager (LM) (DES based) and NT LAN Manager (NTLM), wich uses MD4 hashing
 - From Windows Vista on, the operating system disables LM by default and uses NTLM
 
+#### Identify hashes
+- [hash-identifier](https://www.kali.org/tools/hash-identifier/)
+- [hashid](https://www.kali.org/tools/hashid/)
+  - `hashid <HASH>`
+- [Hash Analyzer - TunnelsUP](https://www.tunnelsup.com/hash-analyzer/)
 
 #### mimikatz
 1. `C:\Programs\password_attacks\mimikatz.exe`
