@@ -3387,6 +3387,12 @@ Other rules
 2. Load a password file with `Load`
 3. Click on the `Crack` button
 
+#### Password Manager: KeePass
+- `Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue` search for KeePass database files
+- `keepass2john Database.kdbx > keepass.hash` format KeePass database for Hashcat with keepass2john
+- `hashcat -m 13400 keepass.hash` crack the KeePass database hash
+  - find the mode of KeePass in Hashcat with `hashcat --help | grep -i "KeePass"`
+
 
 #### <ins>Network Service Attack</ins>
 
