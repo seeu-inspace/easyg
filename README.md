@@ -1148,9 +1148,18 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 
 ### <ins>SMB Enumeration</ins>
 
-**Tools**
+**Resources**
 - [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html)
 - [CrackMapExec](https://github.com/Porchetta-Industries/CrackMapExec)
+- ["A Little Guide to SMB Enumeration"](https://www.hackingarticles.in/a-little-guide-to-smb-enumeration/)
+
+**Enumerate SMB Shares**
+- `$ smbclient -L <IP>`
+  - Connect then with `smbclient //<IP>/<share>`
+  - Get files with `get <file>`
+- `C:\> net view \\<IP> /All`
+  - Connect then with `net use \\<IP>\<share>`
+  - Get files with `copy \\<IP>\<share>\<file>`
 
 **Use nmap to scan for the NetBIOS service**<br/>
 `nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254`
