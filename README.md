@@ -3497,7 +3497,7 @@ HTTP POST Attack
 
 #### Crack NTLM
 1. Identify the local users with `Get-LocalUser`
-2. Run mimikatz.exe
+2. Run `mimikatz.exe` as an administrator
 3. Use the command `privilege::debug` to have `SeDebugPrivilege` access right enabled
 4. Use the command `token::elevate` to elevate to SYSTEM user privileges
 5. Extract passwords from the system
