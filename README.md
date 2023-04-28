@@ -1296,7 +1296,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [hakrawler](https://github.com/hakluke/hakrawler)
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Katana](https://github.com/projectdiscovery/katana)
-  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080" -H "Cookie: 0=1"`
+  - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080 -H "Cookie: 0=1"`
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
