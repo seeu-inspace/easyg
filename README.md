@@ -3219,6 +3219,16 @@ Unprivileged users have the ability to change or replace the executable with arb
 ### <ins>Information gathering</ins>
 
 #### Windows
+
+Always obtain:
+- Username and hostname
+- Group memberships of the current user
+- Existing users and groups
+- Operating system, version and architecture
+- Network information
+- Installed applications
+- Running processes
+
 ```PowerShell
 <# gather information about current user #>
 whoami
