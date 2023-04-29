@@ -24,6 +24,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
   - [Penetration Testing cycle](#penetration-testing-cycle)
+  - [Windows Privilege Escalation](#windows-privilege-escalation)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
     - [Multiple targets](#multiple-targets)
     - [Single target](#single-target)
@@ -272,6 +273,7 @@ Payloads
 - [ ] [Kali Linux](https://www.kali.org/) since it has everything you need
 
 ### <ins>Testing layers</ins>
+
 See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020!](https://www.youtube.com/watch?v=p4JgIu1mceI)
 - [ ] Integrations
 - [ ] Application Libraries (usually JavaScript)
@@ -320,6 +322,18 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 #### <ins>5. Results</ins>
 - Reporting / Analysis
 - Lessons Learned / Remediation
+
+
+### <ins>Windows Privilege Escalation</ins>
+
+Always obtain
+- [ ] Username and hostname
+- [ ] Group memberships of the current user
+- [ ] Existing users and groups
+- [ ] Operating system, version and architecture
+- [ ] Network information
+- [ ] Installed applications
+- [ ] Running processes
 
 ### <ins>Bug Bounty Hunting</ins>
 
