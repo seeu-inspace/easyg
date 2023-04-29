@@ -326,7 +326,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 ### <ins>Windows Privilege Escalation</ins>
 
-Always obtain
+See [Information gathering | Windows](#windows). Always obtain:
 - [ ] Username and hostname
 - [ ] Group memberships of the current user
 - [ ] Existing users and groups
@@ -3233,15 +3233,6 @@ Unprivileged users have the ability to change or replace the executable with arb
 ### <ins>Information gathering</ins>
 
 #### Windows
-
-Always obtain:
-- [ ] Username and hostname
-- [ ] Group memberships of the current user
-- [ ] Existing users and groups
-- [ ] Operating system, version and architecture
-- [ ] Network information
-- [ ] Installed applications
-- [ ] Running processes
 
 ```PowerShell
 <# gather information about current user #>
