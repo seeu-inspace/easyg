@@ -3300,6 +3300,11 @@ Get-ChildItem -Path <PATH> -Include *.kdbx -File -Recurse -ErrorAction SilentlyC
 Get-ChildItem -Path <PATH> -Include *.txt,*.ini -File -Recurse -ErrorAction SilentlyContinue
 Get-ChildItem -Path <PATH> -Include *.txt,*.pdf,*.xls,*.xlsx,*.doc,*.docx -File -Recurse -ErrorAction SilentlyContinue
 
+<# see history of commands #>
+Get-History
+(Get-PSReadlineOption).HistorySavePath
+type C:\Users\Public\Transcripts\transcript01.txt
+
 ```
 
 #### Linux
