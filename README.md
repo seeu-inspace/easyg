@@ -3234,7 +3234,7 @@ net user
 <# discover localgroups and users in those groups#>
 whoami /groups
 net localgroup
-PS C:\>  'Get-LocalGroupMember '<group>'
+PS C:\> Get-LocalGroupMember '<group>'
 
 <# enumerate the Hostname #>
 hostname
