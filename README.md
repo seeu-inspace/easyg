@@ -3231,6 +3231,11 @@ id
 <# discover other user accounts on the system #>
 net user
 
+<# discover localgroups and users in those groups#>
+whoami /groups
+net localgroup
+PS C:\>  'Get-LocalGroupMember '<group>'
+
 <# enumerate the Hostname #>
 hostname
 
@@ -3238,6 +3243,7 @@ hostname
 systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
 
 <# enumerate running processes and services #>
+PS C:\> Get-Process
 tasklist /SVC
 
 <# enumerate networking information #>
@@ -3253,6 +3259,8 @@ netsh advfirewall firewall show rule name=all
 schtasks /query /fo LIST /v
 
 <# enumerate installed applications and patch levels #>
+PS C:\> Get-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | select displayname
+PS C:\> Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | select displayname
 wmic product get name, version, vendor
 wmic qfe get Caption, Description, HotFixID, InstalledOn
 
