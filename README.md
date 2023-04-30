@@ -3712,6 +3712,7 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - [LinPEAS - Linux Privilege Escalation Awesome Script](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
       - [Linux Privilege Escalation](https://book.hacktricks.xyz/linux-hardening/privilege-escalation)
   - [Unix-privesc-check](http://pentestmonkey.net/tools/audit/unix-privesc-check)
+    - `./unix-privesc-check standard > output.txt`
   - [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration)
   - [LinEnum](https://github.com/rebootuser/LinEnum)
   - [Reverse Shell Generator - rsg](https://github.com/mthbernardes/rsg)
