@@ -3347,6 +3347,8 @@ cat /etc/issue
 cat /etc/*-release
 cat /etc/os-release
 uname -a
+uname -r
+arch
 
 # enumerate running processes and services
 ps axu
