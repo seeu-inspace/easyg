@@ -3907,6 +3907,7 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - [Seatbelt](https://github.com/GhostPack/Seatbelt)
     - [Seatbelt.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/Seatbelt.exe)
       - `.\Seatbelt.exe all`
+      - `.\Seatbelt.exe -group=all -full`
   - [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/dev/Privesc/PowerUp.ps1) (archived)
     - [SharpUp](https://github.com/GhostPack/SharpUp)
     - [SharpUp.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/SharpUp.exe)
