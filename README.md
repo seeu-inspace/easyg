@@ -3391,9 +3391,6 @@ lsmod
 # enumerating binaries that AutoElevate
 find / -perm -u=s -type f 2>/dev/null
 
-# search for SUID files
-find / -perm -u=s -type f 2>/dev/null
-
 ```
 
 
