@@ -156,6 +156,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Passwords & Keys](#passwords--keys)
     - [NFS](#nfs)
     - [Kernel Exploits](#kernel-exploits)
+    - [find with exec](#find-with-exec)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources)
     - [Privileges](#privileges)
@@ -3913,6 +3914,9 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
   - [Dirty COW | CVE-2016-5195](https://dirtycow.ninja/)
   - [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
 
+#### <ins>find with exec</ins>
+- `find /home/joe/Desktop -exec "/usr/bin/bash" -p \;`
+- See more here: [find | GTFOBins](https://gtfobins.github.io/gtfobins/find/)
 
 ### <ins>Windows Privilege Escalation</ins>
 
