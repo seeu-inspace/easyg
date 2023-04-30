@@ -3307,6 +3307,19 @@ type C:\Users\Public\Transcripts\transcript01.txt
 
 ```
 
+To use Event Viewer to search for events recorded by Script Block Logging:
+1. Open the Event Viewer:
+   - Press Windows key + R to open the Run dialog box.
+   - Type `eventvwr.msc` and press Enter.
+2. In the Event Viewer window, expand "Applications and Services Logs"
+3. Expand the "Microsoft-Windows-PowerShell/Operational" log
+4. Click on the "Filter Current Log" option on the right-hand side of the window
+5. In the Filter Current Log dialog box, enter "4104" as the Event ID
+6. Click on the "OK" button to apply the filter
+7. The Event Viewer will now display only the events related to Script Block Logging
+
+
+
 #### Linux
 ```bash
 # enumerate users
