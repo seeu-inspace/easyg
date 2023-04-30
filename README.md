@@ -3342,6 +3342,7 @@ hostname
 # enumerate the Operating System Version and Architecture
 cat /etc/issue
 cat /etc/*-release
+cat /etc/os-release
 uname -a
 
 # enumerate running processes and services
@@ -3350,14 +3351,23 @@ ps axu
 # enumerate networking information
 ip a
 /sbin/route
+routel
 ss -anp
+
+# inspect custom IP tables
+cat /etc/iptables/rules.v4
 
 # enumerate scheduled tasks
 ls -lah /etc/cron*
 cat /etc/crontab
+crontab -l
+sudo crontab -l
 
 # enumerate installed applications and patch levels
 dpkg -l
+
+# find all writable files
+find / -writable -type d 2>/dev/null
 
 # find all writable files in /etc
 find /etc -maxdepth 1 -writable -type f
@@ -3372,6 +3382,7 @@ find / -writable -type d 2> /dev/null
 cat /etc/fstab
 mount
 /bin/lsblk
+lsblk
 
 # enumerate device drivers and kernel modules
 lsmod
@@ -3379,6 +3390,10 @@ lsmod
 
 # enumerating binaries that AutoElevate
 find / -perm -u=s -type f 2>/dev/null
+
+# search for SUID files
+find / -perm -u=s -type f 2>/dev/null
+
 ```
 
 
