@@ -3649,14 +3649,20 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
   - Verify it with `ss -ntplu`
 
 #### SSH Dynamic Port Forwarding
-1. `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
+1. From the reverse shell, run `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
 2. Now we must direct our tools to use this proxy with ProxyChains
-   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS4 proxy to it (`socks4  127.0.0.1 <port to bind to>`).
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS5 proxy to it (`socks5  <IP-reverse-shell> <port to bind to>`).
 3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
-   - `sudo proxychains nmap --top-ports=20 -sT -Pn <IP>`
+   - Example with nmap: `sudo proxychains nmap -vvv -sT --top-ports=20 -Pn <IP>`
+   - Example with SMB: `proxychains smbclient -L //<IP>/ -U <username> --password=<password>`
 
 #### SSH Remote Port Forwarding
-- `ssh -N -R [bind_address:]port:host:hostport [username@address]`
+1. Start ssh on your local machine
+2. On the reverse shell: `ssh -N -R [bind_address:]port:host:hostport [username@address]`
+3. `[username@address]` of your local ssh
+
+
+#### SSH Remote Dynamic Port Forwarding
 
 
 
