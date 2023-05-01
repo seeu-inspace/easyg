@@ -3617,6 +3617,8 @@ Other notes:
 
 - `socat -ddd TCP-LISTEN:<PORT>,fork TCP:<DEST-IP>:<DEST-PORT>`
   - The traffic received on port `<PORT>` will be forwarded to `<DEST-IP>:<DEST-PORT>`
+- Example with SSH `socat TCP-LISTEN:2222,fork TCP:<IP>:22`
+- Example with psql -h 192.168.50.63 -p 2345 -U postgres `socat -ddd TCP-LISTEN:2345,fork TCP:<IP>:5432`
 
 
 ### <ins>SSH Tunneling</ins>
