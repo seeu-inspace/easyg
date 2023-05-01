@@ -1174,12 +1174,20 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 - ["A Little Guide to SMB Enumeration"](https://www.hackingarticles.in/a-little-guide-to-smb-enumeration/)
 
 **Enumerate SMB Shares**
-- `$ smbclient -L <IP>`
-  - Connect then with `smbclient //<IP>/<share>`
-  - Get files with `get <file>`
-- `C:\> net view \\<IP> /All`
-  - Connect then with `net use \\<IP>\<share>`
-  - Get files with `copy \\<IP>\<share>\<file>`
+```
+smbclient
+---------
+smbclient -L <IP>                                                     see which shares are available
+smbclient //<IP>/<share>                                              connect to the SMB share
+smbclient -p <port> -L //<IP>/ -U <username> --password=<password>    connect to the SMB share
+get <file>                                                            get files
+
+net
+---
+net view \\<IP> /All                                                  see which shares are available
+net use \\<IP>\<share>                                                connect to the SMB share
+copy \\<IP>\<share>\<file>                                            get files
+```
 
 **Use nmap to scan for the NetBIOS service**<br/>
 `nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254`
@@ -3633,9 +3641,12 @@ Other notes:
 See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/academy/ssh/tunneling-example)
 
 #### SSH Local Port Forwarding
+	
 - Give a reverse shell [TTY](https://en.wikipedia.org/wiki/TTY) functionality with Python3's pty: `python3 -c 'import pty; pty.spawn("/bin/bash")'`
-- `ssh -N -L [bind_address:]port:host:hostport [username@address]`
 - `ssh -R <local-port>:127.0.0.1:<target-port> <username>@<local-machine>`
+- `ssh -N -L <bind_address>:<port>:<host>:<hostport> <username>@<address>`
+  - Listen on all interfaces (`<bind_address>` = `0.0.0.0`) on port `<port>`, then forward all packets through the SSH tunnel (`<username>@<address>`) to port `<hostport>` on the host `<host>`
+  - Verify it with `ss -ntplu`
 
 #### SSH Remote Port Forwarding
 - `ssh -N -R [bind_address:]port:host:hostport [username@address]`
