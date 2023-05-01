@@ -3608,9 +3608,15 @@ Other notes:
 
 #### rinetd
 
-1. Edit `/etc/rinetd.conf`, add `0.0.0.0 80 216.58.207.142 80`
-   - This rule states: all traffic received on port `80` of our machine, listening on all interfaces (`0.0.0.0`), regardless of destination address, will be redirected to `104.244.42.129:80`. 
-2. Restart rinetd `sudo service rinetd restart` and confirm that the port is bound `ss -antp | grep "80"`
+1. Edit `/etc/rinetd.conf`, add `0.0.0.0 <Local-PORT> <IP> <DEST-PORT>`
+   - This means that all traffic received on port `<Local-PORT>` of our machine, listening on all interfaces (`0.0.0.0`), regardless of destination address, will be forwarded to `<IP>:<DEST-PORT>`. 
+2. Restart rinetd `sudo service rinetd restart` and confirm that the port is bound with `ss -antp | grep "80"`
+
+
+#### Socat
+
+- `socat -ddd TCP-LISTEN:<PORT>,fork TCP:<DEST-IP>:<DEST-PORT>`
+  - The traffic received on port `<PORT>` will be forwarded to `<DEST-IP>:<DEST-PORT>`
 
 
 ### <ins>SSH Tunneling</ins>
