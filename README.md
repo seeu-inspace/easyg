@@ -1452,6 +1452,13 @@ winfo <Target-IP> -n                     use winfo with null session
 
 ```
 
+#### Enumeration
+```
+ip addr                                                                             query available network interfaces
+ip route                                                                            enumerate network routes
+for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done       bash loop with Netcat to sweep for port <PORT> in a subnet.
+```
+
 #### ARP Poisoning
 
 1. First, enable the Linux Kernel IP Forwarding with to transform a Linux Box into a router `echo 1 > /proc/sys/net/ipv4/ip_forward`
@@ -3626,6 +3633,7 @@ Other notes:
 See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/academy/ssh/tunneling-example)
 
 #### SSH Local Port Forwarding
+- Give a reverse shell [TTY](https://en.wikipedia.org/wiki/TTY) functionality with Python3's pty: `python3 -c 'import pty; pty.spawn("/bin/bash")'`
 - `ssh -N -L [bind_address:]port:host:hostport [username@address]`
 - `ssh -R <local-port>:127.0.0.1:<target-port> <username>@<local-machine>`
 
@@ -3649,7 +3657,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
 ### <ins>Netsh</ins>
 
 #### Local port forwarding
-`netsh interface portproxy add v4tov4 listenport=<target-port> listenaddress=<target-IP> connectport=<forward-port> connectaddress=<forward-port>`
+`netsh interface portproxy add v4tov4 listenport=<PORT> listenaddress=<IP> connectport=<forward-PORT> connectaddress=<forward-IP>`
 - use netsh (`interface`) context to `add` an IPv4-to-IPv4 (`v4tov4`) proxy (`portproxy`)
 - listening on `<target-IP>` (`listenaddress=target-IP`), port `<target-port>` (`listenport=<target-port>`)
 - that will forward to `<forward-IP>` (`connectaddress=<forward-IP>`), port `<forward-port>` (`connectport=<forward-port>`)
