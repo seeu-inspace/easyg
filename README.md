@@ -177,7 +177,6 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Hot Potato](#hot-potato)
     - [Token Impersonation](#token-impersonation)
     - [getsystem](#getsystem)
-    - [Service Binary Hijacking](#service-binary-hijacking)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
