@@ -3648,15 +3648,16 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
   - Listen on all interfaces (`<bind_address>` = `0.0.0.0`) on port `<port>`, then forward all packets through the SSH tunnel (`<username>@<address>`) to port `<hostport>` on the host `<host>`
   - Verify it with `ss -ntplu`
 
+#### SSH Dynamic Port Forwarding
+1. `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
+2. Now we must direct our tools to use this proxy with ProxyChains
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS4 proxy to it (`socks4  127.0.0.1 <port to bind to>`).
+3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
+   - `sudo proxychains nmap --top-ports=20 -sT -Pn <IP>`
+
 #### SSH Remote Port Forwarding
 - `ssh -N -R [bind_address:]port:host:hostport [username@address]`
 
-#### SSH Dynamic Port Forwarding
-1. `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
-2. Now we must somehow direct our reconnaissance and attack tools to use this proxy. This can be done with ProxyChains.
-   - Edit the ProxyChains configuration file `/etc/proxychains.conf` add the SOCKS4 proxy to it (`socks4  127.0.0.1 8080`).
-3. To run the tools through the SOCKS4 proxy, prepend each command with ProxyChains
-   - `sudo proxychains nmap --top-ports=20 -sT -Pn 192.168.1.223`
 
 
 ### <ins>Plink.exe</ins>
