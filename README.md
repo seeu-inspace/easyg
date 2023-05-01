@@ -140,6 +140,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Port Redirection and Tunneling](#port-redirection-and-tunneling)
     - [Port Forwarding](#port-forwarding)
     - [SSH Tunneling](#ssh-tunneling)
+    - [ssh.exe](#sshexe)
     - [Plink.exe](#plinkexe)
     - [Netsh](#netsh)
     - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
