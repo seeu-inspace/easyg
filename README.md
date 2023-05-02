@@ -4530,6 +4530,10 @@ Example of usage
 
 ## Cloud hacking
 
+**Resources**
+- [cloud_metadata.txt](https://gist.github.com/jhaddix/78cece26c91c6263653f31ba453e273b), Cloud Metadata Dictionary useful for SSRF Testing
+
+
 ### <ins>Abusing S3 Bucket Permissions</ins>
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
