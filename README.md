@@ -1465,7 +1465,7 @@ winfo <Target-IP> -n                     use winfo with null session
 ```
 ip addr                                                                             query available network interfaces
 ip route                                                                            enumerate network routes
-for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done       bash loop with Netcat to sweep for port <PORT> in a subnet.
+for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done       bash loop with Netcat to sweep for port <PORT> in a subnet
 ```
 
 #### ARP Poisoning
