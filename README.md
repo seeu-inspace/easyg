@@ -272,6 +272,7 @@ Payloads
 - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
+- [OSSTMM](https://isecom.org/research.html)
 
 ### <ins>Toolset</ins>
 - [ ] [EasyG](#easyg) and all the connected tools
