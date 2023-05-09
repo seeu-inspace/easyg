@@ -2082,6 +2082,9 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - `http://169.254.169.254/latest/meta-data/`
 - `http://metadata.google.internal/`
 
+**Resources**
+- [7 SSRF Mitigation Techniques You Must Know](https://brightsec.com/blog/7-ssrf-mitigation-techniques-you-must-know/)
+
 
 ### <ins>Open redirection</ins>
 
