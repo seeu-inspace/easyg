@@ -2787,6 +2787,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   ```
 - Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t %USERPROFILE%/nuclei-templates/technologies/wordpress-detect.yaml`
 - Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with: `wpscan --url <domain> --api-token <your-api-token>`
+  - `wpscan --url <target> --enumerate p --plugins-detection aggressive -o results`
 - Nuclei templates `%USERPROFILE%\nuclei-templates\vulnerabilities\wordpress\advanced-access-manager-lfi.yaml`
 
 **Resources**
