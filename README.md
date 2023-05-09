@@ -1174,6 +1174,8 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 **Resources**
 - [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html)
 - [CrackMapExec](https://github.com/Porchetta-Industries/CrackMapExec)
+  - `crackmapexec smb <IP> -u usernames.txt -p passwords.txt --continue-on-success`
+  - `crackmapexec smb <IP> -u <user> -p <password> --shares`
 - ["A Little Guide to SMB Enumeration"](https://www.hackingarticles.in/a-little-guide-to-smb-enumeration/)
 
 **Enumerate SMB Shares**
