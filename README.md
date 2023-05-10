@@ -24,6 +24,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
   - [Penetration Testing cycle](#penetration-testing-cycle)
+  - [Penetration Testing process](#penetration-testing-process)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
     - [Multiple targets](#multiple-targets)
@@ -330,6 +331,88 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 #### <ins>5. Results</ins>
 - Reporting / Analysis
 - Lessons Learned / Remediation
+
+
+### <ins>Penetration Testing process</ins>
+
+Setup the environment:
+- Create a dedicated folder
+- Create a `creds.txt` file
+
+#### <ins>1. Public Network Enumeration</ins>
+
+1. Start a port scanning with Nmap
+   - `sudo nmap -sC -sV -oN results <IP>`
+2. Search for CVEs  and exploits for the identified services
+3. If there is a web server present 
+   - Run a directory research
+     - `dirsearch -u <target> -x 404 -e *`
+     - `gobuster dir -u <target> -w /usr/share/wordlists/dirb/common.txt -o results -x txt,pdf,config`
+   - See the source code
+   - Use `whatweb <target>` to gain more information about the technology
+     - search again for CVEs and exploits
+
+
+#### <ins>2. Attack a Public Machine</ins>
+
+1. Exploit the machine
+   - Example: exploit a Directory Traversal in a Web Application to gain `/etc/passwd` or SSH private keys, like `id_rsa` or `id_ecdsa`
+2. Use what you found to access the machine
+   - Example: crack the password of `id_rsa` with `ssh2john id_rsa > ssh.hash` and `john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash`, then gain access with `ssh -i id_rsa <username>@<IP>`
+3. Elevate your privileges
+   - Run winPEAS or linPEAS, note:
+     - System information
+     - Network interfaces, Known hosts, and DNS Cache
+     - Check what high privilege commands can be run
+     - Config files, clear text passwords, connections strings etc.
+     - AV Information
+     - Any information about applications used
+     - Any other interesting file / info
+   - Define all potential privilege escalation vectors
+     - Use [GTFOBins](https://gtfobins.github.io/)
+
+#### <ins>3. Internal Network Access</ins>
+
+- Password attack: test the credentials found to gain more accesses
+  - `crackmapexec <service> <IP> -u usernames.txt -p passwords.txt --continue-on-success`
+- Explore the services found
+  - Example: enumerate SMB shares with `crackmapexec smb <IP> -u <user> -p <password> --shares`
+- Client-side attack
+  - Perform a Phishing attack
+    - Run WebDAV and prepare the Windows Library and shortcut files
+    - Send an email with `sudo swaks -t <recipient> -t <recipient> --from <sender> --attach @<Windows-Library-file> --server <IP> --body @body.txt --header "Subject: Staging Script" --suppress-data -ap`
+  - If you have more information, you could leverage Microsoft Office or Windows Library Files
+
+#### <ins>4. Internal Network Enumeration</ins>
+
+- Once an access to an internal network machine is gained, use again winPEAS or linPEAS
+  - See step `2.3.`
+  - In Windows, verify the OS with `systeminfo` (winPEAS may falsely detect Windows 11 as Windows 10)
+  - Gain situational awareness
+- Create a file `computers.txt` to document identified internal machines and additional information about them
+- Check for Password Manager files, like `*.kdbx`
+- In Windows, enumerate the AD environment and its objects
+  - Use `SharpHound.ps1` and `BloodHound`
+- set up a SOCKS5 proxy to perform network enumeration via Nmap and CrackMapExec
+  - search for accessible services, open ports, and SMB settings
+
+#### <ins>5. Attacking an Internal Web Application</ins>
+
+- Use credentials found to log in
+- Find potential exploits
+- See step `1.3.`
+- Use the Web Application to gain a shell as `NT AUTHORITY\SYSTEM`
+
+#### <ins>6. Domain Controller Access</ins>
+
+- Cached Credentials
+  - If there is no AV, consider upgrading the shell to Meterpreter for more advantages
+  - Use mimikatz for this pupose
+    - Run `privilege::debug` and `sekurlsa::logonpasswords`
+- Lateral Movement
+  - leverage the domain admin privileges of one of the account found to get access to the domain controller
+
+
 
 
 ### <ins>Windows Privilege Escalation</ins>
