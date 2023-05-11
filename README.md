@@ -2169,6 +2169,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 
 **Resources**
 - [7 SSRF Mitigation Techniques You Must Know](https://brightsec.com/blog/7-ssrf-mitigation-techniques-you-must-know/)
+- [Cloud SSRF | HackTricks](https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf)
 
 
 ### <ins>Open redirection</ins>
