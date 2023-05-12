@@ -1557,8 +1557,10 @@ for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done   
 
 #### ARP Poisoning
 
-1. First, enable the Linux Kernel IP Forwarding with to transform a Linux Box into a router `echo 1 > /proc/sys/net/ipv4/ip_forward`
-2. Run arpspoof `arpspoof -i <interface> -t <target> -r <host>`
+1. The goal is to trick the victim to save in the ARP Cache my MAC address (the attacker) associated it with the router IP to perform a MITM
+2. First, enable the Linux Kernel IP Forwarding with to transform a Linux Box into a router `echo 1 > /proc/sys/net/ipv4/ip_forward`
+3. Run arpspoof `arpspoof -i <interface> -t <target> -r <host>`
+   - Check also [Ettercap](ettercap-project.org)
 
 An example
 1. `echo 1 > /proc/sys/net/ipv4/ip_forward`
