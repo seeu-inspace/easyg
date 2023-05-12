@@ -335,9 +335,10 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 ### <ins>Penetration Testing process</ins>
 
-Setup the environment:
-- Create a dedicated folder
-- Create a `creds.txt` file
+- Setup the environment
+  - Create a dedicated folder
+  - Create files like `creds.txt` and `computers.txt`
+- Check that the targets are valid and owned by client
 
 #### <ins>1. Public Network Enumeration</ins>
 
