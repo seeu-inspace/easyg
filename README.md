@@ -1574,7 +1574,7 @@ An example
 | ---           | ---           |
 | SMTP          | 25            |
 | SSH           | 22            |
-| POP3          |  110          |
+| POP3          | 110           |
 | IMAP          | 143           |
 | HTTP          | 80            |
 | HTTPS         | 443           |
@@ -1585,6 +1585,7 @@ An example
 | RDP           | 3389          |
 | MySQL         | 3306          |
 | MS SQL Server | 1433          |
+| Confluence    | 8090          |
 
 #### Common Port Vulnerabilities
 
@@ -1601,6 +1602,7 @@ See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.c
 | 80, 443, 8080 and 8443 (HTTP and HTTPS) | - Cross-site Scripting (XSS) <br/>- SQL injections <br/>- Cross-Site Request Forgeries (CSRF) <br/>- DDoS |
 | 1433,1434 and 3306 (SQL Server and MySQL) | - Default configurations <br/>- DDoS |
 | 3389 (Remote Desktop) | - [BlueKeep](https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2019-0708) <br/>- Leaked or weak user authentication |
+| 8090 (Confluence) | [CVE-2022-26134](#cve-2022-26134) |
 
 ## Mobile
 
