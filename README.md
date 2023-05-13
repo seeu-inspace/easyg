@@ -4690,8 +4690,8 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
 
 **Resources**
-- https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/
-- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html
+- [Abusing S3 Bucket Permissions](https://blog.yeswehack.com/yeswerhackers/abusing-s3-bucket-permissions/)
+- [Amazon S3: Allows read and write access to objects in an S3 Bucket](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html)
 
 
 
