@@ -1121,7 +1121,7 @@ Note: A company may only approve tests of its own systems. Personal devices, out
 
 #### Email Harvesting
 
-- [theHarvester](https://github.com/laramies/theHarvester)**
+- [theHarvester](https://github.com/laramies/theHarvester)
   ```
   theharvester -d targetcorp.com -b google                  -d specify target domain, -b set data source to search
   ```
