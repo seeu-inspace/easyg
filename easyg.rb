@@ -357,7 +357,7 @@ if option == "help"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
 	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
-	puts "  webscreenshot           take a screenshot for every entry in <file_input>"
+	puts "  webscreenshot				take a screenshot for every entry in <file_input>"
 	puts "	help\n\n"
 	
 	puts "Notes 
