@@ -338,11 +338,11 @@ if option == "webscreenshot"
 	driver.quit
 
 	# Create an HTML gallery with all the screenshots
-	File.open('gallery.html', 'w') do |html|
+	File.open('output/gallery.html', 'w') do |html|
 		html.write('<html><body><center>')
 		
 		image_paths.each do |path|
-			html.write("<b>" + path.gsub('output/webscreen/', '_').gsub('__','://').gsub('.png','').gsub('_','') + "</b><br/><img src=\"#{path}\" width=\"600\"><br><br/><br/>")
+			html.write("<b>" + path.gsub('output/webscreen/', '_').gsub('__','://').gsub('.png','').gsub('_','') + "</b><br/><img src=\"" + path.gsub('output/', '') + "\" width=\"600\"><br><br/><br/>")
 		end
 		
 		html.write('</center></body></html>')
