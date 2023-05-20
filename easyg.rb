@@ -6,6 +6,8 @@ require 'uri'
 require 'net/http'
 require 'json'
 require 'socket'
+require 'webdrivers'
+require 'selenium-webdriver'
 
 
 
@@ -42,7 +44,7 @@ end
 
 puts logo
 
-print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum]:\n\e[93m└─\e[0m "
+print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot]:\n\e[93m└─\e[0m "
 option = gets.chomp
 
 if option == "assetenum"
@@ -50,7 +52,7 @@ if option == "assetenum"
 	gb_opt = gets.chomp
 end
 
-if option == "firefox" || option == "gettoburp" || option == "assetenum"
+if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot"
 	print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 	file = gets.chomp
 end
@@ -81,7 +83,7 @@ def request_fun(uri)
 	
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
-		"Cookie": "0=1"
+		"Cookie": ''
 	}
 	
 	ssl_options = {
@@ -154,7 +156,7 @@ if option == "assetenum"
 	system "mkdir output" if File.directory?('output') == false
 	
 	File.open(file,'r').each_line do |f|
-	
+	 
 		target = f.gsub("\n","").to_s
 		
 		#== amass ==
@@ -263,18 +265,19 @@ if option == "assetenum"
 	end
 	
 	#== httprobe ==
-	puts "[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
+	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
 	system "type output\\allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobe_" + file + " && type output\\httprobe_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
 	
 	#== naabu ==
-	puts "[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
-	system "naabu -v -list output/allsubs_" + file + " -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
+	puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
+	system "naabu -v -list output/allsubs_" + file + " -p - -c 1000 -rate 7000 -stats -o output/naabu_" + file
+	#system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
 	delete_if_empty "output/naabu_" + file
 	
 	#== naabu | httprobe ==
 	if File.exists? "output/naabu_" + file
-		puts "[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_" + file
+		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_" + file
 		system "type output\\naabu_" + file + " | httprobe > output/httprobe_naabu_" + file
 		
 		if File.exists? "output/httprobe_naabu_" + file
@@ -285,10 +288,66 @@ if option == "assetenum"
 	end
 	
 	#== nuclei ==	
-	puts "[\e[36m+\e[0m] Checking with nuclei in " + file
+	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
 	system "nuclei -l output/httprobe_" + file + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 	delete_if_empty "output/nuclei_" + file
 	
+end
+
+
+if option == "webscreenshot"
+
+	i = 0
+	image_paths = []
+	
+	system "mkdir output" if File.directory?('output') == false
+
+	system "mkdir output\\webscreen" if File.directory?('output\webscreen') == false
+		
+	options = Selenium::WebDriver::Chrome::Options.new
+	options.add_argument('--ignore-certificate-errors')
+	options.add_argument('--disable-popup-blocking')
+	options.add_argument('--disable-translate')
+	options.add_argument('--ignore-certificate-errors-spki-list')
+
+	driver = Selenium::WebDriver.for :chrome, options: options
+
+	File.open(file,'r').each_line do |f|
+		
+		target = f.gsub("\n","").to_s
+			
+		i += 1
+
+		begin
+			
+			driver.navigate.to target
+
+			image_path = 'output/webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('\\', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png'
+			driver.save_screenshot(image_path)
+			puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: #{image_path}"
+			image_paths << image_path
+				
+		rescue
+			
+			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to take a screenshot of " + target
+				
+		end
+			
+	end
+		
+	driver.quit
+
+	# Create an HTML gallery with all the screenshots
+	File.open('gallery.html', 'w') do |html|
+		html.write('<html><body><center>')
+		
+		image_paths.each do |path|
+			html.write("<b>" + path.gsub('output/webscreen/', '_').gsub('__','://').gsub('.png','').gsub('_','') + "</b><br/><img src=\"#{path}\" width=\"600\"><br><br/><br/>")
+		end
+		
+		html.write('</center></body></html>')
+	end
+
 end
 
 
@@ -298,6 +357,7 @@ if option == "help"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
 	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
+	puts "  webscreenshot           take a screenshot for every entry in <file_input>"
 	puts "	help\n\n"
 	
 	puts "Notes 
