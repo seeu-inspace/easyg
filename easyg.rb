@@ -161,7 +161,7 @@ if option == "assetenum"
 		
 		#== amass ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		#system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
 
 		#== subfinder ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
@@ -266,7 +266,7 @@ if option == "assetenum"
 	
 	#== httprobe ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
-	system "type output\\allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output/httprobe_" + file + " && type output\\httprobe_" + file
+	system "type output\\allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -c 150 > output/httprobe_" + file + " && type output\\httprobe_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
 	
 	#== naabu ==
