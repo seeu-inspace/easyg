@@ -1231,6 +1231,11 @@ nmap <IP> --script=smb-os-discovery                                   OS fingerp
 nmap --script=dns-zone-transfer -p 53 ns2.zonetransfer.com            Perform a DNS zone transfer
 nmap --script http-headers <IP>                                       OS fingerprinting (HTTP supported headers)
 nmap --script http-title <IP>
+
+Other usages
+------------
+nmap -vvv -A --reason --script="+(safe or default) and not broadcat -p - <IP>"
+
 ```
 
 #### **Masscan**
