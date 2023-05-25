@@ -1487,6 +1487,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [Enum](https://packetstormsecurity.com/search/?q=win32+enum&s=files)
 - [Winfo](https://packetstormsecurity.com/search/?q=winfo&s=files)
 - [enum4linux](https://www.kali.org/tools/enum4linux/)
+- [macchanger](https://github.com/acrogenesis/macchanger)
 
 #### Checking the routing table
 ```
@@ -1502,12 +1503,10 @@ ipconfig /all   on Windows
 ifconfig        on MacOS
 ```
 
-#### Check ARP cache
-```
-ip neighbour    on Linux
-apr -a          on Windows
-arp             on *nix OS
-```
+#### Change MAC addess
+- [How to change or spoof the MAC address in Windows (7 ways)](https://www.digitalcitizen.life/change-mac-address-windows/)
+- [How to Change Your MAC Address on Linux](https://www.makeuseof.com/how-to-change-mac-address-on-linux/)
+  - [macchanger](https://github.com/acrogenesis/macchanger)
 
 #### Check listening ports and the current TCP connections
 ```
@@ -1559,6 +1558,17 @@ winfo <Target-IP> -n                     use winfo with null session
 ip addr                                                                             query available network interfaces
 ip route                                                                            enumerate network routes
 for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done       bash loop with Netcat to sweep for port <PORT> in a subnet
+```
+
+#### Target analysis
+- `tracert <target>` shows details about the path that a packet takes from the device sender to the target destination specified
+- `for ip in $(echo '<IP>'); do ping -c 5 $ip; traceroute $ip; echo '\nnslookup'; nslookup $ip; done`
+
+#### Check ARP cache
+```
+ip neighbour    on Linux
+apr -a          on Windows
+arp             on *nix OS
 ```
 
 #### ARP Poisoning
