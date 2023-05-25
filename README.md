@@ -1060,6 +1060,7 @@ keyscan_stop              stop the keystroke sniffer
 - [Create a random text file](https://onlinefiletools.com/generate-random-text-file)
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [BadSecrets](https://github.com/blacklanternsecurity/badsecrets) a library and command line tool for finding secrets
+- [Proxyman](https://proxyman.io/) to view requests from the app on your computer
 
 
 ## Passive Information Gathering (OSINT)
