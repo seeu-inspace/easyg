@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 #https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana
+#todo: assetenum light mode
 
 require 'uri'
 require 'net/http'
@@ -44,7 +45,7 @@ end
 
 puts logo
 
-print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot]:\n\e[93m└─\e[0m "
+print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot, crawl]:\n\e[93m└─\e[0m "
 option = gets.chomp
 
 if option == "assetenum"
@@ -52,7 +53,7 @@ if option == "assetenum"
 	gb_opt = gets.chomp
 end
 
-if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot"
+if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl"
 	print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 	file = gets.chomp
 end
@@ -161,7 +162,7 @@ if option == "assetenum"
 		
 		#== amass ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-		#system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
 
 		#== subfinder ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
@@ -351,13 +352,32 @@ if option == "webscreenshot"
 end
 
 
+if option == "crawl"
+
+	File.open(file,'r').each_line do |f|
+		target = f.gsub("\n","").to_s
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with hakrawler" + "\n"
+		system 'echo ' + target + '| hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"'
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with gospider" + "\n"
+		system 'gospider -s "' + target + '" -c 10 -d 4 -t 20 --sitemap --other-source -p http://localhost:8080 -H "Cookie: 0=1" --blacklist ".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)"'
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with katana" + "\n"
+		system 'katana -u "' + target + '" -jc -kf -aff -proxy http://127.0.0.1:8080" -H "Cookie: 0=1"'
+	end
+	
+end
+
+
 if option == "help"
 
 	puts "Options"
 	puts "	firefox					open every entry in <file_input> with firefox"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
 	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
-	puts "  webscreenshot				take a screenshot for every entry in <file_input>"
+	puts "	webscreenshot				take a screenshot for every entry in <file_input> and make a gallery"
+	puts "	crawl					crawl for every entry in <file_input> and pass the results to Burp Suite port 8080"
 	puts "	help\n\n"
 	
 	puts "Notes 
