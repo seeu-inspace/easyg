@@ -185,6 +185,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Shellter](#shellter)
 - [Mobile](#mobile)
   - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
+  - [Cordova attacks](#cordova-attacks)
 - [Cloud hacking](#cloud-hacking)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
   - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
@@ -4688,6 +4689,13 @@ Example of usage
 ### <ins>Missing Certificate and Public Key Pinning</ins>
 
 Absence or improper implementation of certificate and public key pinning in a mobile app. This allows an attacker to potentially intercept communication by presenting fraudulent or unauthorized certificates, undermining the security of the system and enabling man-in-the-middle attacks.
+
+
+### <ins>Cordova attacks</ins>
+
+- Check for HTML injections
+- Search for XSS
+  - With this type of attack, it's possible to achieve an RCE. Check [this](https://www.joshmorony.com/why-xss-attacks-are-more-dangerous-for-capacitor-cordova-apps/) and [this](https://research.securitum.com/security-problems-of-apache-cordova-steal-the-entire-contents-of-the-phone_s-memory-card-with-one-xss/)
 
 
 ## Cloud hacking
