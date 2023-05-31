@@ -686,7 +686,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   - [findtheevent.txt](lists/findtheevent.txt) and [findthetag.txt](lists/findthetag.txt) helps me test for XSS faster, created with the help of [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [scripts](scripts/)
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
-  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input, delete duplicate results
+  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input
 - [shells](shells/) to test file uploads
 
 
