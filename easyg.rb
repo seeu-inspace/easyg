@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 #https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana
-#todo: assetenum light mode
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana, selenium
 
 require 'uri'
 require 'net/http'
@@ -49,7 +48,7 @@ print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, w
 option = gets.chomp
 
 if option == "assetenum"
-	print "\e[93m┌─\e[0m Use GoBuster? [y/n]:\n\e[93m└─\e[0m "
+	print "\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 	gb_opt = gets.chomp
 end
 
@@ -84,7 +83,7 @@ def request_fun(uri)
 	
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
-		"Cookie": ''
+		"Cookie": '0=1'
 	}
 	
 	ssl_options = {
@@ -161,8 +160,11 @@ if option == "assetenum"
 		target = f.gsub("\n","").to_s
 		
 		#== amass ==
-		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-		system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		
+		if gb_opt == "y"
+			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
+			system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		end
 
 		#== subfinder ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with subfinder"
@@ -271,10 +273,12 @@ if option == "assetenum"
 	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
 	
 	#== naabu ==
-	puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
-	system "naabu -v -list output/allsubs_" + file + " -p - -c 1000 -rate 7000 -stats -o output/naabu_" + file
-	#system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
-	delete_if_empty "output/naabu_" + file
+	if gb_opt == "y"
+		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
+		system "naabu -v -list output/allsubs_" + file + " -p - -c 2000 -rate 7000 -stats -o output/naabu_" + file
+		#system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090 -c 1000 -rate 7000 -stats -o output/naabu_" + file
+		delete_if_empty "output/naabu_" + file
+	end
 	
 	#== naabu | httprobe ==
 	if File.exists? "output/naabu_" + file
