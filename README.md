@@ -3887,7 +3887,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
 #### <ins>Weak File Permissions</ins>
 
 **Readable /etc/shadow**
-- Check if `/etc/shadow` is readable with `ls -l /etc/passwd`
+- Check if `/etc/shadow` is readable with `ls -l /etc/shadow`
 - Run
   ```
   cat /etc/shadow > hash.txt
@@ -3895,7 +3895,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
   ```
 
 **Writable /etc/shadow**
-- Check if `/etc/shadow` is writable with `ls -l /etc/passwd`
+- Check if `/etc/shadow` is writable with `ls -l /etc/shadow`
 - Generate a new password hash with `mkpasswd -m sha-512 newpass`
 - Substitute the root password hash with the new hash with `nano /etc/shadow`
 
