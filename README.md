@@ -1077,6 +1077,12 @@ keyscan_stop              stop the keystroke sniffer
 - [BruteSpray](https://github.com/x90skysn3k/brutespray) `python brutespray.py --file nmap.xml --threads 5 --hosts 5`
 - [BadSecrets](https://github.com/blacklanternsecurity/badsecrets) a library and command line tool for finding secrets
 - [Proxyman](https://proxyman.io/) to view requests from the app on your computer
+- [filesec.io](https://filesec.io/)
+- [malapi.io](https://malapi.io/)
+- [lots-project.com](https://lots-project.com/)
+- [lolbas-project.github.io](https://lolbas-project.github.io/)
+- [gtfobins.github.io](https://gtfobins.github.io/)
+- [loldrivers.io](https://www.loldrivers.io/)
 
 
 ## Passive Information Gathering (OSINT)
