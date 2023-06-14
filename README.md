@@ -1083,6 +1083,7 @@ keyscan_stop              stop the keystroke sniffer
 - [lolbas-project.github.io](https://lolbas-project.github.io/)
 - [gtfobins.github.io](https://gtfobins.github.io/)
 - [loldrivers.io](https://www.loldrivers.io/)
+- [WAF Bypass Tool](https://github.com/nemesida-waf/waf-bypass)
 
 
 ## Passive Information Gathering (OSINT)
@@ -1279,6 +1280,7 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
 - **Powershell**
   - SMB port scanning `Test-NetConnection -Port 445 <IP>`
   - `1..1024 | % {echo ((New-Object Net.Sockets.TcpClient).Connect("<IP>", $_)) "TCP port $_ is open"} 2>$null`
+- [nmapAutomator](https://github.com/21y4d/nmapAutomator)
 
 ### <ins>SMB Enumeration</ins>
 
