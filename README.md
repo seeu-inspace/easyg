@@ -430,19 +430,6 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - leverage the domain admin privileges of one of the account found to get access to the domain controller
 
 
-
-
-### <ins>Windows Privilege Escalation</ins>
-
-See [Information gathering | Windows](#windows). Always obtain:
-- [ ] Username and hostname
-- [ ] Group memberships of the current user
-- [ ] Existing users and groups
-- [ ] Operating system, version and architecture
-- [ ] Network information
-- [ ] Installed applications
-- [ ] Running processes
-
 ### <ins>Bug Bounty Hunting</ins>
 
 #### **Multiple targets**
@@ -4086,6 +4073,17 @@ The first time plink connects to a host, it will attempt to cache the host key i
   - Example with Perl: `perl -e 'use POSIX qw(setuid); POSIX::setuid(0); exec "/bin/sh";'`
 
 ### <ins>Windows Privilege Escalation</ins>
+
+#### <ins>Checklist</ins>
+
+See [Information gathering | Windows](#windows). Always obtain:
+- [ ] Username and hostname
+- [ ] Group memberships of the current user
+- [ ] Existing users and groups
+- [ ] Operating system, version and architecture
+- [ ] Network information
+- [ ] Installed applications
+- [ ] Running processes
 
 #### <ins>Resources</ins>
 - [Windows PrivEsc | TryHackMe](https://tryhackme.com/room/windows10privesc)
