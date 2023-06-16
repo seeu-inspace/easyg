@@ -4174,7 +4174,7 @@ Check also:
 
 1. Save the output of the `systeminfo` command: `systeminfo > systeminfo.txt`
    - Try also the command: `systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"`
-2. Use it with Windows Exploit Suggester to find potential exploits: `python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only | less`
+2. Use it with [Windows Exploit Suggester](https://github.com/bitsadmin/wesng) to find potential exploits: `python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only | less`
    - See also: [Watson](https://github.com/rasta-mouse/Watson)
 3. See [windows-kernel-exploits](https://github.com/SecWiki/windows-kernel-exploits)
 
