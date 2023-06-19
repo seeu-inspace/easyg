@@ -5066,6 +5066,14 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [Amazon S3: Allows read and write access to objects in an S3 Bucket](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html)
 
 
+### <ins>AWS Cogito
+
+If you've found aws cognito client id and secret
+1. `clientID:clientSercret` => `base64KEY`
+2. `curl -X POST 'https://xx.amazoncognito.com/oauth2/token' \   -H 'Authorization: Basic base64KEY'\   -H 'Content-Type: application/x-www-form-urlencoded' \   -d 'grant_type=client_credentials'`
+3. [Source](https://twitter.com/GodfatherOrwa/status/1670617783510376448)
+
+
 
 ### <ins>Google Cloud Storage bucket</ins>
 
