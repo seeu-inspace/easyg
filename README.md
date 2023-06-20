@@ -202,6 +202,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Cordova attacks](#cordova-attacks)
 - [Cloud hacking](#cloud-hacking)
   - [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
+  - [AWS Cognito](#aws-cognito)
   - [Google Cloud Storage bucket](#google-cloud-storage-bucket)
 - [Artificial intelligence vulnerabilities](#artificial-intelligence-vulnerabilities)
   - [Prompt Injection](#prompt-injection)
@@ -5066,7 +5067,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [Amazon S3: Allows read and write access to objects in an S3 Bucket](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html)
 
 
-### <ins>AWS Cogito
+### <ins>AWS Cognito</ins>
 
 If you've found aws cognito client id and secret
 1. `clientID:clientSercret` => `base64KEY`
