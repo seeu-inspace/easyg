@@ -1039,6 +1039,9 @@ keyscan_stop              stop the keystroke sniffer
 - [anew](https://github.com/tomnomnom/anew) to add only new subdomains
 - [httpx](https://github.com/projectdiscovery/httpx)
   - `type scope.txt | httpx -sc -mc 404` find `404` pages
+- [urless](https://github.com/xnl-h4ck3r/urless)
+- [hakcheckurl](https://github.com/hakluke/hakcheckurl)
+  - `python3 urless.py -i urls.txt | hakcheckurl | grep -v 404`
 
 
 **Exploits**
