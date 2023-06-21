@@ -11,4 +11,7 @@ else
 	go install -v github.com/tomnomnom/httprobe@latest
 	go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
 	go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+ 	go install github.com/projectdiscovery/katana/cmd/katana@latest
+  	go install github.com/jaeles-project/gospider@latest
+   	go install github.com/hakluke/hakrawler@latest
 fi
