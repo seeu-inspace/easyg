@@ -83,7 +83,8 @@ def request_fun(uri)
 	
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
-		"Cookie": "0=1"
+		"Cookie": "0=1",
+		"Authorization": "0=1"
 	}
 	
 	ssl_options = {
@@ -164,6 +165,11 @@ if option == "assetenum"
 		if gb_opt == "y"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
 			system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+		end
+		
+		if gb_opt == "n"
+			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
+			system "amass enum --passive -d " + target + " -o output/" + target + "_tmp.txt -v"
 		end
 
 		#== subfinder ==
@@ -269,14 +275,14 @@ if option == "assetenum"
 	
 	#== httprobe ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
-	system "type output\\allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -c 150 > output/httprobe_" + file + " && type output\\httprobe_" + file
+	system "type output\\allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -p http:8888 -c 150 > output/httprobe_" + file + " && type output\\httprobe_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
 	
 	#== naabu ==
 	if gb_opt == "y"
 		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
 		system "naabu -v -list output/allsubs_" + file + " -p - -c 2000 -rate 7000 -stats -o output/naabu_" + file
-		#system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090 -c 1000 -rate 7000 -stats -o output/naabu_" + file
+		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090 -c 1000 -rate 7000 -stats -o output/naabu_" + file
 		delete_if_empty "output/naabu_" + file
 	end
 	
