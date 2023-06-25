@@ -1320,6 +1320,9 @@ Example: `nmap -v -p 139, 445 --script=smb-os-discovery <IP>`
 `nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 <IP>`<br/>
 Note: the script parameter `unsafe=1`, the scripts that will run are almost guaranteed to crash a vulnerable system
 
+**General notes**
+- Remember that you can transfer files to the share with `copy <file> \\<IP>\share`
+
 
 ### <ins>NFS Enumeration</ins>
 
