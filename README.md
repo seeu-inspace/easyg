@@ -292,6 +292,7 @@ Payloads
 - [Security Testing of Thick Client Application](https://medium.com/@david.valles/security-testing-of-thick-client-application-15612f326cac)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 - [OSSTMM](https://isecom.org/research.html)
+- [MindMaps](https://github.com/imran-parray/Mind-Maps)
 
 ### <ins>Toolset</ins>
 - [ ] [EasyG](#easyg) and all the connected tools
