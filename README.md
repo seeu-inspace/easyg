@@ -4332,6 +4332,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 **Search for Configuration Files**
 1. Run the commands: `dir /s *pass* == *.config` and ` findstr /si password *.xml *.ini *.txt`
 2. Use winPEAS to search for common files which may contain credentials: `.\winPEASany.exe quiet cmd searchfast filesinfo`
+   - also run `.\winPEASx64.exe windowscreds filesinfo fileanalysis searchpf log=winpeas_out.txt`
 
 **Security Account Manager (SAM)**
 1. The `SAM` and `SYSTEM` files can be used to extract user password hashes. Check also backups of these files
