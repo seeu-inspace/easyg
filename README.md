@@ -4885,7 +4885,7 @@ On Windows
 2. Create a Common Information Model
    ```PowerShell
    $options = New-CimSessionOption -Protocol DCOM
-   $session = New-Cimsession -ComputerName <IP> -Credential $credential -SessionOption $Options 
+   $session = New-Cimsession -ComputerName <IP> -Credential $credential -SessionOption $options
    $command = 'calc';
    ```
 3. Tie all together with `Invoke-CimMethod -CimSession $Session -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine =$Command};`
