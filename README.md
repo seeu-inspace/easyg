@@ -1503,6 +1503,9 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [Wireshark](https://www.wireshark.org/)
 - [PCredz](https://github.com/lgandx/PCredz)
 - [Impacket](https://github.com/SecureAuthCorp/impacket)
+  - `impacket-mssqlclient <user>:<password>@<IP> -windows-auth`
+  - `impacket-psexec -hashes 00000000000000000000000000000000:<NTLM> <USERNAME>@<IP>`
+  - `impacket-psexec <USERNAME>:<PASSWORD>@<IP>`
 - [putty](https://www.putty.org/)
 - [MobaXterm](https://mobaxterm.mobatek.net/)
 - [proxychains](https://github.com/haad/proxychains)
