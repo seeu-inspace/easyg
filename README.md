@@ -4323,7 +4323,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 
 **Registry**
 1. Search for keys and values that contain the word "password": `reg query HKLM /f password /t REG_SZ /s`
-2. If you have found and admin and its password, use [winexe](https://www.kali.org/tools/winexe/) command from the attacker machine to spawn a command prompt running with the admin privileges `winexe -U 'admin%password' //<IP> cmd.exe`
+2. If you have found an admin and its password, use [winexe](https://www.kali.org/tools/winexe/) command from the attacker machine to spawn a command prompt running with the admin privileges `winexe -U 'admin%password' //<IP> cmd.exe`
 
 **Saved Credentials**
 1. Check for any saved credentials `cmdkey /list`
