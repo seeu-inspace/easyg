@@ -3402,7 +3402,7 @@ reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer
 <# find interesting files #>
 Get-ChildItem -Path <PATH> -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue
 Get-ChildItem -Path <PATH> -Include *.txt,*.ini -File -Recurse -ErrorAction SilentlyContinue
-Get-ChildItem -Path <PATH> -Include *.txt,*.pdf,*.xls,*.xlsx,*.doc,*.docx -File -Recurse -ErrorAction SilentlyContinue
+Get-ChildItem -Path <PATH> -Include *.kdbx,*.txt,*.pdf,*.xls,*.xlsx,*.xml,*.doc,*.docx -File -Recurse -ErrorAction SilentlyContinue
 
 <# see history of commands #>
 Get-History
