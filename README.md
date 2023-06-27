@@ -65,6 +65,7 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Content Discovery](#content-discovery)
   - [Google Dorking](#google-dorking)
   - [GitHub Dorking](#github-dorking)
+  - [Shodan Dorking](#shodan-dorking)
 - [Networking](#networking)
 - [Source code review](#source-code-review)
 - [Vulnerability Scanning](#vulnerability-scanning)
@@ -1498,6 +1499,10 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [Other dorks](https://github.com/techgaun/github-dorks#list-of-dorks)
 
 
+### <ins>Shodan Dorking</ins>
+- `hostname:targetcorp.com` Search for TargetCorp’s domain
+- `hostname:targetcorp.com port:'22'` Search for TargetCorp’s domain running SSH
+
 
 ## Networking
 
@@ -2121,6 +2126,9 @@ echo '89 50 4E 47 0D 0A 1A 0A' | xxd -p -r >> reverse.php.png
 cat reverse.php >> reverse.php.png
 ```
 - Useful, for example, to upload `.js` files and bypass CSP restrictions
+
+**General tips**
+- If the target creates an encrypter URL for your file, copy the domain and use the command `echo data.target.com | waybackurls | httpx -mc 200, 403`. If you find valid endpoints, it might be possible to have an information disclosure [[Reference](https://twitter.com/ADITYASHENDE17/status/1673585969411526658)]
 
 
 **Resources**
@@ -3485,6 +3493,9 @@ lsmod
 
 # enumerating binaries that AutoElevate
 find / -perm -u=s -type f 2>/dev/null
+
+# find SSH private keys
+find / -maxdepth 5 -name .ssh -exec grep -rnw {} -e 'PRIVATE' \; 2> /dev/null
 
 ```
 
