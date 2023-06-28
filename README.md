@@ -4135,6 +4135,7 @@ See [Information gathering | Windows](#windows). Always obtain:
   - [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/dev/Privesc/PowerUp.ps1) (archived)
     - [SharpUp](https://github.com/GhostPack/SharpUp)
     - [SharpUp.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/SharpUp.exe)
+  - [PowerUpSQL](https://github.com/NetSPI/PowerUpSQL)
   - [Windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check)
     - `windows-privesc-check2.exe -h`
     - `windows-privesc-check2.exe --dump -G`
