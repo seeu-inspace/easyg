@@ -4703,7 +4703,7 @@ Example of usage
 ### <ins>Active Directory</ins>
 
 #### <ins>Notes</ins>
-- See also [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory) and [Active Directory Exploitation Cheat Sheet](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet)
+- See also [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory), [Active Directory Exploitation Cheat Sheet](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet) and [Pentesting_Active_directory mindmap](https://web.archive.org/web/20220607072235/https://www.xmind.net/m/5dypm8/)
 - Check for `Domain Admins` and `Service Accounts` groups
 - Add an account to a group
   - `net group "<group>" <user> /add /domain`
