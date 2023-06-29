@@ -380,6 +380,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 2. Use what you found to access the machine
    - Example: crack the password of `id_rsa` with `ssh2john id_rsa > ssh.hash` and `john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash`, then gain access with `ssh -i id_rsa <username>@<IP>`
 3. Elevate your privileges
+   - Run `PowerUp.ps1` `Invoke-AllChecks` in Windows
    - Run winPEAS or linPEAS, note:
      - System information
      - Network interfaces, Known hosts, and DNS Cache
