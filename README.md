@@ -4851,6 +4851,8 @@ Other commands to run
 - `lsadump::sam`
 - `lsadump::secrets`
 - `lsadump::cache`
+- `lsadump::ekeys`
+- `lsadump::msv`
 
 
 #### <ins>Active Directory Authentication Attacks</ins>
