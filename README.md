@@ -4852,7 +4852,7 @@ Other commands to run
 - `lsadump::secrets`
 - `lsadump::cache`
 - `lsadump::ekeys`
-- `lsadump::msv`
+- `sekurlsa::msv`
 
 
 #### <ins>Active Directory Authentication Attacks</ins>
