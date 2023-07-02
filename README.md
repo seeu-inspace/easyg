@@ -194,7 +194,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Domain Shares Enumeration](#domain-shares-enumeration)
     - [SharpHound](#sharphound)
     - [BloodHound](#bloodhound)
-    - [Mimikatz](#mimikatz)
+    - [Mimikatz](#mimikatz-1)
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
     - [Lateral Movement Techniques](#lateral-movement-techniques)
     - [Active Directory Persistence](#active-directory-persistence)
