@@ -300,7 +300,7 @@ if option == "assetenum"
 	
 	#== nuclei ==	
 	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-	system "nuclei -l output/httprobe_" + file + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/misconfiguration/put-method-enabled.yaml -t %USERPROFILE%/nuclei-templates/exposed-panels/grafana-detect.yaml -t %USERPROFILE%/nuclei-templates/technologies/confluence-detect.yaml -t %USERPROFILE%/nuclei-templates/technologies/wordpress-detect.yaml -stats -o output/nuclei_" + file
+	system "nuclei -l output/httprobe_" + file + " -t %USERPROFILE%/nuclei-templates/takeovers -t %USERPROFILE%/nuclei-templates/exposures/configs/git-config.yaml -t %USERPROFILE%/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t %USERPROFILE%/nuclei-templates/exposures/apis/swagger-api.yaml -t %USERPROFILE%/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 	delete_if_empty "output/nuclei_" + file
 	
 end
