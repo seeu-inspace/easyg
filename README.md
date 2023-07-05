@@ -2024,6 +2024,8 @@ Ways of injecting OS commands
 - Insufficient workflow validation
 - Flawed enforcement of business rules
 - [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
+- Account Takeover via type confusion
+  - Play with parameters and flags to see if you can achieve ATO
 
 
 
