@@ -1090,6 +1090,7 @@ keyscan_stop              stop the keystroke sniffer
 - [loldrivers.io](https://www.loldrivers.io/)
 - [WAF Bypass Tool](https://github.com/nemesida-waf/waf-bypass)
 - [Forensia](https://github.com/PaulNorman01/Forensia)
+- [peepdf - PDF Analysis Tool](https://eternal-todo.com/tools/peepdf-pdf-analysis-tool)
 
 
 ## Passive Information Gathering (OSINT)
