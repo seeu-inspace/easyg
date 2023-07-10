@@ -373,6 +373,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - See the source code
    - Use `whatweb <target>` to gain more information about the technology
      - search again for CVEs and exploits
+   - Run `nikto` and `nuclei`
 
 
 #### <ins>2. Attack a Public Machine</ins>
