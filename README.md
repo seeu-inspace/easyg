@@ -364,7 +364,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 #### <ins>1. Public Network Enumeration</ins>
 
 1. Start a port scanning with Nmap
-   - `sudo nmap -sC -sV -oN results <IP>`
+   - `sudo nmap -sC -sV -oN nmap_results <IP> -vvv`
 2. Search for CVEs  and exploits for the identified services
 3. If there is a web server present 
    - Run a directory research
