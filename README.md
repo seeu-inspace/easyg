@@ -363,13 +363,15 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 #### <ins>1. Public Network Enumeration</ins>
 
-1. Start a port scanning with Nmap
+1. Start a port scanning
    - `sudo nmap -sC -sV -oN nmap_results <IP> -vvv`
+   - `rustscan <IP>`
 2. Search for CVEs  and exploits for the identified services
 3. If there is a web server present 
    - Run a directory research
      - `dirsearch -u <target> -x 404 -e *`
      - `gobuster dir -u <target> -w /usr/share/wordlists/dirb/common.txt -o results -x txt,pdf,config`
+     - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
    - Use `whatweb <target>` to gain more information about the technology
      - search again for CVEs and exploits
