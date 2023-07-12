@@ -371,6 +371,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - Run a directory research
      - `dirsearch -u <target> -x 404 -e *`
      - `gobuster dir -u <target> -w /usr/share/wordlists/dirb/common.txt -o results -x txt,pdf,config`
+     - `gobuster dir -u <target> -x txt,php,html --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -o results`
      - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
    - Use `whatweb <target>` to gain more information about the technology
