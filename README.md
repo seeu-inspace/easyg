@@ -1448,6 +1448,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
   - `dirb http://www.target.com -r -z 10`
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ffuf](https://github.com/ffuf/ffuf)
+  - `ffuf -u 'http://<IP>/secret/evil.php?FUZZ=/etc/passwd' -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -fs 0`
 
 **Crawling**
 - [gospider](https://github.com/jaeles-project/gospider)
