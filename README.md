@@ -370,6 +370,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 3. If there is a web server present 
    - Run a directory research
      - `dirsearch -u <target> -x 404 -e *`
+     - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
      - `gobuster dir -u <target> -w /usr/share/wordlists/dirb/common.txt -o results -x txt,pdf,config`
      - `gobuster dir -u <target> -x txt,php,html --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -o results`
      - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
@@ -1445,6 +1446,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [dirsearch](https://github.com/maurosoria/dirsearch)
   - `dirsearch -l list.txt -x 404,500,501,502,503 -e *`
   - `dirsearch -u target.io -x 404,500,501,502,503 -e *`
+  - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
 - [DIRB](https://salsa.debian.org/pkg-security-team/dirb)
   - `dirb http://www.target.com -r -z 10`
 - [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
