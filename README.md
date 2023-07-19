@@ -1384,7 +1384,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 `nc -nv <IP> 25`
 
 **Use nmap for SMTP enumeration**<br/>
-`nmap -p 25 --script =smtp-enum-users <IP>`
+`nmap -p 25 --script=smtp-enum-users <IP>`
 
 ### <ins>SNMP Enumeration</ins>
 
