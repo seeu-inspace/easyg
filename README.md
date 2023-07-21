@@ -375,6 +375,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
      - `gobuster dir -u <target> -x txt,php,html --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -o results`
      - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
+   - Check `robots.txt`
    - Use `whatweb <target>` to gain more information about the technology
      - search again for CVEs and exploits
    - Run `nikto` and `nuclei`
