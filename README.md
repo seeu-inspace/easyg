@@ -2353,7 +2353,6 @@ Manually testing for XXE vulnerabilities generally involves
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
-- Cross Site Tracing: If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
 
 #### <ins>CSP</ins>
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
@@ -2443,6 +2442,21 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   %22-alert(document.cookie)-%22
   ```
+
+#### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
+- Change email > Password reset
+- Change phone number > SMS password reset
+- Add SSO (Google, Github etc.)
+- Add authentication method (email, sms etc.) > Password reset
+- Change password
+- Change security questions
+- Cross Site Tracing: If cookies are protected by the HttpOnly flag but the TRACE method is enabled, a technique called Cross Site Tracing can be used. [[Reference](https://owasp.org/www-community/attacks/Cross_Site_Tracing)]
+- Steal Cookies
+- Steal API key
+- Add admin user to the application
+- Hijack oAuth flow and steal code
+- Steal SSO code to adjacent app, then reverse SSO back to main app
+
 
 ### <ins>Cross-site request forgery (CSRF)</ins>
 
