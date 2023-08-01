@@ -1107,6 +1107,7 @@ keyscan_stop              stop the keystroke sniffer
 ## Passive Information Gathering (OSINT)
 
 ### <ins>Notes</ins>
+- [ ] Target validation
 - [ ] Search for email addresses of employees
   - What's the format? Does it change for founders, chief officers etc.?
 - [ ] Search for corporate social media accounts
@@ -1114,14 +1115,18 @@ keyscan_stop              stop the keystroke sniffer
   - `whois targetcorp.com`
 - [ ] [Google Dorking](#google-dorking)
   - Start searching for PHP files and directory listing
-- [ ] See each section of this chapter
+- [ ] Search for any company acquisitions of the target
 - [ ] See also [Content Discovery](#content-discovery)
+- [ ] See each section of this chapter
 
 ### <ins>Tools</ins>
 
 - [Stack Overflow](https://stackoverflow.com/)
 - [Information Gathering Frameworks](https://osintframework.com/)
 - [Maltego](https://www.maltego.com/)
+- [bgp.he.net](https://bgp.he.net/)
+- [Crunchbase](https://www.crunchbase.com/)
+- [OCCRP Aleph](https://aleph.occrp.org/)
 
 ### <ins>Target validation</ins>
 
@@ -1192,6 +1197,13 @@ Verify email addresses
 
 Malicious hackers frequently post stolen passwords on [Pastebin](https://pastebin.com/) or other less reputable websites. This is useful for generating wordlists.
 - An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
+
+#### Acquisitions
+
+Search for any acquisitions by the target
+- [bgp.he.net](https://bgp.he.net/)
+- [Crunchbase](https://www.crunchbase.com/)
+- [OCCRP Aleph](https://aleph.occrp.org/)
 
 
 ## Active Information Gathering
