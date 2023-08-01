@@ -453,6 +453,10 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - Open them in Firefox
 - [ ] Check for mobile/desktop applications
   - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
+- [ ] If every asset is in scope
+  - [bgp.he.net](https://bgp.he.net/)
+  - [Crunchbase](https://www.crunchbase.com/)
+  - [OCCRP Aleph](https://aleph.occrp.org/)
 
 #### **Single target**
 - [ ] Recon
