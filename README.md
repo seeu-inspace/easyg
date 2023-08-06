@@ -383,7 +383,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - test default credentials / anonymous login
    - search again for CVEs and exploits
 5. If there is a smb service present
-   - run `nmap -v -p 139,445 --script=/usr/share/nmap/scripts/smb* <IP>`
+   - run `nmap -vvv -p 139,445 --script=smb* <IP>`
    - test default credentials / anonymous login
    - search again for CVEs and exploits
 
