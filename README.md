@@ -379,7 +379,13 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - Use `whatweb <target>` to gain more information about the technology
      - search again for CVEs and exploits
    - Run `nikto` and `nuclei`
-
+4. If there is a ftp service present
+   - test default credentials / anonymous login
+   - search again for CVEs and exploits
+5. If there is a smb service present
+   - run `nmap -v -p 139,445 --script=/usr/share/nmap/scripts/smb* <IP>`
+   - test default credentials / anonymous login
+   - search again for CVEs and exploits
 
 #### <ins>2. Attack a Public Machine</ins>
 
