@@ -2230,6 +2230,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - `http://169.254.169.254/`
 - `http://169.254.169.254/latest/meta-data/`
 - `http://metadata.google.internal/`
+- `https://kubernetes.default.svc/metrics` [[Random Robbie's tweet](https://twitter.com/Random_Robbie/status/1072242182306832384)]
 
 **Resources**
 - [7 SSRF Mitigation Techniques You Must Know](https://brightsec.com/blog/7-ssrf-mitigation-techniques-you-must-know/)
