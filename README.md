@@ -367,7 +367,10 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - `sudo nmap -sC -sV -oN nmap_results <IP> -vvv`
    - `rustscan <IP>`
 2. Search for CVEs  and exploits for the identified services
-3. If there is a web server present 
+3. If there is a web server present
+   - Use `whatweb <target>` to gain more information about the technology
+     - search for CVEs and exploits
+   - search for `robots.txt`, `.svn`, `.DS_STORE`, `README.md`
    - Run a directory research
      - `dirsearch -u <target> -x 404 -e *`
      - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
@@ -375,17 +378,14 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
      - `gobuster dir -u <target> -x txt,php,html --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -o results`
      - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
-   - Check `robots.txt`
-   - Use `whatweb <target>` to gain more information about the technology
-     - search again for CVEs and exploits
    - Run `nikto` and `nuclei`
-4. If there is a ftp service present
+5. If there is a ftp service present
    - test default credentials / anonymous login
-   - search again for CVEs and exploits
-5. If there is a smb service present
+   - search for CVEs and exploits
+6. If there is a smb service present
    - run `nmap -vvv -p 139,445 --script=smb* <IP>`
    - test default credentials / anonymous login
-   - search again for CVEs and exploits
+   - search for CVEs and exploits
 
 #### <ins>2. Attack a Public Machine</ins>
 
