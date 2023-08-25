@@ -704,12 +704,13 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 ### <ins>EasyG</ins>
 
-[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](install.bat) or [install.sh](install.sh) and then run `ruby easyg.rb`.
+[EasyG](easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](scripts/install.bat) or [install.sh](scripts/install.sh) and then run `ruby easyg.rb`.
 
 - [XSS](XSS/) some payloads to find XSS in various places
-- [scripts](scripts/)
+- Other [scripts](scripts/)
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
-  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input
+  - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input and options
+  - [poc.php](scripts/poc.php) and [shell.php](scripts/shell.php)
 
 
 ### <ins>Burp Suite</ins>
