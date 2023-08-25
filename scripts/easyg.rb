@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#https://github.com/seeu-inspace/easyg/blob/main/easyg.rb
 #tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana, selenium
 
 require 'uri'
