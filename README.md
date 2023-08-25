@@ -712,7 +712,6 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 - [scripts](scripts/)
   - [fg.rb](scripts/fg.rb) a copy of [tomnomnom/gf](https://github.com/tomnomnom/gf) made in ruby
   - [paramspider_support.rb](scripts/paramspider_support.rb) use paramspider with a list of targets as an input
-- [shells](shells/) to test file uploads
 
 
 ### <ins>Burp Suite</ins>
