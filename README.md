@@ -379,10 +379,11 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
      - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
    - Run `nikto` and `nuclei`
-5. If there is a ftp service present
+   - Brute force the login pages with custom wordlists, use `cewl` and `cupp -i`
+4. If there is a ftp service present
    - test default credentials / anonymous login
    - search for CVEs and exploits
-6. If there is a smb service present
+5. If there is a smb service present
    - run `nmap -vvv -p 139,445 --script=smb* <IP>`
    - test default credentials / anonymous login
    - search for CVEs and exploits
