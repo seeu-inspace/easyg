@@ -251,6 +251,7 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [The Cyber Mentor](https://www.youtube.com/@TCMSecurityAcademy)
 - [STÖK](https://www.youtube.com/@STOKfredrik)
 - [NahamSec](https://www.youtube.com/@NahamSec)
+- [IppSec](https://www.youtube.com/@ippsec)
 
 ## Useful tips
 
