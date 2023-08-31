@@ -240,6 +240,18 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Vulnerable U](https://vulnu.beehiiv.com/)
 - [The Security, Funded Newsletter](https://securityfunded.com/)
 
+**Podcasts**
+- [Critical Thinking - Bug Bounty Podcast](https://www.criticalthinkingpodcast.io/)
+- [Darknet Diaries](https://darknetdiaries.com/)
+
+**YouTube channels**
+- [Bug Bounty Reports Explained](https://www.youtube.com/@BugBountyReportsExplained)
+- [jhaddix](https://www.youtube.com/@jhaddix)
+- [John Hammond](https://www.youtube.com/@_JohnHammond)
+- [The Cyber Mentor](https://www.youtube.com/@TCMSecurityAcademy)
+- [STÖK](https://www.youtube.com/@STOKfredrik)
+- [NahamSec](https://www.youtube.com/@NahamSec)
+
 ## Useful tips
 
 - For RCE 
