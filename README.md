@@ -478,6 +478,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [bgp.he.net](https://bgp.he.net/)
   - [Crunchbase](https://www.crunchbase.com/)
   - [OCCRP Aleph](https://aleph.occrp.org/)
+  - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
 
 #### **Single target**
 - [ ] Recon
