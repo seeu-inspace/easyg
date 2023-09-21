@@ -373,24 +373,19 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - Setup the environment
   - Create a dedicated folder
   - Create files like `creds.txt` and `computers.txt`
+  - Notes every service found, domain, host etc.
 - Check that the targets are valid and owned by client
 
 #### <ins>1. Public Network Enumeration</ins>
 
 1. Start a port scanning
-   - `sudo nmap -sC -sV -oN nmap_results <IP> -vvv`
-   - `rustscan <IP>`
+   - light then eavy if necessary
 2. Search for CVEs  and exploits for the identified services
 3. If there is a web server present
-   - Use `whatweb <target>` to gain more information about the technology
+   - Use `whatweb <target>`, wappalyzer or similar to gain more information about the technology
      - search for CVEs and exploits
    - search for `robots.txt`, `.svn`, `.DS_STORE`, `README.md`
    - Run a directory research
-     - `dirsearch -u <target> -x 404 -e *`
-     - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
-     - `gobuster dir -u <target> -w /usr/share/wordlists/dirb/common.txt -o results -x txt,pdf,config`
-     - `gobuster dir -u <target> -x txt,php,html --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -o results`
-     - `dirbrute` and `/usr/share/wordlists/dirb/common.txt`
    - See the source code
    - Run `nikto` and `nuclei`
    - Brute force the login pages with custom wordlists, use `cewl` and `cupp -i`
@@ -400,7 +395,9 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 5. If there is a smb service present
    - run `nmap -vvv -p 139,445 --script=smb* <IP>`
    - test default credentials / anonymous login
-   - search for CVEs and exploits
+   - search for CVEs and exploits (EternalBlue)
+6. For Active Directory
+   - run enum4linux with no user and `guest:`
 
 #### <ins>2. Attack a Public Machine</ins>
 
@@ -412,57 +409,51 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - Run `PowerUp.ps1` `Invoke-AllChecks` in Windows
    - Run winPEAS or linPEAS, note:
      - System information
+       - In Windows, verify the OS with `systeminfo` (winPEAS may falsely detect Windows 11 as Windows 10)
      - Network interfaces, Known hosts, and DNS Cache
      - Check what high privilege commands can be run
      - Config files, clear text passwords, connections strings etc.
      - AV Information
      - Any information about applications used
      - Any other interesting file / info
+       - Check for Password Manager files, like `*.kdbx` or `config.php` and similar
+     - [GTFOBins](https://gtfobins.github.io/)
    - Define all potential privilege escalation vectors
-     - Use [GTFOBins](https://gtfobins.github.io/)
+4. For Active Directory
 
 #### <ins>3. Internal Network Access</ins>
 
 - Password attack: test the credentials found to gain more accesses
-  - `crackmapexec <service> <IP> -u usernames.txt -p passwords.txt --continue-on-success`
-  - `crackmapexec <service> <IP> -u administrator -H <NTLM> --continue-on-success`
-  - `crackmapexec <service> <IP> -u administrator -H <NTLM> --local-auth --lsa`
+  - use `crackmapexec` or similar
 - Explore the services found
   - Example: enumerate SMB shares with `crackmapexec smb <IP> -u <user> -p <password> --shares`
-- Client-side attack
+- Client-side attacks
   - Perform a Phishing attack
-    - Run WebDAV and prepare the Windows Library and shortcut files
-    - Send an email with `sudo swaks -t <recipient> -t <recipient> --from <sender> --attach @<Windows-Library-file> --server <IP> --body @body.txt --header "Subject: Staging Script" --suppress-data -ap`
   - If you have more information, you could leverage Microsoft Office or Windows Library Files
 
 #### <ins>4. Internal Network Enumeration</ins>
 
-- Once an access to an internal network machine is gained, use again winPEAS or linPEAS
+- Once an access to an internal network machine is gained, elevate your privileges
   - See step `2.3.`
-  - In Windows, verify the OS with `systeminfo` (winPEAS may falsely detect Windows 11 as Windows 10)
   - Gain situational awareness
-- Create a file `computers.txt` to document identified internal machines and additional information about them
-- Check for Password Manager files, like `*.kdbx`
-- In Windows, enumerate the AD environment and its objects
-  - Use `SharpHound.ps1` and `BloodHound`
+- Update the file `computers.txt` to document identified internal machines and additional information about them
+- In Windows AD, enumerate the AD environment and its objects
+  - Use `BloodHound` and `enum4linux`
+  - Check cached Credentials
+    - Use mimikatz for this purpose
+      - Run `privilege::debug` and `sekurlsa::logonpasswords`
 - set up a SOCKS5 proxy to perform network enumeration via Nmap and CrackMapExec
   - search for accessible services, open ports, and SMB settings
+  - for Windows, use Chisel
+- Password attack: test the credentials found to gain more accesses
 
-#### <ins>5. Attacking an Internal Web Application</ins>
+#### <ins>5. Domain Controller Access</ins>
 
-- Use credentials found to log in
-- Find potential exploits
-- See step `1.3.`
-- Use the Web Application to gain a shell as `NT AUTHORITY\SYSTEM`
-
-#### <ins>6. Domain Controller Access</ins>
-
-- Cached Credentials
-  - If there is no AV, consider upgrading the shell to Meterpreter for more advantages
-  - Use mimikatz for this pupose
-    - Run `privilege::debug` and `sekurlsa::logonpasswords`
+- Elevate your privileges to `NT AUTHORITY\SYSTEM`
 - Lateral Movement
-  - leverage the domain admin privileges of one of the account found to get access to the domain controller
+  - Leverage the privileges to get access to the other machines
+  - Use `Golden Ticket` and `Rubeus.exe`
+- Obtain `ntds.dit`, located at `%SystemRoot%\NTDS`
 
 
 ### <ins>Bug Bounty Hunting</ins>
