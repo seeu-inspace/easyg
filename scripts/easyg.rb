@@ -280,7 +280,6 @@ if option == "assetenum"
 	#== naabu ==
 	if gb_opt == "y"
 		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
-		system "naabu -v -list output/allsubs_" + file + " -p - -c 2000 -rate 7000 -stats -o output/naabu_" + file
 		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090 -c 1000 -rate 7000 -stats -o output/naabu_" + file
 		delete_if_empty "output/naabu_" + file
 	end
