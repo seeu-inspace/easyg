@@ -231,7 +231,7 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [PortSwigger/research](https://portswigger.net/research)
 - [all InfoSec news](https://allinfosecnews.com/)
 
-**Newsletter**
+**Newsletters**
 - [Bug Bytes](https://blog.intigriti.com/category/bugbytes/)
 - [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
 - [The Unsupervised Learning Newsletter](https://danielmiessler.com/newsletter/)
