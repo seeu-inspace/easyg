@@ -731,21 +731,25 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 
 **Cool extensions**
-- [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
-- [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
-- [Wsdler](https://github.com/NetSPI/Wsdler) to interact with SOAP
-- [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
-- [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
-- [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
+
+- [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
+- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
+- [JS Miner](https://portswigger.net/bappstore/0ab7a94d8e11449daaf0fb387431225b)
+- [403 Bypasser](https://portswigger.net/bappstore/444407b96d9c4de0adb7aed89e826122)
+- [Autorize](https://github.com/PortSwigger/autorize)
+- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
 - [Software Version Reporter](https://portswigger.net/bappstore/ae62baff8fa24150991bad5eaf6d4d38)
 - [Software Vulnerability Scanner](https://portswigger.net/bappstore/c9fb79369b56407792a7104e3c4352fb)
 - [IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
-- [Autorize](https://github.com/PortSwigger/autorize)
-- [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-- [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
-- [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
+- [Active Scan++](https://portswigger.net/bappstore/3123d5b5f25c4128894d97ea1acc4976)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
-- [GetAllParams evolution](https://github.com/xnl-h4ck3r/GAP-Burp-Extension)
+- [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
+- [Wsdler](https://github.com/NetSPI/Wsdler)
+- [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
+- [Hackvertor](https://portswigger.net/bappstore/65033cbd2c344fbabe57ac060b5dd100)
+- [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
+- [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
+- [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
 - [Burp Bounty](https://burpbounty.net/)
 
 **Browser extensions**
