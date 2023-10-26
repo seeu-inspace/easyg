@@ -165,6 +165,8 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Abusing capabilities](#abusing-capabilities)
     - [Escape shell](#escape-shell)
     - [Docker](#docker)
+    - [User groups](#user-groups)
+    - [fail2ban](#fail2ban)
     - [Postfix](#postfix)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources-3)
