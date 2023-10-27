@@ -211,6 +211,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Active Directory](#active-directory)
     - [Notes](#notes-2)
     - [Manual Enumeration](#manual-enumeration)
+    - [Initial foothold](#initial-foothold)
     - [PowerView](#powerview)
     - [PsLoggedOn](#psloggedon)
     - [Service Principal Names Enumeration](#service-principal-names-enumeration)
@@ -3987,7 +3988,7 @@ The first time plink connects to a host, it will attempt to cache the host key i
 - https://ap3x.github.io/posts/pivoting-with-chisel/
 - https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
 - https://notes.benheater.com/books/network-pivoting/page/port-forwarding-with-chisel
-- to have the process in the background, use & at the end of the command
+- To have the process in the background, use `&` at the end of the command
 
 **Port forwarding with chisel**: https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
 ```
@@ -5402,8 +5403,21 @@ Example of usage
 | Windows Server 2008 or later | NTLM and SHA-1 |
 | - Old Windows OS (like Windows 7)<br/> - OS that have it manually set | [WDigest](https://technet.microsoft.com/en-us/library/cc778868(v=ws.10).aspx) |
 
+There can be multiple domains. This is called a tree, a parent domain and other child domains. With many trees you start to have a forest. Inside are the Organization Unites, objects.
 
-**Random notes**
+Trust:
+- Directional: one domain trust one domain
+- Transactional: one domain trusts one domain and everything that it trusts
+
+When you compromise a Domain Controller, you want to be able to get the ntds.dit file
+- Contains password hashes
+- ticket attack, pass the hash attack, crack the password etc
+- generally stored in %SystemRoot%\NTDS
+
+SYSVOL is a folder that exists on all domain controllers. It is a shared folder storing the Group Policy Objects (GPOs) and information along with any other domain related scripts. It is an essential component for Active Directory since it delivers these GPOs to all computers on the domain. Domain-joined computers can then read these GPOs and apply the applicable ones, making domain-wide configuration changes from a central location.
+
+
+**Misc notes**
 - Check for `Domain Admins` and `Service Accounts` groups
 - Add an account to a group
   - `net group "<group>" <user> /add /domain`
@@ -5412,6 +5426,15 @@ Example of usage
 - Use `gpp-decrypt` to decrypt a given GPP encrypted string
 - Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
   - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
+- If you get lost, see the notes for the Hutch, Heist, and Vault machines
+- File config for responder: `/usr/share/responder/Responder.conf`
+- Do password spray only on local account
+- Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
+- To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
+- Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+  - WinRM shell: https://raw.githubusercontent.com/Alamot/code-snippets/master/winrm/winrm_shell.rb
+- NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
+- Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
 
 
 **Cheat sheets**
@@ -5498,6 +5521,67 @@ Find-DomainShare                                                                
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
+#### <ins>Initial foothold</ins>
+- run `responder` + `mitm6`
+- `enum4linux -a -u "" -p "" 192.168.180.30`
+- `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv 10.10.108.190 -oN nmap_results`
+- `nmap -p- -A -nP 192.168.212.165 -oN nmap_results`
+- `dig @192.168.212.165 AXFR heist.offsec`
+- `dnsenum 192.168.174.187`
+- After this
+  - [ ] 53, zone transfer + info collection
+  - [ ] 139/445 Check SMB / smbclient
+    - check upload of web shells / phishing
+    - check eternal blue
+    - check default creds
+  - [ ] 389 Check ldapsearch
+    - use windapsearch.py
+    - try LDAP Pass-back attack
+  - [ ] Check rpcclient
+  - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
+  - [ ] Enumerate any AS-REP / Kerberos roastable users
+  - [ ] Check ZeroLogon
+  - [ ] Check every section of this file
+  - [ ] Check default creds
+    - also in Printers, Jenkins etc.
+  - [ ] Check: 
+    - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
+    - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
+    - https://wadcoms.github.io/ <# interactive cheat-sheet #>
+    - https://github.com/seeu-inspace/easyg
+  - [ ] 464 kpasswd -> try Kerberoast
+  - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
+  - [ ] If you don't find something here, see exploitaiton-notes
+  - [ ] Check kerberoasting
+    - Not only kerbrute etc., try also to retrieve TGS ticket
+    - Test AS-REP roasting and Kerberoasting
+    - AS-REP, Kerberost, Rubeus (con e senza creds)
+  - [ ] If you find creds / hashes, try:
+    - crackmapexec to see a reuse of creds
+    - evil-winrm
+    - kerberoasting impacket-GetUserSPNs
+      - AS-REP, Kerberost, Rubeus
+    - enum4linux (once without auth and only once with creds)
+      - see descriptions
+    - smbclient
+    - ldap
+- PrivEsc / Post Access
+  - [ ] enumerate with bloodhound, powershell, powerview
+  - [ ] Check privileges
+    - whoami /priv, Get-ADUser -identity s.smith -properties *
+  - [ ] try access with rdp
+  - [ ] mimikatz.exe
+  - [ ] test creds already found
+    - crackmapexec, ldap with auth, enum4linux (see descriptions), smbclient
+    - kerberoast (AS-REP, Kerberost, Rubeus, etc. -> retrieve TGS)
+    - secrets dump, impacket-psexec, impacket-wmiexec, evil-winrm
+    - test also hashes
+  - [ ] Azure
+  - [ ] Play with Rubeus
+  - [ ] See DCSync (try with various tools, come aclpwn)
+  - [ ] See all sections of this document
+  - [ ] See powershell history
+  - [ ] Run Seatbelt first, then winPEAS
 
 #### <ins>PsLoggedOn</ins>
 
