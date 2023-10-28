@@ -222,7 +222,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Manual Enumeration](#manual-enumeration)
     - [Initial foothold](#initial-foothold)
     - [SMB](#smb)
-    - [rpcclient](#rpcclient)
+    - [RPC](#rpc)
     - [Azure](#azure)
     - [LDAP](#ldap)
     - [PowerView](#powerview)
@@ -5817,17 +5817,17 @@ change password
 - Alternativa: `impacket-smbpasswd -newpass testing1234 sbradley:roastpotatoes@10.10.95.8`
 
 
-#### <ins>rpcclient</ins>
-- rpcclient 192.168.180.20 -N
-- rpcclient 192.168.174.187 -U nik
-- rpcclient -U "" -N 10.10.10.172
-- Commands: enumdomusers, enumdomgroups, querydispinfo
-  - cat rpc_dump | awk '{print $1}' | cut -f2 -d [ | cut -f1 -d ] > ad_users.txt
-  - After enumdomusers, notes the `rid` values, then
+#### <ins>RPC</ins>
+- `rpcclient 192.168.180.20 -N`
+- `rpcclient 192.168.174.187 -U nik`
+- `rpcclient -U "" -N 10.10.10.172`
+- Commands: `enumdomusers`, `enumdomgroups`, `querydispinfo`
+  - `cat rpc_dump | awk '{print $1}' | cut -f2 -d [ | cut -f1 -d ] > ad_users.txt`
+  - After `enumdomusers`, notes the `rid` values, then
     `queryuser RID-HERE`, example `queryuser 0x1f4`
-- impacket-rpcdump @192.168.180.21
+- `impacket-rpcdump @192.168.180.21`
 - https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb/rpcclient-enumeration
-- Reset password: (see for svc_helpdesk accounts)
+- Reset password: (see for `svc_helpdesk` accounts)
   `setuserinfo2 username 23 password`
 
 
@@ -5835,6 +5835,7 @@ change password
 #### <ins>Azure</ins>
 - https://blog.xpnsec.com/azuread-connect-for-redteam/
 - https://0xdf.gitlab.io/2020/06/13/htb-monteverde.html
+
 
 #### <ins>LDAP</ins>
 
