@@ -1603,6 +1603,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - If the application is ASP.NET, search for `Appsettings.json`
 - Use recursion. If you encounter a `401` response, search with waybackmachine
 - Search for past reports in the same program
+- [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 
 **Check the tech of a target with**
 - [Wappalyzer](https://www.wappalyzer.com/)
@@ -1613,13 +1614,19 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster)
   - `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
+  - `feroxbuster -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -C 404,400,401,403 --url http://192.168.244.140:8000`
 - [dirsearch](https://github.com/maurosoria/dirsearch)
   - `dirsearch -l list.txt -x 404,500,501,502,503 -e *`
   - `dirsearch -u target.io -x 404,500,501,502,503 -e *`
   - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
+  - `dirsearch -e * -x 404,401,500,503 -u http://192.168.244.140:8000`
+  - `dirsearch -u http://192.168.134.126 -w /usr/share/wordlists/dirb/common.txt -r -R 2 --full-url -t 75 --suffix=.txt`
 - [DIRB](https://salsa.debian.org/pkg-security-team/dirb)
   - `dirb http://www.target.com -r -z 10`
-- [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
+- [dirbuster](https://github.com/KajanM/DirBuster)
+- [gobuster](https://github.com/OJ/gobuster)
+  - `gobuster dir -w /usr/share/wordlists/dirb/common.txt -u http://192.168.228.63:450`
+  - `gobuster dir -u http://192.168.190.112 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt`
 - [ffuf](https://github.com/ffuf/ffuf)
   - `ffuf -u 'http://<IP>/secret/evil.php?FUZZ=/etc/passwd' -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -fs 0`
 
@@ -1638,6 +1645,14 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [OneListForAll](https://github.com/six2dez/OneListForAll)
 - [wordlistgen](https://github.com/ameenmaali/wordlistgen)
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
+
+**Wordlists kali**
+- `/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt`
+- `/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt`
+- `/usr/share/wordlists`
+- `/usr/share/wordlists/dirb/common.txt`
+- `/usr/share/seclists/Discovery/Web-Content/big.txt`
+- note: use keywords that you find during the test (maybe use `cewl` or build a wordlist)
 
 **To find more endpoints**
 - [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
