@@ -20,12 +20,14 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Useful tips](#useful-tips)
   - [Glossary](#glossary)
   - [Client-specific key areas of concern](#client-specific-key-areas-of-concern)
+  - [General notes](#general-notes)
+    - [Default Credentials](#default-credentials)
+    - [PT initial foothold](#pt-initial-foothold)
 - [Check-lists](#check-lists)
   - [Toolset](#toolset) 
   - [Testing layers](#testing-layers)
   - [Penetration Testing cycle](#penetration-testing-cycle)
   - [Penetration Testing process](#penetration-testing-process)
-  - [Windows Privilege Escalation](#windows-privilege-escalation)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
     - [Multiple targets](#multiple-targets)
     - [Single target](#single-target)
@@ -334,6 +336,57 @@ Payloads
   - Examples
     - ["Twitter fined ~$550K over a data breach in Ireland’s first major GDPR decision"](https://techcrunch.com/2020/12/15/twitter-fined-550k-over-a-data-breach-in-irelands-first-major-gdpr-decision/), [Tweet from Whitney Merrill](https://twitter.com/wbm312/status/1645497243708067841)
     - See also: [Increasing your bugs with the impact of the GDPR](https://www.youtube.com/watch?v=7JiOqXIZHy0)
+
+### <ins>General notes</ins>
+
+#### <ins>Default Credentials</ins>
+- admin:admin
+- administrator:administrator
+- admin:password
+- admin:secret
+- root:root
+- root:password
+- ftp:ftp
+- Anonymous:_blank
+- username:username
+- guest:_blank
+- guest:guest
+- admin:servicename
+- tomcat:s3cret
+- firstname:surname
+
+
+#### <ins>PT initial foothold</ins>
+
+**Light way scan**
+1. `ports=$(nmap -p- --min-rate=1000 -T4 192.168.134.126 | grep ^[0-9] | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)`
+2. `echo $ports`
+3. `nmap -p$ports -sC -sV 192.168.134.126 -oN nmap_results`
+   - `sU` for UDP, `sT` for TCP
+
+**More scans**
+- `nmap -T4 -p- --min-rate=1000 -sV -sC -vvv -oN nmap_results 192.168.134.114 -Pn`
+- `for i in {1..65535}; do (echo > /dev/tcp/172.17.0.1/$i) >/dev/null 2>&1 && echo $i is open; done`
+- `dig @192.168.212.165 AXFR heist.offsec`
+- `dnsenum 192.168.212.165`
+- `autorecon 192.168.228.109`
+- `rustscan --ulimit 5000 192.168.220.131`
+- `nikto -host=http://www.targetcorp.com -maxtime=30s`
+
+**Fast way**
+1. `masscan -p1-65535 10.10.10.93 --rate=1000 -e tun0 > ports`
+2. `ports=$(cat ports | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')`
+3. `nmap -Pn -sV -sC -p$ports 10.10.10.93`
+
+**Checklist**
+- Top 100 ports: `TCP(100;7,9,13,21-23,25-26,37,53,79-81,88,106,110-111,113,119,135,139,143-144,179,199,389,427,443-445,465,513-515,543-544,548,554,587,631,646,873,990,993,995,1025-1029,1110,1433,1720,1723,1755,1900,2000-2001,2049,2121,2717,3000,3128,3306,3389,3986,4899,5000,5009,5051,5060,5101,5190,5357,5432,5631,5666,5800,5900,6000-6001,6646,7070,8000,8008-8009,8080-8081,8443,8888,9100,9999-10000,32768,49152-49157)`
+
+**If you find an unkwon service, try again this command**
+- `sudo nmap -sC -sV -p PORTNUMBER -sU 10.10.10.116`
+
+**Other ways**
+- `for i in {1..255}; do (ping -c 1 192.168.1.${i} | grep "bytes from" &); done`
+- `for i in {1..65535}; do (echo > /dev/tcp/192.168.1.1/$i) >/dev/null 2>&1 && echo $i is open; done`
 
 
 ## Check-lists
