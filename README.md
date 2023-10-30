@@ -140,6 +140,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [HTML applications](#html-applications)
   - [Microsoft Office](#microsoft-office)
   - [Windows Library Files](#windows-library-files)
+  - [McAfee](#mcafee)
 - [Server-side Attacks](#server-side-attacks)
   - [NFS](#nfs)
   - [IKE - Internet Key Exchange](##ike---internet-key-exchange)
@@ -3882,6 +3883,11 @@ Library files consist of three major parts written in XML to specify the paramet
 - `sudo swaks -t <recipient> -t <recipient> --from <sender> --attach @<Windows-Library-file> --server <IP> --body @body.txt --header "Subject: Staging Script" --suppress-data -ap`
 - use WebDAV
 
+
+### <ins>McAfee</ins>
+- [mcafee-sitelist-pwd-decryption](https://github.com/funoverip/mcafee-sitelist-pwd-decryption/)
+
+
 ## Server-Side attacks
 
 ### <ins>NFS</ins>
@@ -6346,6 +6352,30 @@ Find-DomainShare
 Invoke-ShareFinder                                                                                                                       Find Domain Shares
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
+
+
+#### <ins>From a compromised machine</ins>
+MMC
+  1. Search Bar > Type `mmc` and press enter
+  2. See the steps for this app in https://tryhackme.com/room/adenumeration Task 3
+Command Prompt
+  - `net user /domain`
+  - `net user zoe.marshall /domain`
+  - `net group /domain`
+  - `net group "Tier 1 Admins" /domain`
+  - `net accounts /domain`
+PowerShell
+  - `Get-ADUser -Identity gordon.stevens -Server za.tryhackme.com -Properties *`
+  - `Get-ADUser -Filter 'Name -like "*stevens"' -Server za.tryhackme.com | Format-Table Name,SamAccountName -A`
+  - `Get-ADGroup -Identity Administrators -Server za.tryhackme.com -Properties *`
+  - `Get-ADGroupMember -Identity Administrators -Server za.tryhackme.com`
+  - `Get-ADGroupMember -Identity "Tier 2 Admins" | Select-Object Name, SamAccountName, DistinguishedName`
+  - `$ChangeDate = New-Object DateTime(2022, 02, 28, 12, 00, 00)`
+  - `Get-ADObject -Filter 'whenChanged -gt $ChangeDate' -includeDeletedObjects -Server za.tryhackme.com`
+  - `Get-ADObject -Filter 'badPwdCount -gt 0' -Server za.tryhackme.com`
+  - `Get-ADDomain -Server za.tryhackme.com`
+  - `Set-ADAccountPassword -Identity gordon.stevens -Server za.tryhackme.com -OldPassword (ConvertTo-SecureString -AsPlaintext "old" -force) -NewPassword (ConvertTo-SecureString -AsPlainText "new" -Force)
+BloodHound`
 
 #### <ins>Initial foothold</ins>
 - run `responder` + `mitm6`
