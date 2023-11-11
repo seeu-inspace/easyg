@@ -93,6 +93,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Information Disclosure](#information-disclosure)
   - [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
   - [File upload vulnerabilities](#file-upload-vulnerabilities)
+    - [Web shells](#shells)
   - [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
   - [Open redirection](#open-redirection)
   - [XXE injection](#xxe-injection)
