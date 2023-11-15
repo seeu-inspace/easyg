@@ -37,6 +37,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Penetration Testing cycle](#penetration-testing-cycle)
   - [Penetration Testing process](#penetration-testing-process)
   - [Bug Bounty Hunting](#bug-bounty-hunting)
+    - [Top vulnerabilities to always look for](#top-vulnerabilities-to-always-look-for)
     - [Multiple targets](#multiple-targets)
     - [Single target](#single-target)
 - [Linux](#linux)
@@ -800,6 +801,12 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 
 ### <ins>Bug Bounty Hunting</ins>
+
+#### **Top vulnerabilities to always look for**
+- [ ] XSS
+- [ ] CSRF
+- [ ] Authorization issues
+- [ ] IDOR
 
 #### **Multiple targets**
 - [ ] Run EasyG assetenum
