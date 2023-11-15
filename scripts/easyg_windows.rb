@@ -389,7 +389,6 @@ if option == "help"
 	puts "	help\n\n"
 	
 	puts "Notes 
-	set the GITHUB_TOKEN for github-subdomains
-	tested on Windows, change 'type' with 'cat' and '\\' with '/' for paths"
+	set the GITHUB_TOKEN for github-subdomains"
 
 end
