@@ -3032,6 +3032,7 @@ ${alert(1)}
 
 **Resources**
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
+  - Add `<script>document.forms[0].submit();</script>` to the PoC
 
 
 ### <ins>Cross-origin resource sharing (CORS)</ins>
