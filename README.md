@@ -10,7 +10,7 @@ Made with <3 by Riccardo Malatesta (@seeu)
 [![License](https://img.shields.io/github/license/seeu-inspace/easyg)](LICENSE)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
-EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](scripts/easyg.rb). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
+EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](scripts/). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
 I try as much as possible to link to the various sources or inspiration for these notes. A large part of these notes are from: [PTS v4](https://blog.elearnsecurity.com/introducing-the-ptsv4-training-course.html), [PortSwigger Web Security Academy](https://portswigger.net/web-security), [PEN-200](https://www.offsec.com/courses/pen-200/), [Proving Grounds](https://www.offsec.com/labs/individual/), [TryHackMe](https://tryhackme.com/), [Hack The Box](https://hackthebox.com/), [HackTricks](https://book.hacktricks.xyz/), [Jhaddix](https://twitter.com/Jhaddix), [The Cyber Mentor](https://www.thecybermentor.com/), [NahamSec](https://www.youtube.com/@NahamSec) (and [NahamCon](https://www.nahamcon.com/)), InfoSec Twitter and many other amazing people.
 
@@ -1063,7 +1063,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 <img src="img/easyg.gif">
 
-[EasyG](scripts/easyg.rb) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](scripts/install.bat) or [install.sh](scripts/install.sh) and then run `ruby easyg.rb`.
+[EasyG](scripts/) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](scripts/install.bat) or [install.sh](scripts/install.sh) and then run `ruby easyg.rb`.
 
 ### <ins>Burp Suite</ins>
 
