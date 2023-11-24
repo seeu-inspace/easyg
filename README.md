@@ -1067,8 +1067,11 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 
 ### <ins>Burp Suite</ins>
 
-- To add a domain + subdomains in advanced scopes: `^(.*\.)?test\.com$`
-- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
+- Advanced Scope regular expressions
+  ```
+  ^(.*\.)?test\.com$            add a domain + subdomains
+  ^fd\d+-sub\.test\.com$        to capture domains like "fd1-sub.test.com", "fd2-sub.test.com", and so on
+  ```
 - To add a new header
   ```
   1. Go to Proxy -> Options -> Match and Replace -> Add
@@ -1078,6 +1081,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
   ```
 - Analyze better the results from Intruder with Settings > "Grep - Extract"
   - Manually select in the response the value that you want to track in a new column in the results
+- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
 
 
 **Cool extensions**
