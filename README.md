@@ -253,8 +253,8 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Shellter](#shellter)
   - [Active Directory](#active-directory)
     - [Notes](#notes-2)
-    - [Manual Enumeration](#manual-enumeration)
     - [Initial foothold](#initial-foothold)
+    - [Manual Enumeration](#manual-enumeration)
     - [SMB](#smb)
     - [RPC](#rpc)
     - [Azure](#azure)
@@ -6374,7 +6374,7 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 
 
 **Cheat sheets**
-- [cheatsheet-active-directory.md](https://github.com/brianlam38/OSCP-2022/blob/main/cheatsheet-active-directory.md(
+- [cheatsheet-active-directory.md](https://github.com/brianlam38/OSCP-2022/blob/main/cheatsheet-active-directory.md)
 - [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
 - [Active Directory Exploitation Cheat Sheet](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet)
 - [Active Directory Attack.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md)
@@ -6416,6 +6416,69 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
   - `Set-ADAccountPassword sophie -Reset -NewPassword (Read-Host -AsSecureString -Prompt 'New Password') -Verbose`
 - Make user change password next logon
   - `Set-ADUser -ChangePasswordAtLogon $true -Identity sophie -Verbose`
+
+
+#### <ins>Initial foothold</ins>
+- run `responder` + `mitm6`
+- `enum4linux -a -u "" -p "" 192.168.180.30`
+- `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv 10.10.108.190 -oN nmap_results`
+- `nmap -p- -A -nP 192.168.212.165 -oN nmap_results`
+- `dig @192.168.212.165 AXFR heist.offsec`
+- `dnsenum 192.168.174.187`
+- After this
+  - [ ] 53, zone transfer + info collection
+  - [ ] 139/445 Check SMB / smbclient
+    - check upload of web shells / phishing
+    - check eternal blue
+    - check default creds
+  - [ ] 389 Check ldapsearch
+    - use windapsearch.py
+    - try LDAP Pass-back attack
+  - [ ] Check rpcclient
+  - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
+  - [ ] Enumerate any AS-REP / Kerberos roastable users
+  - [ ] Check ZeroLogon
+  - [ ] Check every section of this file
+  - [ ] Check default creds
+    - also in Printers, Jenkins etc.
+  - [ ] Check: 
+    - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
+    - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
+    - https://wadcoms.github.io/ <# interactive cheat-sheet #>
+    - https://github.com/seeu-inspace/easyg
+  - [ ] 464 kpasswd -> try Kerberoast
+  - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
+  - [ ] If you don't find something here, see exploitaiton-notes
+  - [ ] Check kerberoasting
+    - Not only kerbrute etc., try also to retrieve TGS ticket
+    - Test AS-REP roasting and Kerberoasting
+    - AS-REP, Kerberost, Rubeus (con e senza creds)
+  - [ ] If you find creds / hashes, try:
+    - crackmapexec to see a reuse of creds
+    - evil-winrm
+    - kerberoasting impacket-GetUserSPNs
+      - AS-REP, Kerberost, Rubeus
+    - enum4linux (once without auth and only once with creds)
+      - see descriptions
+    - smbclient
+    - ldap
+- PrivEsc / Post Access
+  - [ ] enumerate with bloodhound, powershell, powerview
+  - [ ] Check privileges
+    - whoami /priv, Get-ADUser -identity s.smith -properties *
+  - [ ] try access with rdp
+  - [ ] mimikatz.exe
+  - [ ] test creds already found
+    - crackmapexec, ldap with auth, enum4linux (see descriptions), smbclient
+    - kerberoast (AS-REP, Kerberost, Rubeus, etc. -> retrieve TGS)
+    - secrets dump, impacket-psexec, impacket-wmiexec, evil-winrm
+    - test also hashes
+  - [ ] Azure
+  - [ ] Play with Rubeus
+  - [ ] See DCSync (try with various tools, come aclpwn)
+  - [ ] See all sections of this document
+  - [ ] See powershell history
+  - [ ] Run Seatbelt first, then winPEAS
 
 
 #### <ins>Manual Enumeration</ins>
@@ -6515,68 +6578,6 @@ BloodHound`
 **Server Manager**
 - See event logs with: Event Viewer
 - Navigate to the tools tab and select the Active Directory Users and Computers
-
-#### <ins>Initial foothold</ins>
-- run `responder` + `mitm6`
-- `enum4linux -a -u "" -p "" 192.168.180.30`
-- `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv 10.10.108.190 -oN nmap_results`
-- `nmap -p- -A -nP 192.168.212.165 -oN nmap_results`
-- `dig @192.168.212.165 AXFR heist.offsec`
-- `dnsenum 192.168.174.187`
-- After this
-  - [ ] 53, zone transfer + info collection
-  - [ ] 139/445 Check SMB / smbclient
-    - check upload of web shells / phishing
-    - check eternal blue
-    - check default creds
-  - [ ] 389 Check ldapsearch
-    - use windapsearch.py
-    - try LDAP Pass-back attack
-  - [ ] Check rpcclient
-  - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
-  - [ ] Enumerate any AS-REP / Kerberos roastable users
-  - [ ] Check ZeroLogon
-  - [ ] Check every section of this file
-  - [ ] Check default creds
-    - also in Printers, Jenkins etc.
-  - [ ] Check: 
-    - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
-    - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
-    - https://wadcoms.github.io/ <# interactive cheat-sheet #>
-    - https://github.com/seeu-inspace/easyg
-  - [ ] 464 kpasswd -> try Kerberoast
-  - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
-  - [ ] If you don't find something here, see exploitaiton-notes
-  - [ ] Check kerberoasting
-    - Not only kerbrute etc., try also to retrieve TGS ticket
-    - Test AS-REP roasting and Kerberoasting
-    - AS-REP, Kerberost, Rubeus (con e senza creds)
-  - [ ] If you find creds / hashes, try:
-    - crackmapexec to see a reuse of creds
-    - evil-winrm
-    - kerberoasting impacket-GetUserSPNs
-      - AS-REP, Kerberost, Rubeus
-    - enum4linux (once without auth and only once with creds)
-      - see descriptions
-    - smbclient
-    - ldap
-- PrivEsc / Post Access
-  - [ ] enumerate with bloodhound, powershell, powerview
-  - [ ] Check privileges
-    - whoami /priv, Get-ADUser -identity s.smith -properties *
-  - [ ] try access with rdp
-  - [ ] mimikatz.exe
-  - [ ] test creds already found
-    - crackmapexec, ldap with auth, enum4linux (see descriptions), smbclient
-    - kerberoast (AS-REP, Kerberost, Rubeus, etc. -> retrieve TGS)
-    - secrets dump, impacket-psexec, impacket-wmiexec, evil-winrm
-    - test also hashes
-  - [ ] Azure
-  - [ ] Play with Rubeus
-  - [ ] See DCSync (try with various tools, come aclpwn)
-  - [ ] See all sections of this document
-  - [ ] See powershell history
-  - [ ] Run Seatbelt first, then winPEAS
 
 
 #### <ins>SMB</ins>
