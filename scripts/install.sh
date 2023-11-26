@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo -- sh -c "apt -y update && apt -y upgrade && apt -y autoremove
+
 if [ -z "$GOPATH" ]; then
 	echo "It looks like go is not installed, install it now and then rerun this script."
 else
