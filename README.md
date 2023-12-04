@@ -346,6 +346,14 @@ I try as much as possible to link to the various sources or inspiration for thes
 
 - [Session hijacking](https://owasp.org/www-community/attacks/Session_hijacking_attack)
 - [Session fixation](https://owasp.org/www-community/attacks/Session_fixation)
+- [OSI Model](https://en.wikipedia.org/wiki/OSI_model)
+
+**Some terminology**
+- IPS: Intrusion Protection System
+- IDS: Intrusion Detection System
+- CIA triangle: Confidentiality, Integrity, Availability
+- HIDS: Host Intrusion Detection System
+- NIDS: Network Intrusion Detection System
 
 **Shells**
 - Shell: we open a shell on the client
