@@ -518,8 +518,8 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 #### <ins>Reverse engineering</ins>
 
 - [DNSpy](https://github.com/dnSpy/dnSpy), .NET debugger
-- https://github.com/seeu-inspace/easyg#hardcoded-secrets
-- See hardcoded secrets
+- [Rider](https://www.jetbrains.com/rider/download/#section=windows)
+- [See hardcoded secrets](https://github.com/seeu-inspace/easyg#hardcoded-secrets)
 - `wine /home/kali/Documents/dnSpy/dnSpy.exe`
 - Remove '\r' carriage return:
   `tr -d '\r' < inputfile.txt > outputfile.txt && mv outputfile.txt inputfile.txt`
@@ -2146,11 +2146,15 @@ See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.c
 **Resources**
 - [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
 - [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/)
+
+**Tools**
+- [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
+- [beautifier.io](https://beautifier.io/) for JavaScript Analysis
+- [DNSpy](https://github.com/dnSpy/dnSpy), .NET debugger
+- [Rider](https://www.jetbrains.com/rider/download/#section=windows)
 - [Tarpit Java](https://github.com/ShiftLeftSecurity/tarpit-java)
 - [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
-- [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
-- [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 
 
 ## Vulnerability Scanning
