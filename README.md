@@ -831,7 +831,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 
 #### **Single target**
 - [ ] Recon
-  + Explore the app, see and every functionality (eventually, search for documentation)
+  + Explore the app, test every functionality (eventually, search for documentation)
   + Crawl with Burp Suite
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + [Content Discovery](#content-discovery), use tools, [Google Dorking](#google-dorking) and [GitHub Dorking](#github-dorking)
