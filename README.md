@@ -137,6 +137,7 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Symphony](#symphony)
   - [Adobe ColdFusion](#adobe-coldfusion)
   - [Webmin](#webmin)
+  - [Broken Link Hijacking](#broken-link-hijacking)
 - [Client-Side Attacks](#client-side-attacks)
   - [Client Information Gathering](#client-information-gathering)
   - [HTML applications](#html-applications)
@@ -3762,6 +3763,16 @@ Drupalgeddon
 
 - https://github.com/MuirlandOracle/CVE-2019-15107
   - type 'shell' to get a reverse shell (use ncat with rlwrap)
+
+
+#### <ins>Broken Link Hijacking</ins>
+
+Resources:
+- [Hunting for Broken Link Hijacking (BLH)](https://www.cobalt.io/blog/hunting-for-broken-link-hijacking-blh)
+- [Broken Link Hijacking - Mr. User-Agent](https://shahjerry33.medium.com/broken-link-hijacking-mr-user-agent-cd124297f6e6)
+- [Broken Link Checker](https://www.deadlinkchecker.com/website-dead-link-checker.asp)
+- [stevenvachon/broken-link-checker](https://github.com/stevenvachon/broken-link-checker)
+- [socialhunter](https://github.com/utkusen/socialhunter)
 
 
 ## Client-Side Attacks
