@@ -163,12 +163,14 @@ if option == "assetenum"
 		
 		if gb_opt == "y"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-			#system "amass enum -brute -active -d " + target + " -o output/" + target + "_tmp.txt -v"
+			system "amass enum -brute -active -d " + target + " -v"
+			system "oams_subs -names -d " + target + " | anew output/" + target + "_tmp.txt"
 		end
 		
 		if gb_opt == "n"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-			#system "amass enum --passive -d " + target + " -o output/" + target + "_tmp.txt -v"
+			system "amass enum --passive -d " + target + " -v"
+			system "oams_subs -names -d " + target + " | anew output/" + target + "_tmp.txt"
 		end
 
 		#== subfinder ==
@@ -298,7 +300,7 @@ if option == "assetenum"
 	
 	#== nuclei ==	
 	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-	system "nuclei -l output/httprobe_" + file + " -t ~/nuclei-templates/takeovers -t ~/nuclei-templates/exposures/configs/git-config.yaml -t ~/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/nuclei-templates/misconfiguration/put-method-enabled.yaml-stats -o output/nuclei_" + file
+	system "nuclei -l output/httprobe_" + file + " -t ~/nuclei-templates/takeovers -t ~/nuclei-templates/exposures/configs/git-config.yaml -t ~/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 	delete_if_empty "output/nuclei_" + file
 	
 end
