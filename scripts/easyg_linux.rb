@@ -377,7 +377,7 @@ if option == "crawl-burp"
 		system 'katana -u "' + target + '" -jc -kf -aff -proxy http://127.0.0.1:8080 -H "Cookie: 0=1"'
 		
 		puts "[\e[34m+\e[0m] Crawling " + target + " with gau" + "\n"
-		system 'echo ' + target + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 -proxy http://localhost:8080'
+		system 'echo ' + target + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --proxy http://localhost:8080'
 		
 	end
 	
@@ -389,7 +389,7 @@ if option == "crawl-archive"
 	File.open(file,'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		
-		# TODO
+		# TODO: hakrawler + gospider + katana + gau + urless
 		
 	end
 	
