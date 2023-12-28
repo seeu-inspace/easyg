@@ -43,7 +43,7 @@ end
 
 puts logo
 
-print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot, crawl]:\n\e[93m└─\e[0m "
+print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot, crawl-burp, crawl-archive]:\n\e[93m└─\e[0m "
 option = gets.chomp
 
 if option == "assetenum"
@@ -362,7 +362,7 @@ if option == "webscreenshot"
 end
 
 
-if option == "crawl"
+if option == "crawl-burp"
 
 	File.open(file,'r').each_line do |f|
 		target = f.gsub("\n","").to_s
@@ -375,6 +375,22 @@ if option == "crawl"
 		
 		puts "[\e[34m+\e[0m] Crawling " + target + " with katana" + "\n"
 		system 'katana -u "' + target + '" -jc -kf -aff -proxy http://127.0.0.1:8080 -H "Cookie: 0=1"'
+		
+		puts "[\e[34m+\e[0m] Crawling " + target + " with gau" + "\n"
+		system 'echo ' + target + '| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 -proxy http://localhost:8080'
+		
+	end
+	
+end
+
+
+if option == "crawl-archive"
+
+	File.open(file,'r').each_line do |f|
+		target = f.gsub("\n","").to_s
+		
+		# TODO
+		
 	end
 	
 end
@@ -387,7 +403,8 @@ if option == "help"
 	puts "	gettoburp				for every entry in <file_input> send a GET request"
 	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
 	puts "	webscreenshot				take a screenshot for every entry in <file_input> and make a gallery"
-	puts "	crawl					crawl for every entry in <file_input> and pass the results to Burp Suite port 8080"
+	puts "	crawl-burp				crawl for every entry in <file_input> and pass the results to Burp Suite port 8080"
+	puts "	crawl-archive				crawl for every entry in <file_input> and create a text archive"
 	puts "	help\n\n"
 	
 	puts "Notes 
