@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana, selenium
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana, selenium, gau
 
 require 'uri'
 require 'net/http'
@@ -43,7 +43,7 @@ end
 
 puts logo
 
-print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot, crawl-burp, crawl-archive]:\n\e[93m└─\e[0m "
+print "\e[93m┌─\e[0m Enter an option [help, firefox, gettoburp, assetenum, webscreenshot, crawl-burp]:\n\e[93m└─\e[0m "
 option = gets.chomp
 
 if option == "assetenum"
@@ -51,7 +51,7 @@ if option == "assetenum"
 	gb_opt = gets.chomp
 end
 
-if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl-burp" || option == "crawl-archive"
+if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl-burp"
 	print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 	file = gets.chomp
 end
@@ -384,18 +384,6 @@ if option == "crawl-burp"
 end
 
 
-if option == "crawl-archive"
-
-	File.open(file,'r').each_line do |f|
-		target = f.gsub("\n","").to_s
-		
-		# TODO: hakrawler + gospider + katana + gau + urless
-		
-	end
-	
-end
-
-
 if option == "help"
 
 	puts "Options"
@@ -404,7 +392,6 @@ if option == "help"
 	puts "	assetenum				asset enumeration, use gb as option to also use gobuster"
 	puts "	webscreenshot				take a screenshot for every entry in <file_input> and make a gallery"
 	puts "	crawl-burp				crawl for every entry in <file_input> and pass the results to Burp Suite port 8080"
-	puts "	crawl-archive				crawl for every entry in <file_input> and create a text archive"
 	puts "	help\n\n"
 	
 	puts "Notes 
