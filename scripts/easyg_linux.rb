@@ -51,7 +51,7 @@ if option == "assetenum"
 	gb_opt = gets.chomp
 end
 
-if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl"
+if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl-burp" || option == "crawl-archive"
 	print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 	file = gets.chomp
 end
