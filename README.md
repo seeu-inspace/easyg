@@ -837,6 +837,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + [Content Discovery](#content-discovery), use tools, [Google Dorking](#google-dorking) and [GitHub Dorking](#github-dorking)
   + Check the [Testing layers](#testing-layers)
+  + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
 - [ ] Authentication
   - See [Authentication vulnerabilities](#authentication-vulnerabilities)
   - Account Section
