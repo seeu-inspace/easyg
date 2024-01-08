@@ -6720,10 +6720,34 @@ Get all the groups in the current domain
 Get-DomainGroup | select Name
 Get-DomainGroup -Domain <targetdomain>
 
+
 Get list of GPO in current domain
 ---------------------------------
 Get-DomainGPO
 Get-DomainGPO -ComputerIdentity dcorp-user1
+
+
+ACL Enumeration
+---------------
+Get-DomainObjectAcl -SamAccountName user1 -ResolveGUIDs                                                                                                    Retrieve the ACLs associated with the specified object
+Get-DomainObjectAcl -SearchBase "LDAP://CN=DomainAdmins,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local" -ResolveGUIDs -Verbose                               Retrieve the ACLs associated with the specified prefix to be used for search
+(Get-Acl 'AD:\CN=Administrator,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local').Access                                                                       Enumerate ACLs using ActiveDirectory module but without resolving GUIDs
+Find-InterestingDomainAcl -ResolveGUIDs                                                                                                                    Search for interesting ACEs
+Get-PathAcl -Path "\\dcorp-dc.dollarcorp.moneycorp.local\sysvol"                                                                                           Retrieve the ACLs associated with the specified path
+
+
+Get a list of all domain trusts for the current domain
+------------------------------------------------------
+Get-DomainTrust
+Get-DomainTrust -Domain us.dollarcorp.moneycorp.local
+
+
+Forest mapping
+--------------
+Get-Forest                                   Retrieve details about the current forest, specify a Forest with -Forest domain.local
+Get-ForestDomain                             Retrieve all domains in the current forest, specify a Forest with -Forest domain.local
+Get-ForestGlobalCatalog                      Retrieve all global catalogs for the current forest, specify a Forest with -Forest domain.local
+Get-ForestTrust                              Map trusts of a forest, specify a Forest with -Forest domain.local
 
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
@@ -6771,6 +6795,20 @@ Get all the groups in the current domain
 ----------------------------------------
 Get-ADGroup -Filter * | select Name
 Get-ADGroup -Filter * -Properties *
+
+
+Get a list of all domain trusts for the current domain
+------------------------------------------------------
+Get-ADTrust
+Get-ADTrust -Identity us.dollarcorp.moneycorp.local
+
+
+Forest mapping
+--------------
+Get-ADForest                                                            Retrieve details about the current forest, specify a Forest with -Identity eurocorp.local
+(Get-ADForest).Domains                                                  Retrieve all domains in the current forest
+Get-ADForest | select -ExpandProperty GlobalCatalogs                    Retrieve all global catalogs for the current forest
+Get-ADTrust -Filter 'msDS-TrustForestTrustInfo -ne "$null"'             Map trusts of a forest
 
 ```
 
