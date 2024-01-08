@@ -6674,6 +6674,19 @@ Invoke-ShareFinder                                                              
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
+#### [ADModule](https://github.com/samratashok/ADModule)
+
+```
+Import it
+---------
+Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
+Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
+
+
+
+```
+
+
 
 #### From a compromised machine
 MMC
@@ -6711,6 +6724,15 @@ BloodHound`
 **Server Manager**
 - See event logs with: Event Viewer
 - Navigate to the tools tab and select the Active Directory Users and Computers
+
+**Misc**
+Always enumerate first, do not grab the low hanging fruit first, since it might be a decoy. Also check logon count and login policy.
+- An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
+- Check: `logonCount`, `lastlogontimestamp`, `badpasswordtime`, `Description`
+- Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
+
+Also, check for non-empty descriptions of domain users
+- `Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description`
 
 
 #### <ins>SMB</ins>
