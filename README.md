@@ -12,7 +12,7 @@ Made with <3 by Riccardo Malatesta (@seeu)
 
 EasyG started out as a script that I use to automate some information gathering tasks for my hacking process, [you can find it here](scripts/). Now it's more than that. Here I gather all the resources about hacking that I find interesting: notes, payloads, tools and more.
 
-I try as much as possible to link to the various sources or inspiration for these notes. A large part of these notes are from: [PTS v4](https://blog.elearnsecurity.com/introducing-the-ptsv4-training-course.html), [PortSwigger Web Security Academy](https://portswigger.net/web-security), [PEN-200](https://www.offsec.com/courses/pen-200/), [Proving Grounds](https://www.offsec.com/labs/individual/), [TryHackMe](https://tryhackme.com/), [Hack The Box](https://hackthebox.com/), [PentesterLab](https://pentesterlab.com/), [HackTricks](https://book.hacktricks.xyz/), [Jhaddix](https://twitter.com/Jhaddix), [The Cyber Mentor](https://www.thecybermentor.com/), [NahamSec](https://www.youtube.com/@NahamSec) (and [NahamCon](https://www.nahamcon.com/)), InfoSec Twitter and many other amazing people.
+I try as much as possible to link to the various sources or inspiration for these notes. A large part of these notes are from: [PTS v4](https://blog.elearnsecurity.com/introducing-the-ptsv4-training-course.html), [PortSwigger Web Security Academy](https://portswigger.net/web-security), [PEN-200](https://www.offsec.com/courses/pen-200/), [Proving Grounds](https://www.offsec.com/labs/individual/), [Altered Security](https://www.alteredsecurity.com/), [TryHackMe](https://tryhackme.com/), [Hack The Box](https://hackthebox.com/), [PentesterLab](https://pentesterlab.com/), [HackTricks](https://book.hacktricks.xyz/), [Jhaddix](https://twitter.com/Jhaddix), [The Cyber Mentor](https://www.thecybermentor.com/), [NahamSec](https://www.youtube.com/@NahamSec) (and [NahamCon](https://www.nahamcon.com/)), InfoSec Twitter and many other amazing people.
 
 ## Table of Contents
 
@@ -6657,7 +6657,7 @@ Get-NetComputer -fulldata | select operatingsystem                              
 Get details, in this case, about user svc__apache
 -------------------------------------------------
 Get-ADServiceAccount -Filter {name -eq 'svc_apache'} -Properties * | Select CN,DNSHostName,DistinguishedName,MemberOf,Created,LastLogonDate,PasswordLastSet,msDS-ManagedPasswordInterval,PrincipalsAllowedToDelegateToAccount,PrincipalsAllowedToRetrieveManagedPassword,ServicePrincipalNames
-
+Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description                                                                Check for non-empty descriptions of domain users
 
 Object Permissions Enumeration
 ------------------------------
@@ -6730,9 +6730,6 @@ Always enumerate first, do not grab the low hanging fruit first, since it might 
 - An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
 - Check: `logonCount`, `lastlogontimestamp`, `badpasswordtime`, `Description`
 - Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
-
-Also, check for non-empty descriptions of domain users
-- `Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description`
 
 
 #### <ins>SMB</ins>
