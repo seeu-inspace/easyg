@@ -6654,16 +6654,33 @@ Get-ADGroupMember 'Web Admins'                                                  
 Get-NetUser | select Description                                                                                                          Enumerate the domain users descriptions
 Get-NetGroup -GroupName *admin*                                                                                                           Enumerate the domain groups
 Get-NetComputer -fulldata | select operatingsystem                                                                                        Find all operating systems running
-Get-DomainPolicyData                                                                                                                      Get domain policy for the current domain
-(Get-DomainPolicyData).systemaccess                                                                                                       Get domain policy for the current domain
-(Get-DomainPolicyData -domain moneycorp.local).systemaccess                                                                               Get domain policy for another domain
-Get-DomainController                                                                                                                      Get domain controllers for the current domain
-Get-DomainController -Domain moneycorp.local                                                                                              Get domain controllers for another domain
+Get-DomainPolicyData                                                                                                                      Retrieve domain policy for the current domain
+(Get-DomainPolicyData).systemaccess                                                                                                       Retrieve domain policy for the current domain
+(Get-DomainPolicyData -domain moneycorp.local).systemaccess                                                                               Retrieve domain policy for another domain
+Get-DomainController                                                                                                                      Retrieve domain controllers for the current domain
+Get-DomainController -Domain moneycorp.local                                                                                              Retrieve domain controllers for another domain
+Get-DomainGroup *admin*                                                                                                                   Retrieve all groups containing the word "admin" in group name
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse                                                                                  Retrieve all the members of the Domain Admins group
+Get-DomainGroup -UserName "user1"                                                                                                         Retrieve the group membership for a user
+Get-NetLocalGroup -ComputerName dcorp-dc                                                                                                  List all the local groups on a machine (administrator privs on non-dc machines needed)
+Get-NetLocalGroupMember -ComputerName dcorp-dc -GroupName Administrators                                                                  Retrieve members of the local group "Administrators" on a machine (administrator privs on non-dc machines needed)
+Get-NetLoggedon -ComputerName dcorp-adminsrv                                                                                              Retrieve actively logged users on a computer (local admin rights on the target needed)
+Get-LoggedonLocal -ComputerName dcorp-adminsrv                                                                                            Retrieve locally logged users on a computer (remote registry on the target - started by-default on server OS needed)
+Get-LastLoggedOn -ComputerName dcorp-adminsrv                                                                                             Retrieve the last logged user on a computer (administrative rights and remote registry on the target needed)
+Invoke-FileFinder -Verbose                                                                                                                Find sensitive files on computers in the domain
+Get-NetFileServer                                                                                                                         Get all fileservers of the domain
+Get-DomainGPOLocalGroup                                                                                                                   Retrieve GPO(s) which use Restricted Groups or groups.xml for interesting users
+Get-DomainGPOComputerLocalGroupMapping -ComputerIdentity dcorp-user1                                                                      Retrieve users which are in a local group of a machine using GPO
+Get-DomainGPOUserLocalGroupMapping -Identity user1 -Verbose                                                                               Retrieve machines where the given user is member of a specific group
+Get-DomainOU                                                                                                                              Retrieve OUs in a domain
+Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"                                                                          Retrieve GPO applied on an OU. Read GPOname from gplink attribute from Get-NetOU
+
 
 Get details, in this case, about user svc__apache
 -------------------------------------------------
 Get-ADServiceAccount -Filter {name -eq 'svc_apache'} -Properties * | Select CN,DNSHostName,DistinguishedName,MemberOf,Created,LastLogonDate,PasswordLastSet,msDS-ManagedPasswordInterval,PrincipalsAllowedToDelegateToAccount,PrincipalsAllowedToRetrieveManagedPassword,ServicePrincipalNames
 Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description                                                                Check for non-empty descriptions of domain users
+
 
 Object Permissions Enumeration
 ------------------------------
@@ -6676,23 +6693,37 @@ Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"
 Domain Shares Enumeration
 -------------------------
 Find-DomainShare
-Invoke-ShareFinder
+Invoke-ShareFinder -verbose
+
 
 Get a list of users in the current domain
 -----------------------------------------
 Get-DomainUser
 Get-DomainUser -Identity user1
 
+
 Get list of all properties for users in the current domain
 ----------------------------------------------------------
 Get-DomainUser -Identity user1 -Properties *
 Get-DomainUser -Properties samaccountname,logonCount
+
 
 Get a list of computers in the current domain
 ----------------------------------------------
 Get-DomainComputer | select Name
 Get-DomainComputer -OperatingSystem "*Server 2022*"
 Get-DomainComputer -Ping
+
+
+Get all the groups in the current domain
+----------------------------------------
+Get-DomainGroup | select Name
+Get-DomainGroup -Domain <targetdomain>
+
+Get list of GPO in current domain
+---------------------------------
+Get-DomainGPO
+Get-DomainGPO -ComputerIdentity dcorp-user1
 
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
@@ -6705,21 +6736,28 @@ Import it
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
 Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 
+
 Misc
 ----
-Get-ADDomainController                                                                               Get domain controllers for the current domain
-Get-ADDomainController -DomainName moneycorp.local -Discover                                         Get domain controllers for another domain
-Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description   Check for non-empty descriptions of domain users
+Get-ADDomainController                                                                                 Retrieve domain controllers for the current domain
+Get-ADDomainController -DomainName moneycorp.local -Discover                                           Retrieve domain controllers for another domain
+Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description     Check for non-empty descriptions of domain users
+Get-ADGroup -Filter 'Name -like "*admin*"' | select Name                                               Retrieve all groups containing the word "admin" in group name
+Get-ADGroupMember -Identity "Domain Admins" -Recursive                                                 Retrieve all the members of the Domain Admins group
+Get-ADPrincipalGroupMembership -Identity user1                                                         Retrieve the group membership for a user
+
 
 Get a list of users in the current domain
 -----------------------------------------
 Get-ADUser -Filter * -Properties *
 Get-ADUser -Identity student1 -Properties *
 
+
 Get list of all properties for users in the current domain
 ----------------------------------------------------------
 Get-ADUser -Filter * -Properties * | select -First 1 | Get-Member -MemberType *Property | select Name
 Get-ADUser -Filter * -Properties * | select name,logoncount,@{expression={[datetime]::fromFileTime($_.pwdlastset)}}
+
 
 Get a list of computers in the current domain
 ----------------------------------------------
@@ -6727,6 +6765,12 @@ Get-ADComputer -Filter * | select Name
 Get-ADComputer -Filter * -Properties *
 Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties OperatingSystem | select Name,OperatingSystem
 Get-ADComputer -Filter * -Properties DNSHostName | %{Test-Connection -Count 1 -ComputerName $_.DNSHostName}
+
+
+Get all the groups in the current domain
+----------------------------------------
+Get-ADGroup -Filter * | select Name
+Get-ADGroup -Filter * -Properties *
 
 ```
 
@@ -7641,7 +7685,6 @@ Process
 
 #### Cedential Access
 
-
 Clear-text files
 - `C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt`
 
@@ -7670,6 +7713,9 @@ Network Sniffing
 Registry
 - `reg query HKLM /f password /t REG_SZ /s`
 - `reg query HKCU /f password /t REG_SZ /s`
+
+
+Years ago you could find clear-text password in the GPP, so give it a shot. If it’s a new enviorments it won’t probably work tho.
 
 
 #### Windows Credentials
