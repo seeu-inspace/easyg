@@ -6674,6 +6674,9 @@ Get-DomainGPOComputerLocalGroupMapping -ComputerIdentity dcorp-user1            
 Get-DomainGPOUserLocalGroupMapping -Identity user1 -Verbose                                                                               Retrieve machines where the given user is member of a specific group
 Get-DomainOU                                                                                                                              Retrieve OUs in a domain
 Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"                                                                          Retrieve GPO applied on an OU. Read GPOname from gplink attribute from Get-NetOU
+Find-LocalAdminAccess -Verbose                                                                                                            Find all machines on the current domain where the current user has local admin access
+Find-DomainUserLocation -CheckAccess                                                                                                      Find computers where a domain admin session is available and current user has admin access
+Find-DomainUserLocation -Stealth                                                                                                          Find computers where a domain admin session is available
 
 
 Get details, in this case, about user svc__apache
@@ -6749,6 +6752,12 @@ Get-ForestDomain                             Retrieve all domains in the current
 Get-ForestGlobalCatalog                      Retrieve all global catalogs for the current forest, specify a Forest with -Forest domain.local
 Get-ForestTrust                              Map trusts of a forest, specify a Forest with -Forest domain.local
 
+
+Find computers where a domain admin, a specified user or group has sessions
+---------------------------------------------------------------------------
+Find-DomainUserLocation -Verbose
+Find-DomainUserLocation -UserGroupIdentity "RDPUsers"
+
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
@@ -6812,6 +6821,11 @@ Get-ADTrust -Filter 'msDS-TrustForestTrustInfo -ne "$null"'             Map trus
 
 ```
 
+#### [Invoke-SessionHunter](https://github.com/Leo4j/Invoke-SessionHunter)
+```
+Invoke-SessionHunter -FailSafe
+Invoke-SessionHunter -NoPortScan -Targets C:\Documents\servers.txt
+```
 
 
 #### From a compromised machine
