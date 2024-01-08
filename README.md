@@ -6637,6 +6637,8 @@ powershell -ep bypass                                                       bypa
 #### PowerView
 
 ```
+Misc
+----
 Import-Module .\PowerView.ps1                                                                                                             Import PowerView; https://powersploit.readthedocs.io/en/latest/Recon/
 Get-NetDomain                                                                                                                             Obtain domain information
 Get-NetUser | select cn,pwdlastset,lastlogon                                                                                              Obtain users in the domain; username only
@@ -6652,7 +6654,11 @@ Get-ADGroupMember 'Web Admins'                                                  
 Get-NetUser | select Description                                                                                                          Enumerate the domain users descriptions
 Get-NetGroup -GroupName *admin*                                                                                                           Enumerate the domain groups
 Get-NetComputer -fulldata | select operatingsystem                                                                                        Find all operating systems running
-
+Get-DomainPolicyData                                                                                                                      Get domain policy for the current domain
+(Get-DomainPolicyData).systemaccess                                                                                                       Get domain policy for the current domain
+(Get-DomainPolicyData -domain moneycorp.local).systemaccess                                                                               Get domain policy for another domain
+Get-DomainController                                                                                                                      Get domain controllers for the current domain
+Get-DomainController -Domain moneycorp.local                                                                                              Get domain controllers for another domain
 
 Get details, in this case, about user svc__apache
 -------------------------------------------------
@@ -6670,7 +6676,24 @@ Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"
 Domain Shares Enumeration
 -------------------------
 Find-DomainShare
-Invoke-ShareFinder                                                                                                                       Find Domain Shares
+Invoke-ShareFinder
+
+Get a list of users in the current domain
+-----------------------------------------
+Get-DomainUser
+Get-DomainUser -Identity user1
+
+Get list of all properties for users in the current domain
+----------------------------------------------------------
+Get-DomainUser -Identity user1 -Properties *
+Get-DomainUser -Properties samaccountname,logonCount
+
+Get a list of computers in the current domain
+----------------------------------------------
+Get-DomainComputer | select Name
+Get-DomainComputer -OperatingSystem "*Server 2022*"
+Get-DomainComputer -Ping
+
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
@@ -6682,7 +6705,28 @@ Import it
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
 Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 
+Misc
+----
+Get-ADDomainController                                                                               Get domain controllers for the current domain
+Get-ADDomainController -DomainName moneycorp.local -Discover                                         Get domain controllers for another domain
+Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description   Check for non-empty descriptions of domain users
 
+Get a list of users in the current domain
+-----------------------------------------
+Get-ADUser -Filter * -Properties *
+Get-ADUser -Identity student1 -Properties *
+
+Get list of all properties for users in the current domain
+----------------------------------------------------------
+Get-ADUser -Filter * -Properties * | select -First 1 | Get-Member -MemberType *Property | select Name
+Get-ADUser -Filter * -Properties * | select name,logoncount,@{expression={[datetime]::fromFileTime($_.pwdlastset)}}
+
+Get a list of computers in the current domain
+----------------------------------------------
+Get-ADComputer -Filter * | select Name
+Get-ADComputer -Filter * -Properties *
+Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties OperatingSystem | select Name,OperatingSystem
+Get-ADComputer -Filter * -Properties DNSHostName | %{Test-Connection -Count 1 -ComputerName $_.DNSHostName}
 
 ```
 
