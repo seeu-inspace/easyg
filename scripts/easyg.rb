@@ -114,7 +114,7 @@ if option == "firefox"
 		i += 1
 	
 		puts "[\e[36m#{i.to_s}\e[0m] Firefox open > " + target
-		system 'start firefox "' + target + '"'
+		system 'firefox "' + target + '"'
 				
 		sleep 30 if i%20==0
 		
