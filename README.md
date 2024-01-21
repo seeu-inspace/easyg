@@ -6442,29 +6442,6 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - generally stored in %SystemRoot%\NTDS
 
 
-**Misc notes**
-- Check for `Domain Admins` and `Service Accounts` groups
-- Add an account to a group
-  - `net group "<group>" <user> /add /domain`
-  - Verify the success of the command with `Get-NetGroup "<group>" | select member`
-  - Delete the `<user>` with `/del` instead of `/add`
-- Use `gpp-decrypt` to decrypt a given GPP encrypted string
-- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
-  - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
-- If you get lost, see the notes for the Hutch, Heist, and Vault machines
-- File config for responder: `/usr/share/responder/Responder.conf`
-- Do password spray only on local account
-  - `Rubeus.exe brute /password:Password1 /noticket`
-    - Before password spraying with Rubeus, you need to add the domain controller domain name to the windows host file
-    - `echo 10.10.187.139 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
-- Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
-- To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
-- Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
-  - WinRM shell: https://raw.githubusercontent.com/Alamot/code-snippets/master/winrm/winrm_shell.rb
-- NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
-- Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
-
-
 **Cheat sheets**
 - [cheatsheet-active-directory.md](https://github.com/brianlam38/OSCP-2022/blob/main/cheatsheet-active-directory.md)
 - [Cheat Sheet - Active Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory)
@@ -6475,14 +6452,12 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - [Pentesting_Active_directory mindmap](https://web.archive.org/web/20220607072235/https://www.xmind.net/m/5dypm8/)
 - [WADComs](https://wadcoms.github.io/)
 
-
 **Common Terminology**
 - AD Component: trees, forest, domain tree, domain forest
   https://techiepraveen.wordpress.com/2010/09/04/basic-active-directory-components/
 - https://tryhackme.com/room/attackingkerberos  Task 1
 - More resources:
   https://tryhackme.com/room/attackingkerberos  Task 9
-
 
 **ACEs**
 - ForceChangePassword: We have the ability to set the user's current password without knowing their current password.
@@ -6549,6 +6524,38 @@ For Mimikatz, make the following changes:
 7. Remove Reflective PE warnings for a clean output
 8. Use obfuscated commands for Invoke-MimiEx execution
 9. Analysis using DefenderCheck
+
+**Good OPSEC**
+- It’s better to use a Windows OS to increase stealth and flexibility.
+- Always make sure to use a LDAP based tools, never .NET commands (SAMR)
+- Always enumerate first, do not grab the low hanging fruit first, since it may be a decoy. Also check logon count and login policy.
+  - An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
+  - Check: logonCount, lastlogontimestamp, badpasswordtime, Description
+  - Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
+- Making changes to the local administrator group is one of the noisiest things you can do
+
+**Misc notes**
+- Check for `Domain Admins` and `Service Accounts` groups
+- Add an account to a group
+  - `net group "<group>" <user> /add /domain`
+  - Verify the success of the command with `Get-NetGroup "<group>" | select member`
+  - Delete the `<user>` with `/del` instead of `/add`
+- Use `gpp-decrypt` to decrypt a given GPP encrypted string
+- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
+  - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
+- If you get lost, see the notes for the Hutch, Heist, and Vault machines
+- File config for responder: `/usr/share/responder/Responder.conf`
+- Do password spray only on local account
+  - `Rubeus.exe brute /password:Password1 /noticket`
+    - Before password spraying with Rubeus, you need to add the domain controller domain name to the windows host file
+    - `echo 10.10.187.139 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
+- Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
+- To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
+- Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
+  - WinRM shell: https://raw.githubusercontent.com/Alamot/code-snippets/master/winrm/winrm_shell.rb
+- NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
+- Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
+- Every time that you think about Active Directory, think about a Forest, not a Domain. If one domain is compromised, so it is the entire forest. Whithin a forest, all the domains trust each others. This is why a forest is considered a security boundry.
 
 
 #### <ins>Initial foothold</ins>
