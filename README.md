@@ -1480,6 +1480,7 @@ keyscan_stop              stop the keystroke sniffer
 - [WAF Bypass Tool](https://github.com/nemesida-waf/waf-bypass)
 - [Forensia](https://github.com/PaulNorman01/Forensia)
 - [peepdf - PDF Analysis Tool](https://eternal-todo.com/tools/peepdf-pdf-analysis-tool)
+- [hakoriginfinder](https://github.com/hakluke/hakoriginfinder) for discovering the origin host behind a reverse proxy
 
 
 ## Passive Information Gathering (OSINT)
