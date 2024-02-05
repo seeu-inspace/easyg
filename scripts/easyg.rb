@@ -301,7 +301,7 @@ if option == "assetenum"
 	#== interesting subs ==
 	
 	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
-	system "cat output/httprobe_" + file + " | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|teams\" | sort -u > output/interesting_subdomains_" + file
+	system "cat output/httprobe_" + file + " | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|teams|heroku\" | sort -u > output/interesting_subdomains_" + file
 	system "cat output/interesting_subdomains_" + file
 	delete_if_empty "output/interesting_subdomains_" + file
 	
