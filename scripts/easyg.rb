@@ -164,13 +164,13 @@ if option == "assetenum"
 		if gb_opt == "y"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
 			system "amass enum -brute -active -d " + target + " -v"
-			system "oams_subs -names -d " + target + " > output/" + target + "_tmp.txt"
+			system "oam_subs -names -d " + target + " > output/" + target + "_tmp.txt"
 		end
 		
 		if gb_opt == "n"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
 			system "amass enum -passive -d " + target + " -v"
-			system "oams_subs -names -d " + target + " > output/" + target + "_tmp.txt"
+			system "oam_subs -names -d " + target + " > output/" + target + "_tmp.txt"
 		end
 
 		#== subfinder ==
