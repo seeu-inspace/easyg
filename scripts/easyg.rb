@@ -276,13 +276,13 @@ if option == "assetenum"
 	
 	#== httprobe ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
-	system "cat output/allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -p http:8888 -c 150 > output/httprobe_" + file + " && cat output/httprobe_" + file
+	system "cat output/allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -p http:8888 -p http:5000 -p https:5000 -p http:9090 -p https:9443 -c 150 > output/httprobe_" + file + " && cat output/httprobe_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
 	
 	#== naabu ==
 	if gb_opt == "y"
 		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
-		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090 -c 1000 -rate 7000 -stats -o output/naabu_" + file
+		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090,5000,9090,9443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
 		delete_if_empty "output/naabu_" + file
 	end
 	
