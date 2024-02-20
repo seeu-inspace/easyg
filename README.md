@@ -1930,7 +1930,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 
 ### <ins>Google Dorking</ins>
-- `ext:` search for: asp, aspx, jsp, jspx, do, action, php, php3, form, html, xhtml, phtml, cfm, fcc, xsp, swf, nsf, cgi, axd
+- `ext:` search for: asp, aspx, jsp, jspx, do, action, php, php3, form, html, xhtml, phtml, cfm, fcc, xsp, swf, nsf, cgi, axd, jsf
 - `filetype:` search for filetypes like html or php
 - `-filetype:html` omit filetype `html`
 - Search also for pdf, xlsx, bak and similar, they may contain some infos
