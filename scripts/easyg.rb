@@ -279,13 +279,13 @@ if option == "assetenum"
 	
 	#== httpx ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httpx"
-	system "cat output/allsubs_" + file + " | httpx-toolkit 81,3000,3000,3001,3001,8000,8080,8090,8443,8888,5000,5000,9090,9443 -o output/httpx_" + file + " && cat output/httpx_" + file
+	system "cat output/allsubs_" + file + " | httpx-toolkit -p 80,81,443,3000,5000,8000,8080,8090,8443,8888,9090,9443 -o output/httpx_" + file + " && cat output/httpx_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httpx_" + file
 	
 	#== naabu ==
 	if gb_opt == "y"
 		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_" + file + " with naabu"
-		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,443,81,3000,3001,8000,8080,8443,8090,5000,9090,9443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
+		system "naabu -v -list output/allsubs_" + file + " -p - -exclude-ports 80,81,443,3000,5000,8000,8080,8090,8443,8888,9090,9443 -c 1000 -rate 7000 -stats -o output/naabu_" + file
 		delete_if_empty "output/naabu_" + file
 	end
 	
