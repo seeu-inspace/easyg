@@ -279,7 +279,7 @@ if option == "assetenum"
 	
 	#== httpx ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httpx"
-	ssystem "cat output/allsubs_" + file + " | httpx-toolkit 81,3000,3000,3001,3001,8000,8080,8090,8443,8888,5000,5000,9090,9443 - output/httpx_" + file + " && cat output/httpx_" + file
+	system "cat output/allsubs_" + file + " | httpx-toolkit 81,3000,3000,3001,3001,8000,8080,8090,8443,8888,5000,5000,9090,9443 - output/httpx_" + file + " && cat output/httpx_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httpx_" + file
 	
 	#== naabu ==
