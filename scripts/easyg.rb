@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu, nuclei, hakrawler, gospider, katana, selenium, gau
+#tools used: amass, subfinder, github-subdomains, gobuster, anew, httpx, naabu, nuclei, hakrawler, gospider, katana, selenium, gau
 
 require 'uri'
 require 'net/http'
@@ -49,6 +49,9 @@ option = gets.chomp
 if option == "assetenum"
 	print "\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 	gb_opt = gets.chomp
+	
+	print "\e[93m┌─\e[0m Give a GitHub token for github-subdomains:\n\e[93m└─\e[0m "
+	gh_tok = gets.chomp
 end
 
 if option == "firefox" || option == "gettoburp" || option == "assetenum" || option == "webscreenshot" || option == "crawl-burp"
@@ -169,7 +172,7 @@ if option == "assetenum"
 		
 		if gb_opt == "n"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with amass"
-			system "amass enum -passive -d " + target + " -v"
+			#system "amass enum -passive -d " + target + " -v"
 			system "oam_subs -names -d " + target + " > output/" + target + "_tmp.txt"
 		end
 
@@ -181,7 +184,7 @@ if option == "assetenum"
 		
 		#== github-subdomains ==
 		puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with github-subdomains"
-		system "github-subdomains -t $GITHUB_TOKEN -d " + target + " -o output/" + target + "_github.txt"
+		system "github-subdomains -t #{gh_tok} -d " + target + " -o output/" + target + "_github.txt"
 		
 		adding_anew("output/" + target + "_github.txt", "output/" + target + "_tmp.txt")
 		
@@ -274,10 +277,10 @@ if option == "assetenum"
 
 	end
 	
-	#== httprobe ==
-	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httprobe"
-	system "cat output/allsubs_" + file + " | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p http:8090 -p https:8443 -p http:8888 -p http:5000 -p https:5000 -p http:9090 -p https:9443 -c 150 > output/httprobe_" + file + " && cat output/httprobe_" + file
-	puts "[\e[36m+\e[0m] Results saved as output/httprobe_" + file
+	#== httpx ==
+	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httpx"
+	ssystem "cat output/allsubs_" + file + " | httpx-toolkit 81,3000,3000,3001,3001,8000,8080,8090,8443,8888,5000,5000,9090,9443 - output/httpx_" + file + " && cat output/httpx_" + file
+	puts "[\e[36m+\e[0m] Results saved as output/httpx_" + file
 	
 	#== naabu ==
 	if gb_opt == "y"
@@ -286,28 +289,28 @@ if option == "assetenum"
 		delete_if_empty "output/naabu_" + file
 	end
 	
-	#== naabu | httprobe ==
+	#== naabu | httpx ==
 	if File.exists? "output/naabu_" + file
 		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_" + file
-		system "cat output/naabu_" + file + " | httprobe > output/httprobe_naabu_" + file
+		system "cat output/naabu_" + file + " | httpx-toolkit -o output/httpx_naabu_" + file
 		
-		if File.exists? "output/httprobe_naabu_" + file
-			system "cat output/httprobe_naabu_" + file
-			adding_anew("output/httprobe_naabu_" + file, "output/httprobe_" + file)
-			puts "[\e[36m+\e[0m] Results added at output/httprobe_" + file
+		if File.exists? "output/httpx_naabu_" + file
+			system "cat output/httpx_naabu_" + file
+			adding_anew("output/httpx_naabu_" + file, "output/httpx_" + file)
+			puts "[\e[36m+\e[0m] Results added at output/httpx_" + file
 		end
 	end
 	
 	#== interesting subs ==
 	
 	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
-	system "cat output/allsubs_" + file + " | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|teams|heroku\" | sort -u > output/interesting_subdomains_" + file
+	system "cat output/allsubs_" + file + " | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|teams\" | sort -u > output/interesting_subdomains_" + file
 	system "cat output/interesting_subdomains_" + file
 	delete_if_empty "output/interesting_subdomains_" + file
 	
 	#== nuclei ==	
 	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-	system "nuclei -l output/httprobe_" + file + " -t ~/nuclei-templates/takeovers -t ~/nuclei-templates/exposures/configs/git-config.yaml -t ~/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
+	system "nuclei -l output/httpx_" + file + " -t ~/nuclei-templates/takeovers -t ~/nuclei-templates/exposures/configs/git-config.yaml -t ~/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 	delete_if_empty "output/nuclei_" + file
 	
 end
@@ -401,7 +404,5 @@ if option == "help"
 	puts "	crawl-burp				crawl for every entry in <file_input> and pass the results to Burp Suite port 8080"
 	puts "	help\n\n"
 	
-	puts "Notes 
-	set the GITHUB_TOKEN for github-subdomains"
 
 end
