@@ -520,7 +520,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 
 - [DNSpy](https://github.com/dnSpy/dnSpy), .NET debugger
 - [Rider](https://www.jetbrains.com/rider/download/#section=windows)
-- [See hardcoded secrets](https://github.com/seeu-inspace/easyg#hardcoded-secrets)
+- [See hardcoded secrets](#hardcoded-secrets)
 - `wine /home/kali/Documents/dnSpy/dnSpy.exe`
 - Remove '\r' carriage return:
   `tr -d '\r' < inputfile.txt > outputfile.txt && mv outputfile.txt inputfile.txt`
@@ -1074,6 +1074,34 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 <img src="img/easyg.gif">
 
 [EasyG](scripts/) is a script that I use to automate some information gathering tasks for my hacking process. It uses: amass, subfinder, github-subdomains, gobuster, anew, httprobe, naabu and nuclei. Install the necessary tools with [install.bat](scripts/install.bat) or [install.sh](scripts/install.sh) and then run `ruby easyg.rb`.
+
+#### <ins>Tools used and what the script does</ins>
+
+[**assetenum**] During this process, many tools are implemented to discover subdomains. Then, there is the process of discovering ports and possibly discovering technologies, misconfigurations and vulnerabilities for these assets discovered.
+- [amass](https://github.com/owasp-amass/amass)
+- [subfinder](https://github.com/projectdiscovery/subfinder)
+- [github-subdomains](https://github.com/gwen001/github-subdomains)
+- [gobuster](https://github.com/OJ/gobuster)
+- [httpx](https://github.com/projectdiscovery/httpx)
+- [naabu](https://github.com/projectdiscovery/naabu)
+- [nuclei](https://github.com/projectdiscovery/nuclei)
+
+[**crawl-burp**] crawl for every entry in <file_input> and pass the results to Burp Suite port 8080
+- [hakrawler](https://github.com/hakluke/hakrawler)
+- [gospider](https://github.com/jaeles-project/gospider)
+- [katana](https://github.com/projectdiscovery/katana)
+- [gau](https://github.com/lc/gau)
+
+[**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
+- [selenium](https://github.com/SeleniumHQ/selenium)
+
+[**firefox**] open every entry in <file_input> with firefox
+
+[**gettoburp**] for every entry in <file_input> send a GET request using as a proxy 127.0.0.1:8080. This is useful for adding entries from a file to Burp Suite.
+
+Other tools
+- [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
+
 
 ### <ins>Burp Suite</ins>
 
