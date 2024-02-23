@@ -8035,15 +8035,14 @@ net localgroup "remote desktop users" <USER. NAME> / add
 
 **Android tools**
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
-- [frida](https://github.com/frida/frida/)
+- [Frida](https://github.com/frida/frida)
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
 - [Java Decompiler](https://java-decompiler.github.io/)
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
 - [apktool](https://ibotpeaches.github.io/Apktool/) to unpack an apk
 - [APK-MITM](https://github.com/shroudedcode/apk-mitm) removes certificate pinning
-- [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk	   
-- [Frida](https://github.com/frida/frida)
+- [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
 
 ### <ins>Missing Certificate and Public Key Pinning</ins>
 
