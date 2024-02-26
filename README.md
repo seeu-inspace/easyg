@@ -2255,6 +2255,9 @@ There are many methods to do code review. Some examples:
 - [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
 
+**Some grep**
+- Quickly discover XSS vulnerabilities in PHP files `rg --no-heading "echo.*\\\$_GET" | grep "\.php:" | grep -v -e "(\$_GET" -e "( \$_GET" -e "esc_" -e "admin_url" -e "(int)" -e htmlentities` [[source](https://twitter.com/hakluke/status/1757661414762635610)]
+
 
 ## Vulnerability Scanning
 
