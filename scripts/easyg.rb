@@ -279,7 +279,7 @@ if option == "assetenum"
 	
 	#== httpx ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_" + file + " with httpx"
-	system "cat output/allsubs_" + file + " | httpx-toolkit -p 80,81,443,3000,5000,8000,8080,8090,8443,8888,9090,9443 -o output/httpx_" + file + " && cat output/httpx_" + file
+	system "cat output/allsubs_" + file + " | httpx-toolkit -p 80,81,443,3000,5000,8000,8080,8090,8443,8888,9090,9443 -o output/httpx_" + file
 	puts "[\e[36m+\e[0m] Results saved as output/httpx_" + file
 	
 	#== naabu ==
@@ -310,7 +310,7 @@ if option == "assetenum"
 	
 	#== nuclei ==	
 	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-	system "nuclei -l output/httpx_" + file + " -t ~/nuclei-templates/takeovers -t ~/nuclei-templates/exposures/configs/git-config.yaml -t ~/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
+	system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 	delete_if_empty "output/nuclei_" + file
 	
 end
