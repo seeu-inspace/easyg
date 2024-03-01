@@ -5463,6 +5463,16 @@ Run:
 
 #### <ins>Docker</ins>
 
+**Simple Docker cheatsheet**
+```shell
+sudo docker-compose up					run docker
+sudo docker ps						see running docker
+sudo docker ps -a					see every docker in the machine
+sudo docker stop <docker-id>				stop a docker
+sudo docker exec -it <docker-id> bash			enter a docker
+sudo docker rmi <docker-id>				remove a docker
+```
+
 - If your user is part of the 'docker' group
   - find an image with `docker images`
   - `docker run -v /:/mnt --rm -it IMAGE chroot /mnt sh`
