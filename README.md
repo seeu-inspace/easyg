@@ -5473,9 +5473,11 @@ sudo docker exec -it <docker-id> bash			enter a docker
 sudo docker rmi <docker-id>				remove a docker
 ```
 
-- If your user is part of the 'docker' group
-  - find an image with `docker images`
-  - `docker run -v /:/mnt --rm -it IMAGE chroot /mnt sh`
+An example: [docker-tomcat-tutorial](https://github.com/softwareyoga/docker-tomcat-tutorial)
+
+If your user is part of the 'docker' group
+- find an image with `docker images`
+- `docker run -v /:/mnt --rm -it IMAGE chroot /mnt sh`
 
 Escape container
 - If the first thing you see when you get access to the machine is a file `.dockerenv` and the hostname is something like `0873e8062560`, it means that you are in a docker container
