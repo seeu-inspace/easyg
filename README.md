@@ -269,6 +269,7 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [BloodHound](#bloodhound)
     - [Mimikatz](#mimikatz-1)
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
+    - See: [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
     - [Credentials Harvesting](#credentials-harvesting)
     - [Active Directory Persistence](#active-directory-persistence)
