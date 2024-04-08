@@ -5809,6 +5809,11 @@ Other shells with msfvenom
 
 Note: to find running services, use this command from the powershell: `Get-Service` or `Get-WmiObject win32_service | Select-Object Name, State, PathName | Where-Object {$_.State -like 'Running'}`
 
+**PowerUp**
+- `Get-ServiceUnquoted -Verbose` services with unquoted paths and a space in their name
+- `Get-ModifiableServiceFile -Verbose` services where the current user can write to its binary path or change arguments to the binary
+- `Get-ModifiableService -Verbose` services whose configuration current user can modify
+
 **Service Commands**
 ```
 sc.exe qc <name>                                 Query the configuration of a service
