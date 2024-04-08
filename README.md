@@ -761,6 +761,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - Example: crack the password of `id_rsa` with `ssh2john id_rsa > ssh.hash` and `john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash`, then gain access with `ssh -i id_rsa <username>@<IP>`
 3. Elevate your privileges
    - Run `PowerUp.ps1` `Invoke-AllChecks` in Windows
+   - Run [Privesc](https://github.com/enjoiz/Privesc)
    - Run winPEAS or linPEAS, note:
      - System information
        - In Windows, verify the OS with `systeminfo` (winPEAS may falsely detect Windows 11 as Windows 10)
@@ -5572,6 +5573,7 @@ See [Information gathering | Windows](#windows). Always obtain:
     - `windows-privesc-check2.exe -h`
     - `windows-privesc-check2.exe --dump -G`
   - [creddump7](https://github.com/Tib3rius/creddump7)
+  - [Privesc](https://github.com/enjoiz/Privesc)
 
 #### <ins>Strategy</ins>
 
@@ -5593,6 +5595,7 @@ See [Information gathering | Windows](#windows). Always obtain:
   - `powershell -ep bypass -c ". .\PowerUp.ps1; Invoke-AllChecks"`
   - `powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"`
   - `.\jaws-enum.ps1`
+  - [Privesc](https://github.com/enjoiz/Privesc) -> `Invoke-PrivEsc`
   - more
     - https://rahmatnurfauzi.medium.com/windows-privilege-escalation-scripts-techniques-30fa37bd194
     - https://www.hackingarticles.in/post-exploitation-on-saved-password-with-lazagne/
