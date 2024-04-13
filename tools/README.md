@@ -3,9 +3,9 @@
 
 ### <ins>EasyG</ins>
 
-<img src="img/easyg.gif">
+<img src="../img/easyg.gif">
 
-[EasyG](scripts/) is a script that I use to automate some information gathering tasks for my hacking process.
+[EasyG](../scripts/) is a script that I use to automate some information gathering tasks for my hacking process.
 
 #### <ins>Tools used and what the script does</ins>
 
