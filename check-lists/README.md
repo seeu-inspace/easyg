@@ -1,4 +1,32 @@
-## Check-lists
+# Check-lists*
+
+*Note: Check-lists and cheat-sheets :)
+
+## Index
+
+- [General checklists](#general-checklists)
+- [Toolset](#toolset)
+- [Testing layers](#testing-layers)
+- [Penetration Testing cycle](#penetration-testing-cycle)
+  - [0. Defining the Scope](#0-defining-the-scope)
+  - [1. Information gathering](#1-information-gathering)
+  - [2. Service enumeration](#2-service-enumeration)
+  - [3. Cicle](#3-cicle)
+  - [4. House keeping](#4-house-keeping)
+  - [5. Results](#5-results)
+- [Penetration Testing process](#penetration-testing-process)
+  - [1. Public Network Enumeration](#1-public-network-enumeration)
+  - [2. Attack a Public Machine](#2-attack-a-public-machine)
+  - [3. Internal Network Access](#3-internal-network-access)
+  - [4. Internal Network Enumeration](#4-internal-network-enumeration)
+  - [5. Domain Controller Access](#5-domain-controller-access)
+- [Bug Bounty Hunting](#bug-bounty-hunting)
+  - [Top vulnerabilities to always look for](#top-vulnerabilities-to-always-look-for)
+  - [Multiple targets](#multiple-targets)
+  - [Single target](#single-target)
+
+
+## General checklists
 
 - [SMB-Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/Services/SMB-Checklist.md)
 - [Win32 Offensive Cheatsheet](https://github.com/matthieu-hackwitharts/Win32_Offensive_Cheatsheet)
@@ -9,12 +37,12 @@
 - [OSSTMM](https://isecom.org/research.html)
 - [MindMaps](https://github.com/imran-parray/Mind-Maps)
 
-### <ins>Toolset</ins>
+## Toolset
 - [ ] [EasyG](#easyg) and all the connected tools
 - [ ] [Burp Suite](#burp-suite) and all the extensions
 - [ ] [Kali Linux](https://www.kali.org/) since it has everything you need
 
-### <ins>Testing layers</ins>
+## Testing layers
 
 See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020!](https://www.youtube.com/watch?v=p4JgIu1mceI)
 - [ ] Integrations
@@ -24,11 +52,11 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
-### <ins>Penetration Testing cycle</ins>
+## Penetration Testing cycle
 
-#### <ins>0. Defining the Scope</ins>
+### 0. Defining the Scope
 
-#### <ins>1. Information gathering</ins>
+### 1. Information gathering
 - [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
 - Location information
   - Satellite images
@@ -40,7 +68,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
     - Employees
     - Pictures
 
-#### <ins>2. Service enumeration</ins>
+### 2. Service enumeration
 - [Active Information Gathering](#active-information-gathering)
 - Finding subdomains
   - [Google Fu](#google-dorking)
@@ -50,23 +78,23 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [Content Discovery](#content-discovery)
 - [Vulnerability Scanning](#vulnerability-scanning)
 
-#### <ins>3. Cicle</ins>
+### 3. Cicle
 - Penetration
   - Initial Foothold
   - Privilege Escalation
   - Lateral Movement
 - Maintaining access (Trojans)
 
-#### <ins>4. House keeping</ins>
+### 4. House keeping
 - Cleaning up rootkits
 - Covering tracks
 
-#### <ins>5. Results</ins>
+### 5. Results
 - Reporting / Analysis
 - Lessons Learned / Remediation
 
 
-### <ins>Penetration Testing process</ins>
+## Penetration Testing process
 
 - Setup the environment
   - Create a dedicated folder
@@ -74,7 +102,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - Notes every service found, domain, host etc.
 - Check that the targets are valid and owned by client
 
-#### <ins>1. Public Network Enumeration</ins>
+### 1. Public Network Enumeration
 
 1. Start a port scanning
    - light then eavy if necessary
@@ -97,7 +125,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 6. For Active Directory
    - run enum4linux with no user and `guest:`
 
-#### <ins>2. Attack a Public Machine</ins>
+### 2. Attack a Public Machine
 
 1. Exploit the machine
    - Example: exploit a Directory Traversal in a Web Application to gain `/etc/passwd` or SSH private keys, like `id_rsa` or `id_ecdsa`
@@ -120,7 +148,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
    - Define all potential privilege escalation vectors
 4. For Active Directory
 
-#### <ins>3. Internal Network Access</ins>
+### 3. Internal Network Access
 
 - Password attack: test the credentials found to gain more accesses
   - use `crackmapexec` or similar
@@ -130,7 +158,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - Perform a Phishing attack
   - If you have more information, you could leverage Microsoft Office or Windows Library Files
 
-#### <ins>4. Internal Network Enumeration</ins>
+### 4. Internal Network Enumeration
 
 - Once an access to an internal network machine is gained, elevate your privileges
   - See step `2.3.`
@@ -146,7 +174,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - for Windows, use Chisel
 - Password attack: test the credentials found to gain more accesses
 
-#### <ins>5. Domain Controller Access</ins>
+### 5. Domain Controller Access
 
 - Elevate your privileges to `NT AUTHORITY\SYSTEM`
 - Lateral Movement
@@ -155,15 +183,15 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - Obtain `ntds.dit`, located at `%SystemRoot%\NTDS`
 
 
-### <ins>Bug Bounty Hunting</ins>
+## Bug Bounty Hunting
 
-#### **Top vulnerabilities to always look for**
+### Top vulnerabilities to always look for
 - [ ] XSS
 - [ ] CSRF
 - [ ] Authorization issues
 - [ ] IDOR
 
-#### **Multiple targets**
+### Multiple targets
 - [ ] Run EasyG assetenum
 - [ ] Select the interesting targets
   - Pass the subdomains to Burp Suite
@@ -176,7 +204,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [OCCRP Aleph](https://aleph.occrp.org/)
   - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
 
-#### **Single target**
+### Single target
 - [ ] Recon
   + Explore the app, test every functionality (eventually, search for documentation)
   + Crawl with Burp Suite
