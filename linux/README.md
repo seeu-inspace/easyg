@@ -1,8 +1,20 @@
-## Linux
+# Linux
 
 Note: a lot of these commands are from [RTFM: Red Team Field Manual](https://www.goodreads.com/en/book/show/21419959) by Ben Clark and from [PEN-200: Penetration Testing with Kali Linux](https://www.offsec.com/courses/pen-200/) by Offensive Security.
 
-<ins>**Linux Services and Networking**</ins>
+## Index
+
+- [Linux Services and Networking](#linux-services-and-networking)
+- [Linux User Management](#linux-user-management)
+- [Linux File Commands](#linux-file-commands)
+- [Misc Commands](#misc-commands)
+- [Linux environment variables](#linux-environment-variables)
+- [Linux File System Permissions](#linux-file-system-permissions)
+- [Linux Directories](#linux-directories)
+- [Linux Interesting Files / Directories](#linux-interesting-files-directories)
+- [Examples](#examples)
+
+## Linux Services and Networking
 ```
 netstat -tulpn                                           Show Linux network ports with process ID’s (PIDs)
 watch ss -stplu                                          Watch TCP, UDP open ports in real time with socket summary
@@ -32,7 +44,7 @@ ps -fe                                                   Common ps syntax to lis
 sudo tail -f /var/log/apache2/access.log                 Monitor the Apache log file using tail command
 ```
 
-<ins>**Linux User Management**</ins>
+## Linux User Management
 ```
 whoami                                                   Shows currently logged in user on Linux
 id                                                       Shows currently logged in user and groups for the user
@@ -46,7 +58,7 @@ uname -ar                                                Shows running kernel ve
 history                                                  Show bash history, commands the user has entered previously
 ```
 
-<ins>**Linux File Commands**</ins>
+## Linux File Commands
 ```
 df -h blah                                               Display size of file / dir Linux
 diff file1 file2                                         Compare / Show differences between two files on Linux
@@ -75,7 +87,7 @@ diff -u scan-a.txt scan-b.txt                            Compare files, unified 
 vimdiff scan-a.txt scan-b.txt                            Compare files using vim
 ```
 
-<ins>**Misc Commands**</ins>
+## Misc Commands
 ```
 init 6                                                   Reboot Linux from the command line
 gcc -o output.c input.c                                  Compile C code
@@ -114,7 +126,7 @@ xfreerdp /u:<user> /p:<password> /cert:ignore /v:<ip>    Connect with RDP
 rdesktop -u <user> -p <password> <ip>                    Connect with RDP
 ```
 
-<ins>**Linux environment variables**</ins>
+## Linux environment variables
 ```
 export vartest=8.8.8.8                                   Declare an environment variable
 env                                                      See all declared environment variables
@@ -130,7 +142,7 @@ export HISTIGNORE="&:ls:[bf]g:exit:history"              Filter basic, common co
 export HISTTIMEFORMAT='%F %T '                           Include the date/time in our bash history
 ```
 
-<ins>**Linux File System Permissions**</ins>
+## Linux File System Permissions
 ```
 777 rwxrwxrwx                                            No restriction, global WRX any user can do anything
 755 rwxr-xr-x                                            Owner has full access, others can read and execute the file
@@ -140,7 +152,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 600 rw-------                                            Owner can read and write, everyone else has no access
 ```
 
-<ins>**Linux Directories**</ins>
+## Linux Directories
 ```
 /                                                        / also know as “slash” or the root
 /bin                                                     Common programs, shared by the system, the system administrator and the users
@@ -162,7 +174,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 /var                                                     Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler, Web servers, Databases etc
 ```
 
-<ins>**Linux Interesting Files / Directories**</ins>
+## Linux Interesting Files / Directories
 ```
 /etc/passwd                                              Contains local Linux users
 /etc/shadow                                              Contains local account password hashes
@@ -181,7 +193,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 /etc/fstab                                               File system mounts
 ```
 
-<ins>**Examples**</ins>
+## Examples
 
 - Search the /etc/passwd file for users with a shell set to /bin/false and prints the username and home directory of each user found:
 `cat /etc/passwd | awk -F: '{if ($7 == "/bin/false") print "The user " $1 " home directory is " $6}'`
