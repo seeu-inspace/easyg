@@ -1,6 +1,17 @@
-## Passive Information Gathering (OSINT)
+# Passive Information Gathering (OSINT)
 
-### <ins>Notes</ins>
+## Index
+
+- [Notes](#notes)
+- [Tools](#tools)
+- [Target validation](#target-validation)
+- [User Information Gathering](#user-information-gathering)
+  - [Email Harvesting](#email-harvesting)
+  - [Social media tools](#social-media-tools)
+  - [Data breaches](#data-breaches)
+  - [Acquisitions](#acquisitions)
+
+## Notes
 - [ ] Target validation
 - [ ] Search for email addresses of employees
   - What's the format? Does it change for founders, chief officers etc.?
@@ -13,7 +24,7 @@
 - [ ] See also [Content Discovery](#content-discovery)
 - [ ] See each section of this chapter
 
-### <ins>Tools</ins>
+## Tools
 
 - [Stack Overflow](https://stackoverflow.com/)
 - [Information Gathering Frameworks](https://osintframework.com/)
@@ -22,7 +33,7 @@
 - [Crunchbase](https://www.crunchbase.com/)
 - [OCCRP Aleph](https://aleph.occrp.org/)
 
-### <ins>Target validation</ins>
+## Target validation
 
 - Use `WHOIS`, `nslookup` and `dnsrecon`
 - [searchdns.netcraft.com](https://searchdns.netcraft.com/)
@@ -55,11 +66,11 @@
 - [SSL Server Test](https://www.ssllabs.com/ssltest/)
 - [DMARC Inspector](https://dmarcian.com/dmarc-inspector/)
 
-### <ins>User Information Gathering</ins>
+## User Information Gathering
 
 Note: A company may only approve tests of its own systems. Personal devices, outside email, and social media accounts used by employees often do not come under this authorisation.
 
-#### Email Harvesting
+### Email Harvesting
 
 - [theHarvester](https://github.com/laramies/theHarvester)
   ```
@@ -74,14 +85,14 @@ Verify email addresses
 - [Email Hippo](https://tools.emailhippo.com/)
 - [Email Checker](https://email-checker.net/)
 
-#### Social media tools
+### Social media tools
 
 - [Social Searcher](https://www.social-searcher.com/)
 - [Twofi](https://digi.ninja/projects/twofi.php)
 - [linkedin2username](https://github.com/initstring/linkedin2username)
 
 
-#### Data breaches
+### Data breaches
 
 - [HaveIBeenPwned](https://haveibeenpwned.com/)
 - [Breach-Parse](https://github.com/hmaverickadams/breach-parse)
@@ -92,7 +103,7 @@ Verify email addresses
 Malicious hackers frequently post stolen passwords on [Pastebin](https://pastebin.com/) or other less reputable websites. This is useful for generating wordlists.
 - An example: [rockyou.txt](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
 
-#### Acquisitions
+### Acquisitions
 
 Search for any acquisitions by the target
 - [bgp.he.net](https://bgp.he.net/)
