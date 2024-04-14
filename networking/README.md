@@ -1,6 +1,22 @@
-## Networking
+# Networking
 
-**Tools**
+## Index
+
+- [Tools](#tools)
+- [Checking the routing table](#checking-the-routing-table)
+- [Discover the MAC address](#discover-the-mac-address)
+- [Change MAC addess](#change-mac-addess)
+- [Check listening ports and the current TCP connections](#check-listening-ports-and-the-current-tcp-connections)
+- [Add new routes](#add-new-routes)
+- [Null session](#null-session)
+- [Enumeration](#enumeration)
+- [Target analysis](#target-analysis)
+- [Check ARP cache](#check-arp-cache)
+- [ARP Poisoning](#arp-poisoning)
+- [Well-known Ports](#well-known-ports)
+- [Common Port Vulnerabilities](#common-port-vulnerabilities)
+
+## Tools
 - [Echo Mirage](https://resources.infosecinstitute.com/topic/echo-mirage-walkthrough/)
 - [Wireshark](https://www.wireshark.org/)
 - [PCredz](https://github.com/lgandx/PCredz)
@@ -17,26 +33,26 @@
 - [enum4linux](https://www.kali.org/tools/enum4linux/)
 - [macchanger](https://github.com/acrogenesis/macchanger)
 
-#### Checking the routing table
+## Checking the routing table
 ```
 ip route        on Linux box
 route print     on Windows
 netstat -r      on Mac OSX
 ```
 
-#### Discover the MAC address
+## Discover the MAC address
 ```
 ip addr         on Linux
 ipconfig /all   on Windows
 ifconfig        on MacOS
 ```
 
-#### Change MAC addess
+## Change MAC addess
 - [How to change or spoof the MAC address in Windows (7 ways)](https://www.digitalcitizen.life/change-mac-address-windows/)
 - [How to Change Your MAC Address on Linux](https://www.makeuseof.com/how-to-change-mac-address-on-linux/)
   - [macchanger](https://github.com/acrogenesis/macchanger)
 
-#### Check listening ports and the current TCP connections
+## Check listening ports and the current TCP connections
 ```
 netstat -ano    on Windows
 netstat -tunp   on Linux
@@ -47,14 +63,14 @@ netstat -p tcp -p udp
 lsof -n -i4TCP -i4UDP
 ```
 
-#### Add new routes
+## Add new routes
 ```
 ip route add <net_address_in_cdr> via <interface_gateway>                             on Linux
 route add <net_address_in_cdr> mask <net_address_mask_in_cdr> <interface_gateway>     on Windows
 nmap -sn <net_address_in_cdr>                                                         Check hosts alive, adding -A you gather more info for a target
 ```
 
-#### Null session
+## Null session
 ```
 Windows
 -------
@@ -81,25 +97,25 @@ winfo <Target-IP> -n                     use winfo with null session
 
 ```
 
-#### Enumeration
+## Enumeration
 ```
 ip addr                                                                             query available network interfaces
 ip route                                                                            enumerate network routes
 for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done       bash loop with Netcat to sweep for port <PORT> in a subnet
 ```
 
-#### Target analysis
+## Target analysis
 - `tracert <target>` shows details about the path that a packet takes from the device sender to the target destination specified
 - `for ip in $(echo '<IP>'); do ping -c 5 $ip; traceroute $ip; echo '\nnslookup'; nslookup $ip; done`
 
-#### Check ARP cache
+## Check ARP cache
 ```
 ip neighbour    on Linux
 apr -a          on Windows
 arp             on *nix OS
 ```
 
-#### ARP Poisoning
+## ARP Poisoning
 
 1. The goal is to (1) trick the victim to save in the ARP Cache my MAC address (the attacker) associated it with the router IP and (2) the router to send the traffic back to you, this to perform a MITM
 2. First, enable the Linux Kernel IP Forwarding to transform a Linux Box into a router `echo 1 > /proc/sys/net/ipv4/ip_forward`
@@ -111,7 +127,7 @@ An example
 2. `arpspoof -i eth0 -t 192.168.4.11 -r 192.168.4.16`
 
 
-#### Well-known Ports
+## Well-known Ports
 
 | Service       | Port          |
 | ---           | ---           |
@@ -130,7 +146,7 @@ An example
 | MS SQL Server | 1433          |
 | Confluence    | 8090          |
 
-#### Common Port Vulnerabilities
+## Common Port Vulnerabilities
 
 See : ["Open Port Vulnerabilities List by Dirk Schrader"](https://blog.netwrix.com/2022/08/04/open-port-vulnerabilities-list/)
 
