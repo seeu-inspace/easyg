@@ -1,4 +1,13 @@
-## Content Discovery
+# Content Discovery
+
+## Index
+
+- [Notes](#notes)
+- [Google Dorking](#google-dorking)
+- [GitHub Dorking](#github-dorking)
+- [Shodan Dorking](#shodan-dorking)
+
+## Notes
 
 **Some tips**
 - If the application is ASP.NET, search for `Appsettings.json`
@@ -62,7 +71,7 @@
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
 
-### <ins>Google Dorking</ins>
+## Google Dorking
 - `ext:` search for: asp, aspx, jsp, jspx, do, action, php, php3, form, html, xhtml, phtml, cfm, fcc, xsp, swf, nsf, cgi, axd, jsf
 - `filetype:` search for filetypes like html or php
 - `-filetype:html` omit filetype `html`
@@ -91,7 +100,7 @@
 - [Refine web searches | Google](https://support.google.com/websearch/answer/2466433?hl=en)
 
 
-### <ins>GitHub Dorking</ins>
+## GitHub Dorking
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
 - languages: `json, bash, shell, java etc.`, example `HEROKU_API_KEY language:json`
 - extensions: `extensions: bat, config, ini, env etc.`
@@ -99,6 +108,6 @@
 - [Other dorks](https://github.com/techgaun/github-dorks#list-of-dorks)
 
 
-### <ins>Shodan Dorking</ins>
+## Shodan Dorking
 - `hostname:targetcorp.com` Search for TargetCorp’s domain
 - `hostname:targetcorp.com port:'22'` Search for TargetCorp’s domain running SSH
