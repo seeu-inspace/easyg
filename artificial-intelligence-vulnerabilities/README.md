@@ -1,6 +1,10 @@
-## Artificial intelligence vulnerabilities
+# Artificial intelligence vulnerabilities
 
-### <ins>Prompt Injection</ins>
+## Index
+
+- [Prompt Injection](#prompt-injection)
+
+## Prompt Injection
 
 **Prompt Injection** is when an AI that follows textual instructions (a "prompt") to complete a job gets deceived by hostile, adversarial human input to do a task that was not its original goal. To test it, inject the text `Ignore previous directions`.
 
