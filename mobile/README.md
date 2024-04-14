@@ -1,4 +1,14 @@
-## Mobile
+# Mobile
+
+## Index
+
+- [Structure](#structure)
+- [Resources](#resources)
+- [Android tools](#android-tools)
+- [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
+- [Cordova attacks](#cordova-attacks)
+
+## Structure
 
 **FlappyBird_structure.apk**<br/>
 ├── **AndroidManifest.xml** meta-information about the app<br/>
@@ -9,16 +19,17 @@
 ├── **assets/** application assets<br/>
 └── **resources.arsc** contains compiled resources in a binary format
 
+## Resources
+
+- [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
+- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
+- [OWASP Mobile Application Security](https://mas.owasp.org/)
+
 **Data storage** search for PII unencrypted in
 - [ ] Phone system logs
 - [ ] Webkit cache
 - [ ] Dbs, plists, etc.
 - [ ] Hardcoded in the binary
-
-**Resources**
-- [Mobile Application Penetration Testing Cheat Sheet](https://github.com/tanprathan/MobileApp-Pentest-Cheatsheet)
-- [Mobile Hacking Cheatsheet](https://github.com/randorisec/MobileHackingCheatSheet)
-- [OWASP Mobile Application Security](https://mas.owasp.org/)
 
 **Download APKs**
 - [m.apkpure.com](https://m.apkpure.com/it/)
@@ -35,7 +46,7 @@
     emulator -avd Pixel_4_XL_API_30
     ```
 
-**Android tools**
+## Android tools
 - [adb](https://developer.android.com/studio/command-line/adb) it is used to debug an android device
 - [Frida](https://github.com/frida/frida)
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
@@ -46,12 +57,11 @@
 - [APK-MITM](https://github.com/shroudedcode/apk-mitm) removes certificate pinning
 - [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
 
-### <ins>Missing Certificate and Public Key Pinning</ins>
+## Missing Certificate and Public Key Pinning
 
 Absence or improper implementation of certificate and public key pinning in a mobile app. This allows an attacker to potentially intercept communication by presenting fraudulent or unauthorized certificates, undermining the security of the system and enabling man-in-the-middle attacks.
 
-
-### <ins>Cordova attacks</ins>
+## Cordova attacks
 
 - Check for HTML injections
 - Search for XSS
