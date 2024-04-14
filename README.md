@@ -21,7 +21,6 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Glossary](useful-tips/#glossary)
   - [Client-specific key areas of concern](useful-tips/#client-specific-key-areas-of-concern)
   - [General notes](useful-tips/#general-notes)
-    - [Default Credentials](useful-tips/#default-credentials)
     - [PT initial foothold](useful-tips/#pt-initial-foothold)
     - [SSH notes](useful-tips/#ssh-notes)
     - [FTP notes](useful-tips/#ftp-notes)
