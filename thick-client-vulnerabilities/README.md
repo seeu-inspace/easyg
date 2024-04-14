@@ -1,6 +1,22 @@
-## Thick client vulnerabilities
+# Thick client vulnerabilities
 
-### <ins>DLL Hijacking</ins>
+## Index
+
+- [DLL Hijacking](#dll-hijacking)
+- [Insecure application design](#insecure-application-design)
+- [Weak Hashing Algorithms](#weak-hashing-algorithms)
+- [Cleartext secrets in memory](#cleartext-secrets-in-memory)
+- [Hardcoded secrets](#hardcoded-secrets)
+- [Unsigned binaries](#unsigned-binaries)
+- [Lack of verification of the server certificate](#lack-of-verification-of-the-server-certificate)
+- [Insecure SSL/TLS configuration](#insecure-ssltls-configuration)
+- [Remote Code Execution via Citrix Escape](#remote-code-execution-via-citrix-escape)
+- [Direct database access](#direct-database-access)
+- [Insecure Windows Service permissions](#insecure-windows-service-permissions)
+- [Code injection](#code-injection)
+- [Windows persistence](#windows-persistence)
+
+## DLL Hijacking
 
 **Tool**
 - [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) to see which DLLs are missing for an exe and do DLL Hijacking
@@ -50,7 +66,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
 
 
 
-### <ins>Insecure application design</ins>
+## Insecure application design
 
 The application design is based on a two-tier architecture. In particular, the thick client application installed on the workstation communicates directly with a backend DBMS without the use of an application server.
 
@@ -60,7 +76,7 @@ If this is not possible, it is desirable to provide read-only users and read/wri
 
 
 
-### <ins>Weak Hashing Algorithms</ins>
+## Weak Hashing Algorithms
 
 Sensitive data exposure, key leakage, broken authentication, insecure sessions, and spoofing attacks can all be caused by improper application of encryption methods. Some hashing or encryption techniques, such MD5 and RC4, are known to be insecure and are not advised for use.
 
@@ -71,7 +87,7 @@ If not configured correctly, the encryption can be not sufficiently secure. An e
 
 
 
-### <ins>Cleartext secrets in memory</ins>
+## Cleartext secrets in memory
 
 The memory analysis of an application, done when the thick client process is running, can highlight the presence of secrets in cleartext and that can be therefore extracted by any user having access to the machine where the application is hosted.
 
@@ -80,7 +96,7 @@ The memory analysis of an application, done when the thick client process is run
 
 
 
-### <ins>Hardcoded secrets</ins>
+## Hardcoded secrets
 
 Sometimes, the thick client application's source code is not obfuscated, therefore a hostile user may decompile it and easily comprehend every functionality of the application. It's also possible that more can be found, like credentials and api keys.
 
@@ -90,7 +106,7 @@ Sometimes, the thick client application's source code is not obfuscated, therefo
 
 
 
-### <ins>Unsigned binaries</ins>
+## Unsigned binaries
 
 If an application executable, and/or the imported DLLs, has not been digitally signed, it's possible replace it with a tampered version without the user noticing.
 
@@ -99,7 +115,7 @@ If an application executable, and/or the imported DLLs, has not been digitally s
 
 
 
-### <ins>Lack of verification of the server certificate</ins>
+## Lack of verification of the server certificate
 
 Due to the fact that the client does not verify the TLS certificate presented by the back-end, it's possible to intercept also HTTPS communications managed by the thick client application.
 
@@ -107,7 +123,7 @@ Without effective certificate control, an attacker who is capable of conducting 
 
 
 
-### <ins>Insecure SSL/TLS configuration</ins>
+## Insecure SSL/TLS configuration
 
 During the SSL/TLS negotiation, SSL/TLS connections may be set up to offer outdated protocols and cipher suites that are susceptible to known security flaws. The data transmitted between the server and the client could potentially be read or modified in this case if an attacker is able to intercept the communication.
 
@@ -116,7 +132,7 @@ During the SSL/TLS negotiation, SSL/TLS connections may be set up to offer outda
 
 
 
-### <ins>Remote Code Execution via Citrix Escape</ins>
+## Remote Code Execution via Citrix Escape
 
 If Citrix is present and you have access to it, there are multiple ways you can achieve Remote Code Execution:
 - Try to upload a PowerShell
@@ -130,7 +146,7 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 
 
 
-### <ins>Direct database access</ins>
+## Direct database access
 
 - If it's found that standard users have direct access to the database, there is the possibility for users to read and write data that is not otherwise accessible through the client application.
 - If the SQL server requires a Windows User access, use the command `runas /user:localadmin <SQL-SERVER-MANAGEMENT-STUDIO>`
@@ -143,7 +159,7 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 
 
 
-### <ins>Insecure Windows Service permissions</ins>
+## Insecure Windows Service permissions
 
 Windows service executable might be configured with insecure permissions. Services configured to use an executable with weak permissions are vulnerable to privilege escalation attacks.
 
@@ -151,13 +167,13 @@ Unprivileged users have the ability to change or replace the executable with arb
 
 
 
-### <ins>Code injection</ins>
+## Code injection
 - Check for classic HTML injections and [XSS](cross-site-scripting-xss)
   - Try to use a `SSID` as a vector for an XSS with a payload like `"/><img src=x onerror=alert(1)>`
 - Check if `<webview>` works. If it does, it's might be possible to achieve a LFI with a payload like this `<webview src="file:///etc/passwd"></webview>`. [[Reference](https://medium.com/@renwa/facebook-messenger-desktop-app-arbitrary-file-read-db2374550f6d)]
 
 
-### <ins>Windows persistence</ins>
+## Windows persistence
 
 **Resources**
 - [persistence-info.github.io](https://persistence-info.github.io/)
