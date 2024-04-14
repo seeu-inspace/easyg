@@ -1,6 +1,15 @@
-## Client-Side Attacks
+# Client-Side Attacks
 
-### <ins>Client Information Gathering</ins>
+## Index
+
+- [Client Information Gathering](#client-information-gathering)
+- [HTML applications](#html-applications)
+- [Microsoft Office](#microsoft-office)
+- [Windows Library Files](#windows-library-files)
+- [Phishing](#phishing)
+- [McAfee](#mcafee)
+
+## Client Information Gathering
 
 **Passive Client Information Gathering**
 - Search with Google, social media and forum websites
@@ -19,7 +28,7 @@
 - Use [Canarytokens](https://canarytokens.org/generate) and Social Engineering to retrieve information from a target
 - Use [Grabify IP Logger](https://grabify.link/)
 
-### <ins>HTML applications</ins>
+## HTML applications
 
 If a file is created with a `.hta` extension rather than a `.html` extension, Internet Explorer will automatically recognize it as an HTML Application and provide the option to run it using the mshta.exe application (still useful since many corporations rely on Internet Explorer).
 
@@ -51,7 +60,7 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 -e:   EncodedCommand
 ```
 
-### <ins>Microsoft Office</ins>
+## Microsoft Office
 
 **Microsoft Word Macro**: To exploit Microsoft Office we need to creare a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
 
@@ -112,7 +121,7 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 
 **Evading Protected View**: In exactly the same way as Word and Excel, Microsoft Publisher permits embedded objects and ultimately code execution, but it will not enable Protected View for documents that are distributed over the Internet.
 
-### <ins>Windows Library Files</ins>
+## Windows Library Files
 
 Library files consist of three major parts written in XML to specify the parameters for accessing remote locations:
 - General library information
@@ -155,7 +164,7 @@ Library files consist of three major parts written in XML to specify the paramet
 5. Start the Python3 web server on port `8000` to serve `powercat.ps1`, WsgiDAV for the WebDAV share `/home/kali/webdav`, and a Netcat listener on port `4444`
 6. Send the library file to the victim and wait for them to execute the shortcut file to get a reverse shell
 
-### <ins>Phishing</ins>
+## Phishing
 
 - Leverage ports 110 and 25
 - https://viperone.gitbook.io/pentest-everything/writeups/pg-practice/linux/postfish
@@ -195,5 +204,5 @@ Library files consist of three major parts written in XML to specify the paramet
 - use WebDAV
 
 
-### <ins>McAfee</ins>
+## McAfee
 - [mcafee-sitelist-pwd-decryption](https://github.com/funoverip/mcafee-sitelist-pwd-decryption/)
