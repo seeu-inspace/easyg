@@ -275,6 +275,8 @@ I try as much as possible to link to the various sources or inspiration for thes
   - [Offensive .NET](active-directory/#offensive-net)
   - [Active Directory Persistence](active-directory/#active-directory-persistence)
   - [Active Directory Privilege Escalation](active-directory/#active-directory-privilege-escalation)
+  - [Trust Abuse](active-directory/#trust-abuse)
+  - [MDE - EDR](active-directory/#mde---edr)
 - [Mobile](mobile/#mobile)
   - [Missing Certificate and Public Key Pinning](mobile/#missing-certificate-and-public-key-pinning)
   - [Cordova attacks](mobile/#cordova-attacks)
