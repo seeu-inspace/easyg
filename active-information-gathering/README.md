@@ -1,6 +1,21 @@
-## Active Information Gathering
+# Active Information Gathering
 
-### <ins>DNS Enumeration</ins>
+## Index
+
+- [DNS Enumeration](#dns-enumeration)
+- [Port Scanning](#port-scanning)
+  - [Netcat](#netcat)
+  - [Nmap](#nmap)
+  - [Masscan](#masscan)
+  - [Other tools](#other-tools)
+- [SMB Enumeration](#smb-enumeration)
+- [NFS Enumeration](#nfs-enumeration)
+- [SMTP Enumeration](#smtp-enumeration)
+- [SNMP Enumeration](#snmp-enumeration)
+- [HTTP / HTTPS enumeration](#http--https-enumeration)
+- [SSH enumeration](#ssh-enumeration)
+
+## DNS Enumeration
 
 **host command**
 ```
@@ -35,15 +50,15 @@ for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
 - [BuiltWith](https://builtwith.com/)
 
 
-### <ins>Port Scanning</ins>
+## Port Scanning
 
-#### **Netcat**
+### Netcat
 ```
 nc -nvv -w 1 -z <IP> <PORT-RANGE>                        Use netcat to perform a TCP port scan
 nc -nv -u -z -w 1 <IP> <PORT-RANGE>                      Use netcat to perform an UDP port scan
 ```
 
-#### **Nmap**
+### Nmap
 
 ```
 nmap <IP>                                                            Simple nmap scan
@@ -84,7 +99,7 @@ nmap -vvv -A --reason --script="+(safe or default) and not broadcat -p - <IP>"
 
 ```
 
-#### **Masscan**
+### Masscan
 
 ```
 masscan -p80 10.0.0.0/8                                               Look for all web servers using port 80 within a class A subnet
@@ -93,7 +108,7 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
                                                                       --router-ip specify the IP address for the appropriate gateway
 ```
 
-#### Other tools
+### Other tools
 
 - [httprobe](https://github.com/tomnomnom/httprobe) designed to find web servers
   - `type subs.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > out.txt`
@@ -105,7 +120,7 @@ masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1   --rate spe
   - `1..1024 | % {echo ((New-Object Net.Sockets.TcpClient).Connect("<IP>", $_)) "TCP port $_ is open"} 2>$null`
 - [nmapAutomator](https://github.com/21y4d/nmapAutomator)
 
-### <ins>SMB Enumeration</ins>
+## SMB Enumeration
 
 **Resources**
 - [smbclient](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html)
@@ -188,7 +203,7 @@ Third option
 - maybe it's possible to do phishing
 - nmap -Pn -p 139,445 --open --max-hostgroup 3 --script=smb-vuln* 10.10.10.4
 
-### <ins>NFS Enumeration</ins>
+## NFS Enumeration
 
 **Find and identify hosts that have portmapper/rpcbind running using nmap**<br/>
 `nmap -v -p 111 10.11.1.1-254`
@@ -216,7 +231,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 ```
 
 
-### <ins>SMTP Enumeration</ins>
+## SMTP Enumeration
 
 **Interesting commands**
 - `VRFY` request asks the server to verify an email address
@@ -232,7 +247,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
 **Use nmap for SMTP enumeration**<br/>
 `nmap -p 25 --script=smtp-enum-users <IP>`
 
-### <ins>SNMP Enumeration</ins>
+## SNMP Enumeration
 
 **Use nmap to perform a SNMP scan**<br/>
 `sudo nmap -sU --open -p 161 <IP-range> -oG open-snmp.txt`
@@ -260,7 +275,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
 - Installed software: `snmpwalk -c public -v1 <IP> 1.3.6.1.2.1.25.6.3.1.2`
 
 
-### <ins>HTTP / HTTPS enumeration</ins>
+## HTTP / HTTPS enumeration
 
 - [httprobe](https://github.com/tomnomnom/httprobe)
   - example: `cat subdomains.txt | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 150 > output.txt`
@@ -271,7 +286,7 @@ Note: Provided we at least know the SNMP read-only community string (in most cas
     cat naabu.txt | httprobe > results.txt
     ```
 
-### <ins>SSH enumeration</ins>
+## SSH enumeration
 
 - Port `22`, connect with
   - `ssh <ip>`, `ssh <ip> -oKexAlgorithms=+<option>`, ``ssh <ip> -oKexAlgorithms=+<option>` -c <cipher>`
