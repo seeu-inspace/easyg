@@ -1,5 +1,19 @@
-## Source code review
+# Source code review
 
+## Index
+
+- [Notes](#notes)
+- [Strategies](#strategies)
+- [Digging deeeper](#digging-deeeper)
+- [URL routing](#url-routing)
+- [Check-list](#check-list)
+- [Filtering / Escaping](#filtering--escaping)
+- [Automation](#automation)
+- [Resources](#resources)
+- [Tools](#tools)
+- [Some grep](#some-grep)
+
+## Notes
 - Search for known dangerous functions used on user-supplied input
   - example, `eval(` can cause command injection without proper sanitization
 - Search for hardcoded credentials such as API keys, encryption keys and database passwords
@@ -13,13 +27,13 @@
 - If a parameter is not filtered / escaped, then it’s better to check the function that accepts it
 - If there is something like `filtering_or_escaping`, you should check the quality of it for any bypass
 
-**Strategies**
+## Strategies
 There are many methods to do code review. Some examples:
 - Bottom up / Bottom down where you start from the functions you encounter first and see which other functions it calls and which other functions are called from
 - Greb way, where you search for specific keys like file.open, system, eval. This way is useful only if you want to do a quick code review
 - Another way is to start from a functionality, like Password Reset, and review all the code linked to this function. I’ll review which function Password Reset calls and by wich function, it’s called.
 
-**Digging deeeper**
+## Digging deeeper
 - Prioritize functions like authentication, autorization, PII etc.
   - example: disclosing PII in the logs, from [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
     <img src="img/Screenshot_20221110_172648.png">
@@ -27,13 +41,13 @@ There are many methods to do code review. Some examples:
     <img src="img/Screenshot_20221110_173028.png">
 - Follow any code that deals with user input
 
-**URL routing**
+## URL routing
 
 - `On “Ruby on rails” we have `config/routes.rb` and a directory `app/controllers/…`. Something similar happens for applications like “struts” where the configuration is in an xml file.
 - Another example is “Python Flask” where the mapping is part of the source code and you might encounter something like `@app.route(’hello’)\ndef hello:\n…` . Same will happen with “Ruby Sinatra” with something like `get hello do\n …\nend`.
 
 
-**Check-list**
+## Check-list
 
 1. Do you see a function that contains dangerous code?
    - ⇒ No. Move on
@@ -52,26 +66,26 @@ There are many methods to do code review. Some examples:
    - ⇒ Yes. Vulnerability
    - ⇒ Yes, but with more filtering. Go back to check 4.
 
-**Filtering / Escaping**
+## Filtering / Escaping
 
-- **No Filtering/Escaping**
-- **Naive Filtering/Escaping**
+- No Filtering/Escaping
+- Naive Filtering/Escaping
     - Just blocking common payloads like `' or 1=1 —`
     - Blocking spaces for SQL injections
     - Blocking `alerts()`
     - Blocking `<script>` tags
     - Blocking `phpinfo()` for code execution
-- **Incomplete Filtering/Escaping**
+- Incomplete Filtering/Escaping
     - Not escaping single quotes for XSS
     - No parameterized on LIMIT or ORDER for SQL injections
     - Only filtering “&”, “;” and “|” for command execution
     - Only escaping “none” and forgetting “None” for JWT algorithm
-- **Non Recursive Filtering/Escaping**
+- Non Recursive Filtering/Escaping
     - The filter removes “…/” in a path ⇒ “../../../test” becomes “test” ⇒ “….//….//….//test” becomes “../../../test”
-- **Non Context Aware Recursive Filtering/Escaping**
+- Non Context Aware Recursive Filtering/Escaping
     - If the valued is echoed in HTML code vs JavaScript
     - Escaping of a path Linux vs Windows
-- **Regular Expressions**
+- Regular Expressions
     - Missing “^” (caret) and/or “$” to enforce the start or end of the line.
         - `/^pentesterlab/` will match `pentesterlab.com.example.org`.
         - Matching one word, `/\w+$/` will match `../../../../webshell.ph`p ⇒ it should be `/^\w+$/`
@@ -81,21 +95,21 @@ There are many methods to do code review. Some examples:
     - Some languages use multiline by default, in Ruby, for example:
         - `/^test$/` will match “test\nHACKER” ⇒ the correct way is `/\Atest\z/`
         - Other languares use “m” at the end to specify multiline like `/^test$/m` so make sure it’s not used
-        - Ignorecase: `/^inc$/i` will match “ınc**”,** dotless i (in Turkish), remove the ignorecase
-- **Modifications before or after Filtering/Escaping**
+        - Ignorecase: `/^inc$/i` will match “ınc## ”,##  dotless i (in Turkish), remove the ignorecase
+- Modifications before or after Filtering/Escaping
     - Check again that the modifications does not create another exploitation
 
-**Automation**
+## Automation
 - Use SAST tools
 - Use SCA tools
 - Use secret scanners
 - Then test the results manually
 
-**Resources**
+## Resources
 - [How to Analyze Code for Vulnerabilities](https://www.youtube.com/watch?v=A8CNysN-lOM)
 - [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/)
 
-**Tools**
+## Tools
 - [Visual Studio Code](https://code.visualstudio.com/) for Source Code Analysis
 - [beautifier.io](https://beautifier.io/) for JavaScript Analysis
 - [DNSpy](https://github.com/dnSpy/dnSpy), .NET debugger
@@ -104,5 +118,5 @@ There are many methods to do code review. Some examples:
 - [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [GitLeaks](https://github.com/zricethezav/gitleaks)
 
-**Some grep**
+## Some grep
 - Quickly discover XSS vulnerabilities in PHP files `rg --no-heading "echo.*\\\$_GET" | grep "\.php:" | grep -v -e "(\$_GET" -e "( \$_GET" -e "esc_" -e "admin_url" -e "(int)" -e htmlentities` [[source](https://twitter.com/hakluke/status/1757661414762635610)]
