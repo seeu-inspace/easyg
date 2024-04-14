@@ -1,10 +1,17 @@
-## Cloud hacking
+# Cloud hacking
 
-**Resources**
+## Index
+
+- [Resources](#resources)
+- [Abusing S3 Bucket Permissions](#abusing-s3-bucket-permissions)
+- [AWS Cognito](#aws-cognito)
+- [Google Cloud Storage bucket](#google-cloud-storage-bucket)
+
+## Resources
+
 - [cloud_metadata.txt](https://gist.github.com/jhaddix/78cece26c91c6263653f31ba453e273b), Cloud Metadata Dictionary useful for SSRF Testing
 
-
-### <ins>Abusing S3 Bucket Permissions</ins>
+## Abusing S3 Bucket Permissions
 
 Target example: `http://[name_of_bucket].s3.amazonaws.com`
 
@@ -40,7 +47,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 - [Amazon S3: Allows read and write access to objects in an S3 Bucket](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html)
 
 
-### <ins>AWS Cognito</ins>
+## AWS Cognito
 
 If you've found aws cognito client id and secret
 1. `clientID:clientSercret` => `base64KEY`
@@ -49,7 +56,7 @@ If you've found aws cognito client id and secret
 
 
 
-### <ins>Google Cloud Storage bucket</ins>
+## Google Cloud Storage bucket
 
 **Tools**
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
