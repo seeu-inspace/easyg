@@ -607,6 +607,7 @@ mount a share
 exploitation
 - check if this smb hosts files of the web service, it might be possible to upload a shell
 - maybe it's possible to do phishing
+  - see [../client-side-attacks#phishing](client-side-attacks#phishing)
 - `nmap -Pn -p445 --open --max-hostgroup 3 --script smb-vuln-ms17-010 <IP>`
   - CVE-2017-0143 EternalBlue
   
