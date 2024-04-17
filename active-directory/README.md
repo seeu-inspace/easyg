@@ -186,6 +186,7 @@ PowerShell Detections bypass
 - [AMSITrigger](https://github.com/RythmStick/AMSITrigger) tool to identify the exact part of a script that is detected as malicious: `AmsiTrigger_x64.exe -i C:\AD\Tools\Invoke-PowerShellTcp_Detected.ps1`
 - [DefenderCheck](https://github.com/t3hbb/DefenderCheck) to identify code and strings from a binary / file that Windows Defender may flag: `DefenderCheck.exe PowerUp.ps1`
 - For full obfuscation of PowerShell scripts, see [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation)
+- See [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 
 Steps to avoid signature based detection:
 1. Scan using AMSITrigger
@@ -291,6 +292,8 @@ For Mimikatz, make the following changes:
       - see descriptions
     - smbclient
     - ldap
+- Access to the domain
+  - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
 - PrivEsc / Post Access
   - [ ] enumerate with bloodhound, powershell, powerview
   - [ ] Check privileges
