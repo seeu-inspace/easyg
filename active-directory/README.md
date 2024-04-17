@@ -264,7 +264,7 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
   - [ ] Check ZeroLogon
   - [ ] Check default creds
-    - also in Printers, [Jenkins](system-attacks/#jenkins) etc.
+    - also in Printers, [Jenkins](../system-attacks/#jenkins) etc.
   - [ ] Check other sections of [EasyG](https://github.com/seeu-inspace/easyg)
   - [ ] 464 kpasswd -> try Kerberoast
   - [ ] Test NFS -> port 111, 2049 (check it even if nmap doesn't mark it as NFS)
