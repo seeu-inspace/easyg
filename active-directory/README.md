@@ -291,9 +291,9 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
   - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
 - PrivEsc / Post Access
-  - [ ] Enumerate with bloodhound, powershell, powerview
+  - [ ] Enumerate with [BloodHound](#bloodhound), [PowerView](#powerview), [ADModule](#admodule)
   - [ ] Check privileges
-    - whoami /priv, Get-ADUser -identity <username> -properties *
+    - `whoami /priv`, `Get-ADUser -identity <username> -properties *`
   - [ ] Try access with RDP
   - [ ] Mimikatz
   - [ ] Test creds already found
