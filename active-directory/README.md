@@ -261,48 +261,33 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
     - try LDAP Pass-back attack
   - [ ] Check rpcclient
   - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
-  - [ ] Enumerate any AS-REP / Kerberos roastable users
   - [ ] Check ZeroLogon
-  - [ ] Check every section of this file
+  - [ ] Check every section of EasyG for vulnerabilities
   - [ ] Check default creds
     - also in Printers, Jenkins etc.
   - [ ] Check: 
     - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
     - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
-    - https://wadcoms.github.io/ <# interactive cheat-sheet #>
+    - https://wadcoms.github.io/ `<# interactive cheat-sheet #>`
     - https://github.com/seeu-inspace/easyg
   - [ ] 464 kpasswd -> try Kerberoast
   - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
-  - [ ] If you don't find something here, see exploitaiton-notes
-  - [ ] Check kerberoasting
-    - Not only kerbrute etc., try also to retrieve TGS ticket
-    - Test AS-REP roasting and Kerberoasting
-    - AS-REP, Kerberost, Rubeus (con e senza creds)
   - [ ] If you find creds / hashes, try:
     - crackmapexec to see a reuse of creds
     - evil-winrm
-    - kerberoasting impacket-GetUserSPNs
-      - AS-REP, Kerberost, Rubeus
-    - enum4linux (once without auth and only once with creds)
-      - see descriptions
-    - smbclient
-    - ldap
+    - enum4linux with creds
+      - see descriptions for possible creds
+    - SMB
+    - LDAP
 - Access to the domain
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
   - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
-- PrivEsc / Post Access
   - [ ] Enumerate with [BloodHound](#bloodhound), [PowerView](#powerview), [ADModule](#admodule)
-  - [ ] Check privileges
-    - `whoami /priv`, `Get-ADUser -identity <username> -properties *`
-  - [ ] Try access with RDP
-  - [ ] Mimikatz
-  - [ ] Test creds already found
-    - crackmapexec, ldap with auth, enum4linux (see descriptions), smbclient
-    - kerberoast (AS-REP, Kerberost, Rubeus, etc. -> retrieve TGS)
-    - secrets dump, impacket-psexec, impacket-wmiexec, evil-winrm
-    - test also hashes
-  - [ ] See PowerShell history
+- PrivEsc / Post Access
+  - [ ] [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1) run `Invoke-AllChecks`
   - [ ] Run Seatbelt first, then winPEAS
+  - [ ] See [system-attacks#windows-privilege-escalation](../system-attacks#windows-privilege-escalation)
+  - [ ] Mimikatz
   - [ ] See all sections of this document
  
 
