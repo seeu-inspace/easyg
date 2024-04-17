@@ -262,17 +262,11 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - [ ] Check rpcclient
   - [ ] Check all services in scope, like web vulnerabilities, ftp etc.
   - [ ] Check ZeroLogon
-  - [ ] Check every section of EasyG for vulnerabilities
   - [ ] Check default creds
     - also in Printers, Jenkins etc.
-  - [ ] Check: 
-    - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
-    - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
-    - https://wadcoms.github.io/ `<# interactive cheat-sheet #>`
-    - https://github.com/drak3hft7/Cheat-Sheet---Active-Directory/
-    - https://github.com/seeu-inspace/easyg
+  - [ ] Check other sections of [EasyG](https://github.com/seeu-inspace/easyg)
   - [ ] 464 kpasswd -> try Kerberoast
-  - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
+  - [ ] Test NFS -> port 111, 2049 (check it even if nmap doesn't mark it as NFS)
   - [ ] If you find creds / hashes, try:
     - crackmapexec to see a reuse of creds
     - evil-winrm
@@ -285,8 +279,10 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
   - [ ] Enumerate with [BloodHound](#bloodhound), [PowerView](#powerview), [ADModule](#admodule)
   - [ ] [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
-  - [ ] [WADComs](https://wadcoms.github.io/)
-  - [ ] [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory/)
+  - [ ] Check: 
+    - [Active Directory Methodology | HackTricks](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology)
+    - [WADComs](https://wadcoms.github.io/)
+    - [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory/)
 - PrivEsc / Post Access
   - [ ] [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1) run `Invoke-AllChecks`
   - [ ] Run Seatbelt first, then winPEAS
