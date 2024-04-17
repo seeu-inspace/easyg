@@ -269,6 +269,7 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
     - https://infosecwriteups.com/active-directory-penetration-testing-cheatsheet-5f45aa5b44ff
     - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
     - https://wadcoms.github.io/ `<# interactive cheat-sheet #>`
+    - https://github.com/drak3hft7/Cheat-Sheet---Active-Directory/
     - https://github.com/seeu-inspace/easyg
   - [ ] 464 kpasswd -> try Kerberoast
   - [ ] Test NFS -> port 111, 2049 (see even if nmap doesn't mark it as NFS)
@@ -283,11 +284,15 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
   - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
   - [ ] Enumerate with [BloodHound](#bloodhound), [PowerView](#powerview), [ADModule](#admodule)
+  - [ ] [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
+  - [ ] [WADComs](https://wadcoms.github.io/)
+  - [ ] [Cheat-Sheet - Active-Directory](https://github.com/drak3hft7/Cheat-Sheet---Active-Directory/)
 - PrivEsc / Post Access
   - [ ] [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1) run `Invoke-AllChecks`
   - [ ] Run Seatbelt first, then winPEAS
   - [ ] See [system-attacks#windows-privilege-escalation](../system-attacks#windows-privilege-escalation)
   - [ ] Mimikatz
+  - [ ] [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
   - [ ] See all sections of this document
  
 
@@ -1135,10 +1140,6 @@ Accessing the forest
 
 
 ## Lateral Movement Techniques and Pivoting
-
-- See: https://tryhackme.com/room/lateralmovementandpivoting
-- `psexec64.exe \\<MACHINE_IP> -u <USERNAME> -p <PASSWORD> -i cmd.exe`
-- `winrs.exe -r:<TARGET_HOSTNAME> cmd`
 
 ### WMI and WinRM
 
