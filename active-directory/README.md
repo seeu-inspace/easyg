@@ -50,6 +50,7 @@
   - [Kerberos Backdoors / Kerberos Skeleton](#kerberos-backdoors--kerberos-skeleton)
   - [Testing found credentials](#testing-found-credentials)
 - [Lateral Movement Techniques and Pivoting](#lateral-movement-techniques-and-pivoting)
+  - [Find-PSRemotingLocalAdminAccess](#find-psremotinglocaladminaccess)
   - [WMI and WinRM](#wmi-and-winrm)
   - [Remotely Creating Services Using sc](#remotely-creating-services-using-sc)
   - [Creating Scheduled Tasks Remotely](#creating-scheduled-tasks-remotely)
@@ -1136,6 +1137,13 @@ Accessing the forest
 
 
 ## Lateral Movement Techniques and Pivoting
+
+### Find-PSRemotingLocalAdminAccess
+
+Identify local admin privileges on other machines
+1. `. C:\path\to\Find-PSRemotingLocalAdminAccess.ps1`
+2. `Find-PSRemotingLocalAdminAccess`
+3. Connect to that machine `winr -r:<machine> cmd`
 
 ### WMI and WinRM
 
