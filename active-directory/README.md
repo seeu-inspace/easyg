@@ -18,7 +18,7 @@
 - [LDAP](#ldap)
 - [PsLoggedOn](#psloggedon)
 - [Service Principal Names Enumeration](#service-principal-names-enumeration)
-- [Object Permissions Enumeration=](#object-permissions-enumeration)
+- [Object Permissions Enumeration](#object-permissions-enumeration)
 - [Domain Shares Enumeration](#domain-shares-enumeration)
 - [SharpHound](#sharphound)
 - [BloodHound](#bloodhound)
@@ -294,7 +294,7 @@ For Mimikatz, make the following changes:
 - PrivEsc / Post Access
   - [ ] enumerate with bloodhound, powershell, powerview
   - [ ] Check privileges
-    - whoami /priv, Get-ADUser -identity s.smith -properties *
+    - whoami /priv, Get-ADUser -identity <username> -properties *
   - [ ] try access with rdp
   - [ ] mimikatz.exe
   - [ ] test creds already found
@@ -669,7 +669,7 @@ setspn -L <username>                                                List the SPN
 Get-NetUser -SPN | select samaccountname,serviceprincipalname       List the SPNs accounts in the domain
 ```
 
-## Object Permissions Enumeration=
+## Object Permissions Enumeration
 
 ```
 Get-ObjectAcl -Identity <username>                                                                                                        Enumerate ACEs
