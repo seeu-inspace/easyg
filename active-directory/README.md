@@ -182,6 +182,14 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
 - [DefenderCheck](https://github.com/t3hbb/DefenderCheck) to identify code and strings from a binary / file that Windows Defender may flag: `DefenderCheck.exe PowerUp.ps1`
 - For full obfuscation of PowerShell scripts, see [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation)
 - See [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
+- AppLocker
+  - Enumerate: `reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\Exe\`
+  - Using PowerShell remoting
+    1. `Enter-PSSession <computer>`
+    2. `$ExecutionContext.SessionState.LanguageMode`
+    3. `Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections`
+- Disable defender: `Set-MpPreference -DisableRealtimeMonitoring $true`
+
 
 **Steps to avoid signature based detection**
 1. Scan using AMSITrigger
