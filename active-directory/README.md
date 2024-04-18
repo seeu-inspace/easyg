@@ -363,8 +363,6 @@ Get-DomainGPOUserLocalGroupMapping -Identity <username> -Verbose                
 Get-DomainOU                                                                                                                               Retrieve OUs in a domain
 Get-DomainGPO -Identity "<gpo_id>"                                                                                                         Retrieve GPO applied on an OU
 Find-LocalAdminAccess -Verbose                                                                                                             Find all machines where the current user has local admin access
-Find-DomainUserLocation -CheckAccess                                                                                                       Find computers where a domain admin session is available and current user has admin access
-Find-DomainUserLocation -Stealth                                                                                                           Find computers where a domain admin session is available
 
 
 Get details, in this case, about user svc__apache
@@ -443,8 +441,11 @@ Get-ForestTrust                              Map trusts of a forest, specify a F
 
 Find computers where a domain admin, a specified user or group has sessions
 ---------------------------------------------------------------------------
+Find-DomainUserLocation
 Find-DomainUserLocation -Verbose
 Find-DomainUserLocation -UserGroupIdentity "RDPUsers"
+Find-DomainUserLocation -CheckAccess
+Find-DomainUserLocation -Stealth
 
 ```
 - See also [PowerView-3.0-tricks.ps1](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993), [HackTricks](https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters/powerview) and [HarmJ0y](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
