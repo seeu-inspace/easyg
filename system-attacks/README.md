@@ -1799,13 +1799,6 @@ maybe you are in a directory where there is something strange
 - Msbuild: https://pentestlab.blog/2017/05/29/applocker-bypass-msbuild/
            https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
 
-AppLocker
-- Enumerate: `reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\Exe\`
-- Using PowerShell remoting
-  1. `Enter-PSSession <computer>`
-  2. `$ExecutionContext.SessionState.LanguageMode`
-  3. `Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections`
-
 ### From Local Admin to System
 - If you are part of the group "Administrators", try: `.\PsExec.exe -i -s -d -accepteula cmd`
 
