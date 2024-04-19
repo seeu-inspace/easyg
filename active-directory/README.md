@@ -289,8 +289,9 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
     - LDAP
 - Access to the domain
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
-  - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses
-  - [ ] Enumerate with [BloodHound](#bloodhound), [PowerView](#powerview), [ADModule](#admodule)
+  - [ ] Run AMSI bypass
+  - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses if needed
+  - [ ] Enumerate with [PowerView](#powerview), [ADModule](#admodule), [BloodHound](#bloodhound)
   - [ ] [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
   - [ ] Check: 
     - [Active Directory Methodology | HackTricks](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology)
