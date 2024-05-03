@@ -11,6 +11,10 @@
 - [Tools](#tools)
   - [Foundry](#foundry)
   - [Slither](#slither)
+- [Audit](#Audit)
+  - [Interview process](#interview-process)
+  - [Audit process](#audit-process)
+  - [Audit methodology](#audit-methodology)
 - [Vulnerabilities](#vulnerabilities)
   - [Broken Access Control](#broken-access-control)
   - [Private informations stored on-chain](#private-informations-stored-on-chain)
@@ -331,8 +335,55 @@ $ slither . --exclude-dependencies
 ```
 
 
-## Vulnerabilities
+## Audit
 
+### Interview process
+
+Two guides / checklists to follow to see if the code is ready for an audit:
+
+- [simple-security-toolkit](https://github.com/nascentxyz/simple-security-toolkit)
+- [The Rekt Test](https://blog.trailofbits.com/2023/08/14/can-you-pass-the-rekt-test/)
+
+### Audit process
+
+The smart contract audit process can be briefly summed up in these steps:
+
+1. **Get Context**: Understand the project, its purpose and its unique aspects.
+2. **Use Tools**: Employ relevant tools to scan and analyze the codebase.
+3. **Manual Reviews**: Make a personal review of the code and spot out unusual or vulnerable code.
+4. **Write a Report**: Document all findings and recommendations for the development team.
+
+Low level → **The Three Phases of a Security Review**
+
+1. Initial Review
+a. Scoping
+b. Reconnaissance
+c. Vulnerability identification
+d. Reporting
+2. Protocol fixes
+a. Fixes issues
+b. Retests and adds tests
+3. Mitigation Review
+a. Reconnaissance
+b. Vulnerability identification
+C. Reporting
+
+### Audit methodology
+
+1. Git clone the repository in local enviorment + disable `ffi` if needed
+2. Read the documentation
+3. Create a scope table with: name file, lines of code, if you have audited or not. You can use notion for this, as it enables you to create an interactive spreadsheet. For example, you can rank the contracts based on complexity.
+    - A cool tool for this purpose is [Solidity Code Metrics](https://github.com/Consensys/solidity-metrics)
+4. Look at the code, see how you can break it
+    - Take notes, in the code and in a file `.md`
+      - Use the markers like `@audit`, `@audit-info`, `@audit-ok`, `@audit-issue`
+    - Don’t get stuck in rabbit holes
+    - Use Foundry to write tests, especially if some are missing. Also run chisel to understand what some portions of code do
+    - Look at the docs again to see if everything is correct, which functions might be more vulnerable etc.
+
+
+
+## Vulnerabilities
 
 ### Broken Access Control
 
