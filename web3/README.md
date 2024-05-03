@@ -792,9 +792,8 @@ For pricing: It’s always advisable to rely on secure price oracle mechanism, l
 
 ### Storage collision
 
-<img src=”https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/storage-collision/diagrams/storageCollision.png”>
-
-See: [StorageCollision.sol](https://remix.ethereum.org/#url=https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/storage-collision/StorageCollision.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.20+commit.a1b79de6.js) and [StorageCollisionTest.t.sol](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/test/unit/StorageCollisionTest.t.sol).
+- [See this scheme](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/storage-collision/diagrams/storageCollision.png)
+- See: [StorageCollision.sol](https://remix.ethereum.org/#url=https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/storage-collision/StorageCollision.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.20+commit.a1b79de6.js) and [StorageCollisionTest.t.sol](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/test/unit/StorageCollisionTest.t.sol).
 
 ### EVM compatibility
 
