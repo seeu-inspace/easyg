@@ -9,6 +9,7 @@
   - [Apktool](#apktool)
 - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
 - [Cordova attacks](#cordova-attacks)
+- [Hardcoded strings](#hardcoded-strings)
 
 ## Structure
 
@@ -133,3 +134,20 @@ Absence or improper implementation of certificate and public key pinning in a mo
 - Check for HTML injections
 - Search for XSS
   - With this type of attack, it's possible to achieve an RCE. Check [this](https://www.joshmorony.com/why-xss-attacks-are-more-dangerous-for-capacitor-cordova-apps/) and [this](https://research.securitum.com/security-problems-of-apache-cordova-steal-the-entire-contents-of-the-phone_s-memory-card-with-one-xss/)
+
+
+## Hardcoded strings
+
+- Often, they can be found in resources/strings.xml
+- They can also be found in activity source code
+- Threat vectors
+    - URLs exposed (http/https)
+    - Credentials
+    - API keys
+    - Firebase URLs (firebase.io)
+
+Some obfuscation:
+- `R.string.cmVzb3VyY2VzX3lv`
+    - `R.string` means that you can find the string in Resources
+    - If you are using `jadx-gui`, go to `resources.arsc` > `res` > `values` > `strings.xml`
+- Check for `Base64.decode` for possible secrets
