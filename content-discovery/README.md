@@ -111,3 +111,4 @@
 ## Shodan Dorking
 - `hostname:targetcorp.com` Search for TargetCorp’s domain
 - `hostname:targetcorp.com port:'22'` Search for TargetCorp’s domain running SSH
+- `http.favicon.hash:`, see [Finding a P1 in one minute with Shodan.io (RCE)](https://medium.com/@sw33tlie/finding-a-p1-in-one-minute-with-shodan-io-rce-735e08123f52)
