@@ -39,5 +39,5 @@ I try as much as possible to link to the various sources or inspiration for thes
 - [Active Directory](active-directory/#active-directory)
 - [Mobile](mobile/#mobile)
 - [Cloud hacking](cloud-hacking/#cloud-hacking)
-- [Artificial intelligence vulnerabilities](artificial-intelligence-vulnerabilities/#artificial-intelligence-vulnerabilities)
+- [AI / LLM vulnerabilities](ai-llm-vulnerabilities/#ai--llm-vulnerabilities)
 - [Web3](web3/#web3)
