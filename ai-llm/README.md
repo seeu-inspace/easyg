@@ -1,4 +1,4 @@
-# AI / LLM
+# AI / LLM vulnerabilities
 
 ## Index
 
