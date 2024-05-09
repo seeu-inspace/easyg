@@ -317,56 +317,71 @@ end
 
 if option == "webscreenshot"
 
+	urls = File.readlines(file).map(&:chomp)
+
 	i = 0
 	image_paths = []
-	
-	system "mkdir output" if File.directory?('output') == false
 
-	system "mkdir output/webscreen" if File.directory?('output\webscreen') == false
-		
+	system "mkdir output" if !File.directory?('output')
+	system "mkdir output/webscreen" if !File.directory?('output/webscreen')
+
 	options = Selenium::WebDriver::Chrome::Options.new
 	options.add_argument('--ignore-certificate-errors')
 	options.add_argument('--disable-popup-blocking')
 	options.add_argument('--disable-translate')
 	options.add_argument('--ignore-certificate-errors-spki-list')
+	options.add_argument('--silent-launch')
 	options.add_argument('--headless')
 
 	driver = Selenium::WebDriver.for :chrome, options: options
 
-	File.open(file,'r').each_line do |f|
-		
-		target = f.gsub("\n","").to_s
-			
+	urls.each do |url|
 		i += 1
 
 		begin
-			
-			driver.navigate.to target
+			driver.navigate.to url
 
-			image_path = 'output/webscreen/' + target.gsub('/', '_').gsub(':', '_').gsub('?', '_').gsub('/', '_').gsub('*', '_').gsub('"', '_').gsub('<', '_').gsub('>', '_').gsub('|', '_').to_s + '.png'
+			image_path = "output/webscreen/#{url.gsub(/[^\w\s]/, '_')}.png"
 			driver.save_screenshot(image_path)
-			puts "[\e[34m" + i.to_s + "\e[0m] Screenshot saved as: #{image_path}"
+			puts "[\e[34m#{i}\e[0m] Screenshot saved as: #{image_path}"
 			image_paths << image_path
-				
-		rescue
-			
-			puts "[\e[31m" + i.to_s + "\e[0m] ERROR while trying to take a screenshot of " + target
-				
+		rescue Selenium::WebDriver::Error::WebDriverError => e
+			puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
 		end
-			
 	end
-		
+
 	driver.quit
 
 	# Create an HTML gallery with all the screenshots
 	File.open('output/gallery.html', 'w') do |html|
-		html.write('<html><body><center>')
-		
-		image_paths.each do |path|
-			html.write("<b>" + path.gsub('output/webscreen/', '_').gsub('__','://').gsub('.png','').gsub('_','') + "</b><br/><img src=\"" + path.gsub('output/', '') + "\" width=\"600\"><br><br/><br/>")
+		html.write('<!DOCTYPE html>')
+		html.write('<html lang="en">')
+		html.write('<head>')
+		html.write('<meta charset="UTF-8">')
+		html.write('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+		html.write('<title>Web Screenshots Gallery</title>')
+		html.write('<style>')
+		html.write('body { font-family: Arial, sans-serif; background-color: #1e2227; color: #fff; }')
+		html.write('.container { max-width: 800px; margin: 0 auto; }')
+		html.write('.screenshot { margin-bottom: 20px; border: 2px solid white; padding:7px; }')
+		html.write('.screenshot img { max-width: 100%; display: block; margin: 0 auto; transition: box-shadow 0.3s; }')
+		html.write('.screenshot img:hover { box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5); }')
+		html.write('.screenshot-url { font-size: 14px; margin-top: 5px; text-align: center; }')
+		html.write('</style>')
+		html.write('</head>')
+		html.write('<body>')
+		html.write('<div class="container">')
+
+		image_paths.each_with_index do |path, index|
+			html.write('<div class="screenshot">')
+			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{index + 1}\">")
+			html.write("<div class=\"screenshot-url\"><b>URL:</b> <a href=\"#{urls[index]}\" target=_blank>#{urls[index]}</a></div>")
+			html.write('</div>')
 		end
-		
-		html.write('</center></body></html>')
+
+		html.write('</div>')
+		html.write('</body>')
+		html.write('</html>')
 	end
 
 end
