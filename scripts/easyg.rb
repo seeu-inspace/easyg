@@ -330,7 +330,6 @@ if option == "webscreenshot"
 	options.add_argument('--disable-popup-blocking')
 	options.add_argument('--disable-translate')
 	options.add_argument('--ignore-certificate-errors-spki-list')
-	options.add_argument('--silent-launch')
 	options.add_argument('--headless')
 
 	driver = Selenium::WebDriver.for :chrome, options: options
