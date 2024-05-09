@@ -344,7 +344,7 @@ if option == "webscreenshot"
 			driver.save_screenshot(image_path)
 			puts "[\e[34m#{i}\e[0m] Screenshot saved as: #{image_path}"
 			image_paths << image_path
-		rescue Selenium::WebDriver::Error::WebDriverError => e
+		rescue Exception => e
 			puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
 		end
 	end
