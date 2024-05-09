@@ -1416,6 +1416,8 @@ Once you have the source code, look for the secrets within the files. To find se
 
 ## Subdomain takeover
 
+- [Subdomain Takeover in Azure: making a PoC](https://godiego.co/posts/STO-Azure/)
+
 **Tools**
 - [Can I take over XYZ?](https://github.com/EdOverflow/can-i-take-over-xyz)
 - nuclei template `%USERPROFILE%\nuclei-templates\takeovers`
