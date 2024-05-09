@@ -158,6 +158,10 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 - [Peeranha](https://peeranha.io/)
 - [ethereum.stackexchange](https://ethereum.stackexchange.com/)
 
+**Bounties**
+- [Daily Warden](https://www.dailywarden.com/)
+- [bounty.vision](https://bounty.vision/)
+
 ## Tools
 
 **Blockchain exploration**
