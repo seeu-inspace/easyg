@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#tools used: amass, subfinder, github-subdomains, gobuster, anew, httpx, naabu, nuclei, hakrawler, gospider, katana, selenium, gau
 
 require 'uri'
 require 'net/http'
