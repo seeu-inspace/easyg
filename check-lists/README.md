@@ -88,6 +88,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 ### 4. House keeping
 - Cleaning up rootkits
 - Covering tracks
+- See: [Post Exploitation - The Penetration Testing Execution Standard](http://www.pentest-standard.org/index.php/Post_Exploitation)
 
 ### 5. Results
 - Reporting / Analysis
