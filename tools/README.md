@@ -455,3 +455,4 @@ keyscan_stop              stop the keystroke sniffer
 - [hakoriginfinder](https://github.com/hakluke/hakoriginfinder) for discovering the origin host behind a reverse proxy
 - [ISTanCo IST - Domain Registration](https://cp.istanco.net/) to buy a short domain
 - [pentesting-osTicket](https://github.com/Legoclones/pentesting-osTicket)
+- [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
