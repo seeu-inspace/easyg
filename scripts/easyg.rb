@@ -362,7 +362,7 @@ if option == "webscreenshot"
 		html.write('<style>')
 		html.write('body { font-family: Arial, sans-serif; background-color: #1e2227; color: #fff; }')
 		html.write('.container { max-width: 800px; margin: 0 auto; }')
-		html.write('.screenshot { margin-bottom: 20px; border: 2px solid white; padding:7px; }')
+		html.write('.screenshot { margin-bottom: 20px; border: 2px solid white; background-color: #fff; color: #1e2227; }')
 		html.write('.screenshot img { max-width: 100%; display: block; margin: 0 auto; transition: box-shadow 0.3s; }')
 		html.write('.screenshot img:hover { box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5); }')
 		html.write('.screenshot-url { font-size: 14px; margin-top: 5px; text-align: center; }')
