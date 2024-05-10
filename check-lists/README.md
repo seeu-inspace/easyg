@@ -204,6 +204,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [Crunchbase](https://www.crunchbase.com/)
   - [OCCRP Aleph](https://aleph.occrp.org/)
   - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
+- [ ] If IPs are in scope: `cat ip.txt | dnsx -ptr -resp-only`
 
 ### Single target
 - [ ] Recon
@@ -213,11 +214,12 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   + [Content Discovery](../web-vulnerabilities/#content-discovery), use tools, [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking)
   + Check the [Testing layers](../web-vulnerabilities/#testing-layers)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
+- [ ] Look for PII Disclosure
 - [ ] Parameters
-  - [ ] Look for reflections
-  - [ ] Use [ParamSpider](https://github.com/devanshbatham/ParamSpider)
+  - Look for reflections
+  - Use [ParamSpider](https://github.com/devanshbatham/ParamSpider)
     - [rXSS](../web-vulnerabilities/#cross-site-scripting-xss)
-  - [ ] Redirection
+  - Redirection
     - Check for [Open Redirects](../web-vulnerabilities#open-redirection)
 - [ ] Authentication
   - See [Authentication vulnerabilities](../web-vulnerabilities/#authentication-vulnerabilities)
@@ -227,6 +229,9 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
     - App Custom Fields
     - Integrations
       - [SSRF](../web-vulnerabilities/#server-side-request-forgery-ssrf), [XSS](../web-vulnerabilities/#cross-site-scripting-xss)
+  - [HTTP Request Smuggling](../web-vulnerabilities#http-request-smuggling) in login panels
+  - [CSRF](../web-vulnerabilities#cross-site-request-forgery-csrf) for every auth user action
+  - Password Reset Broken Logic / Poisoning
 - [ ] [Upload Functions](../web-vulnerabilities/#file-upload-vulnerabilities)
 - [ ] Email functions, check if you can send emails from the target
   - [ ] Spoofing
