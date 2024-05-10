@@ -670,9 +670,13 @@ Manually testing for XXE vulnerabilities generally involves
 - [XSS to Exfiltrate Data from PDFs](https://medium.com/r3d-buck3t/xss-to-exfiltrate-data-from-pdfs-f5bbb35eaba7)
 - [How to craft an XSS payload to create an admin user in WordPress](https://shift8web.ca/2018/01/craft-xss-payload-create-admin-user-in-wordpress-user/)
 
-### Resources
+### Tools
 - [xsscrapy](https://github.com/DanMcInerney/xsscrapy)
-- [python3 version](https://github.com/L1NT/xsscrapy) 
+  - [python3 version](https://github.com/L1NT/xsscrapy)
+- [KNOXSS](https://knoxss.me/)
+- [DalFox](https://github.com/hahwul/dalfox)
+
+### Resources
 - For blind XSS
 - [XSS Hunter Express](https://github.com/mandatoryprogrammer/xsshunter-express)
 - [XSS Hunter](https://xsshunter.com/)
@@ -712,7 +716,6 @@ Manually testing for XXE vulnerabilities generally involves
 - Nuclei template `%USERPROFILE%\nuclei-templates\vulnerabilities\generic\crlf-injection.yaml`
 
 ### Payloads
-
 
 - HTML injection
   - ```HTML
