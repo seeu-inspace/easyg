@@ -210,24 +210,30 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   + Explore the app, test every functionality (eventually, search for documentation)
   + Crawl with Burp Suite
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + [Content Discovery](#content-discovery), use tools, [Google Dorking](#google-dorking) and [GitHub Dorking](#github-dorking)
-  + Check the [Testing layers](#testing-layers)
+  + [Content Discovery](../web-vulnerabilities/#content-discovery), use tools, [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking)
+  + Check the [Testing layers](../web-vulnerabilities/#testing-layers)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
+- [ ] Parameters
+  - [ ] Look for reflections
+  - [ ] Use [ParamSpider](https://github.com/devanshbatham/ParamSpider)
+    - [rXSS](../web-vulnerabilities/#cross-site-scripting-xss)
+  - [ ] Redirection
+    - Check for [Open Redirects](../web-vulnerabilities#open-redirection)
 - [ ] Authentication
-  - See [Authentication vulnerabilities](#authentication-vulnerabilities)
+  - See [Authentication vulnerabilities](../web-vulnerabilities/#authentication-vulnerabilities)
   - Account Section
     - Profile
-      - Stored or Blind [XSS](#cross-site-scripting-xss)
+      - Stored or Blind [XSS](../web-vulnerabilities/#cross-site-scripting-xss)
     - App Custom Fields
     - Integrations
-      - [SSRF](#server-side-request-forgery-ssrf), [XSS](#cross-site-scripting-xss)
-- [ ] [Upload Functions](#file-upload-vulnerabilities)
+      - [SSRF](../web-vulnerabilities/#server-side-request-forgery-ssrf), [XSS](../web-vulnerabilities/#cross-site-scripting-xss)
+- [ ] [Upload Functions](../web-vulnerabilities/#file-upload-vulnerabilities)
 - [ ] Email functions, check if you can send emails from the target
   - [ ] Spoofing
   - [ ] HTML Injection
-  - [ ] [XSS](#cross-site-scripting-xss)
+  - [ ] [XSS](../web-vulnerabilities/#cross-site-scripting-xss)
 - [ ] Feedback functions
-  - Look for [Blind XSS](#cross-site-scripting-xss)
+  - Look for [Blind XSS](../web-vulnerabilities/#cross-site-scripting-xss)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
 - [ ] Content Types
@@ -242,4 +248,4 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html), check also
   - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
   - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
-- [ ] [Look at the index of this repo](#index) and see if you've missed anything interesting
+- [ ] [Look at the index of this repo](../#index) and see if you've missed anything interesting
