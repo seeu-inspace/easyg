@@ -1,1 +1,7 @@
+proxy_addr: 127.0.0.1
+proxy_port: 8080
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0
+cookie: 0=1
+authorization: Basic MD0x
 github_token: YOUR_GITHUB_TOKEN_HERE
+shodan_token: YOUR_SHODAN_TOKEN_HERE
