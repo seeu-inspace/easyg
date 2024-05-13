@@ -383,6 +383,7 @@ keyscan_stop              stop the keystroke sniffer
 
 **For auths**
 - [textverified.com](https://www.textverified.com/) for auths requiring a phone number
+- [quackr](https://quackr.io/) for a fake phone number (free)
 - [temp-mail.org](https://temp-mail.org/en/)
 
 **To find parameters**
