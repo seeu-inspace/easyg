@@ -215,6 +215,9 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   + Check the [Testing layers](../web-vulnerabilities/#testing-layers)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
 - [ ] Look for PII Disclosure
+  - If you find documents redacted
+    - Try to copy and paste the obscured text
+    - Try to convert the PDF, for example with pdftotext
 - [ ] Parameters
   - Look for reflections
   - Use [ParamSpider](https://github.com/devanshbatham/ParamSpider)
