@@ -21,6 +21,10 @@
 
 ### Tools used and what the script does
 
+[**firefox**] open every entry in <file_input> with firefox
+
+[**gettoburp**] for every entry in <file_input> send a GET request using as a proxy 127.0.0.1:8080. This is useful for adding entries from a file to Burp Suite.
+
 [**assetenum**] During this process, many tools are implemented to discover subdomains. Then, there is the process of discovering ports and possibly discovering technologies, misconfigurations and vulnerabilities for these assets discovered.
 - [amass](https://github.com/owasp-amass/amass)
 - [subfinder](https://github.com/projectdiscovery/subfinder)
@@ -29,21 +33,31 @@
 - [httpx](https://github.com/projectdiscovery/httpx)
 - [naabu](https://github.com/projectdiscovery/naabu)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
+- [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
 
-[**crawl-burp**] crawl for every entry in <file_input> and pass the results to Burp Suite port 8080
+[**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
+- [selenium](https://github.com/SeleniumHQ/selenium)
+
+[**crawl-burp**] crawl for every entry in <file_input> and pass the results to Burp Suite
 - [hakrawler](https://github.com/hakluke/hakrawler)
 - [gospider](https://github.com/jaeles-project/gospider)
 - [katana](https://github.com/projectdiscovery/katana)
 - [gau](https://github.com/lc/gau)
 
-[**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
-- [selenium](https://github.com/SeleniumHQ/selenium)
-
-[**firefox**] open every entry in <file_input> with firefox
-
-[**gettoburp**] for every entry in <file_input> send a GET request using as a proxy 127.0.0.1:8080. This is useful for adding entries from a file to Burp Suite.
-
-Other tools
+[**crawl-local**] Crawl for every entry in <file_input> and save the results in local. Optionally, scan for vulnerabilities
+- [katana](https://github.com/projectdiscovery/katana)
+- [waymore](https://github.com/xnl-h4ck3r/waymore)
+- [gau](https://github.com/lc/gau)
+- [paramspider](https://github.com/devanshbatham/ParamSpider/)
+- [subjs](https://github.com/lc/subjs)
+- [httpx](https://github.com/projectdiscovery/httpx)
+- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
+- [github-endpoints.py](https://github.com/gwen001/github-search/blob/master/github-endpoints.py)
+- [urless](https://github.com/xnl-h4ck3r/urless)
+- [mantra](https://github.com/MrEmpy/mantra)
+- [socialhunter](https://github.com/utkusen/socialhunter)
+- [ffuf](https://github.com/ffuf/ffuf)
+- [seclists](https://github.com/danielmiessler/SecLists)
 - [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
 
 
