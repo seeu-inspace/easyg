@@ -15,7 +15,7 @@
 
 ## EasyG
 
-<img src="../img/easyg.gif">
+<img src="../img/easyg.gif"><em>Old GIF but still cool</em>
 
 [EasyG](../scripts/) is a script that I use to automate some information gathering tasks for my hacking process.
 
