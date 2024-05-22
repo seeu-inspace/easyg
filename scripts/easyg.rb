@@ -17,11 +17,11 @@ $config = YAML.load_file('config.yaml')
 def logo
 	result = ""
 	lines = [ "\n███████╗ █████╗ ███████╗██╗   ██╗ ██████╗    ██████╗ ██████╗ ",
-		    "██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝    ██╔══██╗██╔══██╗",
-		    "█████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗   ██████╔╝██████╔╝",
-		    "██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║   ██╔══██╗██╔══██╗",
-		    "███████╗██║  ██║███████║   ██║   ╚██████╔╝██╗██║  ██║██████╔╝",
-		    "╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ ",
+				"██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝    ██╔══██╗██╔══██╗",
+		    	"█████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗   ██████╔╝██████╔╝",
+		    	"██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║   ██╔══██╗██╔══██╗",
+		    	"███████╗██║  ██║███████║   ██║   ╚██████╔╝██╗██║  ██║██████╔╝",
+		    	"╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝╚═╝  ╚═╝╚═════╝ ",
 	]
 
 	lines.each do |line|
@@ -110,7 +110,39 @@ def process_file_with_sed(file_path)
 	File.rename("#{file_path}.tmp", file_path)
 end
 
+
+
+def search_confidential_files(file_type, file_sanitized)
+	puts "\n[\e[36m+\e[0m] Searching for possible confidential #{file_type.upcase}s"
+	
+	# Define the regex pattern based on the file type
+	regex_pattern = case file_type
+									when 'pdf' then '\\.pdf'
+									when 'txt' then '\\.txt'
+									when 'csv' then '\\.csv'
+									else return
+									end
+
+	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized}.txt"
+
+	# Construct the command to search for confidential files
+	command = <<~BASH
+		for i in `cat output/allUrls_#{file_sanitized} | grep -Ea '#{regex_pattern}' | httpx -silent -mc 200`; do
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|password|credentials'; then
+				echo $i | tee -a #{output_file};
+			fi;
+		done
+	BASH
+
+	system(command)
+	delete_if_empty(output_file)
+end
+
+
+
 # :: functions for the options ::
+
+
 
 def show_help(option_actions)
 	# calculate the maximum length of the option names
@@ -467,15 +499,13 @@ def crawl_local_fun(params)
 
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep \"\\.js$\" > output/_tmp1AllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -Ea '\\.js' > output/_tmp1AllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com' | uniq >> output/_tmp1AllJSUrls_#{file_sanitized}"
 	# Just keep it 200
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit --status-code -o output/_tmp2AllJSUrls_#{file_sanitized}"
-	system "cat output/_tmp2AllJSUrls_#{file_sanitized} | grep \"32m200\" > output/allJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
-	File.delete("output/_tmp2AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp2AllJSUrls_#{file_sanitized}")
 	process_file_with_sed "output/allJSUrls_#{file_sanitized}"
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
@@ -490,75 +520,72 @@ def crawl_local_fun(params)
 		target = f.strip
 		#main_domain = subdomain.split('.').last(2).join('.')
 		puts "\n[\e[34m+\e[0m] Finding more endpoints with github-endpoints.py"
-		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} >> output/_tmpAllUrls_to_crawl.txt"
+		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t $config['github_token'] >> output/_tmpAllUrls_to_crawl.txt"
 		adding_anew("output/xnLinkFinder_to_crawl.txt", "output/_tmpAllUrls_to_crawl.txt")
 		break
 	end
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 
 	# Final
-	system "cat output/allJSUrls_#{file_sanitized} >> output/_tmpAllUrls_#{file_sanitized}"
+	system "cat output/allJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	system "urless -i output/_tmpAllUrls_#{file_sanitized} -o output/allUrls_#{file_sanitized}"
 	process_file_with_sed "output/allUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
+	## :: Grep only params ::
+	system "cat output/allUrls_#{file_sanitized} | grep \"?\" > output/tmp_params_#{file_sanitized}"
+	system "cat output/tmp_params_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allParams_#{file_sanitized}"
+	File.delete("output/tmp_params_#{file_sanitized}") if File.exists?("output/tmp_params_#{file_sanitized}")
+	process_file_with_sed "output/allParams_#{file_sanitized}"
+	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{file_sanitized}"
+
+	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
+	File.open("output/allUrls_#{file_sanitized}", 'r+') do |file|
+		lines = file.readlines.map(&:strip)
+		file.rewind
+		file.truncate(0)
+		lines.each do |line|
+			begin
+			modified_url = replace_param_with_fuzz(line)
+			file.puts modified_url
+			rescue Exception => e
+				puts "[\e[31m+\e[0m] ERROR: " + e.message
+			end
+		end
+	end
+
 	# === SEARCH FOR VULNS ===
 	if params[:gb_opt] == "y"
-		
+
+		# :: Search for possible confidential files ::
+		['pdf', 'txt', 'csv', 'xml'].each do |file_type|
+			search_confidential_files(file_type, file_sanitized)
+		end
+
 		# :: Mantra ::
 		puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
 		system "cat output/allUrls_#{file_sanitized} | mantra -s -d | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" > output/mantra_results_#{file_sanitized}"
 		delete_if_empty "output/mantra_results_#{file_sanitized}"
-		if File.exists?("output/mantra_results_#{file_sanitized}")
-			system "cat output/mantra_results_#{file_sanitized}"
-			puts "[\e[36m+\e[0m] Results saved as output/mantra_results_#{file_sanitized}"
-		end
 		
 		# :: SocialHunter
 		puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
 		system "socialhunter -f output/allUrls_#{file_sanitized} -w 20 | grep \"Possible Takeover\" > output/socialhunter_results_#{file_sanitized}"
 		delete_if_empty "output/socialhunter_results_#{file_sanitized}"
-		if File.exists?("output/socialhunter_results_#{file_sanitized}")
-			system "cat output/socialhunter_results_#{file_sanitized}"
-			puts "[\e[36m+\e[0m] Results saved as output/socialhunter_results_#{file_sanitized}"
-		end
 		
-		## :: Grep only params ::
-		system "cat output/allUrls_#{file_sanitized} | grep \"?\" > output/tmp_params_#{file_sanitized}"
-		system "cat output/tmp_params_#{file_sanitized} | httpx-toolkit --status-code -o output/tmp2_params_#{file_sanitized}"
-		system "cat output/tmp2_params_#{file_sanitized} | grep \"32m200\" > output/allParams_#{file_sanitized}"
-		File.delete("output/tmp_params_#{file_sanitized}") if File.exists?("output/tmp_params_#{file_sanitized}")
-		File.delete("output/tmp2_params_#{file_sanitized}") if File.exists?("output/tmp2_params_#{file_sanitized}")
-		process_file_with_sed "output/allParams_#{file_sanitized}"
-		puts "[\e[36m+\e[0m] Results saved as output/allParams_#{file_sanitized}"
-
-		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
-		File.open("output/allUrls_#{file_sanitized}", 'r+') do |file|
-			lines = file.readlines.map(&:strip)
-			file.rewind
-			file.truncate(0)
-			lines.each do |line|
-				begin
-				modified_url = replace_param_with_fuzz(line)
-				file.puts modified_url
-				rescue Exception => e
-					puts "[\e[31m+\e[0m] ERROR: " + e.message
-				end
-			end
-		end
-		
-		# :: Use xsscrapy and/or dalfox ::
-		puts "\n[\e[36m+\e[0m] Searching for XSS with dalfox"
-		system "dalfox file output/allParams_#{file_sanitized} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox_#{file_sanitized}"
-		puts "[\e[36m+\e[0m] Results saved in the current directory or output/"
-		
-		# 2. Search for LFI
+		# :: search for LFI with FFUF, search for XSS with dalfox ::
+		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
 		File.open("output/allParams_#{file_sanitized}",'r').each_line do |f|
 			target = f.gsub("\n","").to_s
-			system "ffuf -u \"#{target}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi_#{file_sanitized.gsub("\.txt","")}/"
+			output = `wafw00f #{target} -v`
+			if output.include?("is behind a")
+				system "dalfox url #{target} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{target.gsub(/[^\w\s]/, '_')}"
+				system "ffuf -u \"#{target}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{target.gsub(/[^\w\s]/, '_')}/"
+			else
+				puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
+			end
 		end
-		puts "[\e[36m+\e[0m] Results saved in the directory output/ffuf_lfi_#{file_sanitized.gsub("\.txt","")}/"
+		puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
 
 	end
 
