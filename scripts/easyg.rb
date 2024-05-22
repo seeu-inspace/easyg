@@ -140,6 +140,64 @@ end
 
 
 
+def search_for_vulns(file_to_scan)
+
+	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
+
+	# :: Search for possible confidential files ::
+	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
+		search_confidential_files(file_type, file_to_scan)
+	end
+
+	# :: Mantra ::
+	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
+	system "cat #{file_to_scan} | mantra -s -d | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" > output/mantra_results_#{o_sanitized}"
+	delete_if_empty "output/mantra_results_#{o_sanitized}"
+		
+	# :: SocialHunter
+	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
+	system "socialhunter -f #{file_to_scan} -w 20 | grep \"Possible Takeover\" > output/socialhunter_results_#{o_sanitized}"
+	delete_if_empty "output/socialhunter_results_#{o_sanitized}"
+		
+	# :: search for LFI with FFUF, search for XSS with dalfox ::
+	## :: Grep only params ::
+	system "cat #{file_to_scan} | grep \"?\" > output/tmp_params_#{o_sanitized}"
+	system "cat output/tmp_params_#{o_sanitized} | httpx-toolkit -silent -mc 200 -o output/allParams_#{o_sanitized}"
+	File.delete("output/tmp_params_#{o_sanitized}") if File.exists?("output/tmp_params_#{o_sanitized}")
+	process_file_with_sed "output/allParams_#{o_sanitized}"
+	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{o_sanitized}"
+	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
+	File.open("#{file_to_scan}", 'r+') do |file|
+		lines = file.readlines.map(&:strip)
+		file.rewind
+		file.truncate(0)
+		lines.each do |line|
+			begin
+			modified_url = replace_param_with_fuzz(line)
+			file.puts modified_url
+			rescue Exception => e
+				puts "[\e[31m+\e[0m] ERROR: " + e.message
+			end
+		end
+	end
+	# Search for XSS and LFI
+	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
+	File.open("output/allParams_#{o_sanitized}",'r').each_line do |f|
+		target = f.gsub("\n","").to_s
+		output = `wafw00f #{target} -v`
+		if output.include?("is behind a")
+			system "dalfox url #{target} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{target.gsub(/[^\w\s]/, '_')}"
+			system "ffuf -u \"#{target}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{target.gsub(/[^\w\s]/, '_')}/"
+		else
+			puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
+		end
+	end
+	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
+
+end
+
+
+
 # :: functions for the options ::
 
 
@@ -520,7 +578,7 @@ def crawl_local_fun(params)
 		target = f.strip
 		#main_domain = subdomain.split('.').last(2).join('.')
 		puts "\n[\e[34m+\e[0m] Finding more endpoints with github-endpoints.py"
-		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t $config['github_token'] >> output/_tmpAllUrls_to_crawl.txt"
+		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} >> output/_tmpAllUrls_to_crawl.txt"
 		adding_anew("output/xnLinkFinder_to_crawl.txt", "output/_tmpAllUrls_to_crawl.txt")
 		break
 	end
@@ -533,60 +591,9 @@ def crawl_local_fun(params)
 	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
-	## :: Grep only params ::
-	system "cat output/allUrls_#{file_sanitized} | grep \"?\" > output/tmp_params_#{file_sanitized}"
-	system "cat output/tmp_params_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allParams_#{file_sanitized}"
-	File.delete("output/tmp_params_#{file_sanitized}") if File.exists?("output/tmp_params_#{file_sanitized}")
-	process_file_with_sed "output/allParams_#{file_sanitized}"
-	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{file_sanitized}"
-
-	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
-	File.open("output/allUrls_#{file_sanitized}", 'r+') do |file|
-		lines = file.readlines.map(&:strip)
-		file.rewind
-		file.truncate(0)
-		lines.each do |line|
-			begin
-			modified_url = replace_param_with_fuzz(line)
-			file.puts modified_url
-			rescue Exception => e
-				puts "[\e[31m+\e[0m] ERROR: " + e.message
-			end
-		end
-	end
-
 	# === SEARCH FOR VULNS ===
 	if params[:gb_opt] == "y"
-
-		# :: Search for possible confidential files ::
-		['pdf', 'txt', 'csv', 'xml'].each do |file_type|
-			search_confidential_files(file_type, file_sanitized)
-		end
-
-		# :: Mantra ::
-		puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-		system "cat output/allUrls_#{file_sanitized} | mantra -s -d | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" > output/mantra_results_#{file_sanitized}"
-		delete_if_empty "output/mantra_results_#{file_sanitized}"
-		
-		# :: SocialHunter
-		puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-		system "socialhunter -f output/allUrls_#{file_sanitized} -w 20 | grep \"Possible Takeover\" > output/socialhunter_results_#{file_sanitized}"
-		delete_if_empty "output/socialhunter_results_#{file_sanitized}"
-		
-		# :: search for LFI with FFUF, search for XSS with dalfox ::
-		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-		File.open("output/allParams_#{file_sanitized}",'r').each_line do |f|
-			target = f.gsub("\n","").to_s
-			output = `wafw00f #{target} -v`
-			if output.include?("is behind a")
-				system "dalfox url #{target} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{target.gsub(/[^\w\s]/, '_')}"
-				system "ffuf -u \"#{target}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{target.gsub(/[^\w\s]/, '_')}/"
-			else
-				puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
-			end
-		end
-		puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
-
+		search_for_vulns "output/allUrls_#{file_sanitized}"
 	end
 
 end
