@@ -33,7 +33,7 @@
 - [httpx](https://github.com/projectdiscovery/httpx)
 - [naabu](https://github.com/projectdiscovery/naabu)
 - [nuclei](https://github.com/projectdiscovery/nuclei)
-- [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
+- [anew](https://github.com/tomnomnom/anew)
 
 [**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
 - [selenium](https://github.com/SeleniumHQ/selenium)
@@ -51,14 +51,19 @@
 - [paramspider](https://github.com/devanshbatham/ParamSpider/)
 - [subjs](https://github.com/lc/subjs)
 - [httpx](https://github.com/projectdiscovery/httpx)
+- [anew](https://github.com/tomnomnom/anew)
 - [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
 - [github-endpoints.py](https://github.com/gwen001/github-search/blob/master/github-endpoints.py)
 - [urless](https://github.com/xnl-h4ck3r/urless)
+
+[**find-vulns**] Given a <file_input> containing URLs, scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)
+- [httpx](https://github.com/projectdiscovery/httpx)
+- [pdftotext](https://www.xpdfreader.com/pdftotext-man.html)
 - [mantra](https://github.com/MrEmpy/mantra)
 - [socialhunter](https://github.com/utkusen/socialhunter)
 - [ffuf](https://github.com/ffuf/ffuf)
 - [seclists](https://github.com/danielmiessler/SecLists)
-- [anew](https://github.com/tomnomnom/anew) is used to add only new results to the files generated
+- [Dalfox](https://github.com/hahwul/dalfox)
 
 
 ## Burp Suite
