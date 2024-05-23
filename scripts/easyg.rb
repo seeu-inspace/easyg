@@ -127,7 +127,7 @@ def search_confidential_files(file_type, file_sanitized)
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
-		for i in `cat output/allUrls_#{file_sanitized} | grep -Ea '#{regex_pattern}' | httpx -silent -mc 200`; do
+		for i in `cat output/allUrls_#{file_sanitized} | grep -Ea '#{regex_pattern}' | httpx-toolkit -silent -mc 200`; do
 			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|password|credentials'; then
 				echo $i | tee -a #{output_file};
 			fi;
