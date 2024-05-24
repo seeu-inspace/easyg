@@ -608,7 +608,7 @@ end
 
 def do_everything_fun(params)
 	assetenum_fun params
-	params[:file] = "output/httpx_#{params[:file]}"
+	params[:file] = "output/httpx_#{params[:file].gsub("/", "")}"
 	crawl_local_fun params
 end
 
