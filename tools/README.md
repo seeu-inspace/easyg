@@ -65,6 +65,7 @@
 - [seclists](https://github.com/danielmiessler/SecLists)
 - [Dalfox](https://github.com/hahwul/dalfox)
 
+[**do-everything**] Asset enumeration > Crawl Locally > Scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)
 
 ## Burp Suite
 
