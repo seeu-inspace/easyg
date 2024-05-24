@@ -55,7 +55,7 @@ end
 
 
 def delete_if_empty(file)
-	if File.zero?(file)
+	if File.zero?(file) || !File.exists?(file)
 		puts "[\e[36m+\e[0m] No result found"
 		File.delete(file) if File.exists?(file)
 	else
@@ -123,7 +123,7 @@ def search_confidential_files(file_type, file_sanitized)
 									else return
 									end
 
-	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized}.txt"
+	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized.gsub("/", "")}.txt"
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
@@ -151,14 +151,14 @@ def search_for_vulns(file_to_scan)
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" > output/mantra_results_#{o_sanitized}"
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}"
 	delete_if_empty "output/mantra_results_#{o_sanitized}"
-		
+
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-	system "socialhunter -f #{file_to_scan} -w 20 | grep \"Possible Takeover\" > output/socialhunter_results_#{o_sanitized}"
+	system "socialhunter -f #{file_to_scan} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}"
-		
+
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep \"?\" > output/tmp_params_#{o_sanitized}"
@@ -569,7 +569,7 @@ def crawl_local_fun(params)
 
 	# Find new URLs from the JS files
 	puts "\n[\e[34m+\e[0m] Finding more endpoints in output/allJSUrls_#{file_sanitized} with xnLinkFinder"
-	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/_tmpAllUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
+	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/_tmpAllJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	
@@ -592,10 +592,24 @@ def crawl_local_fun(params)
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
 	# === SEARCH FOR VULNS ===
-	if params[:gb_opt] == "y"
+	if params[:vl_opt] == "y"
 		search_for_vulns "output/allUrls_#{file_sanitized}"
 	end
 
+end
+
+
+
+def find_vulns_fun(params)
+	search_for_vulns params[:file]
+end
+
+
+
+def do_everything_fun(params)
+	assetenum_fun params
+	params[:file] = "output/httpx_#{params[:file]}"
+	crawl_local_fun params
 end
 
 
@@ -630,6 +644,14 @@ option_actions = {
 		action: ->(params) { crawl_local_fun(params) },
 		description: "Crawl for every entry in <file_input> and save the results in local. Optionally, scan for vulnerabilities"
 	},
+	"find-vulns" => {
+		action: ->(params) { find_vulns_fun(params) },
+		description: "Given a <file_input> containing URLs, scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)"
+	},
+	"do-everything" => {
+		action: ->(params) { do_everything_fun(params) },
+		description: "Asset enumeration > Crawl Locally > Scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)"
+	},
 	"help" => {
 		action: ->(options_actions) { show_help(option_actions) },
 		description: "Show this text"
@@ -655,21 +677,21 @@ if option_actions.key?(option)
 
 	params = {}
 
-	options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local"]
+	options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "do-everything"]
 	if options_that_need_file.include?(option)
 		print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 		params[:file] = gets.chomp
 	end
 
-	if option == "assetenum"
+	if option == "assetenum" || option == "do-everything"
 		print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 		params[:gb_opt] = gets.chomp
-		puts "\n"
+		puts "\n" if option == "assetenum"
 	end
 
-	if option == "crawl-local"
+	if option == "crawl-local" || option == "do-everything"
 		print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
-		params[:gb_opt] = gets.chomp
+		params[:vl_opt] = gets.chomp
 		puts "\n"
 	end
 
