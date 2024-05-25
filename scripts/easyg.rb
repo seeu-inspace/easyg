@@ -526,7 +526,7 @@ def crawl_local_fun(params)
 
 	File.open(file,'r').each_line do |f|
 		target = f.gsub("\n","").to_s
-		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '')
+		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
 		puts "\n[\e[34m+\e[0m] Crawling #{target} with katana" + "\n"
 		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs rdn -o output/#{target_sanitized}_tmp.txt"
