@@ -529,7 +529,7 @@ def crawl_local_fun(params)
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
 		puts "\n[\e[34m+\e[0m] Crawling #{target} with katana" + "\n"
-		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs rdn -o output/#{target_sanitized}_tmp.txt"
+		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 		
 		puts "\n[\e[34m+\e[0m] Finding more endpoints for #{target} with waymore" + "\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
