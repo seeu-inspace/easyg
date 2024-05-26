@@ -123,7 +123,7 @@ def search_confidential_files(file_type, file_sanitized)
 									else return
 									end
 
-	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized.gsub("/", "")}.txt"
+	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized.gsub("/", "")}"
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
@@ -151,8 +151,8 @@ def search_for_vulns(file_to_scan)
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}"
-	delete_if_empty "output/mantra_results_#{o_sanitized}"
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
+	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
