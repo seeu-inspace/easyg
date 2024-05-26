@@ -415,9 +415,11 @@ def assetenum_fun(params)
 	delete_if_empty "output/interesting_subdomains_" + file
 
 	#== nuclei ==	
-	puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-	system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
-	delete_if_empty "output/nuclei_" + file
+	if params[:vl_opt] == "y"
+		puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
+		system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
+		delete_if_empty "output/nuclei_" + file
+	end
 
 end
 
