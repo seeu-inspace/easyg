@@ -419,6 +419,11 @@ def assetenum_fun(params)
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
 		system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 		delete_if_empty "output/nuclei_" + file
+
+		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses " + file
+		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
+		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | tee output/byp4xx_results_#{file}"
+		delete_if_empty "output/byp4xx_results_#{file}"
 	end
 
 end
