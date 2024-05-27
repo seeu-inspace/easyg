@@ -105,14 +105,24 @@ end
 
 
 def process_file_with_sed(file_path)
-	sed_command = "sed -E 's/\\x1b\\[[0-9;]*m//g; s/ /%20/g; s/ \\[200\\]//g; s/ \\[\\x1b\\[32m200\\x1b\\[0m\\]//g' #{file_path} > #{file_path}.tmp"
-	system(sed_command)
-	File.rename("#{file_path}.tmp", file_path)
+	sed_command = "sed -r -i \"s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g\" #{file_path}"
+	system sed_command
 end
 
 
 
-def search_confidential_files(file_type, file_sanitized)
+def waf_check(target)
+	output = `wafw00f #{target} -v`
+	if output.include?("is behind a")
+		yield target
+	else
+		puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
+	end
+end
+
+
+
+def search_confidential_files(file_type, file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for possible confidential #{file_type.upcase}s"
 	
 	# Define the regex pattern based on the file type
@@ -123,11 +133,11 @@ def search_confidential_files(file_type, file_sanitized)
 									else return
 									end
 
-	output_file = "output/reserved#{file_type.upcase}s_#{file_sanitized.gsub("/", "")}"
+	output_file = "output/reserved#{file_type.upcase}s_#{file_to_scan.gsub("/", "")}"
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
-		for i in `cat #{file_sanitized} | grep -Ea '#{regex_pattern}' | httpx-toolkit -silent -mc 200`; do
+		for i in `cat #{file_to_scan} | grep -Ea '#{regex_pattern}'`; do
 			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|password|credentials'; then
 				echo $i | tee -a #{output_file};
 			fi;
@@ -144,26 +154,28 @@ def search_for_vulns(file_to_scan)
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 
+	# Get only 200s
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{file_to_scan}"
+
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
-		search_confidential_files(file_type, file_to_scan)
+		search_confidential_files(file_type, "output/200_#{file_to_scan}")
 	end
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{file_to_scan} | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
+	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-	system "socialhunter -f #{file_to_scan} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
+	system "socialhunter -f output/200_#{file_to_scan} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}"
 
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
-	system "cat #{file_to_scan} | grep \"?\" > output/tmp_params_#{o_sanitized}"
-	system "cat output/tmp_params_#{o_sanitized} | httpx-toolkit -silent -mc 200 -o output/allParams_#{o_sanitized}"
-	File.delete("output/tmp_params_#{o_sanitized}") if File.exists?("output/tmp_params_#{o_sanitized}")
+	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}"
 	process_file_with_sed "output/allParams_#{o_sanitized}"
 	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{o_sanitized}"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
@@ -182,17 +194,28 @@ def search_for_vulns(file_to_scan)
 	end
 	# Search for XSS and LFI
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-	File.open("output/allParams_#{o_sanitized}",'r').each_line do |f|
+	system "cat output/allParams_#{o_sanitized} | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}"
+	File.open("output/200allParams_#{o_sanitized}",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
-		output = `wafw00f #{target} -v`
-		if output.include?("is behind a")
-			system "dalfox url #{target} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{target.gsub(/[^\w\s]/, '_')}"
-			system "ffuf -u \"#{target}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{target.gsub(/[^\w\s]/, '_')}/"
-		else
-			puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
+		sanitized_target = target.gsub(/[^\w\s]/, '_')
+		waf_check(target) do |t|
+			system "dalfox url #{t} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
+			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
 		end
 	end
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
+	# Search for Open Redirects
+	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
+	system "cat output/allParams_#{o_sanitized} | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}"
+	File.open("output/302allParams_#{o_sanitized}",'r').each_line do |f|
+		target = f.gsub("\n","").to_s
+		sanitized_target = target.gsub(/[^\w\s]/, '_')
+		waf_check(target) do |t|
+			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u #{t} -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
+		end
+	end
+	process_file_with_sed "output/redirect_#{o_sanitized}.txt"
+	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt"
 
 end
 
@@ -414,16 +437,17 @@ def assetenum_fun(params)
 	system "cat output/interesting_subdomains_" + file
 	delete_if_empty "output/interesting_subdomains_" + file
 
-	#== nuclei ==	
+	#== nuclei ==
 	if params[:vl_opt] == "y"
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in " + file
-		system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/generic/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
+		system "nuclei -l output/httpx_" + file + " -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_" + file
 		delete_if_empty "output/nuclei_" + file
 
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses " + file
 		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
-		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | tee output/byp4xx_results_#{file}"
+		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
+		process_file_with_sed "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
 	end
 
 end
