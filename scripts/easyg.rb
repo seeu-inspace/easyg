@@ -695,10 +695,9 @@ if option_actions.key?(option)
 	if option == "assetenum" || option == "do-everything"
 		print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 		params[:gb_opt] = gets.chomp
-		puts "\n" if option == "assetenum"
 	end
 
-	if option == "crawl-local" || option == "do-everything"
+	if option == "crawl-local" || option == "do-everything" || option == "assetenum"
 		print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
 		params[:vl_opt] = gets.chomp
 		puts "\n"
