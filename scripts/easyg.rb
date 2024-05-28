@@ -598,7 +598,7 @@ def crawl_local_fun(params)
 
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -Ea '\\.js' | httpx-toolkit -silent -mc 200 > output/_tmp1AllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | httpx-toolkit -silent -mc 200 > output/_tmp1AllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com' | uniq | anew output/_tmp1AllJSUrls_#{file_sanitized}"
 	# Just keep it 200
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
