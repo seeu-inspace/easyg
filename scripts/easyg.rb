@@ -105,8 +105,16 @@ end
 
 
 def process_file_with_sed(file_path)
-	sed_command = "sed -r -i \"s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g\" #{file_path}"
-	system sed_command
+	unless File.exist?(file_path)
+		puts "File not found: #{file_path}"
+		return
+	end
+
+	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' -e 's/ /%20/g' #{file_path}"
+
+	unless system(sed_command)
+		puts "[\e[31m+\e[0m] Error processing file"
+	end
 end
 
 
@@ -579,25 +587,24 @@ def crawl_local_fun(params)
 		
 		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 
-		puts "\n[\e[36m+\e[0m] Adding the results for #{target} to output/_tmpAllUrls_#{file_sanitized}"
-		system "cat output/#{target_sanitized}_tmp.txt | anew output/_tmpAllUrls_#{file_sanitized}"
-		system "grep -v 'mailto:' output/_tmpAllUrls_#{file_sanitized} > output/_tmp2AllUrls_#{file_sanitized} && mv output/_tmp2AllUrls_#{file_sanitized} output/_tmpAllUrls_#{file_sanitized}"
+		system "cat output/#{target_sanitized}_tmp.txt | grep -v 'mailto:' | anew output/_tmp1AllUrls_#{file_sanitized}"
+		system "urless -i output/_tmp1AllUrls_#{file_sanitized} -o output/_tmpAllUrls_#{file_sanitized}"
 		puts "[\e[36m+\e[0m] Results for #{file_sanitized} saved as output/_tmpAllUrls_#{file_sanitized}"
 		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
+		File.delete("output/_tmp1AllUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllUrls_#{file_sanitized}")
 	end
 
 	system "rm -rf results/"
 
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -Ea '\\.js' > output/_tmp1AllJSUrls_#{file_sanitized}"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com' | uniq >> output/_tmp1AllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -Ea '\\.js' | httpx-toolkit -silent -mc 200 > output/_tmp1AllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com' | uniq | anew output/_tmp1AllJSUrls_#{file_sanitized}"
 	# Just keep it 200
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
-	process_file_with_sed "output/allJSUrls_#{file_sanitized}"
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
