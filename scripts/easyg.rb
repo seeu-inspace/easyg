@@ -618,8 +618,8 @@ def crawl_local_fun(params)
 		target = f.strip
 		#main_domain = subdomain.split('.').last(2).join('.')
 		puts "\n[\e[34m+\e[0m] Finding more endpoints with github-endpoints.py"
-		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} >> output/_tmpAllUrls_to_crawl.txt"
-		adding_anew("output/xnLinkFinder_to_crawl.txt", "output/_tmpAllUrls_to_crawl.txt")
+		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} >> output/github-endpoints_#{file_sanitized}.txt"
+		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 		break
 	end
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
