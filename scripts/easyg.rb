@@ -104,6 +104,21 @@ end
 
 
 
+def process_file_with_sed(file_path)
+	unless File.exist?(file_path)
+		puts "[\e[31m+\e[0m] File not found: #{file_path}"
+		return
+	end
+
+	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' -e 's/ /%20/g' #{file_path}"
+
+	unless system(sed_command)
+		puts "[\e[31m+\e[0m] Error processing file"
+	end
+end
+
+
+
 def sanitize_url(url)
 	uri = URI.parse(url)
 	
@@ -127,13 +142,6 @@ end
 def file_sanitization(file_path)
 	unless File.exist?(file_path)
 		puts "[\e[31m+\e[0m] File not found: #{file_path}"
-		return
-	end
-
-	# Remove ANSI escape sequences and spaces using sed
-	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' -e 's/ /%20/g' #{file_path}"
-	unless system(sed_command)
-		puts "[\e[31m+\e[0m] Error processing file with sed"
 		return
 	end
 
@@ -217,7 +225,7 @@ def search_for_vulns(file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
-	file_sanitization "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
+	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
@@ -263,7 +271,7 @@ def search_for_vulns(file_to_scan)
 			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
 		end
 	end
-	file_sanitization "output/redirect_#{o_sanitized}.txt" if File.exists? "output/redirect_#{o_sanitized}.txt"
+	process_file_with_sed "output/redirect_#{o_sanitized}.txt" if File.exists? "output/redirect_#{o_sanitized}.txt"
 	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt"
 
 end
@@ -402,7 +410,7 @@ def assetenum_fun(params)
 				File.open('all.txt', 'w') { |file| file.write(alltxt) }
 			end
 		
-			puts "\n[\e[34m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
+			puts "\n[\e[36m+\e[0m] Enumerating subdomains for " + target + " with gobuster and all.txt"
 			system "gobuster dns -d " + target + " -v -t 250 --no-color --wildcard -o output/" + target + "_gobuster_tmp.txt -w all.txt"
 
 			gobuster_o = File.new("output/" + target + "_gobuster.txt", 'w')
@@ -496,7 +504,7 @@ def assetenum_fun(params)
 		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
-		file_sanitization "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
+		process_file_with_sed "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
 	end
 
 end
@@ -578,16 +586,16 @@ def crawl_burp_fun(params)
 	File.open(params[:file],'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 
-		puts "\n[\e[34m+\e[0m] Crawling " + target + " with hakrawler" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling " + target + " with hakrawler" + "\n"
 		system 'echo ' + target + "| hakrawler -u -insecure -t 20 -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -h \"Cookie: #{$config['cookie']};;Authorization: #{$config['authorization']}\""
 
-		puts "\n[\e[34m+\e[0m] Crawling " + target + " with gospider" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling " + target + " with gospider" + "\n"
 		system 'gospider -s "' + target + "\" -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\" -H \"Authorization: #{$config['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
 
-		puts "\n[\e[34m+\e[0m] Crawling " + target + " with katana" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling " + target + " with katana" + "\n"
 		system 'katana -u "' + target + "\" -jc -kf -aff -d 3 -fs rdn -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\""
 
-		puts "\n[\e[34m+\e[0m] Crawling " + target + " with gau" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling " + target + " with gau" + "\n"
 		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 5 --proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']}"
 
 	end
@@ -608,20 +616,20 @@ def crawl_local_fun(params)
 		target = f.gsub("\n","").to_s
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
-		puts "\n[\e[34m+\e[0m] Crawling #{target} with katana" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana" + "\n"
 		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 		
-		puts "\n[\e[34m+\e[0m] Finding more endpoints for #{target} with waymore" + "\n"
+		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with waymore" + "\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
 		adding_anew("output/#{target_sanitized}_waymore.txt", "output/#{target_sanitized}_tmp.txt")
 
-		puts "\n[\e[34m+\e[0m] Crawling " + target + " with gau" + "\n"
+		puts "\n[\e[36m+\e[0m] Crawling " + target + " with gau" + "\n"
 		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		
 		if target_sanitized != target_tmp
-			puts "\n[\e[34m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
+			puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
 			system "paramspider -d #{target_sanitized}"
 		end
 		target_tmp = target_sanitized
@@ -649,7 +657,7 @@ def crawl_local_fun(params)
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
-	puts "\n[\e[34m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
+	puts "\n[\e[36m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
@@ -658,7 +666,7 @@ def crawl_local_fun(params)
 	File.open("output/tmp_scope.txt",'r').each_line do |f|
 		target = f.strip
 		#main_domain = subdomain.split('.').last(2).join('.')
-		puts "\n[\e[34m+\e[0m] Finding more endpoints with github-endpoints.py"
+		puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
 		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} | tee output/github-endpoints_#{file_sanitized}"
 		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 		break
@@ -780,5 +788,5 @@ if option_actions.key?(option)
 	option_actions[option][:action].call(option_params[option])
 
 else
-	puts "Invalid option selected"
+	puts "[\e[31m+\e[0m] Invalid option selected"
 end
