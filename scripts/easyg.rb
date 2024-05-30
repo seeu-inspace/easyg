@@ -172,8 +172,8 @@ end
 
 
 def waf_check(target)
-	output = `wafw00f #{target} -v`
-	if output.include?("is behind a")
+	output = `wafw00f #{target}`
+	if output.include?("is behind ")
 		yield target
 	else
 		puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
