@@ -15,6 +15,7 @@
   - [Interview process](#interview-process)
   - [Audit process](#audit-process)
   - [Audit methodology](#audit-methodology)
+- [Principles of Smart Contract Design](#principles-of-smart-contract-design)
 - [Vulnerabilities](#vulnerabilities)
   - [Broken Access Control](#broken-access-control)
   - [Private informations stored on-chain](#private-informations-stored-on-chain)
@@ -384,6 +385,25 @@ C. Reporting
     - Don’t get stuck in rabbit holes
     - Use Foundry to write tests, especially if some are missing. Also run chisel to understand what some portions of code do
     - Look at the docs again to see if everything is correct, which functions might be more vulnerable etc.
+
+
+
+## Principles of Smart Contract Design
+
+How to reduce the probability of introducing vulnerabilities in the codebase:
+- Less code
+  - Less code can potentially mean fewer bugs
+  - It also reduces audit costs, as audit firms charge based on SLOC (Source Lines of Code)
+  - One way to achieve this is by being very selective with the storage variables you create
+  - Also consider: how much of the logic can be done off-chain?
+- Be cautious about using loops
+  - They can often cause DoS (Denial of Service) issues
+  - In any case, they can increase the gas costs
+- Limit expected inputs
+- Handle all possible cases
+  - Examples: a stablecoin depegs, insolvent liquidations
+- Use parallel data structures
+  - If necessary and/or possible, use EnumerableMapping, EnumerableSet
 
 
 
