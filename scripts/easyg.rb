@@ -157,7 +157,6 @@ def file_sanitization(file_path)
 		sanitized_lines.each { |line| file.puts(line) }
 	end
 
-	puts "[\e[36m+\e[0m] File processed and sanitized successfully."
 end
 
 
@@ -204,6 +203,7 @@ end
 def search_for_vulns(file_to_scan)
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
+	file_sanitization file_to_scan
 
 	# Get only 200s
 	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}.txt"
@@ -227,7 +227,6 @@ def search_for_vulns(file_to_scan)
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}.txt"
-	file_sanitization "output/allParams_#{o_sanitized}.txt"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 		lines = file.readlines.map(&:strip)
