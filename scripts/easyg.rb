@@ -212,6 +212,8 @@ end
 
 def search_for_vulns(file_to_scan)
 
+	system "mkdir output" if File.directory?('output') == false
+
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 	file_sanitization file_to_scan
 
