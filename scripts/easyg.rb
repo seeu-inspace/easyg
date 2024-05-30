@@ -249,8 +249,8 @@ def search_for_vulns(file_to_scan)
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		waf_check(target) do |t|
-			system "dalfox url #{t} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
-			system "ffuf -u #{t} -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}.txt"
+			system "dalfox url \"#{t}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
+			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}.txt"
 		end
 	end
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
@@ -261,7 +261,7 @@ def search_for_vulns(file_to_scan)
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		waf_check(target) do |t|
-			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u #{t} -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
+			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
 		end
 	end
 	file_sanitization "output/redirect_#{o_sanitized}.txt" if File.exists? "output/redirect_#{o_sanitized}.txt"
