@@ -94,6 +94,39 @@ end
 
 
 
+def get_content_type(url)
+	begin
+		uri = URI.parse(url)
+		response = nil
+
+		# Follow redirects up to a certain limit to prevent infinite loops
+		limit = 3
+		while limit > 0
+			response = Net::HTTP.get_response(uri)
+
+			case response
+			when Net::HTTPRedirection then
+				uri = URI.parse(response['location'])
+			else
+				break
+			end
+
+			limit -= 1
+		end
+
+		if response.is_a?(Net::HTTPSuccess)
+			return response['content-type']
+		else
+			return nil
+		end
+
+	rescue => e
+		return nil
+	end
+end
+
+
+
 def replace_param_with_fuzz(url)
 	uri = URI.parse(url)
 	params = URI.decode_www_form(uri.query || '')
@@ -257,12 +290,19 @@ def search_for_vulns(file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
 	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
+	
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
-		system "dalfox url \"#{t}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+		content_type = get_content_type(target)
+		
+		if content_type && content_type.include?('text/html')
+			system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+		end
+		
 		waf_check(target) do |t|
 			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
 		end
+
 	end
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
 	# Search for Open Redirects
