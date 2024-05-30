@@ -104,17 +104,60 @@ end
 
 
 
-def process_file_with_sed(file_path)
+def sanitize_url(url)
+	uri = URI.parse(url)
+	
+	encoded_path = uri.path.split('/').map { |segment| URI.encode_www_form_component(segment) }.join('/')
+
+	sanitized_url = URI::Generic.build(
+		scheme: uri.scheme,
+		userinfo: uri.user,
+		host: uri.host,
+		port: uri.port,
+		path: encoded_path,
+		query: uri.query ? URI.encode_www_form_component(uri.query) : nil,
+		fragment: uri.fragment ? URI.encode_www_form_component(uri.fragment) : nil
+	).to_s
+
+	sanitized_url
+end
+
+
+
+def file_sanitization(file_path)
 	unless File.exist?(file_path)
-		puts "File not found: #{file_path}"
+		puts "[\e[31m+\e[0m] File not found: #{file_path}"
 		return
 	end
 
+	# Remove ANSI escape sequences and spaces using sed
 	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' -e 's/ /%20/g' #{file_path}"
-
 	unless system(sed_command)
-		puts "[\e[31m+\e[0m] Error processing file"
+		puts "[\e[31m+\e[0m] Error processing file with sed"
+		return
 	end
+
+	sanitized_lines = []
+
+	File.readlines(file_path).each do |line|
+		line.strip!
+		if line.start_with?("http")
+			begin
+				sanitized_lines << sanitize_url(line)
+			rescue URI::InvalidURIError => e
+				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
+				next
+			end
+		else
+			sanitized_lines << line
+		end
+	end
+
+	File.open(file_path, 'w') do |file|
+		sanitized_lines.each { |line| file.puts(line) }
+	end
+
+	puts "[\e[36m+\e[0m] File processed and sanitized successfully."
 end
 
 
@@ -174,7 +217,7 @@ def search_for_vulns(file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
-	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
+	file_sanitization "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
@@ -184,7 +227,7 @@ def search_for_vulns(file_to_scan)
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}.txt"
-	process_file_with_sed "output/allParams_#{o_sanitized}.txt"
+	file_sanitization "output/allParams_#{o_sanitized}.txt"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 		lines = file.readlines.map(&:strip)
@@ -221,7 +264,7 @@ def search_for_vulns(file_to_scan)
 			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u #{t} -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
 		end
 	end
-	process_file_with_sed "output/redirect_#{o_sanitized}.txt"
+	file_sanitization "output/redirect_#{o_sanitized}.txt" if File.exists? "output/redirect_#{o_sanitized}.txt"
 	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt"
 
 end
@@ -454,7 +497,7 @@ def assetenum_fun(params)
 		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
-		process_file_with_sed "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
+		file_sanitization "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
 	end
 
 end
@@ -626,7 +669,7 @@ def crawl_local_fun(params)
 	# Final
 	system "cat output/allJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	system "urless -i output/_tmpAllUrls_#{file_sanitized} -o output/allUrls_#{file_sanitized}"
-	process_file_with_sed "output/allUrls_#{file_sanitized}"
+	file_sanitization "output/allUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
