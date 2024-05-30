@@ -250,7 +250,7 @@ def search_for_vulns(file_to_scan)
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		waf_check(target) do |t|
 			system "dalfox url #{t} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
-			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}.txt"
+			system "ffuf -u #{t} -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}.txt"
 		end
 	end
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
