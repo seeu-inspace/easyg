@@ -48,7 +48,7 @@ end
 
 
 def adding_anew(file_tmp,file_final)
-	system "cat " + file_tmp.gsub('/','/') + " | anew " + file_final
+	system "cat " + file_tmp + " | anew " + file_final
 	File.delete(file_tmp) if File.exists? file_tmp
 end
 
@@ -163,22 +163,22 @@ def search_for_vulns(file_to_scan)
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 
 	# Get only 200s
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{file_to_scan}"
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}"
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
-		search_confidential_files(file_type, "output/200_#{file_to_scan}")
+		search_confidential_files(file_type, "output/200_#{o_sanitized}")
 	end
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-	system "cat output/200_#{file_to_scan} | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{o_sanitized} | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-	system "socialhunter -f output/200_#{file_to_scan} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
+	system "socialhunter -f output/200_#{o_sanitized} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}"
 
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
