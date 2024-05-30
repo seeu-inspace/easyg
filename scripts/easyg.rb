@@ -110,7 +110,7 @@ def process_file_with_sed(file_path)
 		return
 	end
 
-	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' -e 's/ /%20/g' #{file_path}"
+	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' #{file_path}"
 
 	unless system(sed_command)
 		puts "[\e[31m+\e[0m] Error processing file"
