@@ -259,8 +259,8 @@ def search_for_vulns(file_to_scan)
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
+		system "dalfox url \"#{t}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
 		waf_check(target) do |t|
-			system "dalfox url \"#{t}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
 			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
 		end
 	end
