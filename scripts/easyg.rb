@@ -172,7 +172,7 @@ end
 
 
 def waf_check(target)
-	output = `wafw00f #{target} -v`
+	output = "wafw00f \"#{target}\" -v"
 	if output.include?("is behind a")
 		yield target
 	else
