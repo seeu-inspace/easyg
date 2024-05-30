@@ -185,7 +185,6 @@ def search_for_vulns(file_to_scan)
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}.txt"
 	process_file_with_sed "output/allParams_#{o_sanitized}.txt"
-	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{o_sanitized}.txt"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 		lines = file.readlines.map(&:strip)
