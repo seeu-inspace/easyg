@@ -255,10 +255,15 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
     } signTransaction();
     ```
     
+**Static Analyzers**
+- [Slither](https://github.com/crytic/slither)
+- [Aderyn](https://github.com/Cyfrin/aderyn)
+- [c4udit](https://github.com/byterocket/c4udit)
+- [4naly3er](https://github.com/Picodes/4naly3er)
+- [SolidityInspector](https://github.com/seeu-inspace/solidityinspector)
 
 **Misc Tools**
-- [Slither](https://github.com/crytic/slither)
-- [MythX](https://mythx.io/)
+
 - [Solidity Function Profiler](https://github.com/EricR/sol-function-profiler)
 - [ERC20 Verifier](https://erc20-verifier.openzeppelin.com/)
 - [EVM Codes](https://www.evm.codes/)
