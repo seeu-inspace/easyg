@@ -163,31 +163,31 @@ def search_for_vulns(file_to_scan)
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 
 	# Get only 200s
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}"
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}.txt"
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
-		search_confidential_files(file_type, "output/200_#{o_sanitized}")
+		search_confidential_files(file_type, "output/200_#{o_sanitized}.txt")
 	end
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
-	system "cat output/200_#{o_sanitized} | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{o_sanitized}.txt | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-	system "socialhunter -f output/200_#{o_sanitized} -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}"
-	delete_if_empty "output/socialhunter_results_#{o_sanitized}"
+	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
+	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
-	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}"
-	process_file_with_sed "output/allParams_#{o_sanitized}"
-	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{o_sanitized}"
+	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}.txt"
+	process_file_with_sed "output/allParams_#{o_sanitized}.txt"
+	puts "[\e[36m+\e[0m] Results saved as output/allParams_#{o_sanitized}.txt"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
-	File.open("output/allParams_#{o_sanitized}", 'r+') do |file|
+	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 		lines = file.readlines.map(&:strip)
 		file.rewind
 		file.truncate(0)
@@ -202,20 +202,20 @@ def search_for_vulns(file_to_scan)
 	end
 	# Search for XSS and LFI
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-	system "cat output/allParams_#{o_sanitized} | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}"
-	File.open("output/200allParams_#{o_sanitized}",'r').each_line do |f|
+	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
+	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		waf_check(target) do |t|
 			system "dalfox url #{t} -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 -o output/dalfox/#{sanitized_target}.txt"
-			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}.txt"
 		end
 	end
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
 	# Search for Open Redirects
 	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-	system "cat output/allParams_#{o_sanitized} | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}"
-	File.open("output/302allParams_#{o_sanitized}",'r').each_line do |f|
+	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}.txt"
+	File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		waf_check(target) do |t|
