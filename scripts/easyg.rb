@@ -138,7 +138,7 @@ end
 
 
 def process_file_with_sed(file_path)
-	unless File.exist?(file_path)
+	unless File.exists?(file_path)
 		puts "[\e[31m+\e[0m] File not found: #{file_path}"
 		return
 	end
@@ -179,7 +179,7 @@ end
 
 
 def file_sanitization(file_path)
-	unless File.exist?(file_path)
+	unless File.exists?(file_path)
 		puts "[\e[31m+\e[0m] File not found: #{file_path}"
 		return
 	end
@@ -262,7 +262,7 @@ def search_for_vulns(file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
-	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt" if File.exists? "output/mantra_results_#{o_sanitized}.txt"
+	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
 	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
@@ -315,7 +315,7 @@ def search_for_vulns(file_to_scan)
 			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
 		end
 	end
-	process_file_with_sed "output/redirect_#{o_sanitized}.txt" if File.exists? "output/redirect_#{o_sanitized}.txt"
+	process_file_with_sed "output/redirect_#{o_sanitized}.txt"
 	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt"
 
 end
@@ -548,7 +548,7 @@ def assetenum_fun(params)
 		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
-		process_file_with_sed "output/byp4xx_results_#{file}" if File.exists?("output/byp4xx_results_#{file}")
+		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
 
 end
