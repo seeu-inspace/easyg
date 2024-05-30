@@ -119,22 +119,28 @@ end
 
 
 
+def encode_component(component)
+	component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }.split(/(%[0-9A-Fa-f]{2})/).map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }.join
+end
+
+
+
 def sanitize_url(url)
 	uri = URI.parse(url)
 	
-	encoded_path = uri.path.split('/').map { |segment| URI.encode_www_form_component(segment) }.join('/')
+	encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
+	encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
+	encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
 
-	sanitized_url = URI::Generic.build(
+	URI::Generic.build(
 		scheme: uri.scheme,
 		userinfo: uri.user,
 		host: uri.host,
 		port: uri.port,
 		path: encoded_path,
-		query: uri.query ? URI.encode_www_form_component(uri.query) : nil,
-		fragment: uri.fragment ? URI.encode_www_form_component(uri.fragment) : nil
+		query: encoded_query,
+		fragment: encoded_fragment
 	).to_s
-
-	sanitized_url
 end
 
 
@@ -147,24 +153,20 @@ def file_sanitization(file_path)
 
 	sanitized_lines = []
 
-	File.readlines(file_path).each do |line|
+	File.foreach(file_path) do |line|
 		line.strip!
 		if line.start_with?("http")
 			begin
 				sanitized_lines << sanitize_url(line)
-			rescue URI::InvalidURIError => e
+			rescue URI::InvalidURIError
 				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
-				next
 			end
 		else
 			sanitized_lines << line
 		end
 	end
 
-	File.open(file_path, 'w') do |file|
-		sanitized_lines.each { |line| file.puts(line) }
-	end
-
+	File.write(file_path, sanitized_lines.join("\n") + "\n")
 end
 
 
