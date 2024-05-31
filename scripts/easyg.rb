@@ -251,7 +251,7 @@ def search_for_vulns(file_to_scan)
 	file_sanitization file_to_scan
 
 	# Get only 200s
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}.txt"
+	system "cat #{file_to_scan} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200_#{o_sanitized}.txt"
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
@@ -288,7 +288,7 @@ def search_for_vulns(file_to_scan)
 	end
 	# Search for XSS and LFI
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
+	system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200allParams_#{o_sanitized}.txt"
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
 		target = f.gsub("\n","").to_s
@@ -307,7 +307,7 @@ def search_for_vulns(file_to_scan)
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
 	# Search for Open Redirects
 	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}.txt"
+	system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"302 \" | sed 's/302 //g' | tee output/302allParams_#{o_sanitized}.txt"
 	File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
@@ -695,7 +695,7 @@ def crawl_local_fun(params)
 	# Just keep it 200
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
