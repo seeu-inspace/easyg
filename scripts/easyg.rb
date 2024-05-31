@@ -160,7 +160,7 @@ end
 
 def sanitize_url(url)
 	uri = URI.parse(url)
-	
+
 	encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
 	encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
 	encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
@@ -290,15 +290,15 @@ def search_for_vulns(file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
 	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
-	
+
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
 		content_type = get_content_type(target)
-		
+
 		if content_type && content_type.include?('text/html')
 			system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
 		end
-		
+
 		waf_check(target) do |t|
 			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
 		end
@@ -333,7 +333,7 @@ def show_help(option_actions)
 	option_actions.each do |option, info|
 		# calculate the padding needed to align descriptions
 		padding = " " * (max_option_length - option.length + 12)
-		
+
 		# print the option name, description, and padding
 		puts "\t#{option}#{padding}#{info[:description]}"
 	end
@@ -453,7 +453,7 @@ def assetenum_fun(params)
 				alltxt = (response.body).to_s
 				File.open('all.txt', 'w') { |file| file.write(alltxt) }
 			end
-		
+
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with gobuster and all.txt"
 			system "gobuster dns -d #{target} -v -t 250 --no-color --wildcard -o output/#{target}_gobuster_tmp.txt -w all.txt"
 
