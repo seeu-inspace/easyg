@@ -304,7 +304,7 @@ def search_for_vulns(file_to_scan)
 		end
 
 	end
-	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/"
+	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 	# Search for Open Redirects
 	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
 	system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"302 \" | sed 's/302 //g' | tee output/302allParams_#{o_sanitized}.txt"
@@ -316,7 +316,7 @@ def search_for_vulns(file_to_scan)
 		end
 	end
 	process_file_with_sed "output/redirect_#{o_sanitized}.txt"
-	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt"
+	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
 
 end
 
