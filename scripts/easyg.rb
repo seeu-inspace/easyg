@@ -695,6 +695,7 @@ def crawl_local_fun(params)
 	# Just keep it 200
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
@@ -717,7 +718,6 @@ def crawl_local_fun(params)
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 
 	# Final
-	system "cat output/allJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	system "urless -i output/_tmpAllUrls_#{file_sanitized} -o output/allUrls_#{file_sanitized}"
 	file_sanitization "output/allUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
