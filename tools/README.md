@@ -67,6 +67,7 @@
 - [Dalfox](https://github.com/hahwul/dalfox)
 - [Oralyzer](https://github.com/r0075h3ll/Oralyzer)
 - [wafw00f](https://github.com/EnableSecurity/wafw00f)
+- [hakcheckurl](https://github.com/hakluke/hakcheckurl)
 
 [**do-everything**] Asset enumeration > Crawl Locally > Scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)
 
