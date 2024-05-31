@@ -271,7 +271,7 @@ def search_for_vulns(file_to_scan)
 
 	# :: search for LFI with FFUF, search for XSS with dalfox ::
 	## :: Grep only params ::
-	system "cat #{file_to_scan} | grep \"?\" > output/allParams_#{o_sanitized}.txt"
+	system "cat #{file_to_scan} | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 		lines = file.readlines.map(&:strip)
@@ -398,11 +398,11 @@ def assetenum_fun(params)
 		if params[:gb_opt] == "y"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
 			system "amass enum -brute -active -d #{target} -v -dns-qps 200"
-			system "oam_subs -names -d #{target} > output/#{target}_tmp.txt"
+			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		else
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
 			system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 200"
-			system "oam_subs -names -d #{target} > output/#{target}_tmp.txt"
+			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		end
 
 		#== subfinder ==
@@ -534,8 +534,7 @@ def assetenum_fun(params)
 	#== interesting subs ==
 
 	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
-	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|teams\" | sort -u > output/interesting_subdomains_#{file}"
-	system "cat output/interesting_subdomains_#{file}"
+	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
 	#== nuclei ==
