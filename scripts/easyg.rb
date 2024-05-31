@@ -544,7 +544,7 @@ def assetenum_fun(params)
 		delete_if_empty "output/nuclei_#{file}"
 
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
-		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 | tee output/40X_httpx_#{file}"
+		system "cat output/httpx_#{file} | hakcheckurl | grep -E '401 |403 ' | sed -E 's/401 |403 //g' | tee output/40X_httpx_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
