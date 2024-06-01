@@ -664,7 +664,7 @@ def crawl_local_fun(params)
 		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 		
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with waymore\n"
-		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
+		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
 		adding_anew("output/#{target_sanitized}_waymore.txt", "output/#{target_sanitized}_tmp.txt")
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
