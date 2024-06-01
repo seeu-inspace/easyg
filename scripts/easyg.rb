@@ -680,11 +680,14 @@ def crawl_local_fun(params)
 		
 		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 
-		system "cat output/#{target_sanitized}_tmp.txt | grep -v 'mailto:' | anew output/_tmp1AllUrls_#{file_sanitized}"
-		system "urless -i output/_tmp1AllUrls_#{file_sanitized} -o output/_tmpAllUrls_#{file_sanitized}"
+		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"		
+		system "urless -i output/#{target_sanitized}_tmp.txt -o output/#{target_sanitized}_urless.txt"
+		system "cat output/#{target_sanitized}_urless.txt | anew output/_tmpAllUrls_#{file_sanitized}"
+		
 		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
+		
 		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
-		File.delete("output/_tmp1AllUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllUrls_#{file_sanitized}")
+		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_urless.txt")
 	end
 
 	system "rm -rf results/"
