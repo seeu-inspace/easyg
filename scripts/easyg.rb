@@ -658,6 +658,7 @@ def crawl_local_fun(params)
 	File.open(file,'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
+		target_tmp = ""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
@@ -681,7 +682,7 @@ def crawl_local_fun(params)
 
 		system "cat output/#{target_sanitized}_tmp.txt | grep -v 'mailto:' | anew output/_tmp1AllUrls_#{file_sanitized}"
 		system "urless -i output/_tmp1AllUrls_#{file_sanitized} -o output/_tmpAllUrls_#{file_sanitized}"
-		puts "[\e[36m+\e[0m] Results for #{file_sanitized} saved as output/_tmpAllUrls_#{file_sanitized}"
+		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
 		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
 		File.delete("output/_tmp1AllUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllUrls_#{file_sanitized}")
 	end
