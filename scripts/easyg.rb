@@ -251,7 +251,7 @@ def search_for_vulns(file_to_scan)
 	file_sanitization file_to_scan
 
 	# Get only 200s
-	system "cat #{file_to_scan} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200_#{o_sanitized}.txt"
+	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}.txt"
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
@@ -288,7 +288,7 @@ def search_for_vulns(file_to_scan)
 	end
 	# Search for XSS and LFI
 	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-	system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200allParams_#{o_sanitized}.txt"
+	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
 		target = f.gsub("\n","").to_s
@@ -307,7 +307,7 @@ def search_for_vulns(file_to_scan)
 	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 	# Search for Open Redirects
 	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-	system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"302 \" | sed 's/302 //g' | tee output/302allParams_#{o_sanitized}.txt"
+	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}.txt"
 	File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
 		target = f.gsub("\n","").to_s
 		sanitized_target = target.gsub(/[^\w\s]/, '_')
@@ -507,10 +507,10 @@ def assetenum_fun(params)
 
 	end
 
-	#== httprobe ==
-	puts "\n[\e[36m+\e[0m] Checking output/allsubs_#{file} with httprobe"
-	system "cat output/allsubs_#{file} | httprobe -p http:80 -p https:443 -p http:81 -p http:300 -p http:591 -p http:593 -p http:832 -p http:981 -p http:1010 -p http:1311 -p http:1099 -p http:2082 -p http:2095 -p http:2096 -p http:2480 -p http:3000 -p http:3001 -p http:3002 -p http:3003 -p http:3128 -p http:3333 -p http:4243 -p http:4567 -p http:4711 -p http:4712 -p http:4993 -p http:5000 -p http:5104 -p http:5108 -p http:5280 -p http:5281 -p http:5601 -p http:5800 -p http:6543 -p http:7000 -p http:7001 -p http:7396 -p http:7474 -p http:8000 -p http:8001 -p http:8008 -p http:8014 -p http:8042 -p http:8060 -p http:8069 -p http:8080 -p http:8081 -p http:8083 -p http:8088 -p http:8090 -p http:8091 -p http:8095 -p http:8118 -p http:8123 -p http:8172 -p http:8181 -p http:8222 -p http:8243 -p http:8280 -p http:8281 -p http:8333 -p http:8337 -p http:8443 -p http:8500 -p http:8834 -p http:8880 -p http:8888 -p http:8983 -p http:9000 -p http:9001 -p http:9043 -p http:9060 -p http:9080 -p http:9090 -p http:9091 -p http:9092 -p http:9200 -p http:9443 -p http:9502 -p http:9800 -p http:9981 -p http:10000 -p http:10250 -p http:11371 -p http:12443 -p http:15672 -p http:16080 -p http:17778 -p http:18091 -p http:18092 -p http:20720 -p http:32000 -p http:55440 -p http:55672 | tee output/httprobe_#{file}"
-	puts "[\e[36m+\e[0m] Results saved as output/httprobe_#{file}"
+	#== httpx ==
+	puts "\n[\e[36m+\e[0m] Checking output/allsubs_#{file} with httpx"
+	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/httpx_#{file}"
+	puts "[\e[36m+\e[0m] Results saved as output/httpx_#{file}"
 
 	#== naabu ==
 	if params[:gb_opt] == "y"
@@ -519,15 +519,15 @@ def assetenum_fun(params)
 		delete_if_empty "output/naabu_#{file}"
 	end
 
-	#== naabu | httprobe ==
+	#== naabu | httpx ==
 	if File.exists?("output/naabu_#{file}")
 		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_#{file}"
-		system "cat output/naabu_#{file} | httprobe | tee output/httprobe_naabu_#{file}"
+		system "cat output/naabu_#{file} | httpx-toolkit -o output/httpx_naabu_#{file}"
 
-		if File.exists?("output/httprobe_naabu_#{file}")
-			system "cat output/httprobe_naabu_#{file}"
-			adding_anew("output/httprobe_naabu_#{file}", "output/httprobe_#{file}")
-			puts "[\e[36m+\e[0m] Results added at output/httprobe_#{file}"
+		if File.exists?("output/httpx_naabu_#{file}")
+			system "cat output/httpx_naabu_#{file}"
+			adding_anew("output/httpx_naabu_#{file}", "output/httpx_#{file}")
+			puts "[\e[36m+\e[0m] Results added at output/httpx_#{file}"
 		end
 	end
 
@@ -540,12 +540,12 @@ def assetenum_fun(params)
 	#== nuclei ==
 	if params[:vl_opt] == "y"
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
-		system "nuclei -l output/httprobe_#{file} -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
+		system "nuclei -l output/httpx_#{file} -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
 
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
-		system "cat output/httprobe_#{file} | hakcheckurl | grep -E '401 |403 ' | sed -E 's/401 |403 //g' | tee output/40X_httprobe_#{file}"
-		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httprobe_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
+		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 -o output/40X_httpx_#{file}"
+		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
@@ -696,7 +696,7 @@ def crawl_local_fun(params)
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/allJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
@@ -740,7 +740,7 @@ end
 
 def do_everything_fun(params)
 	assetenum_fun params
-	params[:file] = "output/httprobe_#{params[:file].gsub("/", "")}"
+	params[:file] = "output/httpx_#{params[:file].gsub("/", "")}"
 	crawl_local_fun params
 end
 
