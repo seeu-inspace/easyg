@@ -687,7 +687,7 @@ def crawl_local_fun(params)
 		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
 		
 		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
-		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_urless.txt")
+		File.delete("output/#{target_sanitized}_urless.txt") if File.exists?("output/#{target_sanitized}_urless.txt")
 	end
 
 	system "rm -rf results/"
