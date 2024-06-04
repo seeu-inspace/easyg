@@ -165,15 +165,20 @@ def sanitize_url(url)
 	encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
 	encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
 
-	URI::Generic.build(
-		scheme: uri.scheme,
-		userinfo: uri.user,
-		host: uri.host,
-		port: uri.port,
-		path: encoded_path,
-		query: encoded_query,
-		fragment: encoded_fragment
-	).to_s
+	begin
+		URI::Generic.build(
+			scheme: uri.scheme,
+			userinfo: uri.user,
+			host: uri.host,
+			port: uri.port,
+			path: encoded_path,
+			query: encoded_query,
+			fragment: encoded_fragment
+		).to_s
+	rescue => e
+		return nil
+	end
+
 end
 
 
@@ -695,7 +700,7 @@ def crawl_local_fun(params)
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmp1AllJSUrls_#{file_sanitized}"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com' | uniq | anew output/_tmp1AllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com|dial-once\.com|mookie1\.com|crazyegg\.com|google\.com' | uniq | anew output/_tmp1AllJSUrls_#{file_sanitized}"
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
