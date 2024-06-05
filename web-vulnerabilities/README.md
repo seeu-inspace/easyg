@@ -67,6 +67,10 @@
 - [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
 - [Ghauri](https://github.com/r0oth3x49/ghauri)
 
+**More**
+- [XPATH Injection](https://owasp.org/www-community/attacks/XPATH_Injection)
+- [NoSQL | MongoDB](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection)
+
 **MySQL**
 - `mysql -u root -p'root' -h <IP> -P 3306` connect to the database
 - `select version();` retrieve the db version
