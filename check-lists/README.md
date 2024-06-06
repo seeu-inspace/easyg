@@ -75,7 +75,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [EasyG](#easyg)
 - Fingerprinting
   - [nmap](#nmap), [Wappalyzer](https://www.wappalyzer.com/), [WhatWeb](https://github.com/urbanadventurer/WhatWeb), [BuiltWith](https://builtwith.com/)
-- [Content Discovery](#content-discovery)
+- [Content Discovery](../content-discovery#content-discovery)
 - [Vulnerability Scanning](#vulnerability-scanning)
 
 ### 3. Cicle
