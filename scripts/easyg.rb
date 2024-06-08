@@ -859,5 +859,5 @@ begin
 
 rescue Interrupt
 	puts "\n[\e[31m+\e[0m] Script interrupted by user. Exiting..."
-    exit
+	exit
 end
