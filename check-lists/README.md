@@ -7,19 +7,8 @@
 - [General checklists](#general-checklists)
 - [Toolset](#toolset)
 - [Testing layers](#testing-layers)
+- [Recon](#recon)
 - [Penetration Testing cycle](#penetration-testing-cycle)
-  - [0. Defining the Scope](#0-defining-the-scope)
-  - [1. Information gathering](#1-information-gathering)
-  - [2. Service enumeration](#2-service-enumeration)
-  - [3. Cicle](#3-cicle)
-  - [4. House keeping](#4-house-keeping)
-  - [5. Results](#5-results)
-- [Penetration Testing process](#penetration-testing-process)
-  - [1. Public Network Enumeration](#1-public-network-enumeration)
-  - [2. Attack a Public Machine](#2-attack-a-public-machine)
-  - [3. Internal Network Access](#3-internal-network-access)
-  - [4. Internal Network Enumeration](#4-internal-network-enumeration)
-  - [5. Domain Controller Access](#5-domain-controller-access)
 - [Bug Bounty Hunting](#bug-bounty-hunting)
   - [Top vulnerabilities to always look for](#top-vulnerabilities-to-always-look-for)
   - [Multiple targets](#multiple-targets)
@@ -52,136 +41,64 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
 - [ ] Open Ports and Services (Default creds on services, service level exploits)
 
+
+## Recon
+- [ ] Identify technologies
+	- [ ] Look for response headers, use `curl -I www.domain.com`
+	- [ ] Use WappaLyzer, WhatWeb, BuilWith
+		- Check for CVEs
+	- [ ] Portscanning: use nmap, also for possible hidden web ports
+		- SMB: `nmap -vvv -p 139,445 --script=smb*`
+- [ ] Check available methods
+	- Use `OPTIONS` and `HEAD`
+	- Pay attention if dangerous methods are enabled, like `PUT`, `DELETE`, `CONNECT` and `TRACE`
+	- HTTP verb tampering
+- [ ] Test for SSL
+	- [ ] Check ciphers
+		- [testssl.sh](https://testssl.sh/)
+		- `nmap -sV --script ssl-enum-ciphers -p 443`
+		- [SSL Server Test (Powered by Qualys SSL Labs)](https://www.ssllabs.com/ssltest/)
+	- [ ] Check if HTST is set
+		- `Strict-Transport-Security`
+		- [sslstrip](https://github.com/moxie0/sslstrip)
+- [ ] Metafiles Leakage
+	- Look for infos in `robots.txt`, `.svn`, `.DS_STORE`, `README.md`, `.env`
+- [ ] Enumerate inputs and functionalities
+	- Be sure to have noted every possible input, especially the riskier ones
+- [ ] Look at the source code
+	- Search for interesting content, like comments
+- [ ] Directory Research
+	- Check for possible backup files `.old`, log files, and other files like `.php` or `.asp`, even for source disclosure
+	- Search for possible hidden / supposed-to-be protected paths
+	- Use various lists
+		- [SecLists](https://github.com/danielmiessler/SecLists), [FuzzDB](https://github.com/fuzzdb-project/fuzzdb), [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
+		- Custom: [cewl](https://github.com/digininja/CeWL)
+- [ ] Dorking
+	- Google, GitHub, Shodan
+
+
 ## Penetration Testing cycle
 
-### 0. Defining the Scope
-
-### 1. Information gathering
-- [Passive Information Gathering (OSINT)](#passive-information-gathering-osint)
-- Location information
-  - Satellite images
-  - Drone recon
-  - Bulding layout
-- [Target validation](#target-validation)
-- [User Information Gathering](#user-information-gathering)
-  - Job Information
-    - Employees
-    - Pictures
-
-### 2. Service enumeration
-- [Active Information Gathering](#active-information-gathering)
-- Finding subdomains
-  - [Google Fu](#google-dorking)
-  - [EasyG](#easyg)
-- Fingerprinting
-  - [nmap](#nmap), [Wappalyzer](https://www.wappalyzer.com/), [WhatWeb](https://github.com/urbanadventurer/WhatWeb), [BuiltWith](https://builtwith.com/)
-- [Content Discovery](../content-discovery#content-discovery)
-- [Vulnerability Scanning](#vulnerability-scanning)
-
-### 3. Cicle
-- Penetration
-  - Initial Foothold
-  - Privilege Escalation
-  - Lateral Movement
-- Maintaining access (Trojans)
-
-### 4. House keeping
-- Cleaning up rootkits
-- Covering tracks
-- See: [Post Exploitation - The Penetration Testing Execution Standard](http://www.pentest-standard.org/index.php/Post_Exploitation)
-
-### 5. Results
-- Reporting / Analysis
-- Lessons Learned / Remediation
-
-
-## Penetration Testing process
-
-- Setup the environment
-  - Create a dedicated folder
-  - Create files like `creds.txt` and `computers.txt`
-  - Notes every service found, domain, host etc.
-- Check that the targets are valid and owned by client
-
-### 1. Public Network Enumeration
-
-1. Start a port scanning
-   - light then eavy if necessary
-2. Search for CVEs  and exploits for the identified services
-3. If there is a web server present
-   - Use `whatweb <target>`, wappalyzer or similar to gain more information about the technology
-     - search for CVEs and exploits
-   - search for `robots.txt`, `.svn`, `.DS_STORE`, `README.md`
-   - Run a directory research
-   - See the source code
-   - Run `nikto` and `nuclei`
-   - Brute force the login pages with custom wordlists, use `cewl` and `cupp -i`
-4. If there is a ftp service present
-   - test default credentials / anonymous login
-   - search for CVEs and exploits
-5. If there is a smb service present
-   - run `nmap -vvv -p 139,445 --script=smb* <IP>`
-   - test default credentials / anonymous login
-   - search for CVEs and exploits (EternalBlue)
-6. For Active Directory
-   - run enum4linux with no user and `guest:`
-
-### 2. Attack a Public Machine
-
-1. Exploit the machine
-   - Example: exploit a Directory Traversal in a Web Application to gain `/etc/passwd` or SSH private keys, like `id_rsa` or `id_ecdsa`
-2. Use what you found to access the machine
-   - Example: crack the password of `id_rsa` with `ssh2john id_rsa > ssh.hash` and `john --wordlist=/usr/share/wordlists/rockyou.txt ssh.hash`, then gain access with `ssh -i id_rsa <username>@<IP>`
-3. Elevate your privileges
-   - Run `PowerUp.ps1` `Invoke-AllChecks` in Windows
-   - Run [Privesc](https://github.com/enjoiz/Privesc)
-   - Run winPEAS or linPEAS, note:
-     - System information
-       - In Windows, verify the OS with `systeminfo` (winPEAS may falsely detect Windows 11 as Windows 10)
-     - Network interfaces, Known hosts, and DNS Cache
-     - Check what high privilege commands can be run
-     - Config files, clear text passwords, connections strings etc.
-     - AV Information
-     - Any information about applications used
-     - Any other interesting file / info
-       - Check for Password Manager files, like `*.kdbx` or `config.php` and similar
-     - [GTFOBins](https://gtfobins.github.io/)
-   - Define all potential privilege escalation vectors
-4. For Active Directory
-
-### 3. Internal Network Access
-
-- Password attack: test the credentials found to gain more accesses
-  - use `crackmapexec` or similar
-- Explore the services found
-  - Example: enumerate SMB shares with `crackmapexec smb <IP> -u <user> -p <password> --shares`
-- Client-side attacks
-  - Perform a Phishing attack
-  - If you have more information, you could leverage Microsoft Office or Windows Library Files
-
-### 4. Internal Network Enumeration
-
-- Once an access to an internal network machine is gained, elevate your privileges
-  - See step `2.3.`
-  - Gain situational awareness
-- Update the file `computers.txt` to document identified internal machines and additional information about them
-- In Windows AD, enumerate the AD environment and its objects
-  - Use `BloodHound` and `enum4linux`
-  - Check cached Credentials
-    - Use mimikatz for this purpose
-      - Run `privilege::debug` and `sekurlsa::logonpasswords`
-- set up a SOCKS5 proxy to perform network enumeration via Nmap and CrackMapExec
-  - search for accessible services, open ports, and SMB settings
-  - for Windows, use Chisel
-- Password attack: test the credentials found to gain more accesses
-
-### 5. Domain Controller Access
-
-- Elevate your privileges to `NT AUTHORITY\SYSTEM`
-- Lateral Movement
-  - Leverage the privileges to get access to the other machines
-  - Use `Golden Ticket` and `Rubeus.exe`
-- Obtain `ntds.dit`, located at `%SystemRoot%\NTDS`
+1. Defining the Scope
+	- Check if the target is valid
+	- Setup the environment
+2. Information gathering
+	- Passive Information Gathering (OSINT)
+	- Active Information Gathering
+3. Service enumeration
+4. Cicle
+	- Penetration
+  	- Initial Foothold
+  	- Privilege Escalation
+  	- Lateral Movement
+	- Maintaining access (Trojans)
+5. House keeping
+	- Cleaning up rootkits
+	- Covering tracks
+	- See: [Post Exploitation 	- The Penetration Testing Execution Standard](http://www.pentest-standard.org/index.php/Post_Exploitation)
+6. Results
+	- Reporting / Analysis
+	- Lessons Learned / Remediation
 
 
 ## Bug Bounty Hunting
