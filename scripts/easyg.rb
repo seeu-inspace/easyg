@@ -67,13 +67,13 @@ end
 
 def request_fun(uri)
 
-	proxy_host = '127.0.0.1'
+	proxy_host = $config['proxy_addr']
 	proxy_port = $config['proxy_port']
 
 	headers = {
-		"User-Agent": $config['user-agent'],
-		"Cookie": $config['cookie'],
-		"Authorization": $config['authorization']
+		"User-Agent" => $config['user-agent'],
+		"Cookie" => $config['cookie'],
+		"Authorization" => $config['authorization']
 	}
 
 	ssl_options = {
@@ -85,6 +85,8 @@ def request_fun(uri)
 	req = Net::HTTP::Get.new(uri.request_uri, headers)
 
 	Net::HTTP.start(uri.host, uri.port, proxy_host, proxy_port, ssl_options) do |http|
+		http.open_timeout = 5
+		http.read_timeout = 5
 		res = http.request(req)
 	end
 
@@ -256,7 +258,7 @@ def search_for_vulns(file_to_scan)
 	file_sanitization file_to_scan
 
 	# Get only 200s
-	system "cat #{file_to_scan} | httpx-toolkit -silent -mc 200 -o output/200_#{o_sanitized}.txt"
+	system "cat #{file_to_scan} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200_#{o_sanitized}.txt"
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
@@ -274,54 +276,59 @@ def search_for_vulns(file_to_scan)
 	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
-	# :: search for LFI with FFUF, search for XSS with dalfox ::
-	## :: Grep only params ::
-	system "cat #{file_to_scan} | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
-	# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
-	File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
-		lines = file.readlines.map(&:strip)
-		file.rewind
-		file.truncate(0)
-		lines.each do |line|
-			begin
-			modified_url = replace_param_with_fuzz(line)
-			file.puts modified_url
-			rescue Exception => e
-				puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+	if params[:gb_opt] == "y"
+
+		## :: Grep only params ::
+		system "cat #{file_to_scan} | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
+		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
+			lines = file.readlines.map(&:strip)
+			file.rewind
+			file.truncate(0)
+			lines.each do |line|
+				begin
+				modified_url = replace_param_with_fuzz(line)
+				file.puts modified_url
+				rescue Exception => e
+					puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+				end
 			end
 		end
-	end
-	# Search for XSS and LFI
-	puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 200 -o output/200allParams_#{o_sanitized}.txt"
-	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
-		target = f.gsub("\n","").to_s
-		sanitized_target = target.gsub(/[^\w\s]/, '_')
-		content_type = get_content_type(target)
+		# Search for XSS and LFI
+		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
+		system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200allParams_#{o_sanitized}.txt"
+		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
-		if content_type && content_type.include?('text/html')
-			system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')
+			content_type = get_content_type(target)
+
+			if content_type && content_type.include?('text/html')
+				system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+			end
+
+			waf_check(target) do |t|
+				system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+			end
+
 		end
+		puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 
-		waf_check(target) do |t|
-			system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+		# Search for Open Redirects
+		puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
+		system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"302 \" | sed 's/302 //g' | tee output/302allParams_#{o_sanitized}.txt"
+		File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')
+			waf_check(target) do |t|
+				system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
+			end
 		end
+		process_file_with_sed "output/redirect_#{o_sanitized}.txt"
+		puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
 
 	end
-	puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
-	# Search for Open Redirects
-	puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-	system "cat output/allParams_#{o_sanitized}.txt | httpx-toolkit -silent -mc 302 -o output/302allParams_#{o_sanitized}.txt"
-	File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
-		target = f.gsub("\n","").to_s
-		sanitized_target = target.gsub(/[^\w\s]/, '_')
-		waf_check(target) do |t|
-			system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
-		end
-	end
-	process_file_with_sed "output/redirect_#{o_sanitized}.txt"
-	puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
 
 end
 
@@ -349,7 +356,7 @@ end
 def firefox_fun(params)
 	i = 0
 	File.open(params[:file],'r').each_line do |f|
-		target = f.gsub("\n","").to_s
+		target = f.chomp
 		i += 1
 		puts "[\e[36m#{i.to_s}\e[0m] Firefox open > #{target}"
 		system "firefox \"#{target}\""
@@ -368,9 +375,9 @@ def get_to_burp_fun(params)
 
 			redirect = 2
 
-			res = request_fun(URI.parse(f.gsub("\n","").to_s))
+			res = request_fun(URI.parse(f.chomp))
 
-			puts "[\e[36m#{i.to_s}\e[0m] GET > #{f.gsub("\n","").to_s}"
+			puts "[\e[36m#{i.to_s}\e[0m] GET > #{f.chomp}"
 			i += 1
 
 			while res.is_a?(Net::HTTPRedirection) && redirect > 0
@@ -379,9 +386,12 @@ def get_to_burp_fun(params)
 				redirect -= 1
 			end
 
-		rescue Exception => e
+		rescue Net::OpenTimeout, Net::ReadTimeout => e
+			puts "[\e[31m+\e[0m] TIMEOUT ERROR: #{e.message}"
+		rescue StandardError => e
 			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
 		end
+		
 	end
 
 end
@@ -396,7 +406,7 @@ def assetenum_fun(params)
 
 	File.open(file,'r').each_line do |f|
 
-		target = f.gsub("\n","").to_s
+		target = f.chomp
 
 		#== amass ==
 
@@ -514,8 +524,8 @@ def assetenum_fun(params)
 
 	#== httpx ==
 	puts "\n[\e[36m+\e[0m] Checking output/allsubs_#{file} with httpx"
-	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/httpx_#{file}"
-	puts "[\e[36m+\e[0m] Results saved as output/httpx_#{file}"
+	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/http_#{file}"
+	puts "[\e[36m+\e[0m] Results saved as output/http_#{file}"
 
 	#== naabu ==
 	if params[:gb_opt] == "y"
@@ -527,30 +537,32 @@ def assetenum_fun(params)
 	#== naabu | httpx ==
 	if File.exists?("output/naabu_#{file}")
 		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_#{file}"
-		system "cat output/naabu_#{file} | httpx-toolkit -o output/httpx_naabu_#{file}"
+		system "cat output/naabu_#{file} | httpx-toolkit -o output/http_naabu_#{file}"
 
-		if File.exists?("output/httpx_naabu_#{file}")
-			system "cat output/httpx_naabu_#{file}"
-			adding_anew("output/httpx_naabu_#{file}", "output/httpx_#{file}")
-			puts "[\e[36m+\e[0m] Results added at output/httpx_#{file}"
+		if File.exists?("output/http_naabu_#{file}")
+			system "cat output/http_naabu_#{file}"
+			adding_anew("output/http_naabu_#{file}", "output/http_#{file}")
+			puts "[\e[36m+\e[0m] Results added at output/http_#{file}"
 		end
 	end
 
 	#== interesting subs ==
 
 	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
-	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
+	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
+	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
 	#== nuclei ==
 	if params[:vl_opt] == "y"
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
-		system "nuclei -l output/httpx_#{file} -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
+		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
 
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
-		system "cat output/httpx_#{file} | httpx-toolkit -silent -mc 401,403 -o output/40X_httpx_#{file}"
-		system "byp4xx -xD -xE -xX -m 2 -L output/40X_httpx_#{file} | grep \"200\" | tee output/byp4xx_results_#{file}"
+		system "cat output/http_#{file} | hakcheckurl | grep -E '401 |403 ' | sed -E 's/401 |403 //g' | tee output/40X_#{file}"
+		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
+		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file}.txt --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
@@ -632,7 +644,7 @@ end
 def crawl_burp_fun(params)
 
 	File.open(params[:file],'r').each_line do |f|
-		target = f.gsub("\n","").to_s
+		target = f.chomp
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with hakrawler\n"
 		system 'echo ' + target + "| hakrawler -u -insecure -t 20 -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -h \"Cookie: #{$config['cookie']};;Authorization: #{$config['authorization']}\""
@@ -661,7 +673,7 @@ def crawl_local_fun(params)
 	system "mkdir output" if File.directory?('output') == false
 
 	File.open(file,'r').each_line do |f|
-		target = f.gsub("\n","").to_s
+		target = f.chomp
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 		target_tmp = ""
 
@@ -700,12 +712,14 @@ def crawl_local_fun(params)
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmp1AllJSUrls_#{file_sanitized}"
+	
 	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | grep -v -E 'hubspotonwebflow\.com|website-files\.com|cloudfront\.net|cloudflare\.com|googleapis\.com|facebook\.com|twitter\.com|linkedin\.com|unpkg\.com|readme\.io|hs-scripts\.com|landbot\.io|zdassets\.com|sentry-cdn\.com|finsweet\.com|typekit\.net|hsforms\.net|githubassets\.com|zendesk\.com|msauth\.net|liveidentity\.com|dial-once\.com|mookie1\.com|crazyegg\.com|google\.com' | uniq | anew output/_tmp1AllJSUrls_#{file_sanitized}"
+	
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	# Just keep it 200
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | httpx-toolkit -silent -mc 200 -o output/allJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/allJSUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
@@ -749,7 +763,7 @@ end
 
 def do_everything_fun(params)
 	assetenum_fun params
-	params[:file] = "output/httpx_#{params[:file].gsub("/", "")}"
+	params[:file] = "output/http_#{params[:file].gsub("/", "")}"
 	crawl_local_fun params
 end
 
@@ -799,46 +813,51 @@ option_actions = {
 	}
 }
 
+begin
+	puts logo
 
-puts logo
+	# :: pick an option ::
 
-# :: pick an option ::
+	valid_options = option_actions.keys.join(", ")
 
-valid_options = option_actions.keys.join(", ")
+	print "\e[93m┌─\e[0m Enter an option [#{valid_options}]:\n\e[93m└─\e[0m "
+	option = gets.chomp
 
-print "\e[93m┌─\e[0m Enter an option [#{valid_options}]:\n\e[93m└─\e[0m "
-option = gets.chomp
-
-puts "\n"
+	puts "\n"
 
 
-option_params = {}
+	option_params = {}
 
-if option_actions.key?(option)
+	if option_actions.key?(option)
 
-	params = {}
+		params = {}
 
-	options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "do-everything"]
-	if options_that_need_file.include?(option)
-		print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
-		params[:file] = gets.chomp
+		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "do-everything"]
+		if options_that_need_file.include?(option)
+			print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
+			params[:file] = gets.chomp
+		end
+
+		if option == "assetenum" || option == "do-everything" || option == "crawl-local"
+			print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
+			params[:vl_opt] = gets.chomp
+			puts "\n"
+		end
+
+		if option == "assetenum" || option == "do-everything" || option == "find-vulns"
+			print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
+			params[:gb_opt] = gets.chomp
+		end
+
+		option_params[option] = params
+
+		option_actions[option][:action].call(option_params[option])
+
+	else
+		puts "[\e[31m+\e[0m] Invalid option selected"
 	end
 
-	if option == "assetenum" || option == "do-everything"
-		print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
-		params[:gb_opt] = gets.chomp
-	end
-
-	if option == "crawl-local" || option == "do-everything" || option == "assetenum"
-		print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
-		params[:vl_opt] = gets.chomp
-		puts "\n"
-	end
-
-	option_params[option] = params
-
-	option_actions[option][:action].call(option_params[option])
-
-else
-	puts "[\e[31m+\e[0m] Invalid option selected"
+rescue Interrupt
+	puts "\n[\e[31m+\e[0m] Script interrupted by user. Exiting..."
+    exit
 end
