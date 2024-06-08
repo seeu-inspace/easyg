@@ -35,6 +35,7 @@
 - [nuclei](https://github.com/projectdiscovery/nuclei)
 - [byp4xx](https://github.com/lobuhi/byp4xx)
 - [anew](https://github.com/tomnomnom/anew)
+- [dirsearch](https://github.com/maurosoria/dirsearch)
 
 [**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
 - [selenium](https://github.com/SeleniumHQ/selenium)
