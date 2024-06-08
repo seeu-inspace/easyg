@@ -258,11 +258,11 @@ def search_confidential_files(file_type, file_to_scan)
 	
 	# Define the regex pattern based on the file type
 	regex_pattern = case file_type
-									when 'pdf' then '\\.pdf'
-									when 'txt' then '\\.txt'
-									when 'csv' then '\\.csv'
-									else return
-									end
+					when 'pdf' then '\\.pdf'
+					when 'txt' then '\\.txt'
+					when 'csv' then '\\.csv'
+					else return
+					end
 
 	output_file = "output/reserved#{file_type.upcase}s_#{file_to_scan.gsub("/", "")}"
 
