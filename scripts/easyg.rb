@@ -101,7 +101,6 @@ def get_content_type(url)
 		uri = URI.parse(url)
 		response = nil
 
-		# Follow redirects up to a certain limit to prevent infinite loops
 		limit = 3
 		while limit > 0
 			response = Net::HTTP.get_response(uri)
@@ -222,6 +221,38 @@ end
 
 
 
+def check_url(url)
+	uri = URI.parse(url)
+	response = nil
+	Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+		request = Net::HTTP::Get.new(uri)
+		response = http.request(request)
+	end
+	response
+rescue => e
+	puts "[\e[31m#{i}\e[0m] Error checking URL #{url}: #{e.message}"
+	nil
+end
+
+
+
+# Get a file containing URLs, check for their status code with check_url
+# If the status code is the one desired, creates a new file containing the results
+def process_urls_for_code(file_to_scan, output_file, status_code)
+	File.open(output_file, 'w') do |output|
+		File.foreach(file_to_scan) do |url|
+			url.strip!
+			next if url.empty?
+			response = check_url(url)
+			if response && response.code.to_i == status_code
+				output.puts(url)
+			end
+		end
+	end
+end
+
+
+
 def search_confidential_files(file_type, file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for possible confidential #{file_type.upcase}s"
 	
@@ -258,7 +289,7 @@ def search_for_vulns(file_to_scan)
 	file_sanitization file_to_scan
 
 	# Get only 200s
-	system "cat #{file_to_scan} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200_#{o_sanitized}.txt"
+	process_file(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
@@ -297,7 +328,7 @@ def search_for_vulns(file_to_scan)
 
 		# Search for XSS and LFI
 		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
-		system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/200allParams_#{o_sanitized}.txt"
+		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
 		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
 			target = f.chomp
@@ -317,7 +348,7 @@ def search_for_vulns(file_to_scan)
 
 		# Search for Open Redirects
 		puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-		system "cat output/allParams_#{o_sanitized}.txt | hakcheckurl | grep \"302 \" | sed 's/302 //g' | tee output/302allParams_#{o_sanitized}.txt"
+		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/302allParams_#{o_sanitized}.txt", 302)
 		File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')
@@ -334,19 +365,19 @@ end
 
 
 
-# :: functions for the options ::
+# :: Functions for the options ::
 
 
 
 def show_help(option_actions)
-	# calculate the maximum length of the option names
+	# Calculate the maximum length of the option names
 	max_option_length = option_actions.keys.max_by(&:length).length
 
 	option_actions.each do |option, info|
-		# calculate the padding needed to align descriptions
+		# Calculate the padding needed to align descriptions
 		padding = " " * (max_option_length - option.length + 12)
 
-		# print the option name, description, and padding
+		# Print the option name, description, and padding
 		puts "\t#{option}#{padding}#{info[:description]}"
 	end
 end
@@ -560,7 +591,8 @@ def assetenum_fun(params)
 		delete_if_empty "output/nuclei_#{file}"
 
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
-		system "cat output/http_#{file} | hakcheckurl | grep -E '401 |403 ' | sed -E 's/401 |403 //g' | tee output/40X_#{file}"
+		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
+		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 401)
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file}.txt --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
@@ -719,7 +751,7 @@ def crawl_local_fun(params)
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 	# Just keep it 200
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | hakcheckurl | grep \"200 \" | sed 's/200 //g' | tee output/allJSUrls_#{file_sanitized}"
+	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
@@ -770,7 +802,7 @@ end
 
 
 # ===================================
-# ======= start of the script =======
+# ======= START OF THE SCRIPT =======
 # ===================================
 
 # Define a hash to map options to actions and descriptions
@@ -816,7 +848,7 @@ option_actions = {
 begin
 	puts logo
 
-	# :: pick an option ::
+	# :: Pick an option ::
 
 	valid_options = option_actions.keys.join(", ")
 
