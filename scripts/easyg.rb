@@ -577,19 +577,21 @@ def assetenum_fun(params)
 		end
 	end
 
-	#== interesting subs ==
+	# == Interesting subs ==
 
 	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
 	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
 	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
-	#== nuclei ==
+	# == Search for vulns ==
 	if params[:vl_opt] == "y"
+		# Use some Nuclei templates
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
-		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/takeovers -t ~/.local/nuclei-templates/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
+		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/http/takeovers -t ~/.local/nuclei-templates/http/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/dast/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/http/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/http/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
 
+		# Search for 401 and 403 bypasses
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
 		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
 		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 401)
