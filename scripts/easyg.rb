@@ -837,7 +837,7 @@ option_actions = {
 	},
 	"assetenum" => {
 		action: ->(params) { assetenum_fun(params) },
-		description: "Asset enumeration, use gb as an option to also use gobuster"
+		description: "Asset enumeration, search also for some vulnerabilites with nuclei and 40* bypasses"
 	},
 	"webscreenshot" => {
 		action: ->(params) { webscreenshot_fun(params) },
@@ -857,7 +857,7 @@ option_actions = {
 	},
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
-		description: "Asset enumeration > Crawl Locally > Scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)"
+		description: "Asset enumeration > Crawl Locally > Scan for vunlerabilities"
 	},
 	"help" => {
 		action: ->(options_actions) { show_help(option_actions) },
