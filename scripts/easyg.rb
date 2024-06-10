@@ -612,7 +612,8 @@ def assetenum_fun(params)
 		# Search for 401 and 403 bypasses
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
 		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
-		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 401)
+		process_urls_for_code("output/http_#{file}", "output/401_#{file}", 401)
+		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file}.txt --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
@@ -768,7 +769,7 @@ def crawl_local_fun(params)
 	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
 	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
-	
+
 	# Just keep it 200 for JS files
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
