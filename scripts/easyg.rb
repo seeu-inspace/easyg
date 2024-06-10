@@ -246,6 +246,7 @@ def process_urls_for_code(file_to_scan, output_file, status_code)
 			response = check_url(url)
 			if response && response.code.to_i == status_code
 				output.puts(url)
+				puts url
 			end
 		end
 	end
