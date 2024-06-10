@@ -49,7 +49,11 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 		- Check for CVEs
 	- [ ] Portscanning: use nmap, also for possible hidden web ports
 		- SMB: `nmap -vvv -p 139,445 --script=smb*`
-- [ ] Check available methods
+  	- [ ] Check errors / cause an error
+  	      - Search for possible disclosures in the responses
+  	      - Try to cause an error with a wrong / non-existent HTTP method
+  	- [ ] Search for `.js` files, they may reveal infos about libraries and / or plugin used
+- [ ] Check available HTTP methods
 	- Use `OPTIONS` and `HEAD`
 	- Pay attention if dangerous methods are enabled, like `PUT`, `DELETE`, `CONNECT` and `TRACE`
 	- HTTP verb tampering
