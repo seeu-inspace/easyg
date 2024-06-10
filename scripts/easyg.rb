@@ -230,7 +230,7 @@ def check_url(url)
 	end
 	response
 rescue => e
-	puts "[\e[31m#{i}\e[0m] Error checking URL #{url}: #{e.message}"
+	puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
 	nil
 end
 
