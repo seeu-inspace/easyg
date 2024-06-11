@@ -261,8 +261,12 @@ def remove_using_scope(scope_file, url_file)
 	scope_hosts = scope_urls.map { |url| URI(url).host }
 
 	filtered_urls = urls.select do |url|
-		url_host = URI(url).host
-		scope_hosts.any? { |scope_host| url_host.end_with?(scope_host) }
+		begin
+			url_host = URI(url).host
+			scope_hosts.any? { |scope_host| url_host.end_with?(scope_host) }
+		rescue
+			puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{url}"
+		end
 	end
 
 	File.open(url_file, 'w') do |file|
@@ -308,7 +312,7 @@ def search_for_vulns(file_to_scan)
 	file_sanitization file_to_scan
 
 	# Get only 200s
-	process_file(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
+	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
 	# :: Search for possible confidential files ::
 	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
