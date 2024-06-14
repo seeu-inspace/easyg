@@ -304,7 +304,9 @@ end
 
 
 
-def search_for_vulns(file_to_scan)
+def search_for_vulns(params)
+
+	file_to_scan = params[:file]
 
 	system "mkdir output" if File.directory?('output') == false
 
@@ -806,7 +808,9 @@ def crawl_local_fun(params)
 
 	# === SEARCH FOR VULNS ===
 	if params[:vl_opt] == "y"
-		search_for_vulns "output/allUrls_#{file_sanitized}"
+		params[:file] = "output/allUrls_#{file_sanitized}"
+		params[:gb_opt] = "n" if params[:gb_opt] != "y"
+		search_for_vulns params
 	end
 
 end
@@ -814,7 +818,7 @@ end
 
 
 def find_vulns_fun(params)
-	search_for_vulns params[:file]
+	search_for_vulns params
 end
 
 
