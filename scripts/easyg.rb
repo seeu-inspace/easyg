@@ -573,7 +573,7 @@ def assetenum_fun(params)
 		puts "[\e[36m+\e[0m] Results for #{target} saved as output/#{target}.txt"
 
 		puts "\n[\e[36m+\e[0m] Adding the results for #{target} to output/allsubs_#{file}"
-		system "cat output/#{target}.txt | anew output/allsubs_#{file}"
+		adding_anew("output/#{target}.txt","output/allsubs_#{file}")
 		puts "[\e[36m+\e[0m] Results for #{file} saved as output/allsubs_#{file}"
 
 	end
@@ -748,23 +748,19 @@ def crawl_local_fun(params)
 		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
-		
 		if target_sanitized != target_tmp
 			puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
 			system "paramspider -d #{target_sanitized}"
 		end
 		target_tmp = target_sanitized
-		
 		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 
 		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"		
 		system "urless -i output/#{target_sanitized}_tmp.txt -o output/#{target_sanitized}_urless.txt"
-		system "cat output/#{target_sanitized}_urless.txt | anew output/_tmpAllUrls_#{file_sanitized}"
+		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
+		adding_anew("output/#{target_sanitized}_urless.txt","anew output/_tmpAllUrls_#{file_sanitized}")
 		
 		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
-		
-		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
-		File.delete("output/#{target_sanitized}_urless.txt") if File.exists?("output/#{target_sanitized}_urless.txt")
 	end
 
 	system "rm -rf results/"
