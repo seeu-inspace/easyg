@@ -30,6 +30,7 @@
 ## Strategies
 There are many methods to do code review. Some examples:
 - Bottom up / Bottom down where you start from the functions you encounter first and see which other functions it calls and which other functions are called from
+  - aka Forward Data Propagation / Backward Data Propagation
 - Greb way, where you search for specific keys like file.open, system, eval. This way is useful only if you want to do a quick code review
 - Another way is to start from a functionality, like Password Reset, and review all the code linked to this function. I’ll review which function Password Reset calls and by wich function, it’s called.
 
