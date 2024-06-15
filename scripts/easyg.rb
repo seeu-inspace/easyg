@@ -787,11 +787,9 @@ def crawl_local_fun(params)
 	# Find new URLS from Github using github-endpoints.py
 	File.open("output/tmp_scope.txt",'r').each_line do |f|
 		target = f.strip
-		#main_domain = subdomain.split('.').last(2).join('.')
 		puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
 		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} | tee output/github-endpoints_#{file_sanitized}"
 		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
-		break
 	end
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 
