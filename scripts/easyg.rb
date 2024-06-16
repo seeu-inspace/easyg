@@ -775,8 +775,8 @@ def crawl_local_fun(params)
 
 	# Just keep it 200 for JS files
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
-	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/allJSUrls_#{file_sanitized}")
+	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
@@ -799,6 +799,7 @@ def crawl_local_fun(params)
 	system "urless -i output/_tmpAllUrls_#{file_sanitized} -o output/allUrls_#{file_sanitized}"
 	file_sanitization "output/allUrls_#{file_sanitized}"
 	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
+	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
 	# === SEARCH FOR VULNS ===
