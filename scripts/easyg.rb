@@ -784,11 +784,12 @@ def crawl_local_fun(params)
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
+	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 	
 	# Find new URLS from Github using github-endpoints.py
+	puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
 	File.open("output/tmp_scope.txt",'r').each_line do |f|
 		target = f.strip
-		puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
 		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} | tee output/github-endpoints_#{file_sanitized}"
 		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	end
