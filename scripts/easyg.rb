@@ -897,17 +897,19 @@ begin
 		if options_that_need_file.include?(option)
 			print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 			params[:file] = gets.chomp
+			puts "\n" if option == "firefox" || option == "get-to-burp" || option == "webscreenshot" || option == "crawl-burp"
 		end
 
 		if option == "assetenum" || option == "do-everything" || option == "crawl-local"
 			print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
 			params[:vl_opt] = gets.chomp
-			puts "\n"
+			puts "\n" if option == "crawl-local"
 		end
 
 		if option == "assetenum" || option == "do-everything" || option == "find-vulns"
 			print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 			params[:gb_opt] = gets.chomp
+			puts "\n"
 		end
 
 		option_params[option] = params
