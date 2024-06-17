@@ -502,9 +502,11 @@ def assetenum_fun(params)
 			crtsh_o = File.new("output/#{target}_crtsh.txt", "w")
 
 			crtsh.each do | f |
-				puts f["common_name"].gsub('*.','').to_s
-				if f.include? ".#{target}"
-					crtsh_o.puts f["common_name"].gsub('*.','').to_s
+				if !f["common_name"].nil?
+					puts f["common_name"].gsub('*.','').to_s
+					if f.include? ".#{target}"
+						crtsh_o.puts f["common_name"].gsub('*.','').to_s
+					end
 				end
 			end
 
