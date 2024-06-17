@@ -513,6 +513,7 @@ def assetenum_fun(params)
 			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
 
 			adding_anew("output/#{target}_crtsh.txt", "output/#{target}_tmp.txt")
+			File.delete("output/#{target}_crtsh.txt") if File.exists?("output/#{target}_crtsh.txt")
 
 		rescue Exception => e
 			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
