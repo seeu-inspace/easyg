@@ -427,6 +427,9 @@ def get_to_burp_fun(params)
 	i = 0
 
 	File.open(params[:file],'r').each_line do |f|
+
+		i += 1
+
 		begin
 
 			redirect = 2
@@ -434,7 +437,6 @@ def get_to_burp_fun(params)
 			res = request_fun(URI.parse(f.chomp))
 
 			puts "[\e[36m#{i.to_s}\e[0m] GET > #{f.chomp}"
-			i += 1
 
 			while res.is_a?(Net::HTTPRedirection) && redirect > 0
 				puts "	Redirecting to > #{res['location'].to_s}"
