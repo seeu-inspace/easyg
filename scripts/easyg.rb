@@ -47,11 +47,17 @@ end
 
 
 
-def adding_anew(file_tmp,file_final)
+def adding_anew(file_tmp, file_final)
 	system "cat #{file_tmp} | anew #{file_final}"
 	File.delete(file_tmp) if File.exists?(file_tmp)
 end
 
+
+
+def urless_fun(file_i, file_o)
+	system "urless -i #{file_i} -o #{file_o}"
+	File.delete(file_i) if File.exists?(file_i)
+end
 
 
 def delete_if_empty(file)
@@ -760,13 +766,11 @@ def crawl_local_fun(params)
 			system "paramspider -d #{target_sanitized}"
 		end
 		target_tmp = target_sanitized
-		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 
-		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"		
-		system "urless -i output/#{target_sanitized}_tmp.txt -o output/#{target_sanitized}_urless.txt"
-		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
+		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
+		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"
+		urless_fun("output/#{target_sanitized}_tmp.txt", "output/#{target_sanitized}_urless.txt")
 		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
-		
 		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
 	end
 
@@ -776,8 +780,7 @@ def crawl_local_fun(params)
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmp1AllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs | anew output/_tmp1AllJSUrls_#{file_sanitized}"
-	system "urless -i output/_tmp1AllJSUrls_#{file_sanitized} -o output/_tmpAllJSUrls_#{file_sanitized}"
-	File.delete("output/_tmp1AllJSUrls_#{file_sanitized}") if File.exists?("output/_tmp1AllJSUrls_#{file_sanitized}")
+	urless_fun("output/_tmp1AllJSUrls_#{file_sanitized}","output/_tmpAllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 
 	# Just keep it 200 for JS files
@@ -804,9 +807,8 @@ def crawl_local_fun(params)
 
 	# Final
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
-	system "urless -i output/_tmpAllUrls_#{file_sanitized} -o output/allUrls_#{file_sanitized}"
+	urless_fun("output/_tmpAllUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	file_sanitization "output/allUrls_#{file_sanitized}"
-	File.delete("output/_tmpAllUrls_#{file_sanitized}") if File.exists?("output/_tmpAllUrls_#{file_sanitized}")
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
