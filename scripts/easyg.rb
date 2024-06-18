@@ -589,7 +589,7 @@ def assetenum_fun(params)
 
 	end
 
-	#== httpx ==
+	#== httpx & httprobe ==
 	puts "\n[\e[36m+\e[0m] Searching for web services output/allsubs_#{file}"
 	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/http_#{file}"
 	system "cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | anew output/http_#{file}"
@@ -598,19 +598,19 @@ def assetenum_fun(params)
 	#== naabu ==
 	if params[:gb_opt] == "y"
 		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_#{file} with naabu"
-		system "naabu -v -list output/allsubs_#{file} -p - -exclude-ports 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -c 1000 -rate 7000 -stats -o output/naabu_#{file}"
-		delete_if_empty "output/naabu_#{file}"
+		system "naabu -v -list output/allsubs_#{file} -p - -exclude-ports 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -c 1000 -rate 7000 -stats -o output/ports_#{file}"
+		delete_if_empty "output/ports_#{file}"
 	end
 
-	#== naabu | httpx ==
-	if File.exists?("output/naabu_#{file}")
-		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_#{file}"
-		system "cat output/naabu_#{file} | httpx-toolkit -o output/http_naabu_#{file}"
-		system "cat output/naabu_#{file} | httprobe | anew output/http_naabu_#{file}"
+	#== naabu | httpx & httprobe ==
+	if File.exists?("output/ports_#{file}")
+		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/ports_#{file}"
+		system "cat output/ports_#{file} | httpx-toolkit -o output/http_hidden_#{file}"
+		system "cat output/ports_#{file} | httprobe | anew output/http_hidden_#{file}"
 
-		if File.exists?("output/http_naabu_#{file}")
-			system "cat output/http_naabu_#{file}"
-			adding_anew("output/http_naabu_#{file}", "output/http_#{file}")
+		if File.exists?("output/http_hidden_#{file}")
+			system "cat output/http_hidden_#{file}"
+			adding_anew("output/http_hidden_#{file}", "output/http_#{file}")
 			puts "[\e[36m+\e[0m] Results added at output/http_#{file}"
 		end
 	end
