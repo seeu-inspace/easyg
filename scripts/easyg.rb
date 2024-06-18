@@ -584,8 +584,9 @@ def assetenum_fun(params)
 	end
 
 	#== httpx ==
-	puts "\n[\e[36m+\e[0m] Checking output/allsubs_#{file} with httpx"
+	puts "\n[\e[36m+\e[0m] Searching for web services output/allsubs_#{file}"
 	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/http_#{file}"
+	system "cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | anew output/http_#{file}"
 	puts "[\e[36m+\e[0m] Results saved as output/http_#{file}"
 
 	#== naabu ==
@@ -599,6 +600,7 @@ def assetenum_fun(params)
 	if File.exists?("output/naabu_#{file}")
 		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/naabu_#{file}"
 		system "cat output/naabu_#{file} | httpx-toolkit -o output/http_naabu_#{file}"
+		system "cat output/naabu_#{file} | httprobe | anew output/http_naabu_#{file}"
 
 		if File.exists?("output/http_naabu_#{file}")
 			system "cat output/http_naabu_#{file}"
@@ -718,7 +720,7 @@ def crawl_burp_fun(params)
 		system 'gospider -s "' + target + "\" -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\" -H \"Authorization: #{$config['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system 'katana -u "' + target + "\" -jc -kf -aff -d 3 -fs rdn -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\""
+		system 'katana -u "' + target + "\" -jc -jsl -hl -kf -aff -d 3 -fs rdn -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
 		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 5 --proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']}"
@@ -743,7 +745,7 @@ def crawl_local_fun(params)
 		target_tmp = ""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
+		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 		
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with waymore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
@@ -763,7 +765,7 @@ def crawl_local_fun(params)
 		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"		
 		system "urless -i output/#{target_sanitized}_tmp.txt -o output/#{target_sanitized}_urless.txt"
 		File.delete("output/#{target_sanitized}_tmp.txt") if File.exists?("output/#{target_sanitized}_tmp.txt")
-		adding_anew("output/#{target_sanitized}_urless.txt","anew output/_tmpAllUrls_#{file_sanitized}")
+		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
 		
 		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
 	end
