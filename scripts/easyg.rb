@@ -264,7 +264,13 @@ def remove_using_scope(scope_file, url_file)
 	scope_urls = File.readlines(scope_file).map(&:strip)
 	urls = File.readlines(url_file).map(&:strip)
 	
-	scope_hosts = scope_urls.map { |url| URI(url).host }
+	scope_hosts = scope_urls.map do |url|
+		begin
+			URI(url).host
+		rescue => e
+			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+		end
+	end
 
 	filtered_urls = urls.select do |url|
 		begin
@@ -278,6 +284,8 @@ def remove_using_scope(scope_file, url_file)
 	File.open(url_file, 'w') do |file|
 		filtered_urls.each { |url| file.puts(url) }
 	end
+rescue => e
+	puts "[\e[31m+\e[0m] ERROR: #{e.message}"
 end
 
 
