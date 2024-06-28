@@ -7,6 +7,7 @@ require 'socket'
 require 'webdrivers'
 require 'selenium-webdriver'
 require 'yaml'
+require 'thread'
 
 $config = YAML.load_file('config.yaml')
 
@@ -240,21 +241,35 @@ rescue => e
 	nil
 end
 
-
-
 # Get a file containing URLs, check for their status code with check_url
 # If the status code is the one desired, creates a new file containing the results
-def process_urls_for_code(file_to_scan, output_file, status_code)
+def process_urls_for_code(file_to_scan, output_file, status_code, num_threads = 10)
+	queue = Queue.new
+
+	# Load all URLs into the queue
+	File.foreach(file_to_scan) do |url|
+		url.strip!
+		queue << url unless url.empty?
+	end
+
 	File.open(output_file, 'w') do |output|
-		File.foreach(file_to_scan) do |url|
-			url.strip!
-			next if url.empty?
-			response = check_url(url)
-			if response && response.code.to_i == status_code
-				output.puts(url)
-				puts url
+		mutex = Mutex.new
+
+		workers = Array.new(num_threads) do
+			Thread.new do
+				while !queue.empty? && url = queue.pop(true) rescue nil
+					response = check_url(url)
+					if response && response.code.to_i == status_code
+						mutex.synchronize do
+							output.puts(url)
+							puts url
+						end
+					end
+				end
 			end
 		end
+
+		workers.each(&:join)
 	end
 end
 
@@ -298,6 +313,7 @@ def search_confidential_files(file_type, file_to_scan)
 					when 'pdf' then '\\.pdf'
 					when 'txt' then '\\.txt'
 					when 'csv' then '\\.csv'
+					when 'xml' then '\\.xml'
 					else return
 					end
 
@@ -323,6 +339,8 @@ def search_for_vulns(params)
 	file_to_scan = params[:file]
 
 	system "mkdir output" if File.directory?('output') == false
+	system "mkdir output/dalfox" if File.directory?('output/dalfox') == false
+	system "mkdir output/ffuf_lfi" if File.directory?('output/ffuf_lfi') == false
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 	file_sanitization file_to_scan
@@ -336,7 +354,7 @@ def search_for_vulns(params)
 	end
 
 	# :: Mantra ::
-	puts "\n[\e[36m+\e[0m] Searching for API keys with Mantra"
+	puts "\n[\e[36m+\e[0m] Searching for secrets with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | mantra -t 20 | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt"
@@ -375,7 +393,7 @@ def search_for_vulns(params)
 			content_type = get_content_type(target)
 
 			if content_type && content_type.include?('text/html')
-				system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --only-poc r --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+				system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
 			end
 
 			waf_check(target) do |t|
