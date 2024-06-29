@@ -4,4 +4,5 @@ user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 F
 cookie: 0=1
 authorization: Basic MD0x
 github_token: YOUR_GITHUB_TOKEN_HERE
-telegram: 
+telegram: YOUR_TELEGRAM_TOKEN_HERE
+telegram_chat_id: YOUR_TELEGRAM_CHAT_ID_HERE
