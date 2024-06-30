@@ -733,7 +733,7 @@ def assetenum_fun(params)
 		process_urls_for_code("output/http_#{file}", "output/401_#{file}", 401)
 		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}"
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
-		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file}.txt --no-color --full-url -o output/dirsearch_results_40X_#{file}"
+		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
