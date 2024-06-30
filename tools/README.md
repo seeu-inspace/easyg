@@ -19,7 +19,7 @@
 
 [EasyG](../scripts/) is a tailor-made script to assist me with various tasks in bug bounty hunting. Setting up every tool and configuration can be a hassle, so I don't recommend using it as-is. However, I hope it provides you with some new ideas to implement in your own process.
 
-To give you (and myself) an idea on how it works I've made this graphic:
+To give you (and myself) an idea on how it works, I've made this graphic:
 
 <img src="../img/easyg_schema_.png">
 
