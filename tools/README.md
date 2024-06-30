@@ -17,59 +17,11 @@
 
 <img src="../img/easyg.gif"><em>Old GIF but still cool</em>
 
-[EasyG](../scripts/) is a script that I use to automate some information gathering tasks for my hacking process.
+[EasyG](../scripts/) is a tailor-made script to assist me with various tasks in bug bounty hunting. Setting up every tool and configuration can be a hassle, so I don't recommend using it as-is. However, I hope it provides you with some new ideas to implement in your own process.
 
-### Tools used and what the script does
+To give you (and myself) an idea on how it works I've made this graphic:
 
-[**firefox**] open every entry in <file_input> with firefox
-
-[**gettoburp**] for every entry in <file_input> send a GET request using as a proxy 127.0.0.1:8080. This is useful for adding entries from a file to Burp Suite.
-
-[**assetenum**] During this process, many tools are implemented to discover subdomains. Then, there is the process of discovering ports and possibly discovering technologies, misconfigurations and vulnerabilities for these assets discovered.
-- [amass](https://github.com/owasp-amass/amass)
-- [subfinder](https://github.com/projectdiscovery/subfinder)
-- [github-subdomains](https://github.com/gwen001/github-subdomains)
-- [gobuster](https://github.com/OJ/gobuster)
-- [httpx](https://github.com/projectdiscovery/httpx)
-- [naabu](https://github.com/projectdiscovery/naabu)
-- [nuclei](https://github.com/projectdiscovery/nuclei)
-- [byp4xx](https://github.com/lobuhi/byp4xx)
-- [anew](https://github.com/tomnomnom/anew)
-- [dirsearch](https://github.com/maurosoria/dirsearch)
-
-[**webscreenshot**] take a screenshot for every entry in <file_input> and make a gallery
-- [selenium](https://github.com/SeleniumHQ/selenium)
-
-[**crawl-burp**] crawl for every entry in <file_input> and pass the results to Burp Suite
-- [hakrawler](https://github.com/hakluke/hakrawler)
-- [gospider](https://github.com/jaeles-project/gospider)
-- [katana](https://github.com/projectdiscovery/katana)
-- [gau](https://github.com/lc/gau)
-
-[**crawl-local**] Crawl for every entry in <file_input> and save the results in local. Optionally, scan for vulnerabilities
-- [katana](https://github.com/projectdiscovery/katana)
-- [waymore](https://github.com/xnl-h4ck3r/waymore)
-- [gau](https://github.com/lc/gau)
-- [paramspider](https://github.com/devanshbatham/ParamSpider/)
-- [subjs](https://github.com/lc/subjs)
-- [httpx](https://github.com/projectdiscovery/httpx)
-- [anew](https://github.com/tomnomnom/anew)
-- [xnLinkFinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
-- [github-endpoints.py](https://github.com/gwen001/github-search/blob/master/github-endpoints.py)
-- [urless](https://github.com/xnl-h4ck3r/urless)
-
-[**find-vulns**] Given a <file_input> containing URLs, scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)
-- [httpx](https://github.com/projectdiscovery/httpx)
-- [pdftotext](https://www.xpdfreader.com/pdftotext-man.html)
-- [mantra](https://github.com/MrEmpy/mantra)
-- [socialhunter](https://github.com/utkusen/socialhunter)
-- [ffuf](https://github.com/ffuf/ffuf)
-- [seclists](https://github.com/danielmiessler/SecLists)
-- [Dalfox](https://github.com/hahwul/dalfox)
-- [Oralyzer](https://github.com/r0075h3ll/Oralyzer)
-- [wafw00f](https://github.com/EnableSecurity/wafw00f)
-
-[**do-everything**] Asset enumeration > Crawl Locally > Scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)
+<img src="../img/easyg_schema.png">
 
 ## Burp Suite
 
