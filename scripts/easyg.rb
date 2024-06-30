@@ -731,7 +731,7 @@ def assetenum_fun(params)
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
 		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
 		process_urls_for_code("output/http_#{file}", "output/401_#{file}", 401)
-		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}"
+		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}" if File.exists?("output/401_#{file}")
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		delete_if_empty "output/byp4xx_results_#{file}"
