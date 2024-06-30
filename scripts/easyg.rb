@@ -9,7 +9,9 @@ require 'selenium-webdriver'
 require 'yaml'
 require 'thread'
 
-$config = YAML.load_file('config.yaml')
+$CONFIG = YAML.load_file('config.yaml')
+
+
 
 # =========================
 # ======= FUNCTIONS =======
@@ -61,12 +63,13 @@ def urless_fun(file_i, file_o)
 end
 
 
+
 def delete_if_empty(file)
 	if File.zero?(file) || !File.exists?(file)
 		puts "[\e[36m+\e[0m] No result found"
 		File.delete(file) if File.exists?(file)
 	else
-		puts "[\e[36m+\e[0m] Results added at #{file}"
+		puts "[\e[32m+\e[0m] Results added at #{file}"
 	end
 end
 
@@ -74,13 +77,13 @@ end
 
 def request_fun(uri)
 
-	proxy_host = $config['proxy_addr']
-	proxy_port = $config['proxy_port']
+	proxy_host = $CONFIG['proxy_addr']
+	proxy_port = $CONFIG['proxy_port']
 
 	headers = {
-		"User-Agent" => $config['user-agent'],
-		"Cookie" => $config['cookie'],
-		"Authorization" => $config['authorization']
+		"User-Agent" => $CONFIG['user-agent'],
+		"Cookie" => $CONFIG['cookie'],
+		"Authorization" => $CONFIG['authorization']
 	}
 
 	ssl_options = {
@@ -218,11 +221,36 @@ end
 
 
 def waf_check(target)
-	output = "wafw00f \"#{target}\" -v"
-	if output.include?("is behind a")
-		yield target
+
+	aggressive_wafs = [
+		"Cloudflare",
+		"Incapsula",
+		"AWS Elastic Load Balancer",
+		"Azure Front Door",
+		"FortiWeb",
+		"Palo Alto Next Gen Firewall",
+		"PerimeterX",
+		"Reblaze",
+		"Sucuri CloudProxy",
+		"ZScaler",
+		"Akamai Kona Site Defender",
+		"Barracuda",
+		"F5 Networks BIG-IP",
+		"Imperva SecureSphere",
+		"DenyALL",
+		"Citrix NetScaler",
+		"Radware AppWall",
+		"Sophos UTM Web Protection",
+		"Wallarm"
+	]
+
+	output = `wafw00f "#{target}" -v`
+	aggressive_waf = AGGRESSIVE_WAFS.any? { |waf| output.include?(waf) }
+
+	if aggressive_waf
+		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
 	else
-		puts "[\e[31m+\e[0m] Skipped, the target is behind a WAF"
+		yield target
 	end
 end
 
@@ -240,6 +268,8 @@ rescue => e
 	puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
 	nil
 end
+
+
 
 # Get a file containing URLs, check for their status code with check_url
 # If the status code is the one desired, creates a new file containing the results
@@ -338,9 +368,9 @@ def search_for_vulns(params)
 
 	file_to_scan = params[:file]
 
-	system "mkdir output" if File.directory?('output') == false
-	system "mkdir output/dalfox" if File.directory?('output/dalfox') == false
-	system "mkdir output/ffuf_lfi" if File.directory?('output/ffuf_lfi') == false
+	system "mkdir output" if !File.directory?('output')
+	system "mkdir output/dalfox" if !File.directory?('output/dalfox')
+	system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 	file_sanitization file_to_scan
@@ -393,7 +423,8 @@ def search_for_vulns(params)
 			content_type = get_content_type(target)
 
 			if content_type && content_type.include?('text/html')
-				system "dalfox url \"#{target}\" -C \"#{$config['cookie']}\" --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+				system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+				send_telegram_notif("XSS for \"#{target}\" found") if File.exist?("output/dalfox/#{sanitized_target}.txt")
 			end
 
 			waf_check(target) do |t|
@@ -401,7 +432,7 @@ def search_for_vulns(params)
 			end
 
 		end
-		puts "[\e[36m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
+		puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 
 		# Search for Open Redirects
 		puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
@@ -414,10 +445,49 @@ def search_for_vulns(params)
 			end
 		end
 		process_file_with_sed "output/redirect_#{o_sanitized}.txt"
-		puts "[\e[36m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
+		puts "[\e[32m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
 
 	end
 
+end
+
+
+
+def send_telegram_notif(message)
+
+	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
+	header = {'Content-Type': 'application/json'}
+	body = {
+		chat_id: $CONFIG['telegram_chat_id'],
+		text: message
+	}.to_json
+
+	http = Net::HTTP.new(uri.host, uri.port)
+	http.use_ssl = true
+	request = Net::HTTP::Post.new(uri.request_uri, header)
+	request.body = body
+
+	retries = 3
+	begin
+		response = http.request(request)
+		if response.code.to_i == 200
+			puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
+		else
+			puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
+		end
+	rescue Net::OpenTimeout, Net::ReadTimeout => e
+		puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
+		if retries > 0
+			retries -= 1
+			puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
+			sleep(1)
+			retry
+		end
+	rescue SocketError => e
+		puts "[\e[31m+\e[0m] Socket error: #{e.message}"
+	rescue StandardError => e
+		puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
+	end
 end
 
 
@@ -492,7 +562,7 @@ def assetenum_fun(params)
 
 	file = params[:file]
 
-	system "mkdir output" if File.directory?('output') == false
+	system "mkdir output" if !File.directory?('output')
 
 	File.open(file,'r').each_line do |f|
 
@@ -517,9 +587,9 @@ def assetenum_fun(params)
 		adding_anew("output/#{target}_subfinder.txt", "output/#{target}_tmp.txt")
 
 		#== github-subdomains ==
-		if $config['github_token'] != nil || $config['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+		if $CONFIG['github_token'] != nil || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with github-subdomains"
-			system "github-subdomains -t #{$config['github_token']} -d #{target} -o output/#{target}_github.txt"
+			system "github-subdomains -t #{$CONFIG['github_token']} -d #{target} -o output/#{target}_github.txt"
 			adding_anew("output/#{target}_github.txt", "output/#{target}_tmp.txt")
 		end
 
@@ -607,11 +677,11 @@ def assetenum_fun(params)
 		File.delete("output/#{target}_tmp.txt") if File.exists?("output/#{target}_tmp.txt")
 		allsubs_final.close unless allsubs_final.nil? or allsubs_final.closed?
 
-		puts "[\e[36m+\e[0m] Results for #{target} saved as output/#{target}.txt"
+		puts "[\e[32m+\e[0m] Results for #{target} saved as output/#{target}.txt"
 
 		puts "\n[\e[36m+\e[0m] Adding the results for #{target} to output/allsubs_#{file}"
 		adding_anew("output/#{target}.txt","output/allsubs_#{file}")
-		puts "[\e[36m+\e[0m] Results for #{file} saved as output/allsubs_#{file}"
+		puts "[\e[32m+\e[0m] Results for #{file} saved as output/allsubs_#{file}"
 
 	end
 
@@ -619,7 +689,7 @@ def assetenum_fun(params)
 	puts "\n[\e[36m+\e[0m] Searching for web services output/allsubs_#{file}"
 	system "cat output/allsubs_#{file} | httpx-toolkit -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/http_#{file}"
 	system "cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 50 | anew output/http_#{file}"
-	puts "[\e[36m+\e[0m] Results saved as output/http_#{file}"
+	puts "[\e[32m+\e[0m] Results saved as output/http_#{file}"
 
 	#== naabu ==
 	if params[:gb_opt] == "y"
@@ -637,7 +707,7 @@ def assetenum_fun(params)
 		if File.exists?("output/http_hidden_#{file}")
 			system "cat output/http_hidden_#{file}"
 			adding_anew("output/http_hidden_#{file}", "output/http_#{file}")
-			puts "[\e[36m+\e[0m] Results added at output/http_#{file}"
+			puts "[\e[32m+\e[0m] Results added at output/http_#{file}"
 		end
 	end
 
@@ -665,6 +735,8 @@ def assetenum_fun(params)
 		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
+
+	send_telegram_notif("Asset enumeration for #{file} finished")
 
 end
 
@@ -697,7 +769,7 @@ def webscreenshot_fun(params)
 
 			image_path = "output/webscreen/#{url.gsub(/[^\w\s]/, '_')}.png"
 			driver.save_screenshot(image_path)
-			puts "[\e[34m#{i}\e[0m] Screenshot saved as: #{image_path}"
+			puts "[\e[32m#{i}\e[0m] Screenshot saved as: #{image_path}"
 			image_paths << image_path
 		rescue Exception => e
 			puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
@@ -746,18 +818,19 @@ def crawl_burp_fun(params)
 		target = f.chomp
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with hakrawler\n"
-		system 'echo ' + target + "| hakrawler -u -insecure -t 20 -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -h \"Cookie: #{$config['cookie']};;Authorization: #{$config['authorization']}\""
+		system 'echo ' + target + "| hakrawler -u -insecure -t 20 -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -h \"Cookie: #{$CONFIG['cookie']};;Authorization: #{$CONFIG['authorization']}\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
-		system 'gospider -s "' + target + "\" -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\" -H \"Authorization: #{$config['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
+		system 'gospider -s "' + target + "\" -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system 'katana -u "' + target + "\" -jc -jsl -hl -kf -aff -d 3 -fs rdn -proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']} -H \"Cookie: #{$config['cookie']}\""
+		system 'katana -u "' + target + "\" -jc -jsl -hl -kf -aff -d 3 -fs rdn -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 5 --proxy http://#{$config['proxy_addr']}:#{$config['proxy_port']}"
-
+		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 5 --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 	end
+
+	send_telegram_notif("Crawl-burp for #{file} finished")
 
 end
 
@@ -769,7 +842,7 @@ def crawl_local_fun(params)
 	file_sanitized = file.gsub("/", "")
 	target_tmp = ""
 
-	system "mkdir output" if File.directory?('output') == false
+	system "mkdir output" if !File.directory?('output')
 
 	File.open(file,'r').each_line do |f|
 		target = f.chomp
@@ -777,7 +850,7 @@ def crawl_local_fun(params)
 		target_tmp = ""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$config['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
+		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 		
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with waymore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
@@ -797,7 +870,7 @@ def crawl_local_fun(params)
 		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"
 		urless_fun("output/#{target_sanitized}_tmp.txt", "output/#{target_sanitized}_urless.txt")
 		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
-		puts "[\e[36m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
+		puts "[\e[32m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
 	end
 
 	system "rm -rf results/"
@@ -813,7 +886,7 @@ def crawl_local_fun(params)
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
 	remove_using_scope(file, "output/allJSUrls_#{file_sanitized}")
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
-	puts "[\e[36m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
+	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
 	puts "\n[\e[36m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
@@ -826,7 +899,7 @@ def crawl_local_fun(params)
 	puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
 	File.open("output/tmp_scope.txt",'r').each_line do |f|
 		target = f.strip
-		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$config['github_token']} | tee output/github-endpoints_#{file_sanitized}"
+		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
 		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	end
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
@@ -836,7 +909,7 @@ def crawl_local_fun(params)
 	urless_fun("output/_tmpAllUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	file_sanitization "output/allUrls_#{file_sanitized}"
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
-	puts "[\e[36m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
+	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
 	# === SEARCH FOR VULNS ===
 	if params[:vl_opt] == "y"
@@ -844,6 +917,8 @@ def crawl_local_fun(params)
 		params[:gb_opt] = "n" if params[:gb_opt] != "y"
 		search_for_vulns params
 	end
+
+	send_telegram_notif("Crawl-local for #{file} finished")
 
 end
 
@@ -875,11 +950,11 @@ option_actions = {
 	},
 	"get-to-burp" => {
 		action: ->(params) { get_to_burp_fun(params) },
-		description: "For every entry in <file_input>, send a GET request"
+		description: "For every entry in <file_input>, send a GET request using Burp Suite as a proxy"
 	},
 	"assetenum" => {
 		action: ->(params) { assetenum_fun(params) },
-		description: "Asset enumeration, search also for some vulnerabilites with nuclei and 40* bypasses"
+		description: "Asset enumeration, search also for some vulnerabilites"
 	},
 	"webscreenshot" => {
 		action: ->(params) { webscreenshot_fun(params) },
@@ -895,7 +970,7 @@ option_actions = {
 	},
 	"find-vulns" => {
 		action: ->(params) { find_vulns_fun(params) },
-		description: "Given a <file_input> containing URLs, scan for vunlerabilities (API Keys, Secrets, BLH, XSS, LFI)"
+		description: "Given a <file_input> containing URLs, scan for vunlerabilities"
 	},
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
