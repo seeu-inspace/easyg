@@ -50,16 +50,13 @@ end
 
 
 
+# :: Functions to make life easier ::
+
+
+
 def adding_anew(file_tmp, file_final)
 	system "cat #{file_tmp} | anew #{file_final}"
 	File.delete(file_tmp) if File.exists?(file_tmp)
-end
-
-
-
-def urless_fun(file_i, file_o)
-	system "urless -i #{file_i} -o #{file_o}"
-	File.delete(file_i) if File.exists?(file_i)
 end
 
 
@@ -72,6 +69,17 @@ def delete_if_empty(file)
 		puts "[\e[32m+\e[0m] Results added at #{file}"
 	end
 end
+
+
+
+def urless_fun(file_i, file_o)
+	system "urless -i #{file_i} -o #{file_o}"
+	File.delete(file_i) if File.exists?(file_i)
+end
+
+
+
+# :: Functions misc ::
 
 
 
@@ -106,153 +114,46 @@ end
 
 
 
-def get_content_type(url)
+def send_telegram_notif(message)
+
+	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
+	header = {'Content-Type': 'application/json'}
+	body = {
+		chat_id: $CONFIG['telegram_chat_id'],
+		text: message
+	}.to_json
+
+	http = Net::HTTP.new(uri.host, uri.port)
+	http.use_ssl = true
+	request = Net::HTTP::Post.new(uri.request_uri, header)
+	request.body = body
+
+	retries = 3
 	begin
-		uri = URI.parse(url)
-		response = nil
-
-		limit = 3
-		while limit > 0
-			response = Net::HTTP.get_response(uri)
-
-			case response
-			when Net::HTTPRedirection then
-				uri = URI.parse(response['location'])
-			else
-				break
-			end
-
-			limit -= 1
-		end
-
-		if response.is_a?(Net::HTTPSuccess)
-			return response['content-type']
+		response = http.request(request)
+		if response.code.to_i == 200
+			puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
 		else
-			return nil
+			puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
 		end
-
-	rescue => e
-		return nil
-	end
-end
-
-
-
-def replace_param_with_fuzz(url)
-	uri = URI.parse(url)
-	params = URI.decode_www_form(uri.query || '')
-	params.map! { |param, value| [param, 'FUZZ'] }
-	uri.query = URI.encode_www_form(params)
-	uri.to_s
-end
-
-
-
-def process_file_with_sed(file_path)
-	unless File.exists?(file_path)
-		puts "[\e[31m+\e[0m] File not found: #{file_path}"
-		return
-	end
-
-	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' #{file_path}"
-
-	unless system(sed_command)
-		puts "[\e[31m+\e[0m] Error processing file"
-	end
-end
-
-
-
-def encode_component(component)
-	component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }.split(/(%[0-9A-Fa-f]{2})/).map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }.join
-end
-
-
-
-def sanitize_url(url)
-	uri = URI.parse(url)
-
-	encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
-	encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
-	encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
-
-	begin
-		URI::Generic.build(
-			scheme: uri.scheme,
-			userinfo: uri.user,
-			host: uri.host,
-			port: uri.port,
-			path: encoded_path,
-			query: encoded_query,
-			fragment: encoded_fragment
-		).to_s
-	rescue => e
-		return nil
-	end
-
-end
-
-
-
-def file_sanitization(file_path)
-	unless File.exists?(file_path)
-		puts "[\e[31m+\e[0m] File not found: #{file_path}"
-		return
-	end
-
-	sanitized_lines = []
-
-	File.foreach(file_path) do |line|
-		line.strip!
-		if line.start_with?("http")
-			begin
-				sanitized_lines << sanitize_url(line)
-			rescue URI::InvalidURIError
-				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
-			end
-		else
-			sanitized_lines << line
+	rescue Net::OpenTimeout, Net::ReadTimeout => e
+		puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
+		if retries > 0
+			retries -= 1
+			puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
+			sleep(1)
+			retry
 		end
-	end
-
-	File.write(file_path, sanitized_lines.join("\n") + "\n")
-end
-
-
-
-def waf_check(target)
-
-	aggressive_wafs = [
-		"Cloudflare",
-		"Incapsula",
-		"AWS Elastic Load Balancer",
-		"Azure Front Door",
-		"FortiWeb",
-		"Palo Alto Next Gen Firewall",
-		"PerimeterX",
-		"Reblaze",
-		"Sucuri CloudProxy",
-		"ZScaler",
-		"Akamai Kona Site Defender",
-		"Barracuda",
-		"F5 Networks BIG-IP",
-		"Imperva SecureSphere",
-		"DenyALL",
-		"Citrix NetScaler",
-		"Radware AppWall",
-		"Sophos UTM Web Protection",
-		"Wallarm"
-	]
-
-	output = `wafw00f "#{target}" -v`
-	aggressive_waf = AGGRESSIVE_WAFS.any? { |waf| output.include?(waf) }
-
-	if aggressive_waf
-		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
-	else
-		yield target
+	rescue SocketError => e
+		puts "[\e[31m+\e[0m] Socket error: #{e.message}"
+	rescue StandardError => e
+		puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
 	end
 end
+
+
+
+# :: Functions to check URLs ::
 
 
 
@@ -305,6 +206,120 @@ end
 
 
 
+def get_content_type(url)
+	begin
+		uri = URI.parse(url)
+		response = nil
+
+		limit = 3
+		while limit > 0
+			response = Net::HTTP.get_response(uri)
+
+			case response
+			when Net::HTTPRedirection then
+				uri = URI.parse(response['location'])
+			else
+				break
+			end
+
+			limit -= 1
+		end
+
+		if response.is_a?(Net::HTTPSuccess)
+			return response['content-type']
+		else
+			return nil
+		end
+
+	rescue => e
+		return nil
+	end
+end
+
+
+
+# :: Functions to clear files ::
+
+
+
+def process_file_with_sed(file_path)
+	unless File.exists?(file_path)
+		puts "[\e[31m+\e[0m] File not found: #{file_path}"
+		return
+	end
+
+	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' #{file_path}"
+
+	unless system(sed_command)
+		puts "[\e[31m+\e[0m] Error processing file"
+	end
+end
+
+
+
+def encode_component(component)
+	component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }.split(/(%[0-9A-Fa-f]{2})/).map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }.join
+end
+
+def sanitize_url(url)
+	uri = URI.parse(url)
+
+	encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
+	encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
+	encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
+
+	begin
+		URI::Generic.build(
+			scheme: uri.scheme,
+			userinfo: uri.user,
+			host: uri.host,
+			port: uri.port,
+			path: encoded_path,
+			query: encoded_query,
+			fragment: encoded_fragment
+		).to_s
+	rescue => e
+		return nil
+	end
+
+end
+
+def file_sanitization(file_path)
+	unless File.exists?(file_path)
+		puts "[\e[31m+\e[0m] File not found: #{file_path}"
+		return
+	end
+
+	sanitized_lines = []
+
+	File.foreach(file_path) do |line|
+		line.strip!
+		if line.start_with?("http")
+			begin
+				sanitized_lines << sanitize_url(line)
+			rescue URI::InvalidURIError
+				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
+			end
+		else
+			sanitized_lines << line
+		end
+	end
+
+	File.write(file_path, sanitized_lines.join("\n") + "\n")
+end
+
+
+
+def replace_param_with_fuzz(url)
+	uri = URI.parse(url)
+	params = URI.decode_www_form(uri.query || '')
+	params.map! { |param, value| [param, 'FUZZ'] }
+	uri.query = URI.encode_www_form(params)
+	uri.to_s
+end
+
+
+
 def remove_using_scope(scope_file, url_file)
 	scope_urls = File.readlines(scope_file).map(&:strip)
 	urls = File.readlines(url_file).map(&:strip)
@@ -335,42 +350,41 @@ end
 
 
 
-def send_telegram_notif(message)
+def extract_main_domains(input_file, output_file)
+	domains = []
 
-	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
-	header = {'Content-Type': 'application/json'}
-	body = {
-		chat_id: $CONFIG['telegram_chat_id'],
-		text: message
-	}.to_json
+	def extract_main_domain(url)
+		uri = URI.parse(url)
+		host = uri.host.downcase
+		parts = host.split('.')
 
-	http = Net::HTTP.new(uri.host, uri.port)
-	http.use_ssl = true
-	request = Net::HTTP::Post.new(uri.request_uri, header)
-	request.body = body
+		return host if parts.length == 1 || parts[-1] =~ /\d+/
 
-	retries = 3
-	begin
-		response = http.request(request)
-		if response.code.to_i == 200
-			puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
-		else
-			puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
-		end
-	rescue Net::OpenTimeout, Net::ReadTimeout => e
-		puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
-		if retries > 0
-			retries -= 1
-			puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
-			sleep(1)
-			retry
-		end
-	rescue SocketError => e
-		puts "[\e[31m+\e[0m] Socket error: #{e.message}"
-	rescue StandardError => e
-		puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
+		return "#{parts[-2]}.#{parts[-1]}"
 	end
+
+	File.open(input_file, 'r').each_line do |line|
+		line.strip!
+		next if line.empty?
+
+		domain = extract_main_domain(line)
+
+		unless domains.include?(domain)
+			domains << domain
+		end
+	end
+
+	File.open(output_file, 'w') do |file|
+		domains.each do |domain|
+			file.puts domain
+		end
+	end
+
 end
+
+
+
+# :: Functions to find vulnerabilities ::
 
 
 
@@ -399,6 +413,42 @@ def search_confidential_files(file_type, file_to_scan)
 
 	system(command)
 	delete_if_empty(output_file)
+end
+
+
+
+def waf_check(target)
+
+	aggressive_wafs = [
+		"Cloudflare",
+		"Incapsula",
+		"AWS Elastic Load Balancer",
+		"Azure Front Door",
+		"FortiWeb",
+		"Palo Alto Next Gen Firewall",
+		"PerimeterX",
+		"Reblaze",
+		"Sucuri CloudProxy",
+		"ZScaler",
+		"Akamai Kona Site Defender",
+		"Barracuda",
+		"F5 Networks BIG-IP",
+		"Imperva SecureSphere",
+		"DenyALL",
+		"Citrix NetScaler",
+		"Radware AppWall",
+		"Sophos UTM Web Protection",
+		"Wallarm"
+	]
+
+	output = `wafw00f "#{target}" -v`
+	aggressive_waf = AGGRESSIVE_WAFS.any? { |waf| output.include?(waf) }
+
+	if aggressive_waf
+		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
+	else
+		yield target
+	end
 end
 
 
@@ -853,10 +903,6 @@ def crawl_local_fun(params)
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
-		
-		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with waymore\n"
-		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target_sanitized}_waymore.txt"
-		adding_anew("output/#{target_sanitized}_waymore.txt", "output/#{target_sanitized}_tmp.txt")
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
 		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --o output/#{target_sanitized}_gau.txt"
@@ -876,6 +922,15 @@ def crawl_local_fun(params)
 	end
 
 	system "rm -rf results/"
+
+	# waymore
+	extract_main_domains("output/_tmpAllUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
+	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
+		target = f.strip
+		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
+		adding_anew("output/#{target}_waymore.txt", "output/#{target}_waymore.txt")
+	end
+	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
