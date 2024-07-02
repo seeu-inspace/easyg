@@ -948,7 +948,7 @@ def crawl_local_fun(params)
 	# Find new URLs from the JS files
 	puts "\n[\e[36m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
-	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
+	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -p 250 -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 	
