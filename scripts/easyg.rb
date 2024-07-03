@@ -513,7 +513,6 @@ def search_for_vulns(params)
 
 			if content_type && content_type.include?('text/html')
 				system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
-				send_telegram_notif("XSS for \"#{target}\" found") if File.exist?("output/dalfox/#{sanitized_target}.txt")
 			end
 
 			waf_check(target) do |t|
