@@ -380,7 +380,7 @@ def extract_main_domains(input_file, output_file)
 
 	File.open(output_file, 'w') do |file|
 		domains.each do |domain|
-			file.puts domain
+			file.puts domain unless domain.nil? || domain.empty?
 		end
 	end
 
