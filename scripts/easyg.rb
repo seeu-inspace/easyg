@@ -899,7 +899,6 @@ def crawl_local_fun(params)
 
 	system "mkdir output" if !File.directory?('output')
 
-	target_tmp = ""
 	File.open(file,'r').each_line do |f|
 		target = f.chomp
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
