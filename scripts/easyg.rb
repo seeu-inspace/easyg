@@ -931,7 +931,8 @@ def crawl_local_fun(params)
 		target = f.strip
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		adding_anew("output/#{target}_waymore.txt", "output/#{target}_waymore.txt")
+		urless_fun("output/#{target}_waymore.txt", "output/#{target_sanitized}_urless.txt")
+		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 
