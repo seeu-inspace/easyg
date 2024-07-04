@@ -642,7 +642,7 @@ def assetenum_fun(params)
 		adding_anew("output/#{target}_subfinder.txt", "output/#{target}_tmp.txt")
 
 		#== github-subdomains ==
-		if $CONFIG['github_token'] != nil || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+		if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with github-subdomains"
 			system "github-subdomains -t #{$CONFIG['github_token']} -d #{target} -o output/#{target}_github.txt"
 			adding_anew("output/#{target}_github.txt", "output/#{target}_tmp.txt")
@@ -956,13 +956,15 @@ def crawl_local_fun(params)
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 	
 	# Find new URLS from Github using github-endpoints.py
-	puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
-	File.open("output/tmp_scope.txt",'r').each_line do |f|
-		target = f.strip
-		system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
-		adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
+	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+		puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
+		File.open("output/tmp_scope.txt",'r').each_line do |f|
+			target = f.strip
+			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
+			adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
+		end
+		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	end
-	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 
 	# Final
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
