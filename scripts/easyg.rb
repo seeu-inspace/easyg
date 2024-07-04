@@ -895,10 +895,10 @@ def crawl_local_fun(params)
 
 	system "mkdir output" if !File.directory?('output')
 
+	target_tmp = ""
 	File.open(file,'r').each_line do |f|
 		target = f.chomp
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
-		target_tmp = ""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
