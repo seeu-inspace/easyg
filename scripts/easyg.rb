@@ -929,6 +929,7 @@ def crawl_local_fun(params)
 	extract_main_domains("output/_tmpAllUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 		target = f.strip
+		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
 		adding_anew("output/#{target}_waymore.txt", "output/#{target}_waymore.txt")
 	end
