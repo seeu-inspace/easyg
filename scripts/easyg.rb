@@ -904,10 +904,10 @@ def crawl_local_fun(params)
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
+		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -p 25 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --o output/#{target_sanitized}_gau.txt"
+		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 100 --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
