@@ -907,7 +907,7 @@ def crawl_local_fun(params)
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -p 25 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 100 --verbose --o output/#{target_sanitized}_gau.txt"
+		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
@@ -931,8 +931,8 @@ def crawl_local_fun(params)
 		target = f.strip
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		urless_fun("output/#{target}_waymore.txt", "output/#{target_sanitized}_urless.txt")
-		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
+		urless_fun("output/#{target}_waymore.txt", "output/#{target}_urless.txt")
+		adding_anew("output/#{target}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 
@@ -1094,4 +1094,9 @@ begin
 rescue Interrupt
 	puts "\n[\e[31m+\e[0m] Script interrupted by user. Exiting..."
 	exit
+rescue StandardError => e
+	puts "\n[\e[31m+\e[0m] An error occurred: #{e.message}"
+	puts e.backtrace
+	send_telegram_notif 'easyg.rb crashed'
+	exit 1
 end
