@@ -916,7 +916,7 @@ def crawl_local_fun(params)
 		end
 		target_tmp = target_sanitized
 
-		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
+		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt") if File.exists?("results/#{target_sanitized}.txt")
 		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"
 		urless_fun("output/#{target_sanitized}_tmp.txt", "output/#{target_sanitized}_urless.txt")
 		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
