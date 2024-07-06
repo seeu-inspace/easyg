@@ -55,8 +55,10 @@ end
 
 
 def adding_anew(file_tmp, file_final)
-	system "cat #{file_tmp} | anew #{file_final}"
-	File.delete(file_tmp) if File.exists?(file_tmp)
+	if !File.zero?(file_tmp) || File.exists?(file_tmp)
+		system "cat #{file_tmp} | anew #{file_final}"
+		File.delete(file_tmp) if File.exists?(file_tmp)
+	end
 end
 
 
@@ -73,8 +75,10 @@ end
 
 
 def urless_fun(file_i, file_o)
-	system "urless -i #{file_i} -o #{file_o}"
-	File.delete(file_i) if File.exists?(file_i)
+	if !File.zero?(file_i) || File.exists?(file_i)
+		system "urless -i #{file_i} -o #{file_o}"
+		File.delete(file_i) if File.exists?(file_i)
+	end
 end
 
 
@@ -787,7 +791,6 @@ def assetenum_fun(params)
 		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}" if File.exists?("output/401_#{file}")
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
-		delete_if_empty "output/byp4xx_results_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
 
@@ -916,7 +919,7 @@ def crawl_local_fun(params)
 		end
 		target_tmp = target_sanitized
 
-		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt") if File.exists?("results/#{target_sanitized}.txt")
+		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"
 		urless_fun("output/#{target_sanitized}_tmp.txt", "output/#{target_sanitized}_urless.txt")
 		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
