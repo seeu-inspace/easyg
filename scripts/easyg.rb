@@ -876,16 +876,16 @@ def crawl_burp_fun(params)
 		target = f.chomp
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with hakrawler\n"
-		system 'echo ' + target + "| hakrawler -u -insecure -t 20 -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -h \"Cookie: #{$CONFIG['cookie']};;Authorization: #{$CONFIG['authorization']}\""
+		system "echo #{target}| hakrawler -u -insecure -t 20 -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -h \"Cookie: #{$CONFIG['cookie']};;Authorization: #{$CONFIG['authorization']}\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
-		system 'gospider -s "' + target + "\" -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
+		system "gospider -s #{target} -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system 'katana -u "' + target + "\" -jc -jsl -hl -kf -aff -d 3 -fs rdn -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\""
+		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 5 --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
+		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 	end
 
 	send_telegram_notif("Crawl-burp for #{file} finished")
@@ -907,10 +907,10 @@ def crawl_local_fun(params)
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -jsl -hl -kf -aff -H \"Cookie: #{$CONFIG['cookie']}\" -d 3 -p 25 -fs fqdn -o output/#{target_sanitized}_tmp.txt"
+		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system 'echo ' + target + "| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --o output/#{target_sanitized}_gau.txt"
+		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
