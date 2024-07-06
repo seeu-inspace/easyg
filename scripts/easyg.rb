@@ -55,7 +55,7 @@ end
 
 
 def adding_anew(file_tmp, file_final)
-	if !File.zero?(file_tmp) || File.exists?(file_tmp)
+	if File.exists?(file_tmp)
 		system "cat #{file_tmp} | anew #{file_final}"
 		File.delete(file_tmp) if File.exists?(file_tmp)
 	end
@@ -64,7 +64,7 @@ end
 
 
 def delete_if_empty(file)
-	if File.zero?(file) || !File.exists?(file)
+	if !File.exists?(file)
 		puts "[\e[36m+\e[0m] No result found"
 		File.delete(file) if File.exists?(file)
 	else
@@ -75,7 +75,7 @@ end
 
 
 def urless_fun(file_i, file_o)
-	if !File.zero?(file_i) || File.exists?(file_i)
+	if File.exists?(file_i)
 		system "urless -i #{file_i} -o #{file_o}"
 		File.delete(file_i) if File.exists?(file_i)
 	end
@@ -861,7 +861,7 @@ def assetenum_fun(params)
 		# Use some Nuclei templates
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
 		
-		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/http/takeovers -stats -o output/nuclei_#{file}"
+		system "nuclei -l output/http_#{file} -tags takeover -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
 		
 		search_swagger_endpoints("output/http_#{file}", "output/swagger_#{file}")
@@ -963,7 +963,7 @@ def crawl_burp_fun(params)
 		system "echo #{target}| hakrawler -u -insecure -t 20 -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -h \"Cookie: #{$CONFIG['cookie']};;Authorization: #{$CONFIG['authorization']}\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
-		system "gospider -s #{target} -c 10 -d 4 -t 20 --sitemap --other-source -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
+		system "gospider -s #{target} -c 10 -d 4 -t 20 --sitemap --other-source -w -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
@@ -996,6 +996,10 @@ def crawl_local_fun(params)
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
 		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
+		
+		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
+		system "gospider -s #{target} -c 10 -d 4 -t 20 --sitemap --other-source -w -q --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\" | tee output/#{target_sanitized}_gospider.txt"
+		adding_anew("output/#{target_sanitized}_gospider.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
 			puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
