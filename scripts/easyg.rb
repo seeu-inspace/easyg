@@ -461,6 +461,92 @@ end
 
 
 
+def search_swagger_endpoints(file_input, output_file, num_threads = 10)
+
+    urls = File.readlines(file_input).map(&:strip)
+
+	swagger_paths = [
+        "/swagger-ui/swagger-ui.js", "/swagger/swagger-ui.js", "/swagger-ui.js", "/swagger/ui/swagger-ui.js",
+        "/swagger/ui/index", "/swagger/index.html", "/swagger-ui.html", "/swagger/swagger-ui.html",
+        "/api/swagger-ui.html", "/api-docs/swagger.json", "/api-docs/swagger.yaml", "/api_docs",
+        "/swagger.json", "/swagger.yaml", "/swagger/v1/swagger.json", "/swagger/v1/swagger.yaml",
+        "/api/index.html", "/api/doc", "/api/docs/", "/api/swagger.json", "/api/swagger.yaml", "/api/swagger.yml",
+        "/api/swagger/index.html", "/api/swagger/swagger-ui.html", "/api/api-docs/swagger.json",
+        "/api/api-docs/swagger.yaml", "/api/swagger-ui/swagger.json", "/api/swagger-ui/swagger.yaml",
+        "/api/apidocs/swagger.json", "/api/apidocs/swagger.yaml", "/api/swagger-ui/api-docs",
+        "/api/doc.json", "/api/api-docs", "/api/apidocs", "/api/swagger", "/api/swagger/static/index.html",
+        "/api/swagger-resources", "/api/swagger-resources/restservices/v2/api-docs", "/api/__swagger__/",
+        "/api/_swagger_/", "/api/spec/swagger.json", "/api/spec/swagger.yaml", "/api/swagger/ui/index",
+        "/__swagger__/", "/_swagger_/", "/api/v1/swagger-ui/swagger.json", "/api/v1/swagger-ui/swagger.yaml",
+        "/swagger-resources/restservices/v2/api-docs", "/api/swagger_doc.json", "/docu", "/docs", "/swagger",
+        "/api-doc", "/doc/", "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-standalone-preset.js",
+        "/swagger-ui/swagger-ui/swagger-ui-bundle.js", "/webjars/swagger-ui/swagger-ui-bundle.js",
+        "/webjars/swagger-ui/index.html"
+    ]
+
+	queue = Queue.new
+	urls.each { |url| queue << url }
+
+	File.open(output_file, 'w') do |output|
+		mutex = Mutex.new
+		workers = Array.new(num_threads) do
+			Thread.new do
+				while !queue.empty? && url = queue.pop(true) rescue nil
+					swagger_paths.each do |path|
+						full_url = url.chomp("/") + path
+						response = check_url(full_url)
+						if response && response.code.to_i == 200
+							body = response.body
+							if body.include?("swagger:") || body.include?("Swagger 2.0") || body.include?("\"swagger\":") || body.include?("Swagger UI") || body.include?("loadSwaggerUI") || body.include?("**token**:") || body.include?('id="swagger-ui')
+								mutex.synchronize do
+									output.puts(full_url)
+									puts "[\e[32m+\e[0m] Swagger endpoint found: #{full_url}"
+								end
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+		workers.each(&:join)
+	end
+end
+
+
+
+def search_git_endpoints(file_input, output_file, num_threads = 10)
+	
+	urls = File.readlines(file_input).map(&:strip)
+
+	queue = Queue.new
+	urls.each { |url| queue << url }
+
+	File.open(output_file, 'w') do |output|
+		mutex = Mutex.new
+		workers = Array.new(num_threads) do
+			Thread.new do
+				while !queue.empty? && url = queue.pop(true) rescue nil
+					full_url = url.chomp("/") + "/.git/config"
+					response = check_url(full_url)
+					if response && response.code.to_i == 200
+						body = response.body
+						if body.include?("[core]") || body.include?("[credentials]") && !body.downcase.include?("<html") && !body.downcase.include?("<body")
+							mutex.synchronize do
+								output.puts(full_url)
+								puts "[\e[32m+\e[0m] Exposed .git/config found: #{full_url}"
+							end
+						end
+					end
+				end
+			end
+		end
+		workers.each(&:join)
+	end
+end
+
+
+
 def search_for_vulns(params)
 
 	file_to_scan = params[:file]
@@ -777,12 +863,21 @@ def assetenum_fun(params)
 	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
+	send_telegram_notif("Asset enumeration for #{file} finished")
+
 	# == Search for vulns ==
 	if params[:vl_opt] == "y"
 		# Use some Nuclei templates
 		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
-		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/http/takeovers -t ~/.local/nuclei-templates/http/exposures/configs/git-config.yaml -t ~/.local/nuclei-templates/dast/vulnerabilities/crlf/crlf-injection.yaml -t ~/.local/nuclei-templates/http/exposures/apis/swagger-api.yaml -t ~/.local/nuclei-templates/http/misconfiguration/put-method-enabled.yaml -stats -o output/nuclei_#{file}"
+		
+		system "nuclei -l output/http_#{file} -t ~/.local/nuclei-templates/http/takeovers -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
+		
+		search_swagger_endpoints("output/http_#{file}", "output/swagger_#{file}")
+		delete_if_empty "output/swagger_#{file}"
+
+		search_git_endpoints("output/http_#{file}", "output/git_exposed_#{file}")
+		delete_if_empty "output/git_exposed_#{file}"
 
 		# Search for 401 and 403 bypasses
 		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
@@ -793,8 +888,6 @@ def assetenum_fun(params)
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
-
-	send_telegram_notif("Asset enumeration for #{file} finished")
 
 end
 
