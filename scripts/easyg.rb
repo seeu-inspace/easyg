@@ -454,26 +454,26 @@ end
 
 def search_swagger_endpoints(file_input, output_file, num_threads = 10)
 
-    urls = File.readlines(file_input).map(&:strip)
+	urls = File.readlines(file_input).map(&:strip)
 
 	swagger_paths = [
-        "/swagger-ui/swagger-ui.js", "/swagger/swagger-ui.js", "/swagger-ui.js", "/swagger/ui/swagger-ui.js",
-        "/swagger/ui/index", "/swagger/index.html", "/swagger-ui.html", "/swagger/swagger-ui.html",
-        "/api/swagger-ui.html", "/api-docs/swagger.json", "/api-docs/swagger.yaml", "/api_docs",
-        "/swagger.json", "/swagger.yaml", "/swagger/v1/swagger.json", "/swagger/v1/swagger.yaml",
-        "/api/index.html", "/api/doc", "/api/docs/", "/api/swagger.json", "/api/swagger.yaml", "/api/swagger.yml",
-        "/api/swagger/index.html", "/api/swagger/swagger-ui.html", "/api/api-docs/swagger.json",
-        "/api/api-docs/swagger.yaml", "/api/swagger-ui/swagger.json", "/api/swagger-ui/swagger.yaml",
-        "/api/apidocs/swagger.json", "/api/apidocs/swagger.yaml", "/api/swagger-ui/api-docs",
-        "/api/doc.json", "/api/api-docs", "/api/apidocs", "/api/swagger", "/api/swagger/static/index.html",
-        "/api/swagger-resources", "/api/swagger-resources/restservices/v2/api-docs", "/api/__swagger__/",
-        "/api/_swagger_/", "/api/spec/swagger.json", "/api/spec/swagger.yaml", "/api/swagger/ui/index",
-        "/__swagger__/", "/_swagger_/", "/api/v1/swagger-ui/swagger.json", "/api/v1/swagger-ui/swagger.yaml",
-        "/swagger-resources/restservices/v2/api-docs", "/api/swagger_doc.json", "/docu", "/docs", "/swagger",
-        "/api-doc", "/doc/", "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-standalone-preset.js",
-        "/swagger-ui/swagger-ui/swagger-ui-bundle.js", "/webjars/swagger-ui/swagger-ui-bundle.js",
-        "/webjars/swagger-ui/index.html"
-    ]
+		"/swagger-ui/swagger-ui.js", "/swagger/swagger-ui.js", "/swagger-ui.js", "/swagger/ui/swagger-ui.js",
+		"/swagger/ui/index", "/swagger/index.html", "/swagger-ui.html", "/swagger/swagger-ui.html",
+		"/api/swagger-ui.html", "/api-docs/swagger.json", "/api-docs/swagger.yaml", "/api_docs",
+		"/swagger.json", "/swagger.yaml", "/swagger/v1/swagger.json", "/swagger/v1/swagger.yaml",
+		"/api/index.html", "/api/doc", "/api/docs/", "/api/swagger.json", "/api/swagger.yaml", "/api/swagger.yml",
+		"/api/swagger/index.html", "/api/swagger/swagger-ui.html", "/api/api-docs/swagger.json",
+		"/api/api-docs/swagger.yaml", "/api/swagger-ui/swagger.json", "/api/swagger-ui/swagger.yaml",
+		"/api/apidocs/swagger.json", "/api/apidocs/swagger.yaml", "/api/swagger-ui/api-docs",
+		"/api/doc.json", "/api/api-docs", "/api/apidocs", "/api/swagger", "/api/swagger/static/index.html",
+		"/api/swagger-resources", "/api/swagger-resources/restservices/v2/api-docs", "/api/__swagger__/",
+		"/api/_swagger_/", "/api/spec/swagger.json", "/api/spec/swagger.yaml", "/api/swagger/ui/index",
+		"/__swagger__/", "/_swagger_/", "/api/v1/swagger-ui/swagger.json", "/api/v1/swagger-ui/swagger.yaml",
+		"/swagger-resources/restservices/v2/api-docs", "/api/swagger_doc.json", "/docu", "/docs", "/swagger",
+		"/api-doc", "/doc/", "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-standalone-preset.js",
+		"/swagger-ui/swagger-ui/swagger-ui-bundle.js", "/webjars/swagger-ui/swagger-ui-bundle.js",
+		"/webjars/swagger-ui/index.html"
+	]
 
 	queue = Queue.new
 	urls.each { |url| queue << url }
@@ -940,7 +940,7 @@ def webscreenshot_fun(params)
 		image_paths.each_with_index do |path, index|
 			html.write('<div class="screenshot">')
 			html.write("<a href=\"#{path.gsub('output/', '')}\" target=_blank>")
-			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{urls[index]}\"  width=\"600\" height=\"400\">")
+			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{urls[index]}\" width=\"600\" height=\"400\">")
 			html.write("</a>")
 			html.write("<div class=\"screenshot-desc\"><b>URL:</b> <a href=\"#{urls[index]}\" target=_blank>#{urls[index]}</a></div>")
 			html.write('</div>')
