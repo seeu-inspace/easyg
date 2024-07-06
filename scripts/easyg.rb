@@ -399,20 +399,11 @@ end
 def search_confidential_files(file_type, file_to_scan)
 	puts "\n[\e[36m+\e[0m] Searching for possible confidential #{file_type.upcase}s"
 	
-	# Define the regex pattern based on the file type
-	regex_pattern = case file_type
-					when 'pdf' then '\\.pdf'
-					when 'txt' then '\\.txt'
-					when 'csv' then '\\.csv'
-					when 'xml' then '\\.xml'
-					else return
-					end
-
 	output_file = "output/reserved#{file_type.upcase}s_#{file_to_scan.gsub("/", "")}"
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
-		for i in `cat #{file_to_scan} | grep -Ea '#{regex_pattern}'`; do
+		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
 			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|password|credentials'; then
 				echo $i | tee -a #{output_file};
 			fi;
@@ -562,7 +553,7 @@ def search_for_vulns(params)
 	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
 	# :: Search for possible confidential files ::
-	['pdf', 'txt', 'csv', 'xml'].each do |file_type|
+	['pdf', 'txt', 'csv', 'xml', 'json'].each do |file_type|
 		search_confidential_files(file_type, "output/200_#{o_sanitized}.txt")
 	end
 
