@@ -164,10 +164,36 @@ end
 def check_url(url)
 	uri = URI.parse(url)
 	response = nil
-	Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-		request = Net::HTTP::Get.new(uri)
-		response = http.request(request)
+	limit = 4  # To avoid infinite redirects
+
+	# Create the HTTP object with SSL settings if needed
+	http = Net::HTTP.new(uri.host, uri.port)
+	http.use_ssl = (uri.scheme == 'https')
+	http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'  # Skip SSL certificate verification
+
+	http.start do
+		while limit > 0
+			request = Net::HTTP::Get.new(uri.request_uri)
+			response = http.request(request)
+			break unless response.is_a?(Net::HTTPRedirection)
+
+			location = response['location']
+			uri = URI.parse(location)
+
+			# Handle relative URLs
+			if uri.relative?
+				uri = uri.relative? ? URI.join(url, location) : uri
+			end
+
+			# Update the HTTP object for the new URL if the scheme changes
+			http = Net::HTTP.new(uri.host, uri.port)
+			http.use_ssl = (uri.scheme == 'https')
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'
+
+			limit -= 1
+		end
 	end
+
 	response
 rescue => e
 	puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
@@ -215,18 +241,38 @@ def get_content_type(url)
 		uri = URI.parse(url)
 		response = nil
 
-		limit = 3
-		while limit > 0
-			response = Net::HTTP.get_response(uri)
+		limit = 4  # To avoid infinite redirects
 
-			case response
-			when Net::HTTPRedirection then
-				uri = URI.parse(response['location'])
-			else
-				break
+		# Create the HTTP object with SSL settings if needed
+		http = Net::HTTP.new(uri.host, uri.port)
+		http.use_ssl = (uri.scheme == 'https')
+		http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'  # Skip SSL certificate verification
+
+		http.start do
+			while limit > 0
+				request = Net::HTTP::Get.new(uri.request_uri)
+				response = http.request(request)
+
+				case response
+				when Net::HTTPRedirection then
+					location = response['location']
+					uri = URI.parse(location)
+
+					# Handle relative URLs
+					if uri.relative?
+						uri = uri.relative? ? URI.join(url, location) : uri
+					end
+
+					# Update the HTTP object for the new URL if the scheme changes
+					http = Net::HTTP.new(uri.host, uri.port)
+					http.use_ssl = (uri.scheme == 'https')
+					http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'
+				else
+					break
+				end
+
+				limit -= 1
 			end
-
-			limit -= 1
 		end
 
 		if response.is_a?(Net::HTTPSuccess)
@@ -854,8 +900,6 @@ def assetenum_fun(params)
 	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
-	send_telegram_notif("Asset enumeration for #{file} finished")
-
 	# == Search for vulns ==
 	if params[:vl_opt] == "y"
 		# Use some Nuclei templates
@@ -879,6 +923,8 @@ def assetenum_fun(params)
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
 	end
+	
+	send_telegram_notif("Asset enumeration for #{file} finished")
 
 end
 
