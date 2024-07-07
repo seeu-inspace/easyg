@@ -164,35 +164,15 @@ end
 def check_url(url)
 	uri = URI.parse(url)
 	response = nil
-	limit = 4  # To avoid infinite redirects
 
-	# Create the HTTP object with SSL settings if needed
 	http = Net::HTTP.new(uri.host, uri.port)
-	http.use_ssl = (uri.scheme == 'https')
-	http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'  # Skip SSL certificate verification
-
-	http.start do
-		while limit > 0
-			request = Net::HTTP::Get.new(uri.request_uri)
-			response = http.request(request)
-			break unless response.is_a?(Net::HTTPRedirection)
-
-			location = response['location']
-			uri = URI.parse(location)
-
-			# Handle relative URLs
-			if uri.relative?
-				uri = uri.relative? ? URI.join(url, location) : uri
-			end
-
-			# Update the HTTP object for the new URL if the scheme changes
-			http = Net::HTTP.new(uri.host, uri.port)
-			http.use_ssl = (uri.scheme == 'https')
-			http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'
-
-			limit -= 1
-		end
+	if uri.scheme == 'https'
+		http.use_ssl = true
+		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 	end
+
+	request = Net::HTTP::Get.new(uri.request_uri)
+	response = http.request(request)
 
 	response
 rescue => e
@@ -237,53 +217,25 @@ end
 
 
 def get_content_type(url)
-	begin
-		uri = URI.parse(url)
-		response = nil
+	uri = URI.parse(url)
+	response = nil
 
-		limit = 4  # To avoid infinite redirects
+	http = Net::HTTP.new(uri.host, uri.port)
+	if uri.scheme == 'https'
+		http.use_ssl = true
+		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+	end
 
-		# Create the HTTP object with SSL settings if needed
-		http = Net::HTTP.new(uri.host, uri.port)
-		http.use_ssl = (uri.scheme == 'https')
-		http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'  # Skip SSL certificate verification
+	request = Net::HTTP::Get.new(uri.request_uri)
+	response = http.request(request)
 
-		http.start do
-			while limit > 0
-				request = Net::HTTP::Get.new(uri.request_uri)
-				response = http.request(request)
-
-				case response
-				when Net::HTTPRedirection then
-					location = response['location']
-					uri = URI.parse(location)
-
-					# Handle relative URLs
-					if uri.relative?
-						uri = uri.relative? ? URI.join(url, location) : uri
-					end
-
-					# Update the HTTP object for the new URL if the scheme changes
-					http = Net::HTTP.new(uri.host, uri.port)
-					http.use_ssl = (uri.scheme == 'https')
-					http.verify_mode = OpenSSL::SSL::VERIFY_NONE if uri.scheme == 'https'
-				else
-					break
-				end
-
-				limit -= 1
-			end
-		end
-
-		if response.is_a?(Net::HTTPSuccess)
-			return response['content-type']
-		else
-			return nil
-		end
-
-	rescue => e
+	if response.is_a?(Net::HTTPSuccess)
+		return response['content-type']
+	else
 		return nil
 	end
+rescue => e
+	return nil
 end
 
 
@@ -710,21 +662,28 @@ def get_to_burp_fun(params)
 
 	i = 0
 
-	File.open(params[:file],'r').each_line do |f|
+	File.open(params[:file], 'r').each_line do |f|
 
 		i += 1
 
 		begin
 
-			redirect = 2
+			redirect = 3
+			base_uri = URI.parse(f.chomp)
 
-			res = request_fun(URI.parse(f.chomp))
+			res = request_fun(base_uri)
 
 			puts "[\e[36m#{i.to_s}\e[0m] GET > #{f.chomp}"
 
 			while res.is_a?(Net::HTTPRedirection) && redirect > 0
-				puts "	Redirecting to > #{res['location'].to_s}"
-				res = request_fun(URI.parse(res['location']))
+				location = res['location'].to_s
+				puts "		Redirecting to > #{location}"
+				uri = URI.parse(location)
+				
+				# If the URI is relative, make it absolute
+				uri = base_uri + uri if uri.relative?
+				
+				res = request_fun(uri)
 				redirect -= 1
 			end
 
@@ -733,7 +692,7 @@ def get_to_burp_fun(params)
 		rescue StandardError => e
 			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
 		end
-		
+
 	end
 
 end
