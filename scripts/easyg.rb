@@ -977,7 +977,7 @@ def crawl_burp_fun(params)
 		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads 25 --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 	end
 
-	send_telegram_notif("Crawl-burp for #{file} finished")
+	send_telegram_notif("Crawl-burp for #{params[:file]} finished")
 
 end
 
