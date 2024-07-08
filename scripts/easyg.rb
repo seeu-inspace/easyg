@@ -1073,7 +1073,7 @@ def crawl_local_fun(params)
 	# === SEARCH FOR VULNS ===
 	if params[:vl_opt] == "y"
 		params[:file] = "output/allUrls_#{file_sanitized}"
-		params[:gb_opt] = "n" if params[:gb_opt] != "y"
+		params[:gb_opt] = "y"
 		search_for_vulns params
 	end
 
