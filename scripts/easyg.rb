@@ -64,7 +64,7 @@ end
 
 
 def delete_if_empty(file)
-	if !File.exists?(file)
+	if !File.exists?(file) || File.zero?(file)
 		puts "[\e[36m+\e[0m] No result found"
 		File.delete(file) if File.exists?(file)
 	else
@@ -390,6 +390,65 @@ end
 
 
 
+# :: Functions to identify technologies ::
+
+
+
+def is_wordpress?(response)
+	return false unless response.is_a?(Net::HTTPSuccess)
+	body = response.body
+
+	# WordPress detection regexes from the Nuclei template
+	wordpress_regexes = [
+		%r{<generator>https?:\/\/wordpress\.org.*</generator>},
+		%r{wp-login.php},
+		%r{\/wp-content/themes\/},
+		%r{\/wp-includes\/},
+		%r{name="generator" content="wordpress},
+		%r{<link[^>]+s\d+\.wp\.com},
+		%r{<!-- This site is optimized with the Yoast (?:WordPress )?SEO plugin v([\d.]+) -},
+		%r{<!--[^>]+WP-Super-Cache}
+	]
+
+	wordpress_regexes.any? { |regex| body.match?(regex) }
+end
+
+
+
+def identify_technology(file_to_scan, output_file, num_threads = 10)
+	queue = Queue.new
+
+	# Load all URLs into the queue
+	File.foreach(file_to_scan) do |url|
+		url.strip!
+		queue << url unless url.empty?
+	end
+
+	File.open(output_file, 'w') do |output|
+		mutex = Mutex.new
+
+		workers = Array.new(num_threads) do
+			Thread.new do
+				while !queue.empty? && url = queue.pop(true) rescue nil
+					next unless url
+
+					response = check_url(url)
+					if response && is_wordpress?(response)
+						mutex.synchronize do
+							output.puts(url)
+							puts url
+						end
+					end
+				end
+			end
+		end
+
+		workers.each(&:join)
+	end
+end
+
+
+
 # :: Functions to find vulnerabilities ::
 
 
@@ -569,7 +628,7 @@ def search_for_vulns(params)
 	if params[:gb_opt] == "y"
 
 		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		system "cat #{file_to_scan} | grep -Evi '\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 			lines = file.readlines.map(&:strip)
@@ -859,6 +918,8 @@ def assetenum_fun(params)
 	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
+	send_telegram_notif("Asset enumeration for #{file} finished")
+
 	# == Search for vulns ==
 	if params[:vl_opt] == "y"
 		# Use some Nuclei templates
@@ -881,9 +942,21 @@ def assetenum_fun(params)
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -o output/dirsearch_results_40X_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
+
+		# Search for WordPress websites and use WPScan
+		identify_technology("output/http_#{file}", "output/wp_#{file}")
+		delete_if_empty("output/wp_#{file}")
+
+		if File.exists?("output/wp_#{file}")
+			File.open("output/wp_#{file}",'r').each_line do |f|
+				target = f.chomp
+				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{file}"
+			end
+		end
+
+		send_telegram_notif("Search for vulns after Asset enumeration for #{file} finished")
+
 	end
-	
-	send_telegram_notif("Asset enumeration for #{file} finished")
 
 end
 
@@ -1070,14 +1143,14 @@ def crawl_local_fun(params)
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 
+	send_telegram_notif("Crawl-local for #{file} finished")
+
 	# === SEARCH FOR VULNS ===
 	if params[:vl_opt] == "y"
 		params[:file] = "output/allUrls_#{file_sanitized}"
 		params[:gb_opt] = "y"
 		search_for_vulns params
 	end
-
-	send_telegram_notif("Crawl-local for #{file} finished")
 
 end
 
