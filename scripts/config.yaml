@@ -7,3 +7,4 @@ github_token: YOUR_GITHUB_TOKEN_HERE
 telegram: YOUR_TELEGRAM_TOKEN_HERE
 telegram_chat_id: YOUR_TELEGRAM_CHAT_ID_HERE
 wpscan: YOUR_WPSCAN_TOKEN_HERE
+n_threads: 50
