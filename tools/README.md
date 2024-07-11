@@ -21,7 +21,7 @@
 
 To give you (and myself) an idea on how it works, I've made this graphic:
 
-<img src="../img/easyg_schema_excalidraw.png">
+<img src="../img/easyg_schema_excalidraw_.png">
 
 ## Burp Suite
 
