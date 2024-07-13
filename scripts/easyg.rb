@@ -600,8 +600,6 @@ def search_for_vulns(params)
 	file_to_scan = params[:file]
 
 	system "mkdir output" if !File.directory?('output')
-	system "mkdir output/dalfox" if !File.directory?('output/dalfox')
-	system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
 	file_sanitization file_to_scan
@@ -626,6 +624,9 @@ def search_for_vulns(params)
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
 	if params[:gb_opt] == "y"
+	
+		system "mkdir output/dalfox" if !File.directory?('output/dalfox')
+		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 		## :: Grep only params ::
 		system "cat #{file_to_scan} | grep -Evi '\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
