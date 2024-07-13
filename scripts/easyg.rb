@@ -1104,6 +1104,7 @@ def crawl_local_fun(params)
 		target = f.strip
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
+		remove_using_scope(file, "output/#{target}_waymore.txt")
 		urless_fun("output/#{target}_waymore.txt", "output/#{target}_urless.txt")
 		adding_anew("output/#{target}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
 	end
@@ -1117,8 +1118,8 @@ def crawl_local_fun(params)
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 
 	# Just keep it 200 for JS files
+	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
-	remove_using_scope(file, "output/allJSUrls_#{file_sanitized}")
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
@@ -1128,6 +1129,7 @@ def crawl_local_fun(params)
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -p #{$CONFIG['n_threads']} -vv -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
+	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
 	
 	# Find new URLS from Github using github-endpoints.py
 	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
@@ -1140,13 +1142,18 @@ def crawl_local_fun(params)
 		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	end
 
-	# Final
+	# Find more parameters
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
+	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -v \"?\" | grep -E '\.(asp|aspx|jsp|jspx|do|action|php|php3|form|html|xhtml|phtml|cfm|fcc|xsp|swf|nsf|cgi|axd|jsf)\b' | tee output/for_more_analysis_#{file_sanitized}"
+	system "arjun -i output/for_more_analysis_#{file_sanitized} -t #{$CONFIG['n_threads']} -oT output/more_params_#{file_sanitized}"
+	adding_anew("output/more_params_#{file_sanitized}","output/_tmpAllUrls_#{file_sanitized}")
+	File.delete("output/for_more_analysis_#{file_sanitized}") if File.exists?("output/for_more_analysis_#{file_sanitized}")
+
+	# Final
 	urless_fun("output/_tmpAllUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	file_sanitization "output/allUrls_#{file_sanitized}"
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
-
 	send_telegram_notif("Crawl-local for #{file} finished")
 
 	# === SEARCH FOR VULNS ===
