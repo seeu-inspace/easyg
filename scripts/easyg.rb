@@ -1145,7 +1145,7 @@ def crawl_local_fun(params)
 
 	# Find more parameters
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -v \"?\" | grep -E '\.(asp|aspx|jsp|jspx|do|action|php|php3|form|html|xhtml|phtml|cfm|fcc|xsp|swf|nsf|cgi|axd|jsf)\b' | tee output/for_more_analysis_#{file_sanitized}"
+	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -v \"?\" | grep -E '\\.(asp|aspx|jsp|jspx|do|action|php|php3|form|html|xhtml|phtml|cfm|fcc|xsp|swf|nsf|cgi|axd|jsf)\\b' | tee output/for_more_analysis_#{file_sanitized}"
 	system "arjun -i output/for_more_analysis_#{file_sanitized} -t #{$CONFIG['n_threads']} -oT output/more_params_#{file_sanitized}"
 	adding_anew("output/more_params_#{file_sanitized}","output/_tmpAllUrls_#{file_sanitized}")
 	File.delete("output/for_more_analysis_#{file_sanitized}") if File.exists?("output/for_more_analysis_#{file_sanitized}")
