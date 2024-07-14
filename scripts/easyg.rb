@@ -629,7 +629,7 @@ def search_for_vulns(params)
 		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep -Evi '\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 			lines = file.readlines.map(&:strip)
