@@ -614,7 +614,7 @@ def search_for_vulns(params)
 
 	# :: Mantra ::
 	puts "\n[\e[36m+\e[0m] Searching for secrets with Mantra"
-	system "cat output/200_#{o_sanitized}.txt | mantra -t #{$CONFIG['n_threads']} | grep -Ev \"Unable to make a request for|Regex Error|Unable to read the body of\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{o_sanitized}.txt | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt"
 
