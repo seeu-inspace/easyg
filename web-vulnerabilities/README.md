@@ -1078,6 +1078,8 @@ Windows Defender might tag the application as virus.
 - [Freddy, Deserialization Bug Finder](https://portswigger.net/bappstore/ae1cce0c6d6c47528b4af35faebc3ab3)
 - [PHP Object Injection Check](https://portswigger.net/bappstore/24dab228311049d89a27a4d721e17ef7)
 
+**Resources**
+- [Misconfigured JSF ViewStates can lead to severe RCE vulnerabilities](https://www.alphabot.com/security/blog/2017/java/Misconfigured-JSF-ViewStates-can-lead-to-severe-RCE-vulnerabilities.html)
 
 
 ## Server-side template injection (SSTI)
