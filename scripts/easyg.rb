@@ -629,7 +629,7 @@ def search_for_vulns(params)
 		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		system "cat #{file_to_scan} | grep -Evi '\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 			lines = file.readlines.map(&:strip)
@@ -1100,26 +1100,27 @@ def crawl_local_fun(params)
 	system "rm -rf results/"
 
 	# waymore
+	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 	extract_main_domains("output/_tmpAllUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 		target = f.strip
 		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml --no-subs -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		remove_using_scope(file, "output/#{target}_waymore.txt")
 		urless_fun("output/#{target}_waymore.txt", "output/#{target}_urless.txt")
 		adding_anew("output/#{target}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
+	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 
 	# JS file analysis
 	puts "\n[\e[36m+\e[0m] Searching for JS files"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmp1AllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs -c 50 | anew output/_tmp1AllJSUrls_#{file_sanitized}"
+	remove_using_scope(file, "output/_tmp1AllJSUrls_#{file_sanitized}")
 	urless_fun("output/_tmp1AllJSUrls_#{file_sanitized}","output/_tmpAllJSUrls_#{file_sanitized}")
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
 
 	# Just keep it 200 for JS files
-	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
 	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
