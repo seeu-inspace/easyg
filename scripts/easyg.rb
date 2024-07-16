@@ -461,7 +461,7 @@ def search_confidential_files(file_type, file_to_scan)
 	# Construct the command to search for confidential files
 	command = <<~BASH
 		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|password|credentials'; then
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials'; then
 				echo $i | tee -a #{output_file};
 			fi;
 		done
@@ -777,7 +777,7 @@ def assetenum_fun(params)
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		else
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
-			system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
+			#system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		end
 
