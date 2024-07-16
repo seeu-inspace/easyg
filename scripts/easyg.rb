@@ -629,7 +629,7 @@ def search_for_vulns(params)
 		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 
 		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)$' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
 		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
 			lines = file.readlines.map(&:strip)
@@ -1128,7 +1128,7 @@ def crawl_local_fun(params)
 	# Find new URLs from the JS files
 	puts "\n[\e[36m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
-	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 10 -p #{$CONFIG['n_threads']} -vv -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
+	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 5 -p #{$CONFIG['n_threads']} -vv -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
