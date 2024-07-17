@@ -926,19 +926,20 @@ def assetenum_fun(params)
 	# == Search for vulns ==
 	if params[:vl_opt] == "y"
 		# Use some Nuclei templates
-		puts "\n[\e[36m+\e[0m] Checking with nuclei in #{file}"
-		
+		puts "\n[\e[36m+\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
 		system "nuclei -l output/http_#{file} -tags takeover -stats -o output/nuclei_#{file}"
 		delete_if_empty "output/nuclei_#{file}"
-		
+
+		puts "\n[\e[36m+\e[0m] Searching for swaggers in #{file}"
 		search_swagger_endpoints("output/http_#{file}", "output/swagger_#{file}")
 		delete_if_empty "output/swagger_#{file}"
 
+		puts "\n[\e[36m+\e[0m] Searching for exposed .git in #{file}"
 		search_git_endpoints("output/http_#{file}", "output/git_exposed_#{file}")
 		delete_if_empty "output/git_exposed_#{file}"
 
 		# Search for 401 and 403 bypasses
-		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses #{file}"
+		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses in #{file}"
 		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
 		process_urls_for_code("output/http_#{file}", "output/401_#{file}", 401)
 		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}" if File.exists?("output/401_#{file}")
@@ -947,6 +948,7 @@ def assetenum_fun(params)
 		process_file_with_sed "output/byp4xx_results_#{file}"
 
 		# Search for WordPress websites and use WPScan
+		puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
 		identify_technology("output/http_#{file}", "output/wp_#{file}")
 		delete_if_empty "output/wp_#{file}"
 
