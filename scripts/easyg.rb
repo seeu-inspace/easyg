@@ -964,7 +964,6 @@ def assetenum_fun(params)
 				else
 					system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
 				end
-				delete_if_empty "wpscan_#{target}_#{file}"
 			end
 		end
 
