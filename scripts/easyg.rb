@@ -946,6 +946,7 @@ def assetenum_fun(params)
 		system "byp4xx -xD -xE -xX -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
 		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file}"
 		process_file_with_sed "output/byp4xx_results_#{file}"
+		system "rm -rf reports/" if File.directory?('reports')
 
 		# Search for WordPress websites and use WPScan
 		puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
@@ -1145,13 +1146,6 @@ def crawl_local_fun(params)
 		end
 		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	end
-
-	# Find more parameters
-	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep -v \"?\" | grep -E '\\.(asp|aspx|jsp|jspx|do|action|php|php3|form|html|xhtml|phtml|cfm|fcc|xsp|swf|nsf|cgi|axd|jsf)\\b' | tee output/for_more_analysis_#{file_sanitized}"
-	system "arjun -i output/for_more_analysis_#{file_sanitized} -t #{$CONFIG['n_threads']} -oT output/more_params_#{file_sanitized}"
-	adding_anew("output/more_params_#{file_sanitized}","output/_tmpAllUrls_#{file_sanitized}")
-	File.delete("output/for_more_analysis_#{file_sanitized}") if File.exists?("output/for_more_analysis_#{file_sanitized}")
 
 	# Final
 	urless_fun("output/_tmpAllUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
