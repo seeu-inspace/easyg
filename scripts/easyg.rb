@@ -959,7 +959,11 @@ def assetenum_fun(params)
 			File.open("output/wp_#{file}",'r').each_line do |f|
 				target = f.chomp
 				puts "\n[\e[36m+\e[0m] Starting WPScan for #{target}"
-				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
+				if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
+					system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
+				else
+					system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
+				end
 				delete_if_empty "wpscan_#{target}_#{file}"
 			end
 		end
