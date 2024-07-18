@@ -615,10 +615,10 @@ Using Foundry to prove it
 function test_reenter() public {
         // User deposits 5 ETH
         vm.prank(victimUser);
-        victimContract.deposit{value: amountToDeposited}();
+        victimContract.deposit{value: amountToBeDeposited}();
 
         // We assert the user has their balance
-        assertEq(victimContract.userBalance(victimUser), amountToDeposited);
+        assertEq(victimContract.userBalance(victimUser), amountToBeDeposited);
 
         // // Normally, the user could now withdraw their money if they like
         // vm.prank(victimUser);
@@ -628,7 +628,7 @@ function test_reenter() public {
         vm.prank(attackerUser);
         attackerContract.attack{value: 1 ether}();
 
-        assertEq(victimContract.userBalance(victimUser), amountToDeposited);
+        assertEq(victimContract.userBalance(victimUser), amountToBeDeposited);
         assertEq(address(victimContract).balance, 0);
 
         vm.prank(victimUser);
