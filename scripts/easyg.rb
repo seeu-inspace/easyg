@@ -500,7 +500,7 @@ def waf_check(target)
 	]
 
 	output = `wafw00f "#{target}" -v`
-	aggressive_waf = AGGRESSIVE_WAFS.any? { |waf| output.include?(waf) }
+	aggressive_waf = aggressive_wafs.any? { |waf| output.include?(waf) }
 
 	if aggressive_waf
 		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
