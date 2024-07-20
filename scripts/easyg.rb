@@ -1215,15 +1215,15 @@ option_actions = {
 	},
 	"find-vulns" => {
 		action: ->(params) { find_vulns_fun(params) },
-		description: "Given a <file_input> containing URLs, scan for vunlerabilities"
+		description: "Given a <file_input> containing URLs, scan for vulnerabilities"
 	},
 	"find-vulns-base-url" => {
 		action: ->(params) { find_vulns_base_fun(params) },
-		description: "Given a <file_input> containing base URLs, scan for vunlerabilities"
+		description: "Given a <file_input> containing base URLs, scan for vulnerabilities"
 	},
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
-		description: "Asset enumeration > Crawl Locally > Scan for vunlerabilities"
+		description: "Asset enumeration > Crawl Locally > Scan for vulnerabilities"
 	},
 	"help" => {
 		action: ->(options_actions) { show_help(option_actions) },
