@@ -504,6 +504,8 @@ def waf_check(target)
 
 	if aggressive_waf
 		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
+	elsif output.include?('appears to be down')
+		puts "[\e[31m+\e[0m] Skipped, the target appears to be down"
 	else
 		yield target
 	end
@@ -596,6 +598,58 @@ def search_git_endpoints(file_input, output_file, num_threads = $CONFIG['n_threa
 end
 
 
+# search_for_vulns but for base URLs
+def base_url_s4v(file)
+
+	system "mkdir output" if !File.directory?('output')
+
+	file_sanitized = file.gsub("/", "")
+
+	# Use some Nuclei templates
+	puts "\n[\e[36m+\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
+	system "nuclei -l #{file} -tags takeover -stats -o output/nuclei_#{file_sanitized}"
+	delete_if_empty "output/nuclei_#{file_sanitized}"
+
+	# search for swaggers
+	puts "\n[\e[36m+\e[0m] Searching for swaggers in #{file}"
+	search_swagger_endpoints("#{file}", "output/swagger_#{file_sanitized}")
+	delete_if_empty "output/swagger_#{file_sanitized}"
+
+	# search for exposed .git
+	puts "\n[\e[36m+\e[0m] Searching for exposed .git in #{file}"
+	search_git_endpoints("#{file}", "output/git_exposed_#{file_sanitized}")
+	delete_if_empty "output/git_exposed_#{file_sanitized}"
+
+	# Search for 401 and 403 bypasses
+	puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses in #{file}"
+	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
+	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
+	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
+	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
+	system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
+	process_file_with_sed "output/byp4xx_results_#{file_sanitized}"
+	system "rm -rf reports/" if File.directory?('reports')
+
+	# Search for WordPress websites and use WPScan
+	puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
+	identify_technology("#{file}", "output/wp_#{file_sanitized}")
+	delete_if_empty "output/wp_#{file_sanitized}"
+	if File.exists?("output/wp_#{file_sanitized}")
+		File.open("output/wp_#{file_sanitized}",'r').each_line do |f|
+			target = f.chomp
+			puts "\n[\e[36m+\e[0m] Starting WPScan for #{target}"
+			if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
+				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file_sanitized}"
+			else
+				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file_sanitized}"
+			end
+		end
+	end
+
+	send_telegram_notif("Search for vulns after Asset enumeration for #{file} finished")
+end
+
+
 
 def search_for_vulns(params)
 
@@ -629,23 +683,10 @@ def search_for_vulns(params)
 	
 		system "mkdir output/dalfox" if !File.directory?('output/dalfox')
 		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
+		system "mkdir output/ghauri" if !File.directory?('output/ghauri')
 
 		## :: Grep only params ::
 		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
-		# Read each URL from the file, replace parameter values with FUZZ, and overwrite the file with the modified URLs
-		File.open("output/allParams_#{o_sanitized}.txt", 'r+') do |file|
-			lines = file.readlines.map(&:strip)
-			file.rewind
-			file.truncate(0)
-			lines.each do |line|
-				begin
-				modified_url = replace_param_with_fuzz(line)
-				file.puts modified_url
-				rescue Exception => e
-					puts "[\e[31m+\e[0m] ERROR: #{e.message}"
-				end
-			end
-		end
 
 		# Search for XSS and LFI
 		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
@@ -661,24 +702,17 @@ def search_for_vulns(params)
 			end
 
 			waf_check(target) do |t|
-				system "ffuf -u \"#{t}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+				system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{t}.txt"
+				begin
+					t_fuzz = replace_param_with_fuzz(t)
+					system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+				rescue Exception => e
+					puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+				end
 			end
 
 		end
 		puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
-
-		# Search for Open Redirects
-		puts "\n[\e[36m+\e[0m] Searching for Open Redirects"
-		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/302allParams_#{o_sanitized}.txt", 302)
-		File.open("output/302allParams_#{o_sanitized}.txt",'r').each_line do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')
-			waf_check(target) do |t|
-				system "python3 ~/Tools/web-attack/Oralyzer/oralyzer.py -u \"#{t}\" -p /usr/share/seclists/Payloads/Open-Redirect/Open-Redirect-payloads.txt >> output/redirect_#{o_sanitized}.txt"
-			end
-		end
-		process_file_with_sed "output/redirect_#{o_sanitized}.txt"
-		puts "[\e[32m+\e[0m] Results saved in the directory output/redirect_#{o_sanitized}.txt" if File.exists?("output/redirect_#{o_sanitized}.txt")
 
 	end
 
@@ -779,7 +813,7 @@ def assetenum_fun(params)
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		else
 			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
-			#system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
+			system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		end
 
@@ -927,48 +961,7 @@ def assetenum_fun(params)
 
 	# == Search for vulns ==
 	if params[:vl_opt] == "y"
-		# Use some Nuclei templates
-		puts "\n[\e[36m+\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
-		system "nuclei -l output/http_#{file} -tags takeover -stats -o output/nuclei_#{file}"
-		delete_if_empty "output/nuclei_#{file}"
-
-		puts "\n[\e[36m+\e[0m] Searching for swaggers in #{file}"
-		search_swagger_endpoints("output/http_#{file}", "output/swagger_#{file}")
-		delete_if_empty "output/swagger_#{file}"
-
-		puts "\n[\e[36m+\e[0m] Searching for exposed .git in #{file}"
-		search_git_endpoints("output/http_#{file}", "output/git_exposed_#{file}")
-		delete_if_empty "output/git_exposed_#{file}"
-
-		# Search for 401 and 403 bypasses
-		puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses in #{file}"
-		process_urls_for_code("output/http_#{file}", "output/40X_#{file}", 403)
-		process_urls_for_code("output/http_#{file}", "output/401_#{file}", 401)
-		system "cat output/401_#{file} >> output/40X_#{file} && rm output/401_#{file}" if File.exists?("output/401_#{file}")
-		system "byp4xx -xB -m 2 -L output/40X_#{file} | grep -v '==' |tee output/byp4xx_results_#{file}"
-		system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file}"
-		process_file_with_sed "output/byp4xx_results_#{file}"
-		system "rm -rf reports/" if File.directory?('reports')
-
-		# Search for WordPress websites and use WPScan
-		puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
-		identify_technology("output/http_#{file}", "output/wp_#{file}")
-		delete_if_empty "output/wp_#{file}"
-
-		if File.exists?("output/wp_#{file}")
-			File.open("output/wp_#{file}",'r').each_line do |f|
-				target = f.chomp
-				puts "\n[\e[36m+\e[0m] Starting WPScan for #{target}"
-				if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
-					system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
-				else
-					system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file}"
-				end
-			end
-		end
-
-		send_telegram_notif("Search for vulns after Asset enumeration for #{file} finished")
-
+		base_url_s4v "output/http_#{file}"
 	end
 
 end
@@ -1176,6 +1169,12 @@ end
 
 
 
+def find_vulns_base_fun(params)
+	base_url_s4v params[:file]
+end
+
+
+
 def do_everything_fun(params)
 	assetenum_fun params
 	params[:file] = "output/http_#{params[:file].gsub("/", "")}"
@@ -1218,6 +1217,10 @@ option_actions = {
 		action: ->(params) { find_vulns_fun(params) },
 		description: "Given a <file_input> containing URLs, scan for vunlerabilities"
 	},
+	"find-vulns-base-url" => {
+		action: ->(params) { find_vulns_base_fun(params) },
+		description: "Given a <file_input> containing base URLs, scan for vunlerabilities"
+	},
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
 		description: "Asset enumeration > Crawl Locally > Scan for vunlerabilities"
@@ -1247,7 +1250,7 @@ begin
 
 		params = {}
 
-		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "do-everything"]
+		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "find-vulns-base-url", "do-everything"]
 		if options_that_need_file.include?(option)
 			print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 			params[:file] = gets.chomp
