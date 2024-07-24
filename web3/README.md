@@ -11,6 +11,7 @@
 - [Tools](#tools)
   - [Foundry](#foundry)
   - [Slither](#slither)
+  - [Code](#code)
 - [Audit](#Audit)
   - [Interview process](#interview-process)
   - [Audit process](#audit-process)
@@ -344,6 +345,15 @@ $ slither .
 $ slither . --exclude-dependencies
 ```
 
+### Code
+
+Some pieces of code that might be useful
+```Solidity
+// Convert a given address into uint
+function addressToUint(address _address) public pure returns (uint256) {
+	return uint256(uint160(_address));
+}
+```
 
 ## Audit
 
