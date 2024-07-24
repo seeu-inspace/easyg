@@ -513,8 +513,7 @@ end
 
 
 
-def search_swagger_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads'])
-
+def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads'])
 	urls = File.readlines(file_input).map(&:strip)
 
 	swagger_paths = [
@@ -536,6 +535,10 @@ def search_swagger_endpoints(file_input, output_file, num_threads = $CONFIG['n_t
 		"/webjars/swagger-ui/index.html"
 	]
 
+	git_paths = [
+		"/.git/config", "/.git/HEAD", "/.git/index", "/.git/logs/HEAD"
+	]
+
 	queue = Queue.new
 	urls.each { |url| queue << url }
 
@@ -544,49 +547,37 @@ def search_swagger_endpoints(file_input, output_file, num_threads = $CONFIG['n_t
 		workers = Array.new(num_threads) do
 			Thread.new do
 				while !queue.empty? && url = queue.pop(true) rescue nil
-					swagger_paths.each do |path|
+					(swagger_paths + git_paths).each do |path|
 						full_url = url.chomp("/") + path
+						puts "[\e[36m+\e[0m] Checking URL: #{full_url}"
 						response = check_url(full_url)
+
 						if response && response.code.to_i == 200
 							body = response.body
-							if body.include?("swagger:") || body.include?("Swagger 2.0") || body.include?("\"swagger\":") || body.include?("Swagger UI") || body.include?("loadSwaggerUI") || body.include?("**token**:") || body.include?('id="swagger-ui')
-								mutex.synchronize do
-									output.puts(full_url)
-									puts "[\e[32m+\e[0m] Swagger endpoint found: #{full_url}"
+
+							if git_paths.include?(path)
+								if path == "/.git/config"
+									if (body.include?("[core]") || body.include?("[credentials]")) && !body.downcase.include?("<html") && !body.downcase.include?("<body")
+										mutex.synchronize do
+											output.puts("GIT: #{full_url}")
+											puts "[\e[32m+\e[0m] Exposed .git/config found: #{full_url}"
+										end
+									end
+								else
+									if !body.downcase.include?("<html") && !body.downcase.include?("<body")
+										mutex.synchronize do
+											output.puts("GIT: #{full_url}")
+											puts "[\e[32m+\e[0m] Exposed .git component found: #{full_url}"
+										end
+									end
 								end
-								break
-							end
-						end
-					end
-				end
-			end
-		end
-		workers.each(&:join)
-	end
-end
-
-
-
-def search_git_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads'])
-	
-	urls = File.readlines(file_input).map(&:strip)
-
-	queue = Queue.new
-	urls.each { |url| queue << url }
-
-	File.open(output_file, 'w') do |output|
-		mutex = Mutex.new
-		workers = Array.new(num_threads) do
-			Thread.new do
-				while !queue.empty? && url = queue.pop(true) rescue nil
-					full_url = url.chomp("/") + "/.git/config"
-					response = check_url(full_url)
-					if response && response.code.to_i == 200
-						body = response.body
-						if body.include?("[core]") || body.include?("[credentials]") && !body.downcase.include?("<html") && !body.downcase.include?("<body")
-							mutex.synchronize do
-								output.puts(full_url)
-								puts "[\e[32m+\e[0m] Exposed .git/config found: #{full_url}"
+							else
+								if body.include?("swagger:") || body.include?("Swagger 2.0") || body.include?("\"swagger\":") || body.include?("Swagger UI") || body.include?("loadSwaggerUI") || body.include?("**token**:") || body.include?('id="swagger-ui')
+									mutex.synchronize do
+										output.puts("SWAGGER: #{full_url}")
+										puts "[\e[32m+\e[0m] Swagger endpoint found: #{full_url}"
+									end
+								end
 							end
 						end
 					end
@@ -611,14 +602,9 @@ def base_url_s4v(file)
 	delete_if_empty "output/nuclei_#{file_sanitized}"
 
 	# search for swaggers
-	puts "\n[\e[36m+\e[0m] Searching for swaggers in #{file}"
-	search_swagger_endpoints("#{file}", "output/swagger_#{file_sanitized}")
-	delete_if_empty "output/swagger_#{file_sanitized}"
-
-	# search for exposed .git
-	puts "\n[\e[36m+\e[0m] Searching for exposed .git in #{file}"
-	search_git_endpoints("#{file}", "output/git_exposed_#{file_sanitized}")
-	delete_if_empty "output/git_exposed_#{file_sanitized}"
+	puts "\n[\e[36m+\e[0m] Searching for swaggers and .git in #{file}"
+	search_endpoints("#{file}", "output/endpoints_#{file_sanitized}")
+	delete_if_empty "output/endpoints_#{file_sanitized}"
 
 	# Search for 401 and 403 bypasses
 	puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses in #{file}"
@@ -646,7 +632,7 @@ def base_url_s4v(file)
 		end
 	end
 
-	send_telegram_notif("Search for vulns after Asset enumeration for #{file} finished")
+	send_telegram_notif("Search for vulns for #{file} finished")
 end
 
 
@@ -1076,14 +1062,14 @@ def crawl_local_fun(params)
 
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
-
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
-		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
-		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 		
 		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
 		system "gospider -s #{target} -c 10 -d 4 -t #{$CONFIG['n_threads']} --sitemap --other-source -w -q --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\" | tee output/#{target_sanitized}_gospider.txt"
 		adding_anew("output/#{target_sanitized}_gospider.txt", "output/#{target_sanitized}_tmp.txt")
+
+		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
+		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
+		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
 			puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
