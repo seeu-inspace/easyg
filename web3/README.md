@@ -349,9 +349,22 @@ $ slither . --exclude-dependencies
 
 Some pieces of code that might be useful
 ```Solidity
-// Convert a given address into uint
+/* Convert a given address into uint */
 function addressToUint(address _address) public pure returns (uint256) {
 	return uint256(uint160(_address));
+}
+
+/* Base Foundry test */
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import {Test, console2} from "forge-std/Test.sol";
+import {Contract} from "../src/Contract.sol";
+
+contract Contract is Test {
+    function setUp() public {
+        
+    }
 }
 ```
 
