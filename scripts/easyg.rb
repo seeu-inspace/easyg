@@ -702,7 +702,7 @@ def search_for_vulns(params)
 
 	end
 
-	send_telegram_notif("Search for vulnerabilities for #{file} finished")
+	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
 end
 
