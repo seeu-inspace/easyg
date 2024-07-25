@@ -680,7 +680,7 @@ def search_for_vulns(params)
 		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
 			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 			content_type = get_content_type(target)
 
 			if content_type && content_type.include?('text/html')
