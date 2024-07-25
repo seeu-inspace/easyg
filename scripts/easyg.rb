@@ -674,8 +674,8 @@ def search_for_vulns(params)
 		## :: Grep only params ::
 		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 
-		# Search for XSS and LFI
-		puts "\n[\e[36m+\e[0m] Searching for XSSs and LFIs"
+		# Search for XSS, LFI and SQLi
+		puts "\n[\e[36m+\e[0m] Searching for XSSs, LFIs and SQLi"
 		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
 		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
@@ -688,8 +688,8 @@ def search_for_vulns(params)
 			end
 
 			waf_check(target) do |t|
-				system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{t}.txt"
 				begin
+					system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
 					t_fuzz = replace_param_with_fuzz(t)
 					system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
 				rescue Exception => e
