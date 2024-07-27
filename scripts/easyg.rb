@@ -419,7 +419,7 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	filtered_urls.reject! { |url| contains_only_tracking_params?(url) }
 	puts "[\e[32m+\e[0m] URLs with only tracking parameters removed"
 
-	# Step 5: Remove dead links and 404 URLs with multithreading
+	# Step 5: Remove dead links and 404 URLs
 	puts "[\e[34m*\e[0m] Checking for dead links and 404 URLs..."
 	queue = Queue.new
 	filtered_urls.each { |url| queue << url }
