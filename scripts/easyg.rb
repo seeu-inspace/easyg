@@ -1165,7 +1165,7 @@ def crawl_local_fun(params)
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
 	system "cat output/allUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmpAllJSUrls_#{file_sanitized}"
-	system "cat output/allUrls_#{file_sanitized} | subjs -c 50 | anew output/_tmpAllJSUrls_#{file_sanitized}"
+	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | anew output/_tmpAllJSUrls_#{file_sanitized}"
 	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
 	clean_urls "output/_tmpAllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/allUrls_#{file_sanitized}"
