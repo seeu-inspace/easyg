@@ -74,15 +74,6 @@ end
 
 
 
-def urless_fun(file_i, file_o)
-	if File.exists?(file_i)
-		system "urless -i #{file_i} -o #{file_o}"
-		File.delete(file_i) if File.exists?(file_i)
-	end
-end
-
-
-
 # :: Functions misc ::
 
 
