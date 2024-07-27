@@ -118,6 +118,44 @@ end
 
 
 
+def extract_main_domains(input_file, output_file)
+	domains = []
+
+	def extract_main_domain(url)
+		begin
+			uri = URI.parse(url)
+			host = uri.host.downcase
+			parts = host.split('.')
+
+			return host if parts.length == 1 || parts[-1] =~ /\d+/
+
+			return "#{parts[-2]}.#{parts[-1]}"
+		rescue Exception => e
+			nil
+		end
+	end
+
+	File.open(input_file, 'r').each_line do |line|
+		line.strip!
+		next if line.empty?
+
+		domain = extract_main_domain(line)
+
+		unless domains.include?(domain)
+			domains << domain
+		end
+	end
+
+	File.open(output_file, 'w') do |file|
+		domains.each do |domain|
+			file.puts domain unless domain.nil? || domain.empty?
+		end
+	end
+
+end
+
+
+
 def send_telegram_notif(message)
 
 	if !$CONFIG['telegram'].nil? || $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" || !$CONFIG['telegram_chat_id'].nil? || $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
@@ -242,11 +280,25 @@ end
 
 
 
-# :: Functions to clear files ::
+def contains_only_tracking_params?(url)
+	uri = URI.parse(url)
+	return false if uri.query.nil?
+
+	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid fbclid]
+	params = URI.decode_www_form(uri.query).map(&:first)
+
+	(params - tracking_params).empty?
+rescue
+	false
+end
 
 
 
-def process_file_with_sed(file_path)
+# :: Functions to clean files ::
+
+
+
+def remove_ansi(file_path)
 	unless File.exists?(file_path)
 		puts "[\e[31m+\e[0m] File not found: #{file_path}"
 		return
@@ -354,40 +406,71 @@ end
 
 
 
-def extract_main_domains(input_file, output_file)
-	domains = []
+def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
+	puts "[\e[34m*\e[0m] Starting URL cleaning process..."
 
-	def extract_main_domain(url)
-		begin
-			uri = URI.parse(url)
-			host = uri.host.downcase
-			parts = host.split('.')
+	# Setp 1: Clean file
+	puts "[\e[34m*\e[0m] Cleaning file..."
+	file_sanitization file_path
 
-			return host if parts.length == 1 || parts[-1] =~ /\d+/
+	# Step 2: Filter only valid URLs using sed
+	puts "[\e[34m*\e[0m] Filtering valid URLs..."
+	system "sed -i -E '/^(http|https):/!d' #{file_path}"
 
-			return "#{parts[-2]}.#{parts[-1]}"
-		rescue Exception => e
-			nil
+	# Step 3: Remove useless URLs like _Incapsula_Resource
+	puts "[\e[34m*\e[0m] Removing useless URLs..."
+	urls = File.readlines(file_path).map(&:strip).reject(&:empty?)
+	filtered_urls = urls.reject { |url| url.include?('_Incapsula_Resource') }
+	puts "[\e[32m+\e[0m] Useless URLs removed"
+
+	# Step 4: Remove URLs with only tracking parameters
+	puts "[\e[34m*\e[0m] Removing URLs with only tracking parameters..."
+	filtered_urls.reject! { |url| contains_only_tracking_params?(url) }
+	puts "[\e[32m+\e[0m] URLs with only tracking parameters removed"
+
+	# Step 5: Remove dead links and 404 URLs with multithreading
+	puts "[\e[34m*\e[0m] Checking for dead links and 404 URLs..."
+	queue = Queue.new
+	filtered_urls.each { |url| queue << url }
+
+	live_urls = []
+	mutex = Mutex.new
+
+	workers = Array.new(num_threads) do
+		Thread.new do
+			until queue.empty?
+				url = queue.pop(true) rescue nil
+				next unless url
+
+				response = check_url(url)
+				if response && response.is_a?(Net::HTTPSuccess)
+					mutex.synchronize { live_urls << url }
+					puts "[\e[32m+\e[0m] Alive URL: #{url}"
+				elsif response && response.code.to_i == 404
+					puts "[\e[31m+\e[0m] 404 Not Found: #{url}"
+				else
+					puts "[\e[31m+\e[0m] Dead URL: #{url}"
+				end
+			end
 		end
 	end
 
-	File.open(input_file, 'r').each_line do |line|
-		line.strip!
-		next if line.empty?
+	workers.each(&:join)
 
-		domain = extract_main_domain(line)
+	# Step 6: Overwrite the input file with the cleaned URLs
+	puts "[\e[34m*\e[0m] Writing cleaned URLs to file..."
+	File.open(file_path, 'w') { |file| file.puts(live_urls) }
+	puts "[\e[32m+\e[0m] Cleaned URLs written to #{file_path}"
 
-		unless domains.include?(domain)
-			domains << domain
-		end
+	# Step 7: Process the file with urless
+	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
+	urless_command = "urless -i #{file_path} -o #{file_path}.tmp"
+	if system(urless_command)
+		File.rename("#{file_path}.tmp", file_path)
+		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
+	else
+		puts "[\e[31m+\e[0m] Error running urless"
 	end
-
-	File.open(output_file, 'w') do |file|
-		domains.each do |domain|
-			file.puts domain unless domain.nil? || domain.empty?
-		end
-	end
-
 end
 
 
@@ -456,14 +539,14 @@ end
 
 
 def search_confidential_files(file_type, file_to_scan)
-	puts "\n[\e[36m+\e[0m] Searching for possible confidential #{file_type.upcase}s"
+	puts "\n[\e[34m*\e[0m] Searching for possible confidential #{file_type.upcase}s"
 	
 	output_file = "output/reserved#{file_type.upcase}s_#{file_to_scan.gsub("/", "")}"
 
 	# Construct the command to search for confidential files
 	command = <<~BASH
 		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials'; then
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials|connection string|MONGO_URI'; then
 				echo $i | tee -a #{output_file};
 			fi;
 		done
@@ -549,7 +632,7 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 				while !queue.empty? && url = queue.pop(true) rescue nil
 					(swagger_paths + git_paths).each do |path|
 						full_url = url.chomp("/") + path
-						puts "[\e[36m+\e[0m] Checking URL: #{full_url}"
+						puts "[\e[34m*\e[0m] Checking URL: #{full_url}"
 						response = check_url(full_url)
 
 						if response && response.code.to_i == 200
@@ -597,23 +680,23 @@ def base_url_s4v(file)
 	file_sanitized = file.gsub("/", "")
 
 	# Use some Nuclei templates
-	puts "\n[\e[36m+\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
+	puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
 	system "nuclei -l #{file} -tags takeover -stats -o output/nuclei_#{file_sanitized}"
 	delete_if_empty "output/nuclei_#{file_sanitized}"
 
 	# search for swaggers
-	puts "\n[\e[36m+\e[0m] Searching for swaggers and .git in #{file}"
+	puts "\n[\e[34m*\e[0m] Searching for swaggers and .git in #{file}"
 	search_endpoints("#{file}", "output/endpoints_#{file_sanitized}")
 	delete_if_empty "output/endpoints_#{file_sanitized}"
 
 	# Search for 401 and 403 bypasses
-	puts "\n[\e[36m+\e[0m] Searching for 401,403 and bypasses in #{file}"
+	puts "\n[\e[34m*\e[0m] Searching for 401,403 and bypasses in #{file}"
 	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
 	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
 	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
 	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
 	system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
-	process_file_with_sed "output/byp4xx_results_#{file_sanitized}"
+	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
 
 	# Search for WordPress websites and use WPScan
@@ -623,11 +706,12 @@ def base_url_s4v(file)
 	if File.exists?("output/wp_#{file_sanitized}")
 		File.open("output/wp_#{file_sanitized}",'r').each_line do |f|
 			target = f.chomp
-			puts "\n[\e[36m+\e[0m] Starting WPScan for #{target}"
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+			puts "\n[\e[34m*\e[0m] Starting WPScan for #{target}"
 			if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
-				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file_sanitized}"
+				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{sanitized_target}_#{file_sanitized}"
 			else
-				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{target}_#{file_sanitized}"
+				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan_#{sanitized_target}_#{file_sanitized}"
 			end
 		end
 	end
@@ -644,24 +728,23 @@ def search_for_vulns(params)
 	system "mkdir output" if !File.directory?('output')
 
 	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
-	file_sanitization file_to_scan
 
 	# Get only 200s
 	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
 	# :: Search for possible confidential files ::
-	['pdf', 'txt', 'csv', 'xml', 'json'].each do |file_type|
+	['pdf', 'txt', 'csv', 'xml', 'json', 'env'].each do |file_type|
 		search_confidential_files(file_type, "output/200_#{o_sanitized}.txt")
 	end
 
 	# :: Mantra ::
-	puts "\n[\e[36m+\e[0m] Searching for secrets with Mantra"
+	puts "\n[\e[34m*\e[0m] Searching for secrets with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
-	process_file_with_sed "output/mantra_results_#{o_sanitized}.txt"
+	remove_ansi "output/mantra_results_#{o_sanitized}.txt"
 
 	# :: SocialHunter
-	puts "\n[\e[36m+\e[0m] Searching for Brojen Link Hijaking with socialhunter"
+	puts "\n[\e[34m*\e[0m] Searching for Brojen Link Hijaking with socialhunter"
 	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
@@ -675,7 +758,7 @@ def search_for_vulns(params)
 		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 
 		# Search for XSS, LFI and SQLi
-		puts "\n[\e[36m+\e[0m] Searching for XSSs, LFIs and SQLi"
+		puts "\n[\e[34m*\e[0m] Searching for XSSs, LFIs and SQLi"
 		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
 		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
@@ -794,30 +877,30 @@ def assetenum_fun(params)
 		#== amass ==
 
 		if params[:gb_opt] == "y"
-			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
+			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with amass"
 			system "amass enum -brute -active -d #{target} -v -dns-qps 300"
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		else
-			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with amass"
+			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with amass"
 			system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
 			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
 		end
 
 		#== subfinder ==
-		puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with subfinder"
+		puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with subfinder"
 		system "subfinder -d #{target} -all -o output/#{target}_subfinder.txt"
 
 		adding_anew("output/#{target}_subfinder.txt", "output/#{target}_tmp.txt")
 
 		#== github-subdomains ==
 		if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with github-subdomains"
+			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with github-subdomains"
 			system "github-subdomains -t #{$CONFIG['github_token']} -d #{target} -o output/#{target}_github.txt"
 			adding_anew("output/#{target}_github.txt", "output/#{target}_tmp.txt")
 		end
 
 		#== crt.sh ==
-		puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with crt.sh"
+		puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with crt.sh"
 
 		begin
 			uri = URI.parse("https://crt.sh/?q=#{target}&output=json")
@@ -855,7 +938,7 @@ def assetenum_fun(params)
 				File.open('all.txt', 'w') { |file| file.write(alltxt) }
 			end
 
-			puts "\n[\e[36m+\e[0m] Enumerating subdomains for #{target} with gobuster and all.txt"
+			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with gobuster and all.txt"
 			system "gobuster dns -d #{target} -v -t #{$CONFIG['n_threads']} --no-color --wildcard -o output/#{target}_gobuster_tmp.txt -w all.txt"
 
 			gobuster_o = File.new("output/#{target}_gobuster.txt", 'w')
@@ -879,7 +962,7 @@ def assetenum_fun(params)
 
 		#== anew final ==
 
-		puts "\n[\e[36m+\e[0m] Checking if IPs for the subdomains of #{target} exist"
+		puts "\n[\e[34m*\e[0m] Checking if IPs for the subdomains of #{target} exist"
 
 		allsubs_final = File.new("output/#{target}.txt", 'w')
 		allsubs_tmp = File.open("output/#{target}_tmp.txt",'r')
@@ -904,41 +987,41 @@ def assetenum_fun(params)
 
 		puts "[\e[32m+\e[0m] Results for #{target} saved as output/#{target}.txt"
 
-		puts "\n[\e[36m+\e[0m] Adding the results for #{target} to output/allsubs_#{file}"
+		puts "\n[\e[34m*\e[0m] Adding the results for #{target} to output/allsubs_#{file}"
 		adding_anew("output/#{target}.txt","output/allsubs_#{file}")
 		puts "[\e[32m+\e[0m] Results for #{file} saved as output/allsubs_#{file}"
 
 	end
 
 	#== httpx & httprobe ==
-	puts "\n[\e[36m+\e[0m] Searching for web services output/allsubs_#{file}"
+	puts "\n[\e[34m*\e[0m] Searching for web services output/allsubs_#{file}"
 	system "cat output/allsubs_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -p 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -o output/http_#{file}"
 	system "cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 100 | anew output/http_#{file}"
 	puts "[\e[32m+\e[0m] Results saved as output/http_#{file}"
 
 	#== naabu ==
 	if params[:gb_opt] == "y"
-		puts "\n[\e[36m+\e[0m] Searching for more open ports in output/allsubs_#{file} with naabu"
+		puts "\n[\e[34m*\e[0m] Searching for more open ports in output/allsubs_#{file} with naabu"
 		system "naabu -v -list output/allsubs_#{file} -p - -exclude-ports 80,443,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3001,3002,3003,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8088,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9200,9443,9502,9800,9981,10000,10250,11371,12443,15672,16080,17778,18091,18092,20720,32000,55440,55672 -c 1000 -rate 7000 -stats -o output/ports_#{file}"
 		delete_if_empty "output/ports_#{file}"
 	end
 
 	#== naabu | httpx & httprobe ==
 	if File.exists?("output/ports_#{file}")
-		puts "\n[\e[36m+\e[0m] Checking for hidden web ports in output/ports_#{file}"
+		puts "\n[\e[34m*\e[0m] Searching for hidden web ports in output/ports_#{file}"
 		system "cat output/ports_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -o output/http_hidden_#{file}"
 		system "cat output/ports_#{file} | httprobe | anew output/http_hidden_#{file}"
 
 		if File.exists?("output/http_hidden_#{file}")
 			system "cat output/http_hidden_#{file}"
 			adding_anew("output/http_hidden_#{file}", "output/http_#{file}")
-			puts "[\e[32m+\e[0m] Results added at output/http_#{file}"
+			puts "[\e[32m+\e[0m] Results added to output/http_#{file}"
 		end
 	end
 
 	# == Interesting subs ==
 
-	puts "\n[\e[36m+\e[0m] Showing some interesting subdomains found"
+	puts "\n[\e[34m*\e[0m] Showing some interesting subdomains found"
 	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
 	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
 	delete_if_empty "output/interesting_subdomains_#{file}"
@@ -1029,16 +1112,10 @@ def crawl_burp_fun(params)
 	File.open(params[:file],'r').each_line do |f|
 		target = f.chomp
 
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with hakrawler\n"
-		system "echo #{target}| hakrawler -u -insecure -t #{$CONFIG['n_threads']} -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -h \"Cookie: #{$CONFIG['cookie']};;Authorization: #{$CONFIG['authorization']}\""
-
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
-		system "gospider -s #{target} -c 10 -d 4 -t #{$CONFIG['n_threads']} --sitemap --other-source -w -p http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']} -H \"Cookie: #{$CONFIG['cookie']}\" -H \"Authorization: #{$CONFIG['authorization']}\" --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\""
-
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
+		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
+		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
 		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 	end
 
@@ -1060,52 +1137,47 @@ def crawl_local_fun(params)
 		target = f.chomp
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with katana\n"
+		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
 		
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with gospider\n"
-		system "gospider -s #{target} -c 10 -d 4 -t #{$CONFIG['n_threads']} --sitemap --other-source -w -q --blacklist \".(svg|png|gif|ico|jpg|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf|swf2|css)\" | tee output/#{target_sanitized}_gospider.txt"
-		adding_anew("output/#{target_sanitized}_gospider.txt", "output/#{target_sanitized}_tmp.txt")
-
-		puts "\n[\e[36m+\e[0m] Crawling #{target} with gau\n"
+		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
 		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
-			puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
+			puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
 			system "paramspider -d #{target_sanitized}"
 		end
 		target_tmp = target_sanitized
-
 		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
-		system "sed -i -E '/^(http|https):/!d' output/#{target_sanitized}_tmp.txt"
-		urless_fun("output/#{target_sanitized}_tmp.txt", "output/#{target_sanitized}_urless.txt")
-		adding_anew("output/#{target_sanitized}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
-		puts "[\e[32m+\e[0m] Results for #{target} saved in output/_tmpAllUrls_#{file_sanitized}"
+		
+		clean_urls "output/#{target_sanitized}_tmp.txt"
+		adding_anew("output/#{target_sanitized}_tmp.txt","output/allUrls_#{file_sanitized}")
+		puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
 	end
 
 	system "rm -rf results/"
 
 	# waymore
-	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
-	extract_main_domains("output/_tmpAllUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
+	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
+	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 		target = f.strip
-		puts "\n[\e[36m+\e[0m] Finding more endpoints for #{target} with WayMore\n"
+		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		urless_fun("output/#{target}_waymore.txt", "output/#{target}_urless.txt")
-		adding_anew("output/#{target}_urless.txt","output/_tmpAllUrls_#{file_sanitized}")
+		clean_urls "output/#{target}_waymore.txt"
+		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
-	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
+	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 
 	# JS file analysis
-	puts "\n[\e[36m+\e[0m] Searching for JS files"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmp1AllJSUrls_#{file_sanitized}"
-	system "cat output/_tmpAllUrls_#{file_sanitized} | subjs -c 50 | anew output/_tmp1AllJSUrls_#{file_sanitized}"
-	remove_using_scope(file, "output/_tmp1AllJSUrls_#{file_sanitized}")
-	urless_fun("output/_tmp1AllJSUrls_#{file_sanitized}","output/_tmpAllJSUrls_#{file_sanitized}")
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/_tmpAllUrls_#{file_sanitized}"
+	puts "\n[\e[34m*\e[0m] Searching for JS files"
+	system "cat output/allUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmpAllJSUrls_#{file_sanitized}"
+	system "cat output/allUrls_#{file_sanitized} | subjs -c 50 | anew output/_tmpAllJSUrls_#{file_sanitized}"
+	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
+	clean_urls "output/_tmpAllJSUrls_#{file_sanitized}"
+	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/allUrls_#{file_sanitized}"
 
 	# Just keep it 200 for JS files
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
@@ -1113,27 +1185,26 @@ def crawl_local_fun(params)
 	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
-	puts "\n[\e[36m+\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
+	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 5 -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
-	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
-	remove_using_scope(file, "output/_tmpAllUrls_#{file_sanitized}")
+	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
+	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
 	
 	# Find new URLS from Github using github-endpoints.py
 	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-		puts "\n[\e[36m+\e[0m] Finding more endpoints with github-endpoints.py"
+		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
 		File.open("output/tmp_scope.txt",'r').each_line do |f|
 			target = f.strip
 			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
-			adding_anew("output/github-endpoints_#{file_sanitized}", "output/_tmpAllUrls_#{file_sanitized}")
+			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 		end
 		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	end
 
 	# Final
-	urless_fun("output/_tmpAllUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
-	file_sanitization "output/allUrls_#{file_sanitized}"
+	clean_urls "output/allUrls_#{file_sanitized}"
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
