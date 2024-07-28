@@ -149,40 +149,40 @@ end
 
 def send_telegram_notif(message)
 
-	if !$CONFIG['telegram'].nil? || $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" || !$CONFIG['telegram_chat_id'].nil? || $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
-		uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
-		header = {'Content-Type': 'application/json'}
-		body = {
-			chat_id: $CONFIG['telegram_chat_id'],
-			text: message
-		}.to_json
+	next if !$CONFIG['telegram'].nil? || $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" || !$CONFIG['telegram_chat_id'].nil? || $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
+	
+	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
+	header = {'Content-Type': 'application/json'}
+	body = {
+		chat_id: $CONFIG['telegram_chat_id'],
+		text: message
+	}.to_json
 
-		http = Net::HTTP.new(uri.host, uri.port)
-		http.use_ssl = true
-		request = Net::HTTP::Post.new(uri.request_uri, header)
-		request.body = body
+	http = Net::HTTP.new(uri.host, uri.port)
+	http.use_ssl = true
+	request = Net::HTTP::Post.new(uri.request_uri, header)
+	request.body = body
 
-		retries = 3
-		begin
-			response = http.request(request)
-			if response.code.to_i == 200
-				puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
-			else
-				puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
-			end
-		rescue Net::OpenTimeout, Net::ReadTimeout => e
-			puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
-			if retries > 0
-				retries -= 1
-				puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
-				sleep(1)
-				retry
-			end
-		rescue SocketError => e
-			puts "[\e[31m+\e[0m] Socket error: #{e.message}"
-		rescue StandardError => e
-			puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
+	retries = 3
+	begin
+		response = http.request(request)
+		if response.code.to_i == 200
+			puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
+		else
+			puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
 		end
+	rescue Net::OpenTimeout, Net::ReadTimeout => e
+		puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
+		if retries > 0
+			retries -= 1
+			puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
+			sleep(1)
+			retry
+		end
+	rescue SocketError => e
+		puts "[\e[31m+\e[0m] Socket error: #{e.message}"
+	rescue StandardError => e
+		puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
 	end
 end
 
