@@ -686,7 +686,7 @@ def base_url_s4v(file)
 	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
 	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
 	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
-	system "dirsearch -e * -x 404,403,401,429 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
+	system "dirsearch -e * -x 404,403,401,400,429 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
 	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
 
