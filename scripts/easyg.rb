@@ -629,6 +629,7 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 						if response && response.code.to_i == 200
 							body = response.body
 
+							# check for exposed .git
 							if git_paths.include?(path)
 								if path == "/.git/config"
 									if (body.include?("[core]") || body.include?("[credentials]")) && !body.downcase.include?("<html") && !body.downcase.include?("<body")
@@ -645,6 +646,8 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 										end
 									end
 								end
+
+							# check for swagger
 							else
 								if body.include?("swagger:") || body.include?("Swagger 2.0") || body.include?("\"swagger\":") || body.include?("Swagger UI") || body.include?("loadSwaggerUI") || body.include?("**token**:") || body.include?('id="swagger-ui')
 									mutex.synchronize do
@@ -653,6 +656,7 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 									end
 								end
 							end
+
 						end
 					end
 				end
