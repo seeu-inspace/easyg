@@ -675,7 +675,7 @@ def base_url_s4v(file)
 	system "nuclei -l #{file} -tags takeover -stats -o output/nuclei_#{file_sanitized}"
 	delete_if_empty "output/nuclei_#{file_sanitized}"
 
-	# search for swaggers
+	# search for swaggers and git exposed
 	puts "\n[\e[34m*\e[0m] Searching for swaggers and .git in #{file}"
 	search_endpoints("#{file}", "output/endpoints_#{file_sanitized}")
 	delete_if_empty "output/endpoints_#{file_sanitized}"
