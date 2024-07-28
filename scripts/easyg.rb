@@ -149,7 +149,7 @@ end
 
 def send_telegram_notif(message)
 
-	next if !$CONFIG['telegram'].nil? || $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" || !$CONFIG['telegram_chat_id'].nil? || $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
+	next unless $CONFIG['telegram'] && $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" && $CONFIG['telegram_chat_id'] && $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
 	
 	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
 	header = {'Content-Type': 'application/json'}
