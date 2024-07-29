@@ -400,7 +400,7 @@ end
 def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	puts "[\e[34m*\e[0m] Starting URL cleaning process..."
 
-	# Setp 1: Clean file
+	# Step 1: Clean file
 	puts "[\e[34m*\e[0m] Cleaning file..."
 	file_sanitization file_path
 
@@ -408,18 +408,29 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	puts "[\e[34m*\e[0m] Filtering valid URLs..."
 	system "sed -i -E '/^(http|https):/!d' #{file_path}"
 
-	# Step 3: Remove useless URLs like _Incapsula_Resource
+	# Step 3: Process the file with urless to deduplicate URLs
+	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
+	urless_command = "urless -i #{file_path} -o #{file_path}.tmp"
+	if system(urless_command)
+		File.rename("#{file_path}.tmp", file_path)
+		puts "[\e[32m+\\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
+	else
+		puts "[\e[31m+\\e[0m] Error running urless"
+		return
+	end
+
+	# Step 4: Remove useless URLs like _Incapsula_Resource
 	puts "[\e[34m*\e[0m] Removing useless URLs..."
 	urls = File.readlines(file_path).map(&:strip).reject(&:empty?)
 	filtered_urls = urls.reject { |url| url.include?('_Incapsula_Resource') }
 	puts "[\e[32m+\e[0m] Useless URLs removed"
 
-	# Step 4: Remove URLs with only tracking parameters
+	# Step 5: Remove URLs with only tracking parameters
 	puts "[\e[34m*\e[0m] Removing URLs with only tracking parameters..."
 	filtered_urls.reject! { |url| contains_only_tracking_params?(url) }
 	puts "[\e[32m+\e[0m] URLs with only tracking parameters removed"
 
-	# Step 5: Remove dead links and 404 URLs
+	# Step 6: Remove dead links and 404 URLs
 	puts "[\e[34m*\e[0m] Checking for dead links and 404 URLs..."
 	queue = Queue.new
 	filtered_urls.each { |url| queue << url }
@@ -448,21 +459,13 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	workers.each(&:join)
 
-	# Step 6: Overwrite the input file with the cleaned URLs
+	# Step 7: Overwrite the input file with the cleaned URLs
 	puts "[\e[34m*\e[0m] Writing cleaned URLs to file..."
 	File.open(file_path, 'w') { |file| file.puts(live_urls) }
 	puts "[\e[32m+\e[0m] Cleaned URLs written to #{file_path}"
 
-	# Step 7: Process the file with urless
-	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
-	urless_command = "urless -i #{file_path} -o #{file_path}.tmp"
-	if system(urless_command)
-		File.rename("#{file_path}.tmp", file_path)
-		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
-	else
-		puts "[\e[31m+\e[0m] Error running urless"
-	end
 end
+
 
 
 
@@ -1033,11 +1036,11 @@ end
 
 
 def webscreenshot_fun(params)
-
 	urls = File.readlines(params[:file]).map(&:chomp)
 
 	i = 0
 	image_paths = []
+	successful_urls = []
 
 	system "mkdir output" if !File.directory?('output')
 	system "mkdir output/webscreen" if !File.directory?('output/webscreen')
@@ -1061,6 +1064,7 @@ def webscreenshot_fun(params)
 			driver.save_screenshot(image_path)
 			puts "[\e[32m#{i}\e[0m] Screenshot saved as: #{image_path}"
 			image_paths << image_path
+			successful_urls << url
 		rescue Exception => e
 			puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
 		end
@@ -1088,16 +1092,15 @@ def webscreenshot_fun(params)
 		image_paths.each_with_index do |path, index|
 			html.write('<div class="screenshot">')
 			html.write("<a href=\"#{path.gsub('output/', '')}\" target=_blank>")
-			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{urls[index]}\" width=\"600\" height=\"400\">")
+			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{successful_urls[index]}\" width=\"600\" height=\"400\">")
 			html.write("</a>")
-			html.write("<div class=\"screenshot-desc\"><b>URL:</b> <a href=\"#{urls[index]}\" target=_blank>#{urls[index]}</a></div>")
+			html.write("<div class=\"screenshot-desc\"><b>URL:</b> <a href=\"#{successful_urls[index]}\" target=_blank>#{successful_urls[index]}</a></div>")
 			html.write('</div>')
 		end
 
 		html.write('</body>')
 		html.write('</html>')
 	end
-
 end
 
 
@@ -1146,6 +1149,7 @@ def crawl_local_fun(params)
 		target_tmp = target_sanitized
 		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
 		
+		puts ""
 		clean_urls "output/#{target_sanitized}_tmp.txt"
 		adding_anew("output/#{target_sanitized}_tmp.txt","output/allUrls_#{file_sanitized}")
 		puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
