@@ -275,7 +275,7 @@ def contains_only_tracking_params?(url)
 	uri = URI.parse(url)
 	return false if uri.query.nil?
 
-	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid fbclid]
+	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid fbclid __cf_chl_rt_tk]
 	params = URI.decode_www_form(uri.query).map(&:first)
 
 	(params - tracking_params).empty?
@@ -1164,11 +1164,11 @@ def crawl_local_fun(params)
 		target = f.strip
 		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
+		remove_using_scope(file, "output/#{target}_waymore.txt")
 		clean_urls "output/#{target}_waymore.txt"
 		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
-	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
