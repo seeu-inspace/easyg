@@ -540,7 +540,7 @@ def search_confidential_files(file_type, file_to_scan)
 	# Construct the command to search for confidential files
 	command = <<~BASH
 		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials|connection string|MONGO_URI'; then
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials|connection string|MONGO_URI|seed_phrase'; then
 				echo $i | tee -a #{output_file};
 			fi;
 		done
@@ -609,7 +609,7 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 		"/swagger-resources/restservices/v2/api-docs", "/api/swagger_doc.json", "/docu", "/docs", "/swagger",
 		"/api-doc", "/doc/", "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-standalone-preset.js",
 		"/swagger-ui/swagger-ui/swagger-ui-bundle.js", "/webjars/swagger-ui/swagger-ui-bundle.js",
-		"/webjars/swagger-ui/index.html"
+		"/webjars/swagger-ui/index.html", "/"
 	]
 
 	git_paths = [
@@ -678,8 +678,8 @@ def base_url_s4v(file)
 	file_sanitized = file.gsub("/", "")
 
 	# Use some Nuclei templates
-	puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers with nuclei in #{file}"
-	system "nuclei -l #{file} -tags takeover -stats -o output/nuclei_#{file_sanitized}"
+	puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers and exposed panels with nuclei in #{file}"
+	system "nuclei -l #{file} -tags takeover,panel -stats -o output/nuclei_#{file_sanitized}"
 	delete_if_empty "output/nuclei_#{file_sanitized}"
 
 	# search for swaggers and git exposed
@@ -753,7 +753,7 @@ def search_for_vulns(params)
 		system "mkdir output/ghauri" if !File.directory?('output/ghauri')
 
 		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 
 		# Search for XSS, LFI and SQLi
 		puts "\n[\e[34m*\e[0m] Searching for XSSs, LFIs and SQLi"
@@ -1035,12 +1035,15 @@ end
 
 
 
-def webscreenshot_fun(params)
+def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
 	urls = File.readlines(params[:file]).map(&:chomp)
 
 	i = 0
 	image_paths = []
 	successful_urls = []
+	queue = Queue.new
+
+	urls.each { |url| queue << url }
 
 	system "mkdir output" if !File.directory?('output')
 	system "mkdir output/webscreen" if !File.directory?('output/webscreen')
@@ -1052,25 +1055,38 @@ def webscreenshot_fun(params)
 	options.add_argument('--ignore-certificate-errors-spki-list')
 	options.add_argument('--headless')
 
-	driver = Selenium::WebDriver.for :chrome, options: options
+	mutex = Mutex.new
+	workers = []
 
-	urls.each do |url|
-		i += 1
+	num_threads.times do
+		workers << Thread.new do
+			driver = Selenium::WebDriver.for :chrome, options: options
 
-		begin
-			driver.navigate.to url
+			while !queue.empty? && url = queue.pop(true) rescue nil
+				begin
+					driver.navigate.to url
 
-			image_path = "output/webscreen/#{url.gsub(/[^\w\s]/, '_')}.png"
-			driver.save_screenshot(image_path)
-			puts "[\e[32m#{i}\e[0m] Screenshot saved as: #{image_path}"
-			image_paths << image_path
-			successful_urls << url
-		rescue Exception => e
-			puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
+					image_path = "output/webscreen/#{url.gsub(/[^\w\s]/, '_')}.png"
+					driver.save_screenshot(image_path)
+
+					mutex.synchronize do
+						i += 1
+						puts "[\e[32m#{i}\e[0m] Screenshot saved as: #{image_path}"
+						image_paths << image_path
+						successful_urls << url
+					end
+				rescue Exception => e
+					mutex.synchronize do
+						puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
+					end
+				end
+			end
+
+			driver.quit
 		end
 	end
 
-	driver.quit
+	workers.each(&:join)
 
 	# Create an HTML gallery with all the screenshots
 	File.open('output/gallery.html', 'w') do |html|
@@ -1114,7 +1130,7 @@ def crawl_burp_fun(params)
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 
 		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
-		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
+		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
 	end
 
 	send_telegram_notif("Crawl-burp for #{params[:file]} finished")
@@ -1139,7 +1155,7 @@ def crawl_local_fun(params)
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
 		
 		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
-		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
+		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
 
 		if target_sanitized != target_tmp
