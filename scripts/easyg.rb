@@ -766,14 +766,21 @@ def search_for_vulns(params)
 			content_type = get_content_type(target)
 
 			if content_type && content_type.include?('text/html')
-				system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion -o output/dalfox/#{sanitized_target}.txt"
+				system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion --skip-bav -o output/dalfox/#{sanitized_target}.txt"
 			end
 
 			waf_check(target) do |t|
 				begin
+
+					#SQLi with ghauri
 					system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
+					File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
+					system "echo \"\n\n#{t}\" >> ghauri_#{sanitized_target}.txt" if File.exist?("ghauri_#{sanitized_target}.txt")
+
+					#LFI with ffuf
 					t_fuzz = replace_param_with_fuzz(t)
 					system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+
 				rescue Exception => e
 					puts "[\e[31m+\e[0m] ERROR: #{e.message}"
 				end
