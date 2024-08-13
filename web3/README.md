@@ -954,7 +954,6 @@ Issue: the function `emergencyExit(address receiver)` in the `SelfiePool` contra
 ```Solidity
 ...
 import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
-import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 ...
 
