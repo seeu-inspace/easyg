@@ -349,7 +349,12 @@ $ slither . --exclude-dependencies
 
 ### Code
 
-Some pieces of code that might be useful
+If you need to find some text in the smart contracts, you can use this command 
+```bash
+grep -r --include="*.sol" "CustomMappingError" .
+```
+
+Below, some pieces of code that might be useful
 ```Solidity
 /* Convert a given address into uint */
 function addressToUint(address _address) public pure returns (uint256) {
