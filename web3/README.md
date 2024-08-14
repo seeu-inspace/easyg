@@ -1052,7 +1052,7 @@ The `claim` function in the MerkleAirdrop contract enables eligible users to cla
 
 <summary>Affected code</summary>
 
-Here is the following code afftected by the vulnerability: [MerkleAirdrop.sol#L30-L40)]((https://github.com/Cyfrin/2024-04-airdropper/blob/main/src/MerkleAirdrop.sol#L30-L40))
+[MerkleAirdrop.sol#L30-L40](https://github.com/Cyfrin/2024-04-airdropper/blob/main/src/MerkleAirdrop.sol#L30-L40)
 
 ```Solidity
     function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external payable {
