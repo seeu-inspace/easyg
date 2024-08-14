@@ -43,9 +43,9 @@
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
     - [Selfie](#selfie) 
   - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
-    - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function MerkleAirdrop::claim results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
-    - [First Flight #13: Baba Marta H-01. No restriction implemented in MartenitsaToken::updateCountMartenitsaTokensOwner allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
-    - [First Flight #13: Baba Marta M-01. MartenitsaEvent::stopEvent does not clear the list of partecipants not allowing recurring users to join new events](#first-flight-13-baba-marta-m-01-martenitsaeventstopevent-does-not-clear-the-list-of-partecipants-not-allowing-recurring-users-to-join-new-events)
+    - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function `MerkleAirdrop::claim` results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
+    - [First Flight #13: Baba Marta H-01. No restriction implemented in `MartenitsaToken::updateCountMartenitsaTokensOwner` allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
+    - [First Flight #13: Baba Marta M-01. `MartenitsaEvent::stopEvent` does not clear the list of partecipants not allowing recurring users to join new events](#first-flight-13-baba-marta-m-01-martenitsaeventstopevent-does-not-clear-the-list-of-partecipants-not-allowing-recurring-users-to-join-new-events)
 
 ## Introduction
 
