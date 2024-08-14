@@ -40,11 +40,12 @@
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
 - [Challenges solved](#challenges-solved)
-  - [Damn Vulnerable DeFi](#damn-vulnerable-defi)
+  - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
     - [Selfie](#selfie) 
   - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
     - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function MerkleAirdrop::claim results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
     - [First Flight #13: Baba Marta H-01. No restriction implemented in MartenitsaToken::updateCountMartenitsaTokensOwner allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
+    - [First Flight #13: Baba Marta M-01. MartenitsaEvent::stopEvent does not clear the list of partecipants not allowing recurring users to join new events](#first-flight-13-baba-marta-m-01-martenitsaeventstopevent-does-not-clear-the-list-of-partecipants-not-allowing-recurring-users-to-join-new-events)
 
 ## Introduction
 
@@ -953,7 +954,7 @@ Resources:
 
 ## Challenges solved
 
-### Damn Vulnerable DeFi
+### Damn Vulnerable DeFi v4
 
 #### Selfie
 
@@ -1223,6 +1224,86 @@ It is advisable to implement checks on the function `MartenitsaToken::updateCoun
             countMartenitsaTokensOwner[owner] -= 1;
         } else {
             revert("Wrong operation");
+        }
+    }
+```
+
+</details>
+
+#### [First Flight #13: Baba Marta](https://codehawks.cyfrin.io/c/2024-04-Baba-Marta) M-01. `MartenitsaEvent::stopEvent` does not clear the list of partecipants not allowing recurring users to join new events
+
+**Summary**
+
+The `stopEvent` function in the `MartenitsaEvent` contract fails to remove participants from the list of participants after the event ends thus preventing recurring users from joining new events as their addresses remain stored in the `_participants` mapping.
+
+<details>
+
+<summary>Affected code</summary>
+
+[MartenitsaToken.sol#L57-L65](https://github.com/Cyfrin/2024-04-Baba-Marta/blob/main/src/MartenitsaEvent.sol#L57-L65)
+
+```Solidity
+    /**
+    * @notice Function to remove the producer role of the participants after the event is ended.
+    */
+    function stopEvent() external onlyOwner {
+        require(block.timestamp >= eventEndTime, "Event is not ended");
+        for (uint256 i = 0; i < participants.length; i++) {
+@>          isProducer[participants[i]] = false;
+@>      }
+    }
+```
+
+</details>
+
+<details>
+
+<summary>Proof of Code</summary>
+
+You can test this by adding `testJoinNewEvent()` to `MartenitsaToken.t.sol` test suite.
+
+```Solidity
+    function testJoinNewEvent() public eligibleForReward {
+        martenitsaEvent.startEvent(1 days);
+
+        vm.startPrank(bob);
+        marketplace.collectReward();
+        healthToken.approve(address(martenitsaEvent), 10 ** 18);
+        martenitsaEvent.joinEvent();
+        vm.stopPrank();
+
+        vm.warp(block.timestamp + 1 days + 1);
+        martenitsaEvent.stopEvent();
+
+        //start a new event
+        martenitsaEvent.startEvent(1 days);
+
+        vm.startPrank(bob);
+        marketplace.collectReward();
+        healthToken.approve(address(martenitsaEvent), 10 ** 18);
+        vm.expectRevert(bytes("You have already joined the event"));
+        martenitsaEvent.joinEvent();
+        vm.stopPrank();
+    }
+```
+
+</details>
+
+<details>
+
+<summary>Solution</summary>
+
+It is advisable to clear the list of partecipants after stopping an event to allow recurring users to join new events. An example to do so is the following.
+
+```diff
+    /**
+     * @notice Function to remove the producer and partecipant roles of the participants after the event is ended.
+     */
+    function stopEvent() external onlyOwner {
+        require(block.timestamp >= eventEndTime, "Event is not ended");
+        for (uint256 i = 0; i < participants.length; i++) {
+            isProducer[participants[i]] = false;
++           _participants[participants[i]] = false;
         }
     }
 ```
