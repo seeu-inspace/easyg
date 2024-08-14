@@ -1098,13 +1098,11 @@ Add the following test to the `MerkleAirdropTest.t.sol` test suite.
 
 </details>
 
-**Solution**
-
-Add a verification mechanism to make sure that an user can claim only its airdrop. An example is the following:
-
 <details>
 
-<summary>Code</summary>
+<summary>Solution</summary>
+
+Add a verification mechanism to make sure that an user can claim only its airdrop. An example is the following:
 
 ```diff
 +    error MerkleAirdrop__AirdropAlreadyClaimed();
