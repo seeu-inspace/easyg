@@ -956,7 +956,9 @@ Resources:
 
 #### Selfie
 
-Issue: the function `emergencyExit(address receiver)` in the `SelfiePool` contract transfers the entire balance of the contract to the specified address. By using a flash loan to acquire the necessary voting power, it is possible to queue the action `emergencyExit(address)` targeting a specific address, in this case `recovery`. After queuing the action, wait for the required delay before calling `executeAction(actionId)` to meet the conditions. This will transfer the contract’s balance to the specified address.
+**Summary**
+
+The function `emergencyExit(address receiver)` in the `SelfiePool` contract transfers the entire balance of the contract to the specified address. By using a flash loan to acquire the necessary voting power, it is possible to queue the action `emergencyExit(address)` targeting a specific address, in this case `recovery`. After queuing the action, wait for the required delay before calling `executeAction(actionId)` to meet the conditions. This will transfer the contract’s balance to the specified address.
 
 <details>
 
