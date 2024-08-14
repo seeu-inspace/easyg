@@ -979,11 +979,12 @@ import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156
             governance,
             recovery
         );
+        uint256 actionId = governance.getActionCounter();
         selfieAttacker.attack();
 
         // execute the action
-        vm.warp(block.timestamp + 2 days + 1);
-        governance.executeAction(1);
+        vm.warp(block.timestamp + governance.getActionDelay() + 1);
+        governance.executeAction(actionId);
     }
 
 ...
