@@ -1201,26 +1201,30 @@ You can test this by adding `testUnrestricted_updateCountMartenitsaTokensOwner()
 It is advisable to implement checks on the function `MartenitsaToken::updateCountMartenitsaTokensOwner` to check the origin of the function call. One possible solution is the following.
 
 ```diff
-+    error MerkleAirdrop__AirdropAlreadyClaimed();
-+    mapping(address => bool) private claimed; // Track claimed status
++import {MartenitsaMarketplace} from "./MartenitsaMarketplace.sol";
+
 ...
 
-    function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external payable {
-        if (msg.value != FEE) {
-            revert MerkleAirdrop__InvalidFeeAmount();
-        }
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
-        if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
-            revert MerkleAirdrop__InvalidProof();
-        }
-+       if (claimed[account]) { // Check if user already claimed
-+           revert MerkleAirdrop__AirdropAlreadyClaimed();
-+       }
-+       claimed[account] = true; // Mark user as claimed
-        emit Claimed(account, amount);
-        i_airdropToken.safeTransfer(account, amount);
-    }
++   MartenitsaMarketplace private _martenitsaMarketplace;
 
+...
+
++   function setMarketAddress(address martenitsaMarketplace) public onlyOwner {
++       _martenitsaMarketplace = MartenitsaMarketplace(martenitsaMarketplace);
++   }
+
+...
+
+    function updateCountMartenitsaTokensOwner(address owner, string memory operation) external {
++       require(msg.sender == address(_martenitsaMarketplace), "Unable to call this function");
+        if (keccak256(abi.encodePacked(operation)) == keccak256(abi.encodePacked("add"))) {
+            countMartenitsaTokensOwner[owner] += 1;
+        } else if (keccak256(abi.encodePacked(operation)) == keccak256(abi.encodePacked("sub"))) {
+            countMartenitsaTokensOwner[owner] -= 1;
+        } else {
+            revert("Wrong operation");
+        }
+    }
 ```
 
 </details>
