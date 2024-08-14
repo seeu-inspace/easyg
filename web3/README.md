@@ -44,6 +44,7 @@
     - [Selfie](#selfie) 
   - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
     - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function MerkleAirdrop::claim results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
+    - [First Flight #13: Baba Marta H-01. No restriction implemented in MartenitsaToken::updateCountMartenitsaTokensOwner allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
 
 ## Introduction
 
@@ -1104,7 +1105,100 @@ Add the following test to the `MerkleAirdropTest.t.sol` test suite.
 
 <summary>Solution</summary>
 
-Add a verification mechanism to make sure that an user can claim only its airdrop. An example is the following:
+It is advisable to add a verification mechanism to make sure that an user can claim only its airdrop. An example is the following:
+
+```diff
++    error MerkleAirdrop__AirdropAlreadyClaimed();
++    mapping(address => bool) private claimed; // Track claimed status
+...
+
+    function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external payable {
+        if (msg.value != FEE) {
+            revert MerkleAirdrop__InvalidFeeAmount();
+        }
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account, amount))));
+        if (!MerkleProof.verify(merkleProof, i_merkleRoot, leaf)) {
+            revert MerkleAirdrop__InvalidProof();
+        }
++       if (claimed[account]) { // Check if user already claimed
++           revert MerkleAirdrop__AirdropAlreadyClaimed();
++       }
++       claimed[account] = true; // Mark user as claimed
+        emit Claimed(account, amount);
+        i_airdropToken.safeTransfer(account, amount);
+    }
+
+```
+
+</details>
+
+#### [First Flight #13: Baba Marta](https://codehawks.cyfrin.io/c/2024-04-Baba-Marta) H-01. No restriction implemented in `MartenitsaToken::updateCountMartenitsaTokensOwner` allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol
+
+**Summary**
+
+If a user wants to buy a `MartenitsaToken`, it's supposed to call the `MartenitsaMarketplace::buyMartenitsa` function to purchase it, where there are the necessary checks to verify if the user has the requirements to do so. The balance of both the buyer and seller is updated by calling the `MartenitsaToken::updateCountMartenitsaTokensOwner` function.
+
+However, a user can directly call the `MartenitsaToken::updateCountMartenitsaTokensOwner` function, bypassing any previous restriction, to update its own balance or that of any other user as there is no control over who is calling the function. This means that an attacker can negatively or positively influence not only its own balance, but also that of other users.
+
+<details>
+
+<summary>Affected code</summary>
+
+[MartenitsaToken.sol#L57-L70](https://github.com/Cyfrin/2024-04-Baba-Marta/blob/main/src/MartenitsaToken.sol#L57-L70)
+
+```Solidity
+    /**
+    * @notice Function to update the count of martenitsaTokens for a specific address.
+    * @param owner The address of the owner.
+    * @param operation Operation for update: "add" for +1 and "sub" for -1.
+    */
+@>  function updateCountMartenitsaTokensOwner(address owner, string memory operation) external {
+@>      if (keccak256(abi.encodePacked(operation)) == keccak256(abi.encodePacked("add"))) {
+            countMartenitsaTokensOwner[owner] += 1;
+        } else if (keccak256(abi.encodePacked(operation)) == keccak256(abi.encodePacked("sub"))) {
+            countMartenitsaTokensOwner[owner] -= 1;
+        } else {
+            revert("Wrong operation");
+        }
+    }
+```
+
+</details>
+
+<details>
+
+<summary>Proof of Code</summary>
+
+You can test this by adding `testUnrestricted_updateCountMartenitsaTokensOwner()` to `MartenitsaToken.t.sol` test suite.
+
+```Solidity
+    function testUnrestricted_updateCountMartenitsaTokensOwner() public createMartenitsa {
+        address newUser = makeAddr("newUser");
+        address evilUser = makeAddr("evilUser");
+
+        vm.startPrank(newUser);
+        for (uint256 i = 0; i < 100; i++) {
+            martenitsaToken.updateCountMartenitsaTokensOwner(newUser, "add");
+        }
+        vm.stopPrank();
+        assert(martenitsaToken.getCountMartenitsaTokensOwner(newUser) == 100);
+
+        vm.startPrank(evilUser);
+        for (uint256 i = 0; i < 100; i++) {
+            martenitsaToken.updateCountMartenitsaTokensOwner(newUser, "sub");
+        }
+        vm.stopPrank();
+        assert(martenitsaToken.getCountMartenitsaTokensOwner(newUser) == 0);
+    }
+```
+
+</details>
+
+<details>
+
+<summary>Solution</summary>
+
+It is advisable to implement checks on the function `MartenitsaToken::updateCountMartenitsaTokensOwner` to check the origin of the function call. One possible solution is the following.
 
 ```diff
 +    error MerkleAirdrop__AirdropAlreadyClaimed();
