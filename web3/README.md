@@ -975,9 +975,9 @@ import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156
 
     function test_selfie() public checkSolvedByPlayer {
         SelfieAttacker selfieAttacker = new SelfieAttacker(
-            pool,
-            token,
-            governance,
+            address(pool),
+            address(token),
+            address(governance),
             recovery
         );
         uint256 actionId = governance.getActionCounter();
@@ -998,14 +998,14 @@ contract SelfieAttacker is IERC3156FlashBorrower {
     address recovery;
 
     constructor(
-        SelfiePool _pool,
-        DamnValuableVotes _token,
-        SimpleGovernance _governance,
+        address _pool,
+        address _token,
+        address _governance,
         address _recovery
     ) {
-        pool = _pool;
-        token = _token;
-        governance = _governance;
+        pool = SelfiePool(_pool);
+        token = DamnValuableVotes(_token);
+        governance = SimpleGovernance(_governance);
         player = msg.sender;
         recovery = _recovery;
     }
