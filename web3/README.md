@@ -1031,8 +1031,8 @@ contract SelfieAttacker is IERC3156FlashBorrower {
         uint256,
         bytes calldata data
     ) external returns (bytes32) {
-        require(msg.sender == address(pool), "msg.sender is not pool");
-        require(tx.origin == player, "tx.origin is not player");
+        require(msg.sender == address(pool), "msg.sender must be pool");
+        require(tx.origin == player, "tx.origin must be player");
 
         token.delegate(address(this)); // with this operation, get the voting power
         governance.queueAction(address(pool), 0, data); // queue the action
