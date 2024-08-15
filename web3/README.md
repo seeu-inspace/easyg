@@ -1101,7 +1101,7 @@ It is possible to manipulate the price of the DVT token by exchanging a large am
         weth.approve(address(lendingPool), wethNeeded);
         lendingPool.borrow(token.balanceOf(address(lendingPool)));
 
-        // Step 4. send the DVT to the recovery account
+        // Step 4. send the DVT tokens to the recovery account
         token.transfer(address(recovery), token.balanceOf(player));
     }
 ```
