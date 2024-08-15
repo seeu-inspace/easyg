@@ -1059,7 +1059,7 @@ It is possible to manipulate the price of the DVT token by exchanging a large am
 ```Solidity
     function test_puppetV2() public checkSolvedByPlayer {
         console.log(
-            "Initial WETH needed to swap all DVTs: ",
+            "Initial WETH needed to swap all DVT tokens: ",
             lendingPool.calculateDepositOfWETHRequired(
                 token.balanceOf(address(lendingPool)) / 10 ** 18
             )
@@ -1081,7 +1081,7 @@ It is possible to manipulate the price of the DVT token by exchanging a large am
         );
 
         console.log(
-            "New amount of WETH needed to swap all DVT: ",
+            "New amount of WETH needed to swap all DVT tokens: ",
             lendingPool.calculateDepositOfWETHRequired(
                 token.balanceOf(address(lendingPool)) / 10 ** 18
             )
