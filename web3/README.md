@@ -332,7 +332,7 @@ $ forge init
 $ forge install ChainAccelOrg/foundry-devops --no-commit
 $ forge install OpenZeppelin/openzeppelin-contracts --no-commit
 $ forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit
-$ forge install chainaccelorg/foundry-devops --no-commit
+$ forge install transmissions11/solmate Openzeppelin/openzeppelin-contracts
 # for foundry.toml `remappings = ['@openzeppelin/contracts=lib/openzeppelin-contracts/contracts']`
 
 # Help
