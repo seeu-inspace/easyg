@@ -357,6 +357,7 @@ If something goes wrong
 
 ## More stuff
 
-**To identify technologies**
-- Using favicons: `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
+**Recon with favicons**
+- `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
   - Spring Boot > `116323821`
+- Shodan: `org:target http.favicon.hash:116323821`
