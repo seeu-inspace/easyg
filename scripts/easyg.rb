@@ -494,36 +494,89 @@ end
 
 
 
-def identify_technology(file_to_scan, output_file, num_threads = $CONFIG['n_threads'])
-	queue = Queue.new
+def is_drupal?(response)
+	return false unless response.is_a?(Net::HTTPSuccess)
+	body = response.body
 
-	# Load all URLs into the queue
+	drupal_regexes = [
+		%r{<meta name="Generator" content="Drupal.*?>},
+		%r{\/sites\/all\/},
+		%r{\/misc\/drupal.js},
+		%r{X-Generator: Drupal}
+	]
+
+	drupal_regexes.any? { |regex| body.match?(regex) } ||
+		response['X-Generator']&.include?('Drupal')
+end
+
+
+
+def is_salesforce?(response)
+	return false unless response.is_a?(Net::HTTPSuccess)
+	body = response.body
+
+	salesforce_regexes = [
+		%r{\.force\.com},
+		%r{\.salesforce\.com},
+		%r{\/auraFW\/},
+		%r{\/s\/}
+	]
+
+	salesforce_regexes.any? { |regex| body.match?(regex) } ||
+		response['X-Salesforce-Cache']
+end
+
+
+
+def is_lotus_domino?(response)
+	return false unless response.is_a?(Net::HTTPSuccess)
+	body = response.body
+
+	lotus_domino_regexes = [
+	  %r{Domino\s[A-Za-z]+\s[0-9\.]{1,3}},
+	  %r{Forms[0-9\.]{1,3}\.nsf\?OpenDatabase}
+	]
+
+	lotus_domino_regexes.any? { |regex| body.match?(regex) }
+end
+
+
+
+def identify_technology(file_to_scan, num_threads = 5)
+	queue = Queue.new
+	technologies = { wp: [], drupal: [], salesforce: [], lotus_domino: [] }
+
 	File.foreach(file_to_scan) do |url|
 		url.strip!
 		queue << url unless url.empty?
 	end
 
-	File.open(output_file, 'w') do |output|
-		mutex = Mutex.new
+	mutex = Mutex.new
 
-		workers = Array.new(num_threads) do
-			Thread.new do
-				while !queue.empty? && url = queue.pop(true) rescue nil
-					next unless url
+	workers = Array.new(num_threads) do
+		Thread.new do
+			while !queue.empty? && (url = queue.pop(true) rescue nil)
+				next unless url
+				response = check_url(url)
 
-					response = check_url(url)
-					if response && is_wordpress?(response)
-						mutex.synchronize do
-							output.puts(url)
-							puts url
-						end
+				if response
+					if is_wordpress?(response)
+						mutex.synchronize { technologies[:wp] << url }
+					elsif is_drupal?(response)
+						mutex.synchronize { technologies[:drupal] << url }
+					elsif is_salesforce?(response)
+						mutex.synchronize { technologies[:salesforce] << url }
+					elsif is_lotus_domino?(response)
+						mutex.synchronize { technologies[:lotus_domino] << url }
 					end
 				end
 			end
 		end
-
-		workers.each(&:join)
 	end
+
+	workers.each(&:join)
+
+	technologies
 end
 
 
@@ -692,18 +745,32 @@ def base_url_s4v(file)
 	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
 	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
 	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
-	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
-	system "dirsearch -e * -x 404,403,401,400,429 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
+	system "cat output/40X_#{file_sanitized} | ~/Tools/web-attack/nomore403/nomore403 -f '~/Tools/web-attack/nomore403/payloads/' | tee output/byp4xx_results_#{file_sanitized}"
+	system "dirsearch -e * -x 429,406,404,403,401,400 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
 	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
 
 	# Search for WordPress websites and use WPScan
 	puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
-	identify_technology("#{file}", "output/wp_#{file_sanitized}")
-	delete_if_empty "output/wp_#{file_sanitized}"
-	if File.exists?("output/wp_#{file_sanitized}")
-		system "mkdir output/wpscan" if !File.directory?('output/wpscan')
-		File.open("output/wp_#{file_sanitized}",'r').each_line do |f|
+	tech_identified = identify_technology(file)
+
+	# write all the techs identified
+	File.open("output/#{file_sanitized}_tech_identified.txt", 'w') do |file|
+		tech_identified.each do |tech, urls|
+			next if urls.empty?
+
+			file.puts "#{tech.to_s.capitalize} sites identified:"
+
+			urls.each { |url| file.puts "	- #{url}" }
+
+			file.puts ""
+		end
+	end
+	puts "[\e[32m+\e[0m] Technologies identified have been saved to output/#{file_sanitized}_tech_identified.txt"
+
+	# WordPress
+	if tech_identified[:wp].any?
+		tech_identified[:wp].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 			puts "\n[\e[34m*\e[0m] Starting WPScan for #{target}"
@@ -712,6 +779,34 @@ def base_url_s4v(file)
 			else
 				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
 			end
+		end
+	end
+
+	# Drupal
+	if tech_identified[:drupal].any?
+		tech_identified[:drupal].each do |f|
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']}"
+		end
+	end
+
+	# Salesforce
+	if tech_identified[:salesforce].any?
+		tech_identified[:salesforce].each do |f|
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+			system "java -jar ~/Tools/web-attack/SALSA/salsa-jar-with-dependencies.jar -t #{target} --typesapi"
+		end
+	end
+
+	# Lotus
+	if tech_identified[:lotus_domino].any?
+		system "mkdir output/lotus" if !File.directory?('output/lotus')
+		tech_identified[:lotus_domino].each do |f|
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+			system "dirsearch -e * -x 429,406,404,403,401,400 -u #{target} --no-color --full-url -t #{$CONFIG['n_threads']} -w '~/Tools/SecLists/Discovery/Web-Content/LotusNotes.fuzz.txt' -o output/lotus/dirsearch_results_#{sanitized_target}"
 		end
 	end
 
@@ -746,50 +841,47 @@ def search_for_vulns(params)
 	puts "\n[\e[34m*\e[0m] Searching for Brojen Link Hijaking with socialhunter"
 	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
-
-	if params[:gb_opt] == "y"
 	
-		system "mkdir output/dalfox" if !File.directory?('output/dalfox')
-		system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
-		system "mkdir output/ghauri" if !File.directory?('output/ghauri')
+	system "mkdir output/dalfox" if !File.directory?('output/dalfox')
+	system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
+	system "mkdir output/ghauri" if !File.directory?('output/ghauri')
 
-		## :: Grep only params ::
-		system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
+	## :: Grep only params ::
+	system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 
-		# Search for XSS, LFI and SQLi
-		puts "\n[\e[34m*\e[0m] Searching for XSSs, LFIs and SQLi"
-		process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
-		File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
+	# Search for XSS, LFI and SQLi
+	puts "\n[\e[34m*\e[0m] Searching for XSSs, LFIs and SQLi"
+	process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
+	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			content_type = get_content_type(target)
+		target = f.chomp
+		sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+		content_type = get_content_type(target)
 
-			if content_type && content_type.include?('text/html')
-				system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion --skip-bav -o output/dalfox/#{sanitized_target}.txt"
+		if content_type && content_type.include?('text/html')
+			system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion --skip-bav -o output/dalfox/#{sanitized_target}.txt"
+		end
+
+		waf_check(target) do |t|
+			begin
+
+				#SQLi with ghauri
+				system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
+				File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
+				system "echo \"\n\n#{t}\" >> ghauri_#{sanitized_target}.txt" if File.exist?("ghauri_#{sanitized_target}.txt")
+
+				#LFI with ffuf
+				t_fuzz = replace_param_with_fuzz(t)
+				system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
+
+			rescue Exception => e
+				puts "[\e[31m+\e[0m] ERROR: #{e.message}"
 			end
-
-			waf_check(target) do |t|
-				begin
-
-					#SQLi with ghauri
-					system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
-					File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
-					system "echo \"\n\n#{t}\" >> ghauri_#{sanitized_target}.txt" if File.exist?("ghauri_#{sanitized_target}.txt")
-
-					#LFI with ffuf
-					t_fuzz = replace_param_with_fuzz(t)
-					system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
-
-				rescue Exception => e
-					puts "[\e[31m+\e[0m] ERROR: #{e.message}"
-				end
-			end
+		end
 
 		end
-		puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
+	puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 
-	end
 
 	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
@@ -1210,7 +1302,7 @@ def crawl_local_fun(params)
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
-	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -d 3 -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
+	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
@@ -1235,7 +1327,6 @@ def crawl_local_fun(params)
 	# === SEARCH FOR VULNS ===
 	if params[:vl_opt] == "y"
 		params[:file] = "output/allUrls_#{file_sanitized}"
-		params[:gb_opt] = "y"
 		search_for_vulns params
 	end
 
@@ -1343,7 +1434,7 @@ begin
 			puts "\n" if option == "crawl-local"
 		end
 
-		if option == "assetenum" || option == "do-everything" || option == "find-vulns"
+		if option == "assetenum" || option == "do-everything"
 			print "\n\e[93m┌─\e[0m Heavy mode? [y/n]:\n\e[93m└─\e[0m "
 			params[:gb_opt] = gets.chomp
 			puts "\n"
