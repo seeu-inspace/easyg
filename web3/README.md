@@ -857,7 +857,14 @@ If you see something like `require(address(this).balance == something)`, you sho
 
 → USDC is another example since it implements a proxy. That means that if the devs intend to modify it, you should handle it
 
-→ See: https://github.com/d-xo/weird-erc20, https://secure-contracts.com/development-guidelines/token_integration.html
+Fee on transfer tokens
+- [M-03 Deposits don’t work with fee-on transfer tokens | Reality Cards (round 2)](https://code4rena.com/reports/2021-08-realitycards#m-03-deposits-dont-work-with-fee-on-transfer-tokens)
+- [Vault is Not Compatible with Fee Tokens and Vaults with Such Tokens Could Be Exploited](https://github.com/code-423n4/2022-05-cally-findings/issues/61)
+
+Resources
+- [Weird ERC20 Tokens](https://github.com/d-xo/weird-erc20)
+- [Token Integration Checklist](https://secure-contracts.com/development-guidelines/token_integration.html)
+
 
 ### Lack of slippage protection
 
