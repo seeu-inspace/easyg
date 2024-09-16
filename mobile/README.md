@@ -5,7 +5,9 @@
 - [Structure](#structure)
 - [Resources](#resources)
 - [Tools](#tools)
+  - [ADB](#adb)
   - [Frida](#frida)
+  - [Objection](#objection)
   - [Apktool](#apktool)
 - [Missing Certificate and Public Key Pinning](#missing-certificate-and-public-key-pinning)
 - [Cordova attacks](#cordova-attacks)
@@ -36,6 +38,30 @@
   - Check if you can find API Keys
   - See if the backup option is present. If it is, it means that the application might store data as a backup when it’s running or it’s closed
 
+## Troubleshooting
+
+If you find the emulator online but you can't close it
+```Shell
+adb devices
+netstat -tulpn|grep 5554 # if you have emulator-5554
+sudo kill -9 22240       # the rightmost numeric value you find
+```
+- See also: [Android Stop Emulator from Command Line - Stack Overflow](https://stackoverflow.com/questions/20155376/android-stop-emulator-from-command-line)
+
+Some misc commands
+```Shell
+openssl x509 -inform der -in test.der -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64 # to get the sha256 hash of the certificate
+```
+
+In case you need to reinstall the certificate in the smartphone
+- From Burp: proxy configured with bind to any port that you want, bind to address set to "All interfaces"
+- From the device
+  1. Set VPN configuration in Wi-Fi with the machine's IP and the listener port set before
+  2. Go to `brup/` with your browser and download the certificate
+  3. Rename it with `.crt` extension
+  4. Go to "Install a certificate" from your device settings and install the downloaded certificate
+  5. Reboot (Note: you need Magisk + [MagiskTrustUserCerts](https://github.com/NVISOsecurity/MagiskTrustUserCerts))
+  6. Now check if the requests go through
 
 ## Resources
 
@@ -90,22 +116,55 @@ adb -H <IP_of_windows> -P <port> shell
 # If you are running an emulator from Android Studio, open the terminal from there and just run
 adb shell
 
-# To see every package install
-pm list packages
+adb shell "su -c /data/local/tmp/frida-server &"               # to run frida-server on the telephone
+adb devices                                                    # to see which devices are connected
+adb -s <DEVICE> shell "su -c /data/local/tmp/frida-server &"   # when you have multiple devices
+adb install myapp.apk                                          # install an apk with adb
+adb logcat --pid=<PID>                                         # to view an app's logs
+adb shell getprop ro.product.cpu.abilist                       # to detect the architecture
+adb pull </data/app/base64/base.apk> <application_output.apk>  # extract an apk from a device
 
-# For a specific package
-pm list packages | grep <name_to_search_for>
+pm list packages                                               # to see every package install
+pm list packages | grep <name_to_search_for>                   # for a specific package
+pm path <name_of_package>                                      # see the path where the application is installed
 
-# See the path where the application is installed
-pm path <name_of_package>
-
-# Extract the apk from a device
-adb pull </data/app/base64/base.apk> <application_output.apk>
+find unpacked/smali -type f                                    # searches for files in the unpacked/smali directory.
 ```
 
 ### Frida
 - [Frida](https://github.com/frida/frida)
 - See: [Using Frida on Android without root](https://koz.io/using-frida-on-android-without-root/) and [codeshare.frida.re](https://codeshare.frida.re/)
+
+```Shell
+# Commands
+frida-ps -Uia
+frida -f com.topjohnwu.magisk -U
+frida -f com.anu.developers3k.rootchecker -U -l scrpt.js # run an application with a frida script
+```
+
+### Objection
+
+- [objection - Runtime Mobile Exploration](https://github.com/sensepost/objection)
+
+```Shell
+objection -g com.anu.developers3k.rootchecker explore
+objection -g "Advanced Root Checker" explore
+objection patchapk -s myapp.apk                                                                                 # patch an apk. If needed, specify: -d -a arm64
+objection patchapk -s myapp.apk -l bypass.js -d -c gadget-config                                                # use a frida script with the patch
+objection -g com.anu.developers3k.rootchecker explore -s "android hooking watch class c4.k0 --dump-args --dump-backtrace --dump-return"
+
+## From objection
+ios hooking watch method "-[MPProfileManager deviceIsJailBroken]" --dump-args --dump-backtrace --dump-return    # hooking objection, syntax
+android sslpinning disable
+android hooking search classes pinn
+android hooking watch class com.android.okhttp.CertificatePinner --dump-args --dump-backtrace --dump-return
+android heap search instances nome_oggetto                                                                      # get instance
+android heap print fields/methods hashcode                                                                      # get fields/methods
+
+# Get fields of an object
+var fieldsArr = map.class.getFields();
+for(var f in fieldsArr) { console.log(fieldsArr[f]); }
+```
 
 ### Apktool
 
