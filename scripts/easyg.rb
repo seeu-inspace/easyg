@@ -190,25 +190,45 @@ end
 
 # :: Functions to check URLs ::
 
-
-
-def check_url(url)
+def check_url(url, retries = 3)
 	uri = URI.parse(url)
 	response = nil
 
-	http = Net::HTTP.new(uri.host, uri.port)
-	if uri.scheme == 'https'
-		http.use_ssl = true
-		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+	begin
+		# Set up HTTP object with timeouts
+		http = Net::HTTP.new(uri.host, uri.port)
+		http.open_timeout = 5	# seconds for opening the connection
+		http.read_timeout = 10  # seconds for reading the response
+
+		if uri.scheme == 'https'
+			http.use_ssl = true
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+		end
+
+		request = Net::HTTP::Get.new(uri.request_uri)
+		
+		# Perform the request
+		response = http.request(request)
+
+	rescue Timeout::Error, Errno::ETIMEDOUT, Net::OpenTimeout => e
+		retries -= 1
+		if retries > 0
+			puts "[\e[33m*\e[0m] Timeout on URL: #{url}. Retrying... (#{retries} retries left)"
+			sleep(1)
+			retry
+		else
+			puts "[\e[31m-\e[0m] Timeout on URL: #{url}. Skipping after retries."
+			return nil
+		end
+	rescue SocketError, Errno::ECONNREFUSED => e
+		puts "[\e[31m-\e[0m] Connection error on URL: #{url}. Skipping."
+		return nil
+	rescue => e
+		puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
+		return nil
 	end
 
-	request = Net::HTTP::Get.new(uri.request_uri)
-	response = http.request(request)
-
 	response
-rescue => e
-	puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
-	nil
 end
 
 
