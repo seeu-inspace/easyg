@@ -150,7 +150,7 @@ end
 def send_telegram_notif(message)
 
 	return unless $CONFIG['telegram'] && $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" && $CONFIG['telegram_chat_id'] && $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
-	
+
 	uri = URI.parse("https://api.telegram.org/bot#{$CONFIG['telegram']}/sendMessage")
 	header = {'Content-Type': 'application/json'}
 	body = {
@@ -206,7 +206,7 @@ def check_url(url, retries = 3)
 		end
 
 		request = Net::HTTP::Get.new(uri.request_uri)
-		
+
 		# Perform the request
 		response = http.request(request)
 
@@ -338,11 +338,11 @@ def file_sanitization(file_path)
 		def encode_component(component)
 			component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }.split(/(%[0-9A-Fa-f]{2})/).map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }.join
 		end
-	
+
 		encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
 		encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
 		encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
-	
+
 		begin
 			URI::Generic.build(
 				scheme: uri.scheme,
@@ -485,7 +485,6 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	puts "[\e[32m+\e[0m] Cleaned URLs written to #{file_path}"
 
 end
-
 
 
 
@@ -697,6 +696,9 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 		workers = Array.new(num_threads) do
 			Thread.new do
 				while !queue.empty? && url = queue.pop(true) rescue nil
+
+					next unless check_url(url)
+
 					(swagger_paths + git_paths).each do |path|
 						full_url = url.chomp("/") + path
 						puts "[\e[34m*\e[0m] Checking URL: #{full_url}"
@@ -861,7 +863,7 @@ def search_for_vulns(params)
 	puts "\n[\e[34m*\e[0m] Searching for Brojen Link Hijaking with socialhunter"
 	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
-	
+
 	system "mkdir output/dalfox" if !File.directory?('output/dalfox')
 	system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
 	system "mkdir output/ghauri" if !File.directory?('output/ghauri')
@@ -1273,7 +1275,7 @@ def crawl_local_fun(params)
 
 		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
 		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
-		
+
 		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
 		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
 		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
@@ -1326,7 +1328,7 @@ def crawl_local_fun(params)
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
-	
+
 	# Find new URLS from Github using github-endpoints.py
 	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
 		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
@@ -1433,7 +1435,6 @@ begin
 	option = gets.chomp
 
 	puts "\n"
-
 
 	option_params = {}
 
