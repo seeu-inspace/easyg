@@ -39,6 +39,7 @@
   - [Unbounded gas consumption](#unbounded-gas-consumption)
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
+  - [Flash Loan Attacks](#flash-loan-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
     - [Selfie](#selfie)
@@ -959,6 +960,11 @@ Resources:
 
 - Case study: [Rekt - Tornado Cash Governance](https://rekt.news/tornado-gov-rekt/)
 
+### Flash Loan Attacks
+
+Reports
+- [Selfie | Damn Vulnerable DeFi v4](#selfie)
+- [[M-02] All yield generated in the IBT vault can be drained by performing a vault deflation attack using the flash loan functionality of the Principal Token contract | Spectra](https://code4rena.com/reports/2024-02-spectra#m-02-all-yield-generated-in-the-ibt-vault-can-be-drained-by-performing-a-vault-deflation-attack-using-the-flash-loan-functionality-of-the-principal-token-contract)
 
 ## Challenges solved
 
