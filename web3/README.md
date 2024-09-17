@@ -965,6 +965,7 @@ Resources:
 Reports
 - [Selfie | Damn Vulnerable DeFi v4](#selfie)
 - [[M-02] All yield generated in the IBT vault can be drained by performing a vault deflation attack using the flash loan functionality of the Principal Token contract | Spectra](https://code4rena.com/reports/2024-02-spectra#m-02-all-yield-generated-in-the-ibt-vault-can-be-drained-by-performing-a-vault-deflation-attack-using-the-flash-loan-functionality-of-the-principal-token-contract)
+- [Attacker can destroy user voting power by setting `ERC721Power::totalPower` and all existing NFTs `currentPower` to 0 | Dexe](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2023-11-10-cyfrin-dexe.md#attacker-can-destroy-user-voting-power-by-setting-erc721powertotalpower-and-all-existing-nfts-currentpower-to-0)
 
 ## Challenges solved
 
