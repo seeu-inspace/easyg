@@ -488,6 +488,7 @@ end
 
 
 
+
 # :: Functions to identify technologies ::
 
 
@@ -806,19 +807,21 @@ def base_url_s4v(file)
 
 	# Drupal
 	if tech_identified[:drupal].any?
+		system "mkdir output/droopescan" if !File.directory?('output/droopescan')
 		tech_identified[:drupal].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']}"
+			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} | tee output/droopescan/droopescan_#{sanitized_target}.txt"
 		end
 	end
 
 	# Salesforce
 	if tech_identified[:salesforce].any?
+		system "mkdir output/salsa" if !File.directory?('output/salsa')
 		tech_identified[:salesforce].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "java -jar ~/Tools/web-attack/SALSA/salsa-jar-with-dependencies.jar -t #{target} --typesapi"
+			system "java -jar ~/Tools/web-attack/SALSA/salsa-jar-with-dependencies.jar -t #{target} --typesapi | tee output/salsa/salsa_#{sanitized_target}.txt"
 		end
 	end
 
@@ -1435,6 +1438,7 @@ begin
 	option = gets.chomp
 
 	puts "\n"
+
 
 	option_params = {}
 
