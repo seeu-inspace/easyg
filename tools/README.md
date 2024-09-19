@@ -433,3 +433,4 @@ keyscan_stop              stop the keystroke sniffer
 - [ISTanCo IST - Domain Registration](https://cp.istanco.net/) to buy a short domain
 - [pentesting-osTicket](https://github.com/Legoclones/pentesting-osTicket)
 - [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
+- [Google Maps API Scanner](https://github.com/ozguralp/gmapsapiscanner) if you find a Google Maps API key, it helps you see if the key is vulnerable to unauthorized access by other applications
