@@ -41,6 +41,7 @@
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
   - [Sandwich Attacks](#sandwich-attacks)
+  - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
     - [Selfie](#selfie)
@@ -946,7 +947,6 @@ For every transaction, ask yourself: If someone sees this TX in the mempool, how
 Resources:
 
 - Frontrun: [Frontran.sol](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/Frontran.sol) + [front-running.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/front-running.svg) and [signature-front-run.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/signature-front-run.svg)
-- [sandwhich-attack-thunder-loan.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/sandwhich-attack-thunder-loan.svg)
 - [MEV: Maximal Extractable Value Pt. 1 | Galaxy](https://www.galaxy.com/insights/research/mev-how-flashboys-became-flashbots/)
 - [MEV: Maximal Extractable Value Pt. 2 | Galaxy](https://www.galaxy.com/insights/research/mev-the-rise-of-the-builders/)
 - Case study: [Curve suffers $70M exploit, but damage contained](https://blockworks.co/news/curve-suffers-exploit)
@@ -968,12 +968,21 @@ Reports
 - [[M-02] All yield generated in the IBT vault can be drained by performing a vault deflation attack using the flash loan functionality of the Principal Token contract | Spectra](https://code4rena.com/reports/2024-02-spectra#m-02-all-yield-generated-in-the-ibt-vault-can-be-drained-by-performing-a-vault-deflation-attack-using-the-flash-loan-functionality-of-the-principal-token-contract)
 - [Attacker can destroy user voting power by setting `ERC721Power::totalPower` and all existing NFTs `currentPower` to 0 | Dexe](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2023-11-10-cyfrin-dexe.md#attacker-can-destroy-user-voting-power-by-setting-erc721powertotalpower-and-all-existing-nfts-currentpower-to-0)
 
+
 ### Sandwich Attacks
 
 Essentially, the attacker will execute a simultaneous front-run and back-run, with the initial pending target transaction positioned between them.
+- [sandwhich-attack-thunder-loan.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/sandwhich-attack-thunder-loan.svg)
 
 Reports
 - [Attacker can drain protocol tokens by sandwich attacking owner call to `setPositionWidth` and `unpause` to force redeployment of Beefy's liquidity into an unfavorable range](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2024-04-06-cyfrin-beefy-finance.md#attacker-can-drain-protocol-tokens-by-sandwich-attacking-owner-call-to-setpositionwidth-and-unpause-to-force-redeployment-of-beefys-liquidity-into-an-unfavorable-range)
+
+
+### Web2 Attacks
+
+- [The Billion Dollar Exploit: Collecting Validators Private Keys via Web2 Attacks](https://0d.dwalletlabs.com/the-billion-dollar-exploit-collecting-validators-private-keys-via-web2-attacks-4a385a5bb70d)
+- [M-01. Insufficient input validation on `SablierV2NFTDescriptor::safeAssetSymbol` allows an attacker to obtain stored XSS](https://codehawks.cyfrin.io/c/2024-05-Sablier/results?lt=contest&sc=reward&sj=reward&page=1&t=report)
+
 
 ## Challenges solved
 
