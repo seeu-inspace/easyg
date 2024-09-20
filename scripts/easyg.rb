@@ -773,7 +773,6 @@ def base_url_s4v(file)
 	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
 
-	# Search for WordPress websites and use WPScan
 	puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
 	tech_identified = identify_technology(file)
 
@@ -793,6 +792,7 @@ def base_url_s4v(file)
 
 	# WordPress
 	if tech_identified[:wp].any?
+		system "mkdir output/wpscan" if !File.directory?('output/wpscan')
 		tech_identified[:wp].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
