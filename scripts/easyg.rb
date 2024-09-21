@@ -561,10 +561,29 @@ def is_lotus_domino?(response)
 end
 
 
+def is_iis?(response)
+	return false unless response.is_a?(Net::HTTPSuccess)
+	body = response.body
+
+	iis_headers = [
+		/Microsoft-IIS\/[\d.]+/,
+		/ASP\.NET/
+	]
+
+	iis_body_regexes = [
+		%r{<title>IIS Windows Server</title>},
+		%r{<h1>Welcome</h1>\s*<h2>IIS}
+	]
+
+	iis_headers.any? { |regex| response['Server']&.match?(regex) || response['X-Powered-By']&.match?(regex) } ||
+		iis_body_regexes.any? { |regex| body.match?(regex) }
+end
+
+
 
 def identify_technology(file_to_scan, num_threads = 5)
 	queue = Queue.new
-	technologies = { wp: [], drupal: [], salesforce: [], lotus_domino: [] }
+	technologies = { wp: [], drupal: [], salesforce: [], lotus_domino: [], iis: [] }
 
 	File.foreach(file_to_scan) do |url|
 		url.strip!
@@ -588,6 +607,8 @@ def identify_technology(file_to_scan, num_threads = 5)
 						mutex.synchronize { technologies[:salesforce] << url }
 					elsif is_lotus_domino?(response)
 						mutex.synchronize { technologies[:lotus_domino] << url }
+					elsif is_iis?(response)
+						mutex.synchronize { technologies[:iis] << url }
 					end
 				end
 			end
@@ -798,9 +819,9 @@ def base_url_s4v(file)
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 			puts "\n[\e[34m*\e[0m] Starting WPScan for #{target}"
 			if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
-				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
+				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --exclude-content-based --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
 			else
-				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
+				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --exclude-content-based --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
 			end
 		end
 	end
@@ -811,7 +832,7 @@ def base_url_s4v(file)
 		tech_identified[:drupal].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} | tee output/droopescan/droopescan_#{sanitized_target}.txt"
+			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} --method {not_found, forbidden, ok}| tee output/droopescan/droopescan_#{sanitized_target}.txt"
 		end
 	end
 
@@ -832,6 +853,15 @@ def base_url_s4v(file)
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 			system "dirsearch -e * -x 429,406,404,403,401,400 -u #{target} --no-color --full-url -t #{$CONFIG['n_threads']} -w '~/Tools/SecLists/Discovery/Web-Content/LotusNotes.fuzz.txt' -o output/lotus/dirsearch_results_#{sanitized_target}"
+		end
+	end
+
+	if tech_identified[:iis].any?
+		system "mkdir output/iis" if !File.directory?('output/iis')
+		tech_identified[:iis].each do |f|
+			target = f.chomp
+			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
+			system "shortscan #{target} --verbosity 1 | tee output/iis/dirsearch_results_#{sanitized_target}"
 		end
 	end
 
