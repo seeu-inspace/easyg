@@ -832,7 +832,7 @@ def base_url_s4v(file)
 		tech_identified[:drupal].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} --method {not_found, forbidden, ok}| tee output/droopescan/droopescan_#{sanitized_target}.txt"
+			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} | tee output/droopescan/droopescan_#{sanitized_target}.txt"
 		end
 	end
 
@@ -861,7 +861,7 @@ def base_url_s4v(file)
 		tech_identified[:iis].each do |f|
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "shortscan #{target} --verbosity 1 | tee output/iis/dirsearch_results_#{sanitized_target}"
+			system "shortscan #{target} --verbosity 1 | tee output/iis/iis_results_#{sanitized_target}"
 		end
 	end
 
