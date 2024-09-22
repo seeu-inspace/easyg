@@ -354,6 +354,10 @@ $ slither .
 
 # Exclude libraries
 $ slither . --exclude-dependencies
+
+# More checks
+$ slither-check-upgradeability project/contract.sol ContractName  # > project can be a Solidity file, or a platform (truffle/embark/..) directory
+$ slither-check-erc project/contract.sol ContractName
 ```
 
 ### Code
