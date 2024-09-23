@@ -40,7 +40,6 @@
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
-  - [Sandwich Attacks](#sandwich-attacks)
   - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
@@ -956,6 +955,15 @@ Resources:
 - [MEV: Maximal Extractable Value Pt. 2 | Galaxy](https://www.galaxy.com/insights/research/mev-the-rise-of-the-builders/)
 - Case study: [Curve suffers $70M exploit, but damage contained](https://blockworks.co/news/curve-suffers-exploit)
 
+**Sandwich Attacks**
+
+Essentially, the attacker will execute a simultaneous front-run and back-run, with the initial pending target transaction positioned between them.
+- [sandwhich-attack-thunder-loan.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/sandwhich-attack-thunder-loan.svg)
+
+Reports
+- [Attacker can drain protocol tokens by sandwich attacking owner call to `setPositionWidth` and `unpause` to force redeployment of Beefy's liquidity into an unfavorable range](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2024-04-06-cyfrin-beefy-finance.md#attacker-can-drain-protocol-tokens-by-sandwich-attacking-owner-call-to-setpositionwidth-and-unpause-to-force-redeployment-of-beefys-liquidity-into-an-unfavorable-range)
+- [5.1 Oracle updates can be manipulated to perform atomic front-running attack](https://consensys.io/diligence/audits/2020/06/bancor-v2-amm-security-audit/#oracle-updates-can-be-manipulated-to-perform-atomic-front-running-attack)
+
 #### Mitigation
 
 - Note: Obscurity ≠ Security
@@ -972,16 +980,6 @@ Reports
 - [Selfie | Damn Vulnerable DeFi v4](#selfie)
 - [[M-02] All yield generated in the IBT vault can be drained by performing a vault deflation attack using the flash loan functionality of the Principal Token contract | Spectra](https://code4rena.com/reports/2024-02-spectra#m-02-all-yield-generated-in-the-ibt-vault-can-be-drained-by-performing-a-vault-deflation-attack-using-the-flash-loan-functionality-of-the-principal-token-contract)
 - [Attacker can destroy user voting power by setting `ERC721Power::totalPower` and all existing NFTs `currentPower` to 0 | Dexe](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2023-11-10-cyfrin-dexe.md#attacker-can-destroy-user-voting-power-by-setting-erc721powertotalpower-and-all-existing-nfts-currentpower-to-0)
-
-
-### Sandwich Attacks
-
-Essentially, the attacker will execute a simultaneous front-run and back-run, with the initial pending target transaction positioned between them.
-- [sandwhich-attack-thunder-loan.svg](https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/MEV/diagrams/sandwhich-attack-thunder-loan.svg)
-
-Reports
-- [Attacker can drain protocol tokens by sandwich attacking owner call to `setPositionWidth` and `unpause` to force redeployment of Beefy's liquidity into an unfavorable range](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2024-04-06-cyfrin-beefy-finance.md#attacker-can-drain-protocol-tokens-by-sandwich-attacking-owner-call-to-setpositionwidth-and-unpause-to-force-redeployment-of-beefys-liquidity-into-an-unfavorable-range)
-
 
 ### Web2 Attacks
 
