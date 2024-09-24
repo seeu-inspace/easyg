@@ -406,11 +406,15 @@ keyscan_stop              stop the keystroke sniffer
 - [Vulnrepo](https://vulnrepo.com/home)
 - [PlexTrac](https://plextrac.com/)
 - [Offensive Security Exam Report Template in Markdown](https://github.com/noraj/OSCP-Exam-Report-Template-Markdown)
+- English grammar
+  - [WordReference.com](https://www.wordreference.com/)
+  - [Grammarly](https://www.grammarly.com/)
 
 
 **Misc tools**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [base64encode.org](https://www.base64encode.org/)
+- [CyberChef](https://gchq.github.io/CyberChef/)
 - [Down or not](https://www.websiteplanet.com/webtools/down-or-not/)
 - [DigitalOcean](https://www.digitalocean.com/) See [Setting Up Your Ubuntu Box for Pentest and Bug Bounty Automation](https://www.youtube.com/watch?v=YhUiAH5SIqk)
 - [Exploit Database](https://www.exploit-db.com/)
@@ -434,3 +438,4 @@ keyscan_stop              stop the keystroke sniffer
 - [pentesting-osTicket](https://github.com/Legoclones/pentesting-osTicket)
 - [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
 - [Google Maps API Scanner](https://github.com/ozguralp/gmapsapiscanner) if you find a Google Maps API key, it helps you see if the key is vulnerable to unauthorized access by other applications
+- [URL validation bypass cheat sheet](https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet)
