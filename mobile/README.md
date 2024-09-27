@@ -93,12 +93,14 @@ In case you need to reinstall the certificate in the smartphone
     ```
 
 ## Tools
+
 - [HTTP Toolkit](https://httptoolkit.tech/) to see requests on a non-rooted or emulated device
 - [Java Decompiler](https://java-decompiler.github.io/)
 - [dex2jar](https://github.com/pxb1988/dex2jar) decompile an .apk into .jar
 - [jadx-gui](https://github.com/skylot/jadx/releases) another tool for producing Java source code from Android Dex and Apk files
 - [APK-MITM](https://github.com/shroudedcode/apk-mitm) removes certificate pinning
 - [Apkleak](https://github.com/dwisiswant0/apkleaks) to get endpoints from an apk
+- [scrcpy](https://github.com/Genymobile/scrcpy)
 
 
 ### ADB
