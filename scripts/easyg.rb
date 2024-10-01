@@ -581,7 +581,7 @@ end
 
 
 
-def identify_technology(file_to_scan, num_threads = 5)
+def identify_technology(file_to_scan, num_threads = $CONFIG['n_threads'])
 	queue = Queue.new
 	technologies = { wp: [], drupal: [], salesforce: [], lotus_domino: [], iis: [] }
 
@@ -976,43 +976,56 @@ end
 
 
 
-def get_to_burp_fun(params)
+def get_to_burp_fun(params, num_threads = $CONFIG['n_threads'])
+	queue = Queue.new
+	mutex = Mutex.new
 
-	i = 0
-
-	File.open(params[:file], 'r').each_line do |f|
-
-		i += 1
-
-		begin
-
-			redirect = 3
-			base_uri = URI.parse(f.chomp)
-
-			res = request_fun(base_uri)
-
-			puts "[\e[36m#{i.to_s}\e[0m] GET > #{f.chomp}"
-
-			while res.is_a?(Net::HTTPRedirection) && redirect > 0
-				location = res['location'].to_s
-				puts "		Redirecting to > #{location}"
-				uri = URI.parse(location)
-				
-				# If the URI is relative, make it absolute
-				uri = base_uri + uri if uri.relative?
-				
-				res = request_fun(uri)
-				redirect -= 1
-			end
-
-		rescue Net::OpenTimeout, Net::ReadTimeout => e
-			puts "[\e[31m+\e[0m] TIMEOUT ERROR: #{e.message}"
-		rescue StandardError => e
-			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
-		end
-
+	File.foreach(params[:file]) do |line|
+		url = line.strip
+		queue << url unless url.empty?
 	end
 
+	workers = Array.new(num_threads) do
+		Thread.new do
+			while !queue.empty? && f = queue.pop(true) rescue nil
+
+				begin
+					redirect = 3
+					base_uri = URI.parse(f)
+
+					res = request_fun(base_uri)
+
+					mutex.synchronize do
+						puts "[\e[36m+\e[0m] GET > #{f}"
+					end
+
+					while res.is_a?(Net::HTTPRedirection) && redirect > 0
+						location = res['location'].to_s
+						mutex.synchronize do
+							puts "		Redirecting to > #{location}"
+						end
+
+						uri = URI.parse(location)
+						uri = base_uri + uri if uri.relative?
+
+						res = request_fun(uri)
+						redirect -= 1
+					end
+
+				rescue Net::OpenTimeout, Net::ReadTimeout => e
+					mutex.synchronize do
+						puts "[\e[31m-\e[0m] TIMEOUT ERROR: #{e.message}"
+					end
+				rescue StandardError => e
+					mutex.synchronize do
+						puts "[\e[31m-\e[0m] ERROR: #{e.message}"
+					end
+				end
+			end
+		end
+	end
+
+	workers.each(&:join)
 end
 
 
