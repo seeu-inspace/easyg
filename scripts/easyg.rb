@@ -888,7 +888,7 @@ def search_for_vulns(params)
 
 	# :: Mantra ::
 	puts "\n[\e[34m*\e[0m] Searching for secrets with Mantra"
-	system "cat output/200_#{o_sanitized}.txt | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{o_sanitized}.txt | grep -v \"\\.pdf\" | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	remove_ansi "output/mantra_results_#{o_sanitized}.txt"
 
