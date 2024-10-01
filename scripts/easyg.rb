@@ -433,9 +433,9 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	urless_command = "urless -i #{file_path} -o #{file_path}.tmp"
 	if system(urless_command)
 		File.rename("#{file_path}.tmp", file_path)
-		puts "[\e[32m+\\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
+		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
 	else
-		puts "[\e[31m+\\e[0m] Error running urless"
+		puts "[\e[31m-\e[0m] Error running urless"
 		return
 	end
 
