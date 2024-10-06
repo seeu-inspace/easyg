@@ -1388,6 +1388,7 @@ def crawl_local_fun(params)
 
 	# Final
 	clean_urls "output/allUrls_#{file_sanitized}"
+	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
 
