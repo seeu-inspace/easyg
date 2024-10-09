@@ -497,7 +497,6 @@ def is_wordpress?(response)
 	return false unless response.is_a?(Net::HTTPSuccess)
 	body = response.body
 
-	# WordPress detection regexes from the Nuclei template
 	wordpress_regexes = [
 		%r{<generator>https?:\/\/wordpress\.org.*</generator>},
 		%r{wp-login.php},
@@ -634,7 +633,7 @@ def search_confidential_files(file_type, file_to_scan)
 	# Construct the command to search for confidential files
 	command = <<~BASH
 		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|password|credentials|connection string|MONGO_URI|seed_phrase'; then
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|non disclosure|password|credentials|connection string|MONGO_URI|seed_phrase'; then
 				echo $i | tee -a #{output_file};
 			fi;
 		done
