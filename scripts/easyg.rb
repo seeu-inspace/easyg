@@ -263,6 +263,10 @@ def process_urls_for_code(file_to_scan, output_file, status_code, num_threads = 
 
 		workers.each(&:join)
 	end
+
+rescue Exception => e
+	puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+
 end
 
 
@@ -788,7 +792,7 @@ def base_url_s4v(file)
 	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
 	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
 	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
-	system "cat output/40X_#{file_sanitized} | ~/Tools/web-attack/nomore403/nomore403 -f '~/Tools/web-attack/nomore403/payloads/' | tee output/byp4xx_results_#{file_sanitized}"
+	system "cat output/40X_#{file_sanitized} | ~/Tools/web-attack/nomore403/nomore403 -f '/home/kali/Tools/web-attack/nomore403/payloads/' | grep '200 ' | tee output/byp4xx_results_#{file_sanitized}"
 	system "dirsearch -e * -x 429,406,404,403,401,400 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
 	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
@@ -909,6 +913,7 @@ def search_for_vulns(params)
 	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
 
 		target = f.chomp
+		puts "\n[\e[34m*\e[0m] Testing #{target}"
 		sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 		content_type = get_content_type(target)
 
@@ -921,7 +926,7 @@ def search_for_vulns(params)
 
 				#SQLi with ghauri
 				system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
-				File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
+				#File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
 				system "echo \"\n\n#{t}\" >> ghauri_#{sanitized_target}.txt" if File.exist?("ghauri_#{sanitized_target}.txt")
 
 				#LFI with ffuf
@@ -933,7 +938,7 @@ def search_for_vulns(params)
 			end
 		end
 
-		end
+	end
 	puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
 
 
