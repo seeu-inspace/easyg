@@ -1293,24 +1293,6 @@ end
 
 
 
-def crawl_burp_fun(params)
-
-	File.open(params[:file],'r').each_line do |f|
-		target = f.chomp
-
-		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
-
-		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
-		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --proxy http://#{$CONFIG['proxy_addr']}:#{$CONFIG['proxy_port']}"
-	end
-
-	send_telegram_notif("Crawl-burp for #{params[:file]} finished")
-
-end
-
-
-
 def crawl_local_fun(params)
 
 	file = params[:file]
@@ -1448,10 +1430,6 @@ option_actions = {
 		action: ->(params) { webscreenshot_fun(params) },
 		description: "Take a screenshot for every entry in <file_input> and make a gallery"
 	},
-	"crawl-burp" => {
-		action: ->(params) { crawl_burp_fun(params) },
-		description: "Crawl for every entry in <file_input> and pass the results to Burp Suite"
-	},
 	"crawl-local" => {
 		action: ->(params) { crawl_local_fun(params) },
 		description: "Crawl for every entry in <file_input> and save the results in local. Optionally, scan for vulnerabilities"
@@ -1493,11 +1471,11 @@ begin
 
 		params = {}
 
-		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-burp", "crawl-local", "find-vulns", "find-vulns-base-url", "do-everything"]
+		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-local", "find-vulns", "find-vulns-base-url", "do-everything"]
 		if options_that_need_file.include?(option)
 			print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 			params[:file] = gets.chomp
-			puts "\n" if option == "firefox" || option == "get-to-burp" || option == "webscreenshot" || option == "crawl-burp"
+			puts "\n" if option == "firefox" || option == "get-to-burp" || option == "webscreenshot"
 		end
 
 		if option == "assetenum" || option == "do-everything" || option == "crawl-local"
