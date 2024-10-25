@@ -379,6 +379,7 @@ keyscan_stop              stop the keystroke sniffer
 - [gobuster](https://github.com/OJ/gobuster) + [all.txt by jhaddix](https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056)
 - [dnsx](https://github.com/projectdiscovery/dnsx)
   - Reverse DNS lookup `cat ip.txt | dnsx -ptr -resp-only` 
+- [Reversino](https://github.com/drak3hft7/Reversino) to find subdomains from IP ranges or CIDR subnet
 - [VhostScan](https://github.com/codingo/VHostScan) to discover virtual hosts
 - [gip](https://github.com/dalance/gip) a command-line tool and Rust library to check global IP address.
 - [anew](https://github.com/tomnomnom/anew) to add only new subdomains
