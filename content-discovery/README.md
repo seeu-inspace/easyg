@@ -98,7 +98,26 @@
 - [Google Hacking Database](https://www.exploit-db.com/google-hacking-database)
 - [DorkSearch.com](https://dorksearch.com/)
 - [Refine web searches | Google](https://support.google.com/websearch/answer/2466433?hl=en)
+- [Attacking organizations with big scopes: from zero to hero](https://www.youtube.com/watch?v=vFk0XtHfuSg)
+  - `site: *<yahoo>*`
+  - `site:atlassian>*`
+  - `site:*<atlassian.*>*`
+  - `site:*yahoo.*`
+  - Bing `ip:127.0.0.1`
+    - Sometimes the DNS name will not resolve. In this case, send IP (as Target) + Domain name (as Host header) returned by bing
+  - Bing `domain:yahoo.com inbody:login`
 
+Collection
+```
+(ext:asp OR ext:aspx OR ext:jsp OR ext:jspx OR ext:do OR ext:action OR ext:php OR ext:php3 OR ext:form OR ext:html OR ext:xhtml OR ext:phtml OR ext:cfm OR ext:fcc OR ext:xsp OR ext:swf OR ext:nsf OR ext:cgi OR ext:axd OR ext:jsf OR ext:esp)
+(inurl:user/register OR inurl:admin OR inurl:panel OR intext:login OR intext:username OR intext:password)
+(intext:"submit" OR intext:"upload" OR intext:"carga" OR intext:"upload" OR intext:"hochladen" OR intext:"télécharger")
+site:target.com intext:"Warning: mysql_num_rows()"
+site:http://s3.amazonaws.com "target.com"
+site:http://blob.core.windows.net "target.com"
+site:http://googleapis.com "target.com"
+site:http://drive.google.com "target.com"
+```
 
 ## GitHub Dorking
 - sensitive words: `password, api_key, access_key, dbpassword, dbuser, pwd, pwds, aws_access, key, token, credentials, pass, pwd, passwd, private, preprod, appsecret`
