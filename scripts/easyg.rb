@@ -299,7 +299,7 @@ def contains_only_tracking_params?(url)
 	uri = URI.parse(url)
 	return false if uri.query.nil? || uri.query.empty? # check if there are parameters, if not return false
 
-	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid fbclid __cf_chl_rt_tk]
+	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid gad_source fbclid __cf_chl_rt_tk]
 	params = URI.decode_www_form(uri.query).map(&:first)
 
 	(params - tracking_params).empty?
