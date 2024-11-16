@@ -48,6 +48,9 @@
   - `cat target.txt | hakrawler -u -insecure -t 20 -proxy http://localhost:8080 -h "Cookie: 0=1"`
 - [Katana](https://github.com/projectdiscovery/katana)
   - `katana -u target -jc -kf -aff -proxy http://127.0.0.1:8080 -H "Cookie: 0=1"`
+- Greps for the output files
+  - `grep -E '\.(asp|aspx|jsp|jspx|do|action|php|php3|form|html|xhtml|phtml|cfm|fcc|xsp|swf|nsf|cgi|axd|jsf|esp)(\?|$)'`
+  - `grep -vE '\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|bpm|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map|jfif|jpg-large|xml)'`
 
 **Wordlists**
 - [SecLists](https://github.com/danielmiessler/SecLists)
