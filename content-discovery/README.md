@@ -31,6 +31,7 @@
   - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
   - `dirsearch -e * -x 404,401,500,503 -u http://192.168.244.140:8000`
   - `dirsearch -u http://192.168.134.126 -w /usr/share/wordlists/dirb/common.txt -r -R 2 --full-url -t 75 --suffix=.txt`
+  - `dirsearch -e * -x 429,406,404,403,401,400 -l file.txt --no-color --full-url -t 5`
 - [DIRB](https://salsa.debian.org/pkg-security-team/dirb)
   - `dirb http://www.target.com -r -z 10`
 - [dirbuster](https://github.com/KajanM/DirBuster)
