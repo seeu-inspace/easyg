@@ -178,3 +178,10 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
   - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 - [ ] [Look at the index of this repo](../#index) and see if you've missed anything interesting
+
+E-commerce checklist:
+- [ ] IDORs
+  - [ ] Order status
+  - [ ] Order history
+  - [ ] PDF generation / download
+  - [ ] Account details
