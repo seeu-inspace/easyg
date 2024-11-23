@@ -13,7 +13,7 @@
   - [Top vulnerabilities to always look for](#top-vulnerabilities-to-always-look-for)
   - [Multiple targets](#multiple-targets)
   - [Single target](#single-target)
-
+  - [E-commerce](#e-commerce)
 
 ## General checklists
 
@@ -179,7 +179,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
   - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
 - [ ] [Look at the index of this repo](../#index) and see if you've missed anything interesting
 
-E-commerce checklist:
+### E-commerce
 - [ ] IDORs
   - [ ] Order status
   - [ ] Order history
