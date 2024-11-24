@@ -224,7 +224,7 @@ def check_url(url, retries = 3)
 		puts "[\e[31m-\e[0m] Connection error on URL: #{url}. Skipping."
 		return nil
 	rescue => e
-		puts "[\e[31m+\e[0m] Error checking URL #{url}: #{e.message}"
+		puts "[\e[31m!\e[0m] Error checking URL #{url}: #{e.message}"
 		return nil
 	end
 
@@ -265,7 +265,7 @@ def process_urls_for_code(file_to_scan, output_file, status_code, num_threads = 
 	end
 
 rescue Exception => e
-	puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+	puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 
 end
 
@@ -322,7 +322,7 @@ def remove_ansi(file_path)
 	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' #{file_path}"
 
 	unless system(sed_command)
-		puts "[\e[31m+\e[0m] Error processing file"
+		puts "[\e[31m!\e[0m] Error processing file"
 	end
 end
 
@@ -399,7 +399,7 @@ def remove_using_scope(scope_file, url_file)
 		begin
 			URI(url).host
 		rescue => e
-			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+			puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 		end
 	end
 
@@ -416,7 +416,7 @@ def remove_using_scope(scope_file, url_file)
 		filtered_urls.each { |url| file.puts(url) }
 	end
 rescue => e
-	puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+	puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 end
 
 
@@ -439,7 +439,7 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 		File.rename("#{file_path}.tmp", file_path)
 		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
 	else
-		puts "[\e[31m-\e[0m] Error running urless"
+		puts "[\e[31m!\e[0m] Error running urless"
 		return
 	end
 
@@ -637,7 +637,7 @@ def search_confidential_files(file_type, file_to_scan)
 	# Construct the command to search for confidential files
 	command = <<~BASH
 		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|non disclosure|password|credentials|connection string|MONGO_URI|seed_phrase'; then
+			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|non disclosure|password|credentials|connectionString|MONGO_URI|seed_phrase|PRIVATE_KEY|AZURE_OPENAI_API_KEY'; then
 				echo $i | tee -a #{output_file};
 			fi;
 		done
@@ -645,44 +645,6 @@ def search_confidential_files(file_type, file_to_scan)
 
 	system(command)
 	delete_if_empty(output_file)
-end
-
-
-
-def waf_check(target)
-
-	aggressive_wafs = [
-		"Cloudflare",
-		"Incapsula",
-		"AWS Elastic Load Balancer",
-		"Azure Front Door",
-		"FortiWeb",
-		"Palo Alto Next Gen Firewall",
-		"PerimeterX",
-		"Reblaze",
-		"Sucuri CloudProxy",
-		"ZScaler",
-		"Akamai Kona Site Defender",
-		"Barracuda",
-		"F5 Networks BIG-IP",
-		"Imperva SecureSphere",
-		"DenyALL",
-		"Citrix NetScaler",
-		"Radware AppWall",
-		"Sophos UTM Web Protection",
-		"Wallarm"
-	]
-
-	output = `wafw00f "#{target}" -v`
-	aggressive_waf = aggressive_wafs.any? { |waf| output.include?(waf) }
-
-	if aggressive_waf
-		puts "[\e[31m+\e[0m] Skipped, the target is behind an aggressive WAF"
-	elsif output.include?('appears to be down')
-		puts "[\e[31m+\e[0m] Skipped, the target appears to be down"
-	else
-		yield target
-	end
 end
 
 
@@ -792,7 +754,7 @@ def base_url_s4v(file)
 	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
 	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
 	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
-	system "cat output/40X_#{file_sanitized} | ~/Tools/web-attack/nomore403/nomore403 -f '/home/kali/Tools/web-attack/nomore403/payloads/' | grep '200 ' | tee output/byp4xx_results_#{file_sanitized}"
+	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
 	system "dirsearch -e * -x 429,406,404,403,401,400 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
 	remove_ansi "output/byp4xx_results_#{file_sanitized}"
 	system "rm -rf reports/" if File.directory?('reports')
@@ -884,8 +846,8 @@ def search_for_vulns(params)
 	# Get only 200s
 	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
-	# :: Search for possible confidential files ::
-	['pdf', 'txt', 'csv', 'xml', 'json', 'env'].each do |file_type|
+	# :: Search for possible confidential files / secrets ::
+	['pdf', 'txt', 'csv', 'xml', 'json', 'env', 'yaml', 'py', 'sh', 'sql'].each do |file_type|
 		search_confidential_files(file_type, "output/200_#{o_sanitized}.txt")
 	end
 
@@ -900,47 +862,13 @@ def search_for_vulns(params)
 	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
 	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
-	system "mkdir output/dalfox" if !File.directory?('output/dalfox')
-	system "mkdir output/ffuf_lfi" if !File.directory?('output/ffuf_lfi')
-	system "mkdir output/ghauri" if !File.directory?('output/ghauri')
-
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
-
-	# Search for XSS, LFI and SQLi
-	puts "\n[\e[34m*\e[0m] Searching for XSSs, LFIs and SQLi"
-	process_urls_for_code("output/allParams_#{o_sanitized}.txt", "output/200allParams_#{o_sanitized}.txt", 200)
-	File.open("output/200allParams_#{o_sanitized}.txt",'r').each_line do |f|
-
-		target = f.chomp
-		puts "\n[\e[34m*\e[0m] Testing #{target}"
-		sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-		content_type = get_content_type(target)
-
-		if content_type && content_type.include?('text/html')
-			system "dalfox url \"#{target}\" -C \"#{$CONFIG['cookie']}\" --ignore-return 302,404,403 --waf-evasion --skip-bav -o output/dalfox/#{sanitized_target}.txt"
-		end
-
-		waf_check(target) do |t|
-			begin
-
-				#SQLi with ghauri
-				system "ghauri -u \"#{t}\" --batch --force-ssl | tee output/ghauri/ghauri_#{sanitized_target}.txt"
-				#File.delete("ghauri_#{sanitized_target}.txt") if File.exist?("ghauri_#{sanitized_target}.txt") && !File.read("ghauri_#{sanitized_target}.txt").include?('is vulnerable')
-				system "echo \"\n\n#{t}\" >> ghauri_#{sanitized_target}.txt" if File.exist?("ghauri_#{sanitized_target}.txt")
-
-				#LFI with ffuf
-				t_fuzz = replace_param_with_fuzz(t)
-				system "ffuf -u \"#{t_fuzz}\" -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -ac -mc 200 -od output/ffuf_lfi/#{sanitized_target}/"
-
-			rescue Exception => e
-				puts "[\e[31m+\e[0m] ERROR: #{e.message}"
-			end
-		end
-
-	end
-	puts "[\e[32m+\e[0m] Results saved in the directories output/dalfox/ and output/ffuf_lfi/" if File.directory?('output/dalfox/') || File.directory?('output/ffuf_lfi/')
-
+	
+	# TODO:
+	#	- [ ] Check for file uploads
+	#	- [ ] Check for reflections
+	#	- [ ] Check for PII (maybe in confidential files?)
 
 	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
@@ -1022,7 +950,7 @@ def get_to_burp_fun(params, num_threads = $CONFIG['n_threads'])
 					end
 				rescue StandardError => e
 					mutex.synchronize do
-						puts "[\e[31m-\e[0m] ERROR: #{e.message}"
+						puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 					end
 				end
 			end
@@ -1094,7 +1022,7 @@ def assetenum_fun(params)
 			File.delete("output/#{target}_crtsh.txt") if File.exists?("output/#{target}_crtsh.txt")
 
 		rescue Exception => e
-			puts "[\e[31m+\e[0m] ERROR: #{e.message}"
+			puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 		end
 
 		#== gobuster ==
@@ -1128,7 +1056,7 @@ def assetenum_fun(params)
 
 		end
 
-		#system "amass enum -nf output/#{target}_tmp.txt -d #{target}"
+		system "amass enum -nf output/#{target}_tmp.txt -d #{target}"
 
 		#== anew final ==
 
@@ -1225,6 +1153,7 @@ def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
 	options.add_argument('--disable-popup-blocking')
 	options.add_argument('--disable-translate')
 	options.add_argument('--ignore-certificate-errors-spki-list')
+	options.add_argument('--window-size=2560,1440')
 	options.add_argument('--headless')
 
 	mutex = Mutex.new
@@ -1335,8 +1264,10 @@ def crawl_local_fun(params)
 		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
 		remove_using_scope(file, "output/#{target}_waymore.txt")
+		sleep(30)
 		clean_urls "output/#{target}_waymore.txt"
 		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
+		sleep(30)
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 
@@ -1357,8 +1288,9 @@ def crawl_local_fun(params)
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
+	remove_using_scope(file, "output/xnLinkFinder_#{file_sanitized}")
+	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
-	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
 
 	# Find new URLS from Github using github-endpoints.py
@@ -1367,13 +1299,14 @@ def crawl_local_fun(params)
 		File.open("output/tmp_scope.txt",'r').each_line do |f|
 			target = f.strip
 			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
+			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
+			clean_urls "output/github-endpoints_#{file_sanitized}"
 			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 		end
 		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	end
 
 	# Final
-	clean_urls "output/allUrls_#{file_sanitized}"
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
