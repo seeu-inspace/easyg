@@ -1270,6 +1270,19 @@ def crawl_local_fun(params)
 		sleep(30)
 	end
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
+	
+	# Find new URLS from Github using github-endpoints.py
+	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
+	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
+		File.open("output/tmp_scope.txt",'r').each_line do |f|
+			target = f.strip
+			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
+			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
+			clean_urls "output/github-endpoints_#{file_sanitized}"
+			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
+		end
+	end
 
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
@@ -1286,27 +1299,14 @@ def crawl_local_fun(params)
 
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
-	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allJSUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	remove_using_scope(file, "output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
 
-	# Find new URLS from Github using github-endpoints.py
-	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
-		File.open("output/tmp_scope.txt",'r').each_line do |f|
-			target = f.strip
-			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
-			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
-			clean_urls "output/github-endpoints_#{file_sanitized}"
-			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
-		end
-		File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
-	end
-
 	# Final
+	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
