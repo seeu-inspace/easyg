@@ -4,10 +4,11 @@ require 'uri'
 require 'net/http'
 require 'json'
 require 'socket'
-require 'webdrivers'
-require 'selenium-webdriver'
 require 'yaml'
 require 'thread'
+require 'set'
+require 'webdrivers'
+require 'selenium-webdriver'
 
 $CONFIG = YAML.load_file('config.yaml')
 
@@ -110,18 +111,24 @@ end
 
 
 def extract_main_domains(input_file, output_file)
-	domains = []
-
+	domains = Set.new
+	
 	def extract_main_domain(url)
 		begin
 			uri = URI.parse(url)
-			host = uri.host.downcase
+			host = uri.host&.downcase
+			return nil if host.nil? || host.empty?
+
 			parts = host.split('.')
 
-			return host if parts.length == 1 || parts[-1] =~ /\d+/
+			return host if parts.length == 1 || host.match?(/\A\d{1,3}(\.\d{1,3}){3}\z/)
 
-			return "#{parts[-2]}.#{parts[-1]}"
-		rescue Exception => e
+			if parts[-2].match?(/^(co|com|org|net|gov|edu|ac)$/) && parts.length > 2
+				return "#{parts[-3]}.#{parts[-2]}.#{parts[-1]}"
+			else
+				return "#{parts[-2]}.#{parts[-1]}"
+			end
+		rescue URI::InvalidURIError
 			nil
 		end
 	end
@@ -131,18 +138,12 @@ def extract_main_domains(input_file, output_file)
 		next if line.empty?
 
 		domain = extract_main_domain(line)
-
-		unless domains.include?(domain)
-			domains << domain
-		end
+		domains.add(domain) unless domain.nil?
 	end
 
 	File.open(output_file, 'w') do |file|
-		domains.each do |domain|
-			file.puts domain unless domain.nil? || domain.empty?
-		end
+		domains.each { |domain| file.puts(domain) }
 	end
-
 end
 
 
@@ -1269,13 +1270,11 @@ def crawl_local_fun(params)
 		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
 		sleep(30)
 	end
-	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 	
 	# Find new URLS from Github using github-endpoints.py
-	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
 		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
-		File.open("output/tmp_scope.txt",'r').each_line do |f|
+		File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 			target = f.strip
 			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
 			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
@@ -1299,6 +1298,7 @@ def crawl_local_fun(params)
 
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
+	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	remove_using_scope(file, "output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
@@ -1306,6 +1306,7 @@ def crawl_local_fun(params)
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
 
 	# Final
+	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
