@@ -272,30 +272,6 @@ end
 
 
 
-def get_content_type(url)
-	uri = URI.parse(url)
-	response = nil
-
-	http = Net::HTTP.new(uri.host, uri.port)
-	if uri.scheme == 'https'
-		http.use_ssl = true
-		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-	end
-
-	request = Net::HTTP::Get.new(uri.request_uri)
-	response = http.request(request)
-
-	if response.is_a?(Net::HTTPSuccess)
-		return response['content-type']
-	else
-		return nil
-	end
-rescue => e
-	return nil
-end
-
-
-
 def contains_only_tracking_params?(url)
 	uri = URI.parse(url)
 	return false if uri.query.nil? || uri.query.empty? # check if there are parameters, if not return false
@@ -378,16 +354,6 @@ def file_sanitization(file_path)
 	end
 
 	File.write(file_path, sanitized_lines.join("\n") + "\n")
-end
-
-
-
-def replace_param_with_fuzz(url)
-	uri = URI.parse(url)
-	params = URI.decode_www_form(uri.query || '')
-	params.map! { |param, value| [param, 'FUZZ'] }
-	uri.query = URI.encode_www_form(params)
-	uri.to_s
 end
 
 
@@ -733,6 +699,19 @@ def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads']
 end
 
 
+
+def check_file_upload(body)
+	if body.match(/<input[^>]+type=['"]file['"][^>]*>/i)
+		return true
+	end
+	false
+rescue => e
+	puts "[!] Error in check_file_upload: #{e.message}"
+	nil
+end
+
+
+
 # search_for_vulns but for base URLs
 def base_url_s4v(file)
 
@@ -866,13 +845,47 @@ def search_for_vulns(params)
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
 	
+	report_file_path = "output/file_uploads_#{o_sanitized}.txt"
+	File.open(report_file_path, 'w') do |report_file|
+		workers = Array.new(num_threads) do
+			Thread.new do
+				while !queue.empty?
+					url = queue.pop(true) rescue nil
+					next unless url
+
+					response = check_url(url)
+					next unless response
+
+					content_type = response['content-type']
+					if content_type && content_type.include?('text/html')
+						body = response.body
+						found = check_file_upload(body)
+
+						message = found ? "[+] File upload found on #{url}" : "[-] No file upload found on #{url}"
+						puts message
+
+						if found
+							mutex.synchronize do
+								report_file.puts(url)
+							end
+						end
+					end
+				end
+			end
+		end
+
+		workers.each(&:join)
+	end
+
 	# TODO:
-	#	- [ ] Check for file uploads
+	#	- [x] Check for file uploads
 	#	- [ ] Check for reflections
 	#	- [ ] Check for PII (maybe in confidential files?)
 
 	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
+rescue Exception => e
+	puts "[!] ERROR in search_for_vulns: #{e.message}"
 end
 
 
