@@ -815,7 +815,7 @@ end
 
 
 
-def search_for_vulns(params)
+def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
 
 	file_to_scan = params[:file]
 
