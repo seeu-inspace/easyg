@@ -992,7 +992,8 @@ ${alert(1)}
 
 **Resources**
 - [What is Clickjacking? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/clickjacking)
-
+- [MetaMask - stealing ETH by exploiting clickjacking - $120,000 bug bounty](https://www.youtube.com/watch?v=HnI0w156rtw)
+- [Bsides Tallinn 2024 - Lyra Rebane (Web security is fun)](https://www.youtube.com/watch?v=2ZENE8ua_gU)
 
 ## DOM-based vulnerabilities
 
