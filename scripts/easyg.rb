@@ -1271,13 +1271,12 @@ def crawl_local_fun(params)
 	system "rm -rf results/"
 
 	# waymore
-	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
+	
 	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 		target = f.strip
 		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		remove_using_scope(file, "output/#{target}_waymore.txt")
 		sleep(30)
 		clean_urls "output/#{target}_waymore.txt"
 		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
@@ -1290,7 +1289,6 @@ def crawl_local_fun(params)
 		File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 			target = f.strip
 			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
-			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
 			clean_urls "output/github-endpoints_#{file_sanitized}"
 			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 		end
@@ -1300,7 +1298,6 @@ def crawl_local_fun(params)
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
 	system "cat output/allUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmpAllJSUrls_#{file_sanitized}"
 	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | anew output/_tmpAllJSUrls_#{file_sanitized}"
-	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
 	clean_urls "output/_tmpAllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/allUrls_#{file_sanitized}"
 
@@ -1313,7 +1310,6 @@ def crawl_local_fun(params)
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
-	remove_using_scope(file, "output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
@@ -1322,6 +1318,7 @@ def crawl_local_fun(params)
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
+	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
 
