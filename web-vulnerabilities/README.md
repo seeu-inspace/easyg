@@ -781,7 +781,9 @@ Manually testing for XXE vulnerabilities generally involves
 - Unusual events
   - `onpointerrawupdate` (Chrome only)
   - `onmouseleave`
-- Can't use `alert`, `confirm` or `prompt`? Try `print()`! [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)]
+- Can't use `alert`, `confirm` or `prompt`?
+  - Try `print()` [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)] or `import()`
+  - If `console.log()` doesn't work, try `console.info()` and [other variants](https://developer.mozilla.org/en-US/docs/Web/API/console)
 - This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
