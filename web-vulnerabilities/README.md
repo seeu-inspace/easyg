@@ -784,6 +784,7 @@ Manually testing for XXE vulnerabilities generally involves
 - Can't use `alert`, `confirm` or `prompt`?
   - Try `print()` [[Reference](https://portswigger.net/research/alert-is-dead-long-live-print)] and / or `import()`
   - If `console.log()` doesn't work, try `console.info()` and [other variants](https://developer.mozilla.org/en-US/docs/Web/API/console)
+- For a `_blank` page, try with `javascript:alert(window.parent.document.cookie)`
 - This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
