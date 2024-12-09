@@ -121,7 +121,14 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] Check for mobile/desktop applications
   - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 - [ ] If every asset is in scope
-  - [bgp.he.net](https://bgp.he.net/)
+	- Apex enumeration
+		- [bgp.he.net](https://bgp.he.net/)
+  		- [asrank.caida.org](https://asrank.caida.org/)
+  		- [check_mdi.py](https://github.com/expl0itabl3/check_mdi/blob/main/check_mdi.py)
+    			- `./check_mdi.py -d <domain>`
+    		- [whois.arin.net](https://whois.arin.net/ui/query.do)
+    		- [asnmap](https://github.com/projectdiscovery/asnmap)
+      		- [Reversino](https://github.com/drak3hft7/Reversino)
   - [Crunchbase](https://www.crunchbase.com/)
   - [OCCRP Aleph](https://aleph.occrp.org/)
   - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
