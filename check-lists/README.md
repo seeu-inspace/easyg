@@ -128,7 +128,9 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
     			- `./check_mdi.py -d <domain>`
     		- [whois.arin.net](https://whois.arin.net/ui/query.do)
     		- [asnmap](https://github.com/projectdiscovery/asnmap)
-      		- For ASNs: `amass intel -asn 13374,14618`
+      		- For ASNs
+        		- `amass intel -asn 13374,14618`
+          		- `whois -h whois.radb.net  -- '-i origin AS714' | grep -Eo "([0-9.]+){4}/[0-9]+" | uniq`
   - [Crunchbase](https://www.crunchbase.com/)
   - [OCCRP Aleph](https://aleph.occrp.org/)
   - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
