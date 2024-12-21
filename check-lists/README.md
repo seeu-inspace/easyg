@@ -128,11 +128,12 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
     			- `./check_mdi.py -d <domain>`
     		- [whois.arin.net](https://whois.arin.net/ui/query.do)
     		- [asnmap](https://github.com/projectdiscovery/asnmap)
-      		- [Reversino](https://github.com/drak3hft7/Reversino)
   - [Crunchbase](https://www.crunchbase.com/)
   - [OCCRP Aleph](https://aleph.occrp.org/)
   - [duckduckgo/tracker-radar/entities](https://github.com/duckduckgo/tracker-radar/tree/main/entities)
-- [ ] If IPs are in scope: `cat ip.txt | dnsx -ptr -resp-only`
+- [ ] If IPs are in scope
+	- `cat ip.txt | dnsx -ptr -resp-only`
+ 	- [Reversino](https://github.com/drak3hft7/Reversino)
 
 ### Single target
 - [ ] Recon
