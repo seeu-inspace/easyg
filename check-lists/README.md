@@ -126,7 +126,7 @@
   - Pass the subdomains to Burp Suite
   - Open them in Firefox
 - [ ] Check for mobile/desktop applications
-  - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
+  - If there are any other non-web application, use [Apkleak](https://github.com/dwisiswant0/apkleaks) and [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) (even if OoS) to grap endpoints
 
 ### Single target
 - [ ] Recon
@@ -164,16 +164,19 @@
   - [ ] [XSS](../web-vulnerabilities/#cross-site-scripting-xss)
 - [ ] Feedback functions
   - Look for [Blind XSS](../web-vulnerabilities/#cross-site-scripting-xss)
-- [ ] Broken Access Control, IDOR & co
-  - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
-- [ ] APIs
-  - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
+- [ ] Broken Access Control, Vertical / Horizontal Privilege escalation
+  - Check for APIs
+  - Check for IDORs
+  - If you have multiple accounts with different privileges, check on every level, try to automate with [Autorize](https://portswigger.net/bappstore/f9bbac8c4acf4aefa4d7dc92a991af2f)
+  - Use HTTP Verb tampering for bypasses
+  - Keep an eye on [internal path traversals](https://x.com/yeswehack/status/1859884798162211250)
 - [ ] Errors
-  - Change POST to GET
-- [ ] [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html), check also
-  - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
-  - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
-- [ ] [Look at the index of this repo](../#index) and see if you've missed anything interesting
+  - Try to get a positive response, try HTTP verb tampering & co.
+- Extra
+  - [ ] [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html), check also
+    - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+    - [OWASP Web Application Penetration Checklist](https://wiki.owasp.org/index.php/Testing_Checklist)
+  - [ ] [Look at the index of this repo](../#index) and see if you've missed anything interesting
 
 ### E-commerce
 - [ ] IDORs
