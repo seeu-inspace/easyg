@@ -411,6 +411,14 @@ keyscan_stop              stop the keystroke sniffer
   - [WordReference.com](https://www.wordreference.com/)
   - [Grammarly](https://www.grammarly.com/)
 
+**Postman**
+```shell
+# how to install Postman
+sudo wget https://dl.pstmn.io/download/latest/linux64 -O ~/Downloads/postman.tar.gz
+sudo tar -xvzf postman.tar.gz
+sudo mv Postman/ /opt/Postman 
+sudo ln -s /opt/Postman/Postman /usr/bin/postman
+```
 
 **Misc tools**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
