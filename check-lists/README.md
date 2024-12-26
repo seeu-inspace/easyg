@@ -31,17 +31,6 @@
 - [ ] [Burp Suite](#burp-suite) and all the extensions
 - [ ] [Kali Linux](https://www.kali.org/) + [install.sh](https://github.com/seeu-inspace/install.sh) since it has everything you need 
 
-## Testing layers
-
-See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020!](https://www.youtube.com/watch?v=p4JgIu1mceI)
-- [ ] Integrations
-- [ ] Application Libraries (usually JavaScript)
-- [ ] Application: Custom Code or COTS
-- [ ] Application Framework
-- [ ] Web Hosting Software (Default creds, Web server misconfigurations, web exploits)
-- [ ] Open Ports and Services (Default creds on services, service level exploits)
-
-
 ## Recon
 - [ ] Identify technologies
 	- [ ] Look for response headers, use `curl -I www.domain.com`
@@ -99,7 +88,7 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 5. House keeping
 	- Cleaning up rootkits
 	- Covering tracks
-	- See: [Post Exploitation 	- The Penetration Testing Execution Standard](http://www.pentest-standard.org/index.php/Post_Exploitation)
+	- See: [Post Exploitation - The Penetration Testing Execution Standard](http://www.pentest-standard.org/index.php/Post_Exploitation)
 6. Results
 	- Reporting / Analysis
 	- Lessons Learned / Remediation
@@ -114,12 +103,6 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] IDOR
 
 ### Multiple targets
-- [ ] Run EasyG assetenum
-- [ ] Select the interesting targets
-  - Pass the subdomains to Burp Suite
-  - Open them in Firefox
-- [ ] Check for mobile/desktop applications
-  - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 - [ ] If every asset is in scope
 	- Apex enumeration
 		- [bgp.he.net](https://bgp.he.net/)
@@ -137,15 +120,22 @@ See [The Bug Hunter's Methodology v4.0 - Recon Edition by @jhaddix #NahamCon2020
 - [ ] If IPs are in scope
 	- `cat ip.txt | dnsx -ptr -resp-only`
  	- [Reversino](https://github.com/drak3hft7/Reversino)
+- [ ] Run EasyG assetenum
+- [ ] Select the interesting targets
+  - Take screenshots
+  - Pass the subdomains to Burp Suite
+  - Open them in Firefox
+- [ ] Check for mobile/desktop applications
+  - If there are any other non-web application, use Apkleak and Source2Url (even if OoS)
 
 ### Single target
 - [ ] Recon
-  + Explore the app, test every functionality (eventually, search for documentation)
+  + Explore the app, test every functionality, search also for documentation
   + Crawl with Burp Suite
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + [Content Discovery](../web-vulnerabilities/#content-discovery), use tools, [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking)
-  + Check the [Testing layers](../web-vulnerabilities/#testing-layers)
+  + [Content Discovery](../web-vulnerabilities/#content-discovery), [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
+  + [Check the checklist](#recon)
 - [ ] Look for PII Disclosure
   - If you find documents redacted
     - Try to copy and paste the obscured text
