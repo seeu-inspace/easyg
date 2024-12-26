@@ -117,13 +117,12 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 **Other interesting resources**
 - [What is market cap?](https://www.coinbase.com/learn/crypto-basics/what-is-market-cap)
 - [Khan Academy: Options, swaps, futures, MBSs, CDOs, and other derivatives](https://www.khanacademy.org/economics-finance-domain/core-finance/derivative-securities)
-- [Demystifying Exploitable Bugs in Smart Contracts](https://github.com/ZhangZhuoSJTU/Web3Bugs)
 
 ## Resources
 
 **Code**
 - [Clean Contracts - a guide on smart contract patterns & practices](https://www.useweb3.xyz/guides/clean-contracts)
-- [Ethereum VM (EVM) Opcodes and Instruction Reference](https://github.com/crytic/evm-opcodes)
+- [Ethereum VM (EVM) Opcodes](https://www.evm.codes/)
 - [Coinbase Solidity Style Guide](https://github.com/coinbase/solidity-style-guide)
 
 **Security**
@@ -152,10 +151,10 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 
 ### Specific resources
 
-Lending/Borrowing protocols
+**Lending/Borrowing protocols**
 - [Lending/Borrowing DeFi Attacks](https://dacian.me/lending-borrowing-defi-attacks)
 
-ORACLE based protocols
+**ORACLE based protocols**
 - [Vader Protocol Findings & Analysis Report | Cod4rena](https://code4rena.com/reports/2021-04-vader)
 
 ## Tools
