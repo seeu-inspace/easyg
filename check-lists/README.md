@@ -133,7 +133,7 @@
   + Explore the app, test every functionality, search also for documentation
   + Crawl with Burp Suite
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-  + [Content Discovery](../web-vulnerabilities/#content-discovery), [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking)
+  + [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking), check also [Content Discovery](../content-discovery)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
   + [Check the checklist](#recon)
 - [ ] Look for PII Disclosure
@@ -157,7 +157,7 @@
   - [HTTP Request Smuggling](../web-vulnerabilities#http-request-smuggling) in login panels
   - [CSRF](../web-vulnerabilities#cross-site-request-forgery-csrf) for every auth user action
   - Password Reset Broken Logic / Poisoning
-- [ ] [Upload Functions](../web-vulnerabilities/#file-upload-vulnerabilities)
+- [ ] Cheack / search for [upload functions](../web-vulnerabilities/#file-upload-vulnerabilities)
 - [ ] Email functions, check if you can send emails from the target
   - [ ] Spoofing
   - [ ] HTML Injection
@@ -166,12 +166,7 @@
   - Look for [Blind XSS](../web-vulnerabilities/#cross-site-scripting-xss)
 - [ ] Broken Access Control, IDOR & co
   - [IDOR Checklist](https://twitter.com/hunter0x7/status/1580211248037126145) 
-- [ ] Content Types
-  - Look for multipart-forms
-  - Look for content type XML
-  - Look for content type json
 - [ ] APIs
-  - Methods
   - [API Security Checklist](https://github.com/shieldfy/API-Security-Checklist)
 - [ ] Errors
   - Change POST to GET
