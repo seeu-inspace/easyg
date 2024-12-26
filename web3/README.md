@@ -124,14 +124,11 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 **Code**
 - [Clean Contracts - a guide on smart contract patterns & practices](https://www.useweb3.xyz/guides/clean-contracts)
 - [Ethereum VM (EVM) Opcodes and Instruction Reference](https://github.com/crytic/evm-opcodes)
-- **[Coinbase Solidity Style Guide](https://github.com/coinbase/solidity-style-guide)**
+- [Coinbase Solidity Style Guide](https://github.com/coinbase/solidity-style-guide)
 
 **Security**
-- [A Comprehensive Smart Contract Audit Readiness Guide](https://learn.openzeppelin.com/security-audits/readiness-guide)
-- [SWC Registry](https://swcregistry.io/)
 - [All known smart contract-side and user-side attacks and vulnerabilities in Web3.0, DeFi, NFT and Metaverse + Bonus](https://telegra.ph/All-known-smart-contract-side-and-user-side-attacks-and-vulnerabilities-in-Web30--DeFi-03-31)
 - [Web3 Security Library | Immunefi](https://github.com/immunefi-team/Web3-Security-Library)
-- [Smart Contract Security Verification Standard](https://github.com/ComposableSecurity/SCSVS)
 - [Smart Contract Security](https://ethereum.org/en/developers/docs/smart-contracts/security/)
 - [Ethereum Smart Contract Security Best Practices](https://consensys.github.io/smart-contract-best-practices/)
 
@@ -139,40 +136,27 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 - [Solodit](https://solodit.xyz/)
 - [Blockchain Security Audit List](https://github.com/0xNazgul/Blockchain-Security-Audit-List)
 
-**Updates / News**
+**Newsletters / Updates / News**
 - [rekt.news](https://rekt.news/)
-- [Blockchain Threat Intelligence](https://newsletter.blockthreat.io/)
-- [DeFi Hacks Analysis - Root Cause](https://www.notion.so/0e85e02c5ed34df3855ea9f3ca40f53b?pvs=21)
-
-**Newsletters**
-- [HashingBits by QuillAudits](https://quillaudits.substack.com/)
 - [Week in Ethereum News](https://weekinethereumnews.com/)
 - [Blockchain Threat Intelligence](https://newsletter.blockthreat.io/)
-- [Consensys Diligence Newsletter](https://consensys.io/diligence/newsletter/)
-- [Officer CIA](https://officercia.mirror.xyz/)
 
 **YouTube channels**
 - [Andy Li](https://www.youtube.com/@andyli)
-- [Code4rena](https://www.youtube.com/@code4rena)
 - [Patrick Collins](https://www.youtube.com/@PatrickAlphaC)
-- [Secureum](https://www.youtube.com/@SecureumVideos)
-- [Smart Contract Programmer](https://www.youtube.com/@smartcontractprogrammer)
-- [Spearbit](https://www.youtube.com/@Spearbit)
-- [Solidity Summit](https://www.youtube.com/@soliditysummit)
-- [OpenSense](https://www.youtube.com/@opensensepw/)
-- [OpenZeppelin](https://www.youtube.com/@OpenZeppelin)
-- [yAcademy](https://www.youtube.com/@yacademyDAO)
-- [Ethereum Engineering Group](https://www.youtube.com/@EthereumEngineeringGroup)
 - [Owen Thurm](https://www.youtube.com/@0xOwenThurm)
-- [DeFi Security Summit](https://www.youtube.com/@defisecuritysummit2088)
-
-**Forums**
-- [Peeranha](https://peeranha.io/)
-- [ethereum.stackexchange](https://ethereum.stackexchange.com/)
 
 **Bounties**
 - [Daily Warden](https://www.dailywarden.com/)
-- [bounty.vision](https://bounty.vision/)
+- [Immunefi](https://immunefi.com/)
+
+### Specific resources
+
+Lending/Borrowing protocols
+- [Lending/Borrowing DeFi Attacks](https://dacian.me/lending-borrowing-defi-attacks)
+
+ORACLE based protocols
+- [Vader Protocol Findings & Analysis Report | Cod4rena](https://code4rena.com/reports/2021-04-vader)
 
 ## Tools
 
@@ -187,14 +171,17 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
     - [Even Better TOML](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml)
     - [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
     - Note: remember to activate `Format on save`
-- [Remix](https://remix-project.org/)
-    - [remixd](https://github.com/ethereum/remix-project/tree/master/libs/remixd)
-- [Truffle Suite](https://trufflesuite.com/docs/)
-    - [Ganache](https://github.com/trufflesuite/ganache)
 - [Hardhat](https://hardhat.org/)
     - [Configuration | Hardhat](https://hardhat.org/hardhat-runner/docs/config)
 - [Foundry](https://book.getfoundry.sh/)
 - A web browser + [MetaMask](https://metamask.io/)
+
+**Static Analyzers**
+- [Slither](https://github.com/crytic/slither)
+- [Aderyn](https://github.com/Cyfrin/aderyn)
+- [c4udit](https://github.com/byterocket/c4udit)
+- [4naly3er](https://github.com/Picodes/4naly3er)
+- [SolidityInspector](https://github.com/seeu-inspace/solidityinspector)
 
 **Libraries**
 
@@ -265,24 +252,6 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
       
     } signTransaction();
     ```
-    
-**Static Analyzers**
-- [Slither](https://github.com/crytic/slither)
-- [Aderyn](https://github.com/Cyfrin/aderyn)
-- [c4udit](https://github.com/byterocket/c4udit)
-- [4naly3er](https://github.com/Picodes/4naly3er)
-- [SolidityInspector](https://github.com/seeu-inspace/solidityinspector)
-
-**Misc Tools**
-
-- [Solidity Function Profiler](https://github.com/EricR/sol-function-profiler)
-- [ERC20 Verifier](https://erc20-verifier.openzeppelin.com/)
-- [EVM Codes](https://www.evm.codes/)
-- [Ethereum Security Toolbox](https://github.com/trailofbits/eth-security-toolbox)
-- [Immunefi PoC Templates](https://github.com/immunefi-team/forge-poc-templates)
-- [Ruggability - know the risks before it’s too late](https://trust1995.github.io/ruggability/)
-- [Phind](https://www.phind.com/)
-- [upgradehub.xyz](http://upgradehub.xyz)
 
 
 ### Foundry
@@ -395,6 +364,7 @@ Two guides / checklists to follow to see if the code is ready for an audit:
 
 - [simple-security-toolkit](https://github.com/nascentxyz/simple-security-toolkit)
 - [The Rekt Test](https://blog.trailofbits.com/2023/08/14/can-you-pass-the-rekt-test/)
+- [A Comprehensive Smart Contract Audit Readiness Guide](https://learn.openzeppelin.com/security-audits/readiness-guide)
 
 ### Audit process
 
