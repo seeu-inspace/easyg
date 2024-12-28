@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Injected swagger.json
   description: |
-    <math><mtext><option><FAKEFAKE><option></option><mglyph><svg><mtext><textarea><a title="</textarea><img src='#' onerror='alert(window.origin)'>">
+    <math><mtext><option><FAKEFAKE><option></option><mglyph><svg><mtext><textarea><a title="</textarea><img src='x' onerror='alert(window.origin)'>">
 paths:
   /accounts:
     get:
