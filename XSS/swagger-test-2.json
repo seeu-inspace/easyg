@@ -1,0 +1,6 @@
+swagger: '2.0'
+info:
+  title: Injected swagger.json
+  description: |
+    <h1>test</h1>
+paths:
