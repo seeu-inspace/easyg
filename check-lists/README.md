@@ -132,6 +132,8 @@
 - [ ] Recon
   + Explore the app, test every functionality, search also for documentation
   + Crawl with Burp Suite
+  + Run EasyG's crawl option
+  + If you have accounts, run `katana -u "https://www.redacted.com" -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H cookie.txt -proxy http://127.0.0.1:8080`
   + Collect endpoints with [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
   + [Google Dorking](../web-vulnerabilities/#google-dorking) and [GitHub Dorking](../web-vulnerabilities/#github-dorking), check also [Content Discovery](../content-discovery)
   + See the technologies, [search for CVEs](https://exploits.shodan.io/welcome)
