@@ -616,90 +616,6 @@ end
 
 
 
-def search_endpoints(file_input, output_file, num_threads = $CONFIG['n_threads'])
-	urls = File.readlines(file_input).map(&:strip)
-
-	swagger_paths = [
-		"/swagger-ui/swagger-ui.js", "/swagger/swagger-ui.js", "/swagger-ui.js", "/swagger/ui/swagger-ui.js",
-		"/swagger/ui/index", "/swagger/index.html", "/swagger-ui.html", "/swagger/swagger-ui.html",
-		"/api/swagger-ui.html", "/api-docs/swagger.json", "/api-docs/swagger.yaml", "/api_docs",
-		"/swagger.json", "/swagger.yaml", "/swagger/v1/swagger.json", "/swagger/v1/swagger.yaml",
-		"/api/index.html", "/api/doc", "/api/docs/", "/api/swagger.json", "/api/swagger.yaml", "/api/swagger.yml",
-		"/api/swagger/index.html", "/api/swagger/swagger-ui.html", "/api/api-docs/swagger.json",
-		"/api/api-docs/swagger.yaml", "/api/swagger-ui/swagger.json", "/api/swagger-ui/swagger.yaml",
-		"/api/apidocs/swagger.json", "/api/apidocs/swagger.yaml", "/api/swagger-ui/api-docs",
-		"/api/doc.json", "/api/api-docs", "/api/apidocs", "/api/swagger", "/api/swagger/static/index.html",
-		"/api/swagger-resources", "/api/swagger-resources/restservices/v2/api-docs", "/api/__swagger__/",
-		"/api/_swagger_/", "/api/spec/swagger.json", "/api/spec/swagger.yaml", "/api/swagger/ui/index",
-		"/__swagger__/", "/_swagger_/", "/api/v1/swagger-ui/swagger.json", "/api/v1/swagger-ui/swagger.yaml",
-		"/swagger-resources/restservices/v2/api-docs", "/api/swagger_doc.json", "/docu", "/docs", "/swagger",
-		"/api-doc", "/doc/", "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-standalone-preset.js",
-		"/swagger-ui/swagger-ui/swagger-ui-bundle.js", "/webjars/swagger-ui/swagger-ui-bundle.js",
-		"/webjars/swagger-ui/index.html", "/"
-	]
-
-	git_paths = [
-		"/.git/config", "/.git/HEAD", "/.git/index", "/.git/logs/HEAD"
-	]
-
-	queue = Queue.new
-	urls.each { |url| queue << url }
-
-	File.open(output_file, 'w') do |output|
-		mutex = Mutex.new
-		workers = Array.new(num_threads) do
-			Thread.new do
-				while !queue.empty? && url = queue.pop(true) rescue nil
-
-					next unless check_url(url)
-
-					(swagger_paths + git_paths).each do |path|
-						full_url = url.chomp("/") + path
-						puts "[\e[34m*\e[0m] Checking URL: #{full_url}"
-						response = check_url(full_url)
-
-						if response && response.code.to_i == 200
-							body = response.body
-
-							# check for exposed .git
-							if git_paths.include?(path)
-								if path == "/.git/config"
-									if (body.include?("[core]") || body.include?("[credentials]")) && !body.downcase.include?("<html") && !body.downcase.include?("<body")
-										mutex.synchronize do
-											output.puts("GIT: #{full_url}")
-											puts "[\e[32m+\e[0m] Exposed .git/config found: #{full_url}"
-										end
-									end
-								else
-									if !body.downcase.include?("<html") && !body.downcase.include?("<body")
-										mutex.synchronize do
-											output.puts("GIT: #{full_url}")
-											puts "[\e[32m+\e[0m] Exposed .git component found: #{full_url}"
-										end
-									end
-								end
-
-							# check for swagger
-							else
-								if body.include?("swagger:") || body.include?("Swagger 2.0") || body.include?("\"swagger\":") || body.include?("Swagger UI") || body.include?("loadSwaggerUI") || body.include?("**token**:") || body.include?('id="swagger-ui')
-									mutex.synchronize do
-										output.puts("SWAGGER: #{full_url}")
-										puts "[\e[32m+\e[0m] Swagger endpoint found: #{full_url}"
-									end
-								end
-							end
-
-						end
-					end
-				end
-			end
-		end
-		workers.each(&:join)
-	end
-end
-
-
-
 def check_file_upload(body)
 	if body.match(/<input[^>]+type=['"]file['"][^>]*>/i)
 		return true
@@ -723,11 +639,6 @@ def base_url_s4v(file)
 	puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers and exposed panels with nuclei in #{file}"
 	system "nuclei -l #{file} -tags takeover,panel -stats -o output/nuclei_#{file_sanitized}"
 	delete_if_empty "output/nuclei_#{file_sanitized}"
-
-	# search for swaggers and git exposed
-	puts "\n[\e[34m*\e[0m] Searching for swaggers and .git in #{file}"
-	search_endpoints("#{file}", "output/endpoints_#{file_sanitized}")
-	delete_if_empty "output/endpoints_#{file_sanitized}"
 
 	# Search for 401 and 403 bypasses
 	puts "\n[\e[34m*\e[0m] Searching for 401,403 and bypasses in #{file}"
@@ -755,6 +666,9 @@ def base_url_s4v(file)
 		end
 	end
 	puts "[\e[32m+\e[0m] Technologies identified have been saved to output/#{file_sanitized}_tech_identified.txt"
+	
+	# TODO:
+	# - [ ] Aggiungere FavFreak > aggiungere a file_sanitized_tech_identified.txt con anew, `cat urls.txt | python3 favfreak.py -o output`
 
 	# WordPress
 	if tech_identified[:wp].any?
@@ -1070,7 +984,7 @@ def assetenum_fun(params)
 
 		end
 
-		system "amass enum -nf output/#{target}_tmp.txt -d #{target}"
+		#system "amass enum -nf output/#{target}_tmp.txt -d #{target}"
 
 		#== anew final ==
 
@@ -1268,8 +1182,6 @@ def crawl_local_fun(params)
 		puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
 	end
 
-	system "rm -rf results/"
-
 	# waymore
 	
 	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
@@ -1318,6 +1230,7 @@ def crawl_local_fun(params)
 	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
 	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
 	File.delete("parameters.txt") if File.exists?("parameters.txt")
+	system "rm -rf results/"
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
