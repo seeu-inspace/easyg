@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Platform API
   description: |
-    <form action=javascript:alert(origin)><input type=submit value=XSS>
+    <form action=javascript:print()><input type=submit value=XSS>
 paths:
   /accounts:
     get:
