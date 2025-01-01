@@ -125,6 +125,8 @@
   - Take screenshots
   - Pass the subdomains to Burp Suite
   - Open them in Firefox
+  - Grab the HTTP titles
+    `cat out.txt | httpx -title`
 - [ ] Check for mobile/desktop applications
   - If there are any other non-web application, use [Apkleak](https://github.com/dwisiswant0/apkleaks) and [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) (even if OoS) to grap endpoints
 
