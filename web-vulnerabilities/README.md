@@ -376,6 +376,7 @@ Ways of injecting OS commands
 Other cases:
 - Cookie Bombing
   - [Report #1898305](https://hackerone.com/reports/1898305)
+- [Anyone can Access Deleted and Private Repository Data on GitHub](https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github)
 
 ## Information Disclosure
 
@@ -415,11 +416,18 @@ From a user perspective, access controls can be divided into the following categ
 - Context-dependent access controls
   Restrict access to functionality and resources based upon the state of the application or the user's interaction with it
 
+IDORs tips
+- Look for numeric values / simple IDs
+	- Check what are the results with `0` or `-1`
+ 	- Examples
+  		- [IDOR on GraphQL queries BillingDocumentDownload and BillDetails](https://hackerone.com/reports/2207248)
+- Look for [Internal API Requests](https://x.com/yeswehack/status/1859884801030783042), they might lead path traversals and IDORs
+
 **Tools**
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [Authz](https://portswigger.net/bappstore/4316cc18ac5f434884b2089831c7d19e)
 - [UUID Detector](https://portswigger.net/bappstore/65f32f209a72480ea5f1a0dac4f38248)
-- Check also endpoints in JS files
+- Inspect also endpoints in JS files
 
 
 
@@ -875,6 +883,9 @@ javascript://redacted.com%0aalert(1)
 - Add admin user to the application
 - Hijack oAuth flow and steal code
 - Steal SSO code to adjacent app, then reverse SSO back to main app
+
+Some examples
+- [yelp.com XSS ATO (via login keylogger, link Google account)](https://hackerone.com/reports/2010530)
 
 
 ## Cross-site request forgery (CSRF)
