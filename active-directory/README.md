@@ -581,6 +581,8 @@ Always enumerate first, do not grab the low hanging fruit first, since it might 
 - An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
 - Check: `logonCount`, `lastlogontimestamp`, `badpasswordtime`, `Description`
 - Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
+- List inactive users
+  - `Get-MsIdInactiveSignInUser -LastSignInBeforeDaysAgo 30`, [more info here](https://azuread.github.io/MSIdentityTools/commands/Get-MsIdInactiveSignInUser/)
 
 
 ## SMB
