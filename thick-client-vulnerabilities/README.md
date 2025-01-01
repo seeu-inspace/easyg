@@ -142,7 +142,6 @@ If Citrix is present and you have access to it, there are multiple ways you can 
 
 **Resources**
 - [PowerShell](https://github.com/PowerShell/Powershell)
-- [Two RCEs are better than one: write-up of an interesting lateral movement](https://medium.com/@seeu-inspace/two-rces-are-better-than-one-write-up-of-an-interesting-lateral-movement-66a52d42e075)
 
 
 
