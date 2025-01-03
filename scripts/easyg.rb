@@ -688,7 +688,7 @@ def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
 
 	# :: Mantra ::
 	puts "\n[\e[34m*\e[0m] Searching for secrets with Mantra"
-	system "cat output/200_#{o_sanitized}.txt | grep -v \"\\.pdf\" | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
+	system "cat output/200_#{o_sanitized}.txt | grep -Evi '\\.(svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif)' | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	remove_ansi "output/mantra_results_#{o_sanitized}.txt"
 
