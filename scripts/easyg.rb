@@ -501,23 +501,6 @@ end
 
 
 
-def is_salesforce?(response)
-	return false unless response.is_a?(Net::HTTPSuccess)
-	body = response.body
-
-	salesforce_regexes = [
-		%r{\.force\.com},
-		%r{\.salesforce\.com},
-		%r{\/auraFW\/},
-		%r{\/s\/}
-	]
-
-	salesforce_regexes.any? { |regex| body.match?(regex) } ||
-		response['X-Salesforce-Cache']
-end
-
-
-
 def is_lotus_domino?(response)
 	return false unless response.is_a?(Net::HTTPSuccess)
 	body = response.body
@@ -553,7 +536,7 @@ end
 
 def identify_technology(file_to_scan, num_threads = $CONFIG['n_threads'])
 	queue = Queue.new
-	technologies = { wp: [], drupal: [], salesforce: [], lotus_domino: [], iis: [] }
+	technologies = { wp: [], drupal: [], lotus_domino: [], iis: [] }
 
 	File.foreach(file_to_scan) do |url|
 		url.strip!
@@ -573,8 +556,6 @@ def identify_technology(file_to_scan, num_threads = $CONFIG['n_threads'])
 						mutex.synchronize { technologies[:wp] << url }
 					elsif is_drupal?(response)
 						mutex.synchronize { technologies[:drupal] << url }
-					elsif is_salesforce?(response)
-						mutex.synchronize { technologies[:salesforce] << url }
 					elsif is_lotus_domino?(response)
 						mutex.synchronize { technologies[:lotus_domino] << url }
 					elsif is_iis?(response)
@@ -614,11 +595,6 @@ def base_url_s4v(file)
 	system "mkdir output" if !File.directory?('output')
 
 	file_sanitized = file.gsub("/", "")
-
-	# Use some Nuclei templates
-	#puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers and exposed panels with nuclei in #{file}"
-	#system "nuclei -l #{file} -tags takeover,panel -stats -o output/nuclei_#{file_sanitized}"
-	#delete_if_empty "output/nuclei_#{file_sanitized}"
 
 	# Search for 401 and 403 bypasses
 	puts "\n[\e[34m*\e[0m] Searching for 401,403 and bypasses in #{file}"
@@ -672,16 +648,6 @@ def base_url_s4v(file)
 			target = f.chomp
 			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
 			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} | tee output/droopescan/droopescan_#{sanitized_target}.txt"
-		end
-	end
-
-	# Salesforce
-	if tech_identified[:salesforce].any?
-		system "mkdir output/salsa" if !File.directory?('output/salsa')
-		tech_identified[:salesforce].each do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "java -jar ~/Tools/web-attack/SALSA/salsa-jar-with-dependencies.jar -t #{target} --typesapi | tee output/salsa/salsa_#{sanitized_target}.txt"
 		end
 	end
 
