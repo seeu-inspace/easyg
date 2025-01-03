@@ -458,3 +458,5 @@ sudo ln -s /opt/Postman/Postman /usr/bin/postman
 - [pentesting-osTicket](https://github.com/Legoclones/pentesting-osTicket)
 - [URL validation bypass cheat sheet](https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet)
 - [webanalyze](https://github.com/rverton/webanalyze) a port of Wappalyzer in Go
+- [Porch Pirate](https://github.com/MandConsultingGroup/porch-pirate)
+- [SwaggerSpy](https://github.com/UndeadSec/SwaggerSpy)
