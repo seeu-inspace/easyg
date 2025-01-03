@@ -390,6 +390,12 @@ keyscan_stop              stop the keystroke sniffer
   - `python3 urless.py -i urls.txt | hakcheckurl | grep -v 404`
 
 
+**For WAFs**
+- [WAF Bypass Tool](https://github.com/nemesida-waf/waf-bypass)
+- [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
+- [nowafpls](https://github.com/assetnote/nowafpls)
+
+
 **Exploits**
 - [SearchSploit](https://www.exploit-db.com/searchsploit)
   - `searchsploit afd windows -w -t`; `-w` to return the URL for https://www.exploitdb.com, `-t` to search the exploit title
@@ -398,6 +404,11 @@ keyscan_stop              stop the keystroke sniffer
 - [National Vulnerability Database](https://nvd.nist.gov/)
 - [Browser Exploitation Framework (BeEF)](https://beefproject.com/)
 - [PoC in GitHub](https://github.com/nomi-sec/PoC-in-GitHub)
+
+
+**API Keys analysis**
+- [keyhacks](https://github.com/streaak/keyhacks) to identify what a found possible api key is / does
+- [Google Maps API Scanner](https://github.com/ozguralp/gmapsapiscanner) if you find a Google Maps API key, it helps you see if the key is vulnerable to unauthorized access by other applications
 
 
 **For Reporting**
@@ -410,6 +421,7 @@ keyscan_stop              stop the keystroke sniffer
 - English grammar
   - [WordReference.com](https://www.wordreference.com/)
   - [Grammarly](https://www.grammarly.com/)
+
 
 **Postman**
 ```shell
@@ -439,15 +451,10 @@ sudo ln -s /opt/Postman/Postman /usr/bin/postman
 - [lolbas-project.github.io](https://lolbas-project.github.io/)
 - [gtfobins.github.io](https://gtfobins.github.io/)
 - [loldrivers.io](https://www.loldrivers.io/)
-- [WAF Bypass Tool](https://github.com/nemesida-waf/waf-bypass)
 - [Forensia](https://github.com/PaulNorman01/Forensia)
 - [peepdf - PDF Analysis Tool](https://eternal-todo.com/tools/peepdf-pdf-analysis-tool)
 - [hakoriginfinder](https://github.com/hakluke/hakoriginfinder) for discovering the origin host behind a reverse proxy
 - [ISTanCo IST - Domain Registration](https://cp.istanco.net/) to buy a short domain
 - [pentesting-osTicket](https://github.com/Legoclones/pentesting-osTicket)
-- [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
-- [nowafpls](https://github.com/assetnote/nowafpls)
-- [Google Maps API Scanner](https://github.com/ozguralp/gmapsapiscanner) if you find a Google Maps API key, it helps you see if the key is vulnerable to unauthorized access by other applications
 - [URL validation bypass cheat sheet](https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet)
 - [webanalyze](https://github.com/rverton/webanalyze) a port of Wappalyzer in Go
-- [keyhacks](https://github.com/streaak/keyhacks) to identify what a found possible api key is / does
