@@ -761,10 +761,6 @@ def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
 		workers.each(&:join)
 	end
 
-	# TODO:
-	#	- [x] Check for file uploads
-	#	- [ ] Check for reflections
-
 	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
 rescue Exception => e
