@@ -56,6 +56,7 @@
 - [Broken Link Hijacking](#broken-link-hijacking)
 - [Log4Shell](#log4shell)
 - [Spring Boot](#spring-boot)
+- [Apache](#apache)
 
 
 ## SQL Injection
