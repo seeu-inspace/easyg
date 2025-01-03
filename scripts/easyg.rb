@@ -625,6 +625,7 @@ def base_url_s4v(file)
 	
 	# TODO:
 	# - [ ] Aggiungere FavFreak > aggiungere a file_sanitized_tech_identified.txt con anew, `cat urls.txt | python3 favfreak.py -o output`
+	# - [ ] Vedere webanalyze
 
 	# WordPress
 	if tech_identified[:wp].any?
