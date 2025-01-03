@@ -448,3 +448,4 @@ sudo ln -s /opt/Postman/Postman /usr/bin/postman
 - [wafw00f](https://github.com/EnableSecurity/wafw00f) to identify WAFs
 - [Google Maps API Scanner](https://github.com/ozguralp/gmapsapiscanner) if you find a Google Maps API key, it helps you see if the key is vulnerable to unauthorized access by other applications
 - [URL validation bypass cheat sheet](https://portswigger.net/web-security/ssrf/url-validation-bypass-cheat-sheet)
+- [webanalyze](https://github.com/rverton/webanalyze) a port of Wappalyzer in Go
