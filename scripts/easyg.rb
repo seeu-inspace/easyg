@@ -616,9 +616,9 @@ def base_url_s4v(file)
 	file_sanitized = file.gsub("/", "")
 
 	# Use some Nuclei templates
-	puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers and exposed panels with nuclei in #{file}"
-	system "nuclei -l #{file} -tags takeover,panel -stats -o output/nuclei_#{file_sanitized}"
-	delete_if_empty "output/nuclei_#{file_sanitized}"
+	#puts "\n[\e[34m*\e[0m] Searching for subdomain takeovers and exposed panels with nuclei in #{file}"
+	#system "nuclei -l #{file} -tags takeover,panel -stats -o output/nuclei_#{file_sanitized}"
+	#delete_if_empty "output/nuclei_#{file_sanitized}"
 
 	# Search for 401 and 403 bypasses
 	puts "\n[\e[34m*\e[0m] Searching for 401,403 and bypasses in #{file}"
