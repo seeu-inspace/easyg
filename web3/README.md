@@ -137,7 +137,6 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 
 **Newsletters / Updates / News**
 - [rekt.news](https://rekt.news/)
-- [Week in Ethereum News](https://weekinethereumnews.com/)
 - [Blockchain Threat Intelligence](https://newsletter.blockthreat.io/)
 
 **YouTube channels**
