@@ -147,6 +147,7 @@ You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resour
 **Bounties**
 - [Daily Warden](https://www.dailywarden.com/)
 - [Immunefi](https://immunefi.com/)
+- [HackenProof](https://hackenproof.com/)
 
 ### Specific resources
 
