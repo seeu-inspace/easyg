@@ -592,27 +592,7 @@ end
 
 
 
-# :: Functions to find vulnerabilities ::
-
-
-
-def search_confidential_files(file_type, file_to_scan)
-	puts "\n[\e[34m*\e[0m] Searching for possible confidential #{file_type.upcase}s"
-	
-	output_file = "output/reserved#{file_type.upcase}s_#{file_to_scan.gsub("/", "")}"
-
-	# Construct the command to search for confidential files
-	command = <<~BASH
-		for i in `cat #{file_to_scan} | grep -Ea '\\.#{file_type}'`; do
-			if curl -s "$i" | #{file_type == 'pdf' ? 'pdftotext -q - - | ' : ''}grep -Eaiq 'internal use only|usage interne uniquement|confidential|confidentielle|restricted|restreinte|non disclosure|password|credentials|connectionString|MONGO_URI|seed_phrase|PRIVATE_KEY|AZURE_OPENAI_API_KEY'; then
-				echo $i | tee -a #{output_file};
-			fi;
-		done
-	BASH
-
-	system(command)
-	delete_if_empty(output_file)
-end
+# :: Functions to search for vulnerabilities ::
 
 
 
@@ -740,21 +720,11 @@ def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
 	# Get only 200s
 	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
 
-	# :: Search for possible confidential files / secrets ::
-	['pdf', 'txt', 'csv', 'xml', 'json', 'env', 'yaml', 'py', 'sh', 'sql'].each do |file_type|
-		search_confidential_files(file_type, "output/200_#{o_sanitized}.txt")
-	end
-
 	# :: Mantra ::
 	puts "\n[\e[34m*\e[0m] Searching for secrets with Mantra"
 	system "cat output/200_#{o_sanitized}.txt | grep -v \"\\.pdf\" | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
 	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
 	remove_ansi "output/mantra_results_#{o_sanitized}.txt"
-
-	# :: SocialHunter
-	puts "\n[\e[34m*\e[0m] Searching for Brojen Link Hijaking with socialhunter"
-	system "socialhunter -f output/200_#{o_sanitized}.txt -w 20 | grep \"Possible Takeover\" | tee output/socialhunter_results_#{o_sanitized}.txt"
-	delete_if_empty "output/socialhunter_results_#{o_sanitized}.txt"
 
 	## :: Grep only params ::
 	system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
@@ -794,7 +764,6 @@ def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
 	# TODO:
 	#	- [x] Check for file uploads
 	#	- [ ] Check for reflections
-	#	- [ ] Check for PII (maybe in confidential files?)
 
 	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
 
