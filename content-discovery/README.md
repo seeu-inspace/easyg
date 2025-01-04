@@ -113,6 +113,7 @@
 
 Collection
 ```
+(ext:asp OR ext:aspx OR ext:jsp OR ext:jspx OR ext:do OR ext:action OR ext:php OR ext:php3)
 (ext:asp OR ext:aspx OR ext:jsp OR ext:jspx OR ext:do OR ext:action OR ext:php OR ext:php3 OR ext:form OR ext:html OR ext:xhtml OR ext:phtml OR ext:cfm OR ext:fcc OR ext:xsp OR ext:swf OR ext:nsf OR ext:cgi OR ext:axd OR ext:jsf OR ext:esp)
 (inurl:user/register OR inurl:admin OR inurl:panel OR intext:login OR intext:username OR intext:password)
 (intext:"submit" OR intext:"upload" OR intext:"carga" OR intext:"hochladen" OR intext:"télécharger")
