@@ -329,9 +329,10 @@ $ slither-check-erc project/contract.sol ContractName
 
 ### Code
 
-If you need to find some text in the smart contracts, you can use this command 
+If you need to find some text in the smart contracts, you can use these commands
 ```bash
-grep -r --include="*.sol" "CustomMappingError" .
+grep -r --include="*.sol" "word_to_search" .
+find . -type f -name "*.sol" -exec grep -H -E "word1|word2" {} + 
 ```
 
 Below, some pieces of code that might be useful
