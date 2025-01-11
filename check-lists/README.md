@@ -184,7 +184,16 @@
 
 ### E-commerce
 - [ ] IDORs
-  - [ ] Order status
-  - [ ] Order history
-  - [ ] PDF generation / download
-  - [ ] Account details
+	- [ ] Order status
+	- [ ] Order history
+	- [ ] PDF generation / download
+	- [ ] Account details
+- [ ] Payment bypasses, see "[Payment Bypass Guide for Bug Bounty | 69 case studies](https://medium.com/@illoyscizceneghposter/payment-bypass-guide-for-bug-bounty-69-case-studies-15379b4f76fa)"
+	- [ ] Tampering values like quantities, prices or coupons
+		- [Add upto 10K rupees to a wallet by paying an arbitrary amount | Zomato | HackerOne](https://hackerone.com/reports/1408782)
+  		- [IDOR to pay less for coin purchases on oauth.reddit.com via /api/v2/gold/paypal/create_coin_purchase_order in `order_id` parameter | Reddit | HackerOne]()
+    		- [Insufficient validation of sides/modifiers quantity | Upserve | HackerOne](https://hackerone.com/reports/361960)
+      		- [Business Logic Flaw - A non premium user can change/update retailers to get cashback on all the retailers associated with Curve | Curve | HackerOne](https://hackerone.com/reports/672487)
+        	- [Manipulating response leads to free access to Streamlabs Prime | Logitech | HackerOne](https://hackerone.com/reports/1070510)
+      
+
