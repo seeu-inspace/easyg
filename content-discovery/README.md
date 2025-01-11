@@ -137,3 +137,4 @@ site:http://drive.google.com "target.com"
 - `hostname:targetcorp.com port:'22'` Search for TargetCorp’s domain running SSH
 - `http.favicon.hash:`, see [this](https://x.com/sw33tLie/status/1276266817053392900) and this: [Finding a P1 in one minute with Shodan.io (RCE)](https://medium.com/@sw33tlie/finding-a-p1-in-one-minute-with-shodan-io-rce-735e08123f52)
   - Check also [this list of favicons](https://github.com/sansatart/scrapts/blob/master/shodan-favicon-hashes.csv)
+- `http.html:"© <company>"`, to find more targets [[Reference](https://x.com/intigriti/status/1877401959029719206/)]
