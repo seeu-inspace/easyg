@@ -188,7 +188,7 @@
 	- [ ] Order history
 	- [ ] PDF generation / download
 	- [ ] Account details
-- [ ] Payment bypasses, see "[Payment Bypass Guide for Bug Bounty | 69 case studies](https://medium.com/@illoyscizceneghposter/payment-bypass-guide-for-bug-bounty-69-case-studies-15379b4f76fa)"
+- [ ] Payment bypass, see "[Payment Bypass Guide for Bug Bounty | 69 case studies](https://medium.com/@illoyscizceneghposter/payment-bypass-guide-for-bug-bounty-69-case-studies-15379b4f76fa)"
 	- [ ] Tampering values like quantities, prices or coupons
  	- [ ] Coupon Generation
   	- [ ] Numerical Error
