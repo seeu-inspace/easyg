@@ -332,7 +332,8 @@ $ slither-check-erc project/contract.sol ContractName
 If you need to find some text in the smart contracts, you can use these commands
 ```bash
 grep -r --include="*.sol" "word_to_search" .
-find . -type f -name "*.sol" -exec grep -H -E "word1|word2" {} + 
+find . -type f -name "*.sol" -exec grep -H -E "word1|word2" {} +
+grep -rE "/\b0x[a-fA-F0-9]{40}\b/" --include="*.sol" .              # search for hardcoded addresses in sol files
 ```
 
 Below, some pieces of code that might be useful
