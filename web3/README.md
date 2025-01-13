@@ -957,6 +957,12 @@ Reports
 - [The Billion Dollar Exploit: Collecting Validators Private Keys via Web2 Attacks](https://0d.dwalletlabs.com/the-billion-dollar-exploit-collecting-validators-private-keys-via-web2-attacks-4a385a5bb70d)
 - [M-01. Insufficient input validation on `SablierV2NFTDescriptor::safeAssetSymbol` allows an attacker to obtain stored XSS](https://codehawks.cyfrin.io/c/2024-05-Sablier/results?lt=contest&sc=reward&sj=reward&page=1&t=report)
 
+### Inability to handle calls with non-zero `call.value`
+
+This issue occurs when a smart contract lacks a `receive` or `fallback` function, making it unable to accept Ether (`ETH`) sent directly to the contract. Additionally, if critical functions are not marked as `payable`, the contract cannot process transactions that include Ether (`msg.value > 0`). This combination results in the contract being unable to handle calls that involve transferring ETH, limiting its ability to interact with other contracts or execute logic requiring non-zero Ether transfers.
+
+So, if in the contract is present `msg.value` in a non `payable` function, but there is no `receive` or `fallback` function you have an issue.
+
 
 ## Challenges solved
 
