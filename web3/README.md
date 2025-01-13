@@ -40,7 +40,7 @@
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
-  - [](#inability-to-handle-calls-with-non-zero-callvalue)
+  - [Inability to handle calls with non-zero `call.value`](#inability-to-handle-calls-with-non-zero-callvalue)
   - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
