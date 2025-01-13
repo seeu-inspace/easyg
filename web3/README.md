@@ -40,8 +40,8 @@
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
-  - [Web2 Attacks](#web2-attacks)
   - [Inability to handle calls with non-zero `call.value`](#inability-to-handle-calls-with-non-zero-callvalue)
+  - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
     - [Selfie](#selfie)
@@ -953,11 +953,6 @@ Reports
 - [[M-02] All yield generated in the IBT vault can be drained by performing a vault deflation attack using the flash loan functionality of the Principal Token contract | Spectra](https://code4rena.com/reports/2024-02-spectra#m-02-all-yield-generated-in-the-ibt-vault-can-be-drained-by-performing-a-vault-deflation-attack-using-the-flash-loan-functionality-of-the-principal-token-contract)
 - [Attacker can destroy user voting power by setting `ERC721Power::totalPower` and all existing NFTs `currentPower` to 0 | Dexe](https://github.com/solodit/solodit_content/blob/main/reports/Cyfrin/2023-11-10-cyfrin-dexe.md#attacker-can-destroy-user-voting-power-by-setting-erc721powertotalpower-and-all-existing-nfts-currentpower-to-0)
 
-### Web2 Attacks
-
-- [The Billion Dollar Exploit: Collecting Validators Private Keys via Web2 Attacks](https://0d.dwalletlabs.com/the-billion-dollar-exploit-collecting-validators-private-keys-via-web2-attacks-4a385a5bb70d)
-- [M-01. Insufficient input validation on `SablierV2NFTDescriptor::safeAssetSymbol` allows an attacker to obtain stored XSS](https://codehawks.cyfrin.io/c/2024-05-Sablier/results?lt=contest&sc=reward&sj=reward&page=1&t=report)
-
 ### Inability to handle calls with non-zero `call.value`
 
 This issue occurs when a smart contract lacks a `receive` or `fallback` function, making it unable to accept Ether (`ETH`) sent directly to the contract. Additionally, if critical functions are not marked as `payable`, the contract cannot process transactions that include Ether (`msg.value > 0`). This combination results in the contract being unable to handle calls that involve transferring ETH, limiting its ability to interact with other contracts or execute logic requiring non-zero Ether transfers.
@@ -966,6 +961,12 @@ So, if in the contract is present `msg.value` in a non `payable` function, but t
 
 Resources:
 - [The AxelarBridgedGovernor contract cannot support non-zero value cross-chain calls](https://solodit.cyfrin.io/issues/the-axelarbridgedgovernor-contract-cannot-support-non-zero-value-cross-chain-calls-cantina-none-drips-pdf)
+
+### Web2 Attacks
+
+- [The Billion Dollar Exploit: Collecting Validators Private Keys via Web2 Attacks](https://0d.dwalletlabs.com/the-billion-dollar-exploit-collecting-validators-private-keys-via-web2-attacks-4a385a5bb70d)
+- [M-01. Insufficient input validation on `SablierV2NFTDescriptor::safeAssetSymbol` allows an attacker to obtain stored XSS](https://codehawks.cyfrin.io/c/2024-05-Sablier/results?lt=contest&sc=reward&sj=reward&page=1&t=report)
+
 
 ## Challenges solved
 
