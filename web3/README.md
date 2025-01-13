@@ -40,6 +40,7 @@
   - [Maximal Extractable Value (MEV)](#maximal-extractable-value-mev)
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
+  - [](#inability-to-handle-calls-with-non-zero-callvalue)
   - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
@@ -963,6 +964,8 @@ This issue occurs when a smart contract lacks a `receive` or `fallback` function
 
 So, if in the contract is present `msg.value` in a non `payable` function, but there is no `receive` or `fallback` function you have an issue.
 
+Resources:
+- [The AxelarBridgedGovernor contract cannot support non-zero value cross-chain calls](https://solodit.cyfrin.io/issues/the-axelarbridgedgovernor-contract-cannot-support-non-zero-value-cross-chain-calls-cantina-none-drips-pdf)
 
 ## Challenges solved
 
