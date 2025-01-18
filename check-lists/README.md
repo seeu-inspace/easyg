@@ -192,5 +192,6 @@
 	- [ ] Tampering values like quantities, prices or coupons
  	- [ ] Coupon Generation
   	- [ ] Numerical Error
-  	- [ ] IDOR
+  	- [ ] IDORs
   	- [ ] Race Conditions
+- [ ] For Gift Cards, check: "[Gift cards security research](https://securityrise.com/posts/gift-card-security-research/)"
