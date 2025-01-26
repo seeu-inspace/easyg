@@ -41,6 +41,7 @@
   - [Governance Attack](#governance-attack)
   - [Flash Loan Attacks](#flash-loan-attacks)
   - [Inability to handle calls with non-zero `call.value`](#inability-to-handle-calls-with-non-zero-callvalue)
+  - [Insufficient validation of Chainlink price feeds](#insufficient-validation-of-chainlink-price-feeds)
   - [Web2 Attacks](#web2-attacks)
 - [Challenges solved](#challenges-solved)
   - [Damn Vulnerable DeFi v4](#damn-vulnerable-defi-v4)
@@ -965,6 +966,20 @@ So, if in the contract is present `msg.value` in a non `payable` function, but t
 
 Resources:
 - [The AxelarBridgedGovernor contract cannot support non-zero value cross-chain calls](https://solodit.cyfrin.io/issues/the-axelarbridgedgovernor-contract-cannot-support-non-zero-value-cross-chain-calls-cantina-none-drips-pdf)
+
+
+### Insufficient validation of Chainlink price feeds
+
+When calling the `latestRoundData()` function, the validation should happen like in the following example
+
+```Solidity
+(uint80 roundId, int256 price, , uint256 updatedAt, ) = priceFeed.latestRoundData();
+if(roundId == 0) revert InvalidRoundId();
+if(updatedAt == 0 || updatedAt > block.timestamp) revert InvalidUpdate();
+```
+
+Check also "[Stale Oracle Data Validation Missing in Contract Logic](https://github.com/seeu-inspace/solidityinspector/wiki#stale-oracle-data-validation-missing-in-contract-logic)"
+
 
 ### Web2 Attacks
 
