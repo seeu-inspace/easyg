@@ -840,6 +840,10 @@ Fee on transfer tokens
 - [M-03 Deposits don’t work with fee-on transfer tokens | Reality Cards (round 2)](https://code4rena.com/reports/2021-08-realitycards#m-03-deposits-dont-work-with-fee-on-transfer-tokens)
 - [Vault is Not Compatible with Fee Tokens and Vaults with Such Tokens Could Be Exploited](https://github.com/code-423n4/2022-05-cally-findings/issues/61)
 
+[No Revert on Failure](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#no-revert-on-failure)
+- Note: this issue is already handled in the OpenZeppelin's `safeTransfer` function. Check [SafeERC20.sol#L29-L35](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/utils/SafeERC20.sol#L29-L35) and [SafeERC20.sol#L151-L177](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/utils/SafeERC20.sol#L151-L177).
+
+
 Resources
 - [Weird ERC20 Tokens](https://github.com/d-xo/weird-erc20)
 - [Token Integration Checklist](https://secure-contracts.com/development-guidelines/token_integration.html)
