@@ -29,7 +29,7 @@
 ## Toolset
 - [ ] [EasyG](../scripts/) and all the connected tools
 - [ ] [Burp Suite](#burp-suite) and all the extensions
-- [ ] [Kali Linux](https://www.kali.org/) + [install.sh](https://github.com/seeu-inspace/install.sh) since it has everything you need 
+- [ ] [Kali Linux](https://www.kali.org/) + custom scripts
 
 ## Recon
 - [ ] Identify technologies
