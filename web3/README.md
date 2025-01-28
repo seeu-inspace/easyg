@@ -28,6 +28,7 @@
   - [Unsafe casting](#unsafe-casting)
   - [Mishandling of ETH](#mishandling-of-eth)
   - [Weird ERC20s](#weird-erc20s)
+  - [Weird ERC721s](#weird-erc721s)
   - [Lack of slippage protection](#lack-of-slippage-protection)
   - [Centralization](#centralization)
   - [Failure to initialize](#failure-to-initialize)
@@ -299,6 +300,9 @@ $ cast --calldata-decode "function()" 0xa3ei7e7b # when a function has data
 $ cast send <smart_contract_address> "<function(uint256)>" <input> --rpc-url $RPC_URL --account defaultKey
 $ cast call <smart_contract_address> "<view_function()>"
 $ cast --to-base <interaction_output> dec
+
+# Install dependencies
+$ forge install
 
 # Init a new project
 $ forge init
@@ -848,6 +852,12 @@ Fee on transfer tokens
 Resources
 - [Weird ERC20 Tokens](https://github.com/d-xo/weird-erc20)
 - [Token Integration Checklist](https://secure-contracts.com/development-guidelines/token_integration.html)
+
+
+## Weird ERC721s
+
+Resources:
+- [abarbatei/weird-erc721](https://github.com/abarbatei/weird-erc721)
 
 
 ### Lack of slippage protection
