@@ -51,18 +51,34 @@ end
 
 
 
-# :: Functions to make life easier ::
+# :: Functions misc ::
 
 
 
 def adding_anew(file_tmp, file_final)
-	if File.exists?(file_tmp)
-		if system("cat #{file_tmp} | anew #{file_final}")
-			File.delete(file_tmp) if File.exists?(file_tmp)
-		else
-			puts "[\e[31m!\e[0m] Error running anew"
+	return unless File.exist?(file_tmp)
+
+	# Read existing lines from final file
+	existing_lines = Set.new
+	if File.exist?(file_final)
+		File.foreach(file_final) { |line| existing_lines.add(line.chomp) }
+	end
+
+	# Find new lines in tmp file
+	new_lines = []
+	File.foreach(file_tmp) do |line|
+		line.chomp!
+		new_lines << line unless existing_lines.include?(line)
+	end
+
+	# Append new lines to final file
+	if !new_lines.empty?
+		File.open(file_final, 'a') do |f|
+			new_lines.each { |line| f.puts(line) }
 		end
 	end
+
+	File.delete(file_tmp)
 end
 
 
@@ -75,10 +91,6 @@ def delete_if_empty(file)
 		puts "[\e[32m+\e[0m] Results added at #{file}"
 	end
 end
-
-
-
-# :: Functions misc ::
 
 
 
@@ -218,35 +230,38 @@ def process_urls(file_to_scan, output_file = nil, &block)
 	mutex = Mutex.new
 	results = []
 
-	process_in_threads(queue, num_threads) do |url|
-		response = check_url(url)
-		if response
-			result = block.call(response, url) # Process the URL using the provided block
-			if result
-				mutex.synchronize do
-					if output_file
-						File.open(output_file, 'a') { |file| file.puts(result) } # Write to file if output_file is provided
-					else
-						results << result # Store in results array if no output_file is provided
+	(1..num_threads).map do
+		Thread.new do
+			while !queue.empty?
+				url = queue.pop(true) rescue nil
+				next unless url
+
+				response = check_url(url)
+				next unless response
+
+				result = block.call(response, url)
+				if result
+					mutex.synchronize do
+						output_file ? File.write(output_file, "#{result}\n", mode: 'a') : results << result
 					end
 				end
 			end
 		end
-	end
+	end.each(&:join)
 
-	results # Return results if no output_file is provided
+	results
 end
 
 
 
-def check_url(url, retries = 3)
+def check_url(url, retries = 2)
 	uri = URI.parse(url)
 	response = nil
 
 	begin
 		http = Net::HTTP.new(uri.host, uri.port)
-		http.open_timeout = 2
-		http.read_timeout = 5
+		http.open_timeout = 3
+		http.read_timeout = 3
 
 		if uri.scheme == 'https'
 			http.use_ssl = true
@@ -536,23 +551,15 @@ end
 
 
 
-def identify_technology(file_to_scan)
-	technologies = { wp: [], drupal: [], lotus_domino: [], iis: [] }
-
-	process_urls(file_to_scan) do |response, url|
-		if is_wordpress?(response)
-			technologies[:wp] << url
-		elsif is_drupal?(response)
-			technologies[:drupal] << url
-		elsif is_lotus_domino?(response)
-			technologies[:lotus_domino] << url
-		elsif is_iis?(response)
-			technologies[:iis] << url
-		end
-		nil
-	end
-
-	technologies
+def identify_technology(response)
+	return {} unless response.is_a?(Net::HTTPSuccess)
+	body = response.body.downcase
+  
+	{
+		wp: body.include?('wordpress') || body.include?('/wp-content/'),
+		drupal: body.include?('drupal') || body.include?('/sites/all/'),
+		iis: response['Server']&.include?('IIS')
+	}
 end
 
 
@@ -807,157 +814,145 @@ end
 
 
 def assetenum_fun(params)
-
+	system "mkdir output" unless File.directory?('output')
 	file = params[:file]
+	allsubs_file = "output/allsubs_#{file}"
+	File.write(allsubs_file, "") unless File.exist?(allsubs_file)
 
-	system "mkdir output" if !File.directory?('output')
-
-	File.open(file,'r').each_line do |f|
-
+	File.open(file, 'r').each_line do |f|
 		target = f.chomp
+		next if target.empty?
 
-		#== amass ==
+		puts "\n[\e[34m*\e[0m] Starting asset enumeration for #{target}"
 
+		# Temporary files
+		amass_results = "output/#{target}_amass_results.txt"
+		subfinder_out = "output/#{target}_subfinder.txt"
+		github_out = "output/#{target}_github.txt"
+		gobuster_out = "output/#{target}_gobuster.txt"
+		final_tmp = "output/#{target}_final.tmp"
+
+		# Cleanup previous runs
+		[amass_results, subfinder_out, github_out, gobuster_out, final_tmp].each do |f|
+			File.delete(f) if File.exist?(f)
+		end
+
+		# Parallel execution setup
+		threads = []
+		mutex = Mutex.new
+
+		# Amass thread
+		threads << Thread.new do
+			amass_mode = params[:gb_opt] == "y" ? "-brute -active" : "-passive"
+			system("amass enum #{amass_mode} -d #{target} -v -dns-qps 300")
+		end
+
+		# Subfinder thread
+		threads << Thread.new do
+			system("subfinder -d #{target} -all -o #{subfinder_out}")
+		end
+
+		# GitHub subdomains thread
+		if $CONFIG['github_token'] && $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+			threads << Thread.new do
+				system("github-subdomains -t #{$CONFIG['github_token']} -d #{target} -o #{github_out}")
+			end
+		end
+
+		# Gobuster DNS thread (heavy mode only)
 		if params[:gb_opt] == "y"
-			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with amass"
-			system "amass enum -brute -active -d #{target} -v -dns-qps 300"
-			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
-		else
-			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with amass"
-			system "amass enum -passive -d #{target} -v -timeout 15 -dns-qps 300"
-			system "oam_subs -names -d #{target} | tee output/#{target}_tmp.txt"
+			threads << Thread.new do
+				system("gobuster dns -d #{target} -w all.txt -t #{$CONFIG['n_threads']} -o #{gobuster_out}")
+			end
 		end
 
-		#== subfinder ==
-		puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with subfinder"
-		system "subfinder -d #{target} -all -o output/#{target}_subfinder.txt"
+		# Wait for all parallel tasks to complete
+		threads.each(&:join)
 
-		adding_anew("output/#{target}_subfinder.txt", "output/#{target}_tmp.txt")
+		# Now query Amass database with oam_subs
+		system("oam_subs -names -d #{target} | tee #{amass_results}")
 
-		#== github-subdomains ==
-		if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with github-subdomains"
-			system "github-subdomains -t #{$CONFIG['github_token']} -d #{target} -o output/#{target}_github.txt"
-			adding_anew("output/#{target}_github.txt", "output/#{target}_tmp.txt")
-		end
-
-		#== crt.sh ==
-		puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with crt.sh"
-
-		begin
-			uri = URI.parse("https://crt.sh/?q=#{target}&output=json")
-			response = Net::HTTP.get_response(uri)
-			crtsh = JSON.parse((response.body).to_s)
-
-			crtsh_o = File.new("output/#{target}_crtsh.txt", "w")
-
-			crtsh.each do | f |
-				if !f["common_name"].nil?
-					puts f["common_name"].gsub('*.','').to_s
-					if f.include? ".#{target}"
-						crtsh_o.puts f["common_name"].gsub('*.','').to_s
-					end
+		# Merge all results
+		[amass_results, subfinder_out, github_out, gobuster_out].each do |src|
+			next unless File.exist?(src)
+			
+			File.foreach(src) do |line|
+				line.chomp!
+				next if line.empty?
+				
+				mutex.synchronize do
+					File.open(final_tmp, 'a') { |f| f.puts(line) }
 				end
 			end
-
-			crtsh_o.close unless crtsh_o.nil? or crtsh_o.closed?
-
-			adding_anew("output/#{target}_crtsh.txt", "output/#{target}_tmp.txt")
-			File.delete("output/#{target}_crtsh.txt") if File.exists?("output/#{target}_crtsh.txt")
-
-		rescue Exception => e
-			puts "[\e[31m!\e[0m] ERROR: #{e.message}"
 		end
 
-		#== gobuster ==
+		# Validate and deduplicate
+		if File.exist?(final_tmp)
+			valid_subs = File.readlines(final_tmp)
+											 .map(&:chomp)
+											 .uniq
+											 .select { |sub| IPSocket.getaddress(sub) rescue false }
 
-		if params[:gb_opt] == "y"
-
-			if !File.exists?("all.txt")
-				uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
-				response = Net::HTTP.get_response(uri)
-				alltxt = (response.body).to_s
-				File.open('all.txt', 'w') { |file| file.write(alltxt) }
-			end
-
-			puts "\n[\e[34m*\e[0m] Enumerating subdomains for #{target} with gobuster and all.txt"
-			system "gobuster dns -d #{target} -v -t #{$CONFIG['n_threads']} --no-color --wildcard -o output/#{target}_gobuster_tmp.txt -w all.txt"
-
-			gobuster_o = File.new("output/#{target}_gobuster.txt", 'w')
-			gobuster_tmp = File.open("output/#{target}_gobuster_tmp.txt",'r')
-
-			gobuster_tmp.each_line do |f|
-				if f.include? "Found: "
-					gobuster_o.puts f.gsub("Found: ","")
-				end
-			end
-
-			gobuster_tmp.close unless gobuster_tmp.nil? or gobuster_tmp.closed?
-			File.delete("output/#{target}_gobuster_tmp.txt") if File.exists?("output/#{target}_gobuster_tmp.txt")
-
-			gobuster_o.close unless gobuster_o.nil? or gobuster_o.closed?
-			adding_anew("output/#{target}_gobuster_tmp.txt", "output/#{target}_gobuster_tmp.txt")
-
+			final_file = "output/#{target}.txt"
+			File.write(final_file, valid_subs.join("\n"))
+			adding_anew(final_file, allsubs_file)
 		end
 
-		#system "amass enum -nf output/#{target}_tmp.txt -d #{target}"
-
-		#== anew final ==
-
-		puts "\n[\e[34m*\e[0m] Checking if IPs for the subdomains of #{target} exist"
-
-		allsubs_final = File.new("output/#{target}.txt", 'w')
-		allsubs_tmp = File.open("output/#{target}_tmp.txt",'r')
-
-		allsubs_tmp.each_line do |line|
-			begin
-				ip=IPSocket::getaddress(line.strip)
-			rescue
-				ip="unknown"
-			end
-
-			if ip!="unknown"
-				puts line
-				allsubs_final.puts line
-			end
-
+		# Cleanup
+		[amass_results, subfinder_out, github_out, gobuster_out, final_tmp, amass_results].each do |f|
+			File.delete(f) if File.exist?(f)
 		end
-
-		allsubs_tmp.close unless allsubs_tmp.nil? or allsubs_tmp.closed?
-		File.delete("output/#{target}_tmp.txt") if File.exists?("output/#{target}_tmp.txt")
-		allsubs_final.close unless allsubs_final.nil? or allsubs_final.closed?
-
-		puts "[\e[32m+\e[0m] Results for #{target} saved as output/#{target}.txt"
-
-		puts "\n[\e[34m*\e[0m] Adding the results for #{target} to output/allsubs_#{file}"
-		adding_anew("output/#{target}.txt","output/allsubs_#{file}")
-		puts "[\e[32m+\e[0m] Results for #{file} saved as output/allsubs_#{file}"
-
 	end
 
-	#== httpx & httprobe ==
+	# == HTTP Discovery ==
+	http_file = "output/http_#{file}"
+	temp_httpx = "output/http_#{file}_httpx.tmp"
+	temp_httprobe = "output/http_#{file}_httprobe.tmp"
+
+	File.write(http_file, "") unless File.exist?(http_file)
+
 	puts "\n[\e[34m*\e[0m] Searching for web services output/allsubs_#{file}"
-	system "cat output/allsubs_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -p 80,81,82,88,135,143,300,443,554,591,593,832,902,981,993,1010,1024,1099,1311,2077,2079,2082,2083,2086,2087,2095,2096,2222,2480,3000,3001,3002,3003,3128,3306,3333,3389,4243,4443,4567,4711,4712,4993,5000,5001,5060,5104,5108,5280,5281,5357,5432,5601,5800,5985,6379,6543,7000,7001,7170,7396,7474,7547,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8085,8088,8089,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9100,9200,9443,9502,9800,9981,9999,10000,10250,10443,11371,12345,12443,15672,16080,17778,18091,18092,20720,28017,32000,49152,55440,55672 -o output/http_#{file}"
-	system "cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 100 | anew output/http_#{file}"
-	puts "[\e[32m+\e[0m] Results saved as output/http_#{file}"
 
-	#== naabu ==
-	if params[:gb_opt] == "y"
-		puts "\n[\e[34m*\e[0m] Searching for more open ports in output/allsubs_#{file} with naabu"
-		system "naabu -v -list output/allsubs_#{file} -p - -exclude-ports 80,81,82,88,135,143,300,443,554,591,593,832,902,981,993,1010,1024,1099,1311,2077,2079,2082,2083,2086,2087,2095,2096,2222,2480,3000,3001,3002,3003,3128,3306,3333,3389,4243,4443,4567,4711,4712,4993,5000,5001,5060,5104,5108,5280,5281,5357,5432,5601,5800,5985,6379,6543,7000,7001,7170,7396,7474,7547,8000,8001,8008,8014,8042,8060,8069,8080,8081,8083,8085,8088,8089,8090,8091,8095,8118,8123,8172,8181,8222,8243,8280,8281,8333,8337,8443,8500,8834,8880,8888,8983,9000,9001,9043,9060,9080,9090,9091,9092,9100,9200,9443,9502,9800,9981,9999,10000,10250,10443,11371,12345,12443,15672,16080,17778,18091,18092,20720,28017,32000,49152,55440,55672 -c 1000 -rate 7000 -stats -o output/ports_#{file}"
-		delete_if_empty "output/ports_#{file}"
+	threads = []
+
+	threads << Thread.new do
+	  system("cat output/allsubs_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -p #{$CONFIG['ports']} -o #{temp_httpx}")
 	end
 
-	#== naabu | httpx & httprobe ==
-	if File.exists?("output/ports_#{file}")
-		puts "\n[\e[34m*\e[0m] Searching for hidden web ports in output/ports_#{file}"
-		system "cat output/ports_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -o output/http_hidden_#{file}"
-		system "cat output/ports_#{file} | httprobe | anew output/http_hidden_#{file}"
+	threads << Thread.new do
+	  system("cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 100 | tee #{temp_httprobe}")
+	end
 
-		if File.exists?("output/http_hidden_#{file}")
-			system "cat output/http_hidden_#{file}"
-			adding_anew("output/http_hidden_#{file}", "output/http_#{file}")
-			puts "[\e[32m+\e[0m] Results added to output/http_#{file}"
+	threads.each(&:join)
+
+	adding_anew(temp_httpx, http_file)
+	adding_anew(temp_httprobe, http_file)
+
+	# Cleanup
+	[temp_httpx, temp_httprobe].each { |f| File.delete(f) if File.exist?(f) }
+	puts "[\e[32m+\e[0m] Results saved as #{http_file}"
+
+	# == naabu ==
+	if params[:gb_opt] == "y"
+		puts "\n[\e[34m*\e[0m] Searching for more open ports..."
+		ports_file = "output/ports_#{file}"
+		hidden_temp = "output/http_hidden_#{file}.tmp"
+
+		system("naabu -v -list output/allsubs_#{file} -p - -exclude-ports #{$CONFIG['ports']} -c 1000 -rate 7000 -stats -o #{ports_file}")
+		delete_if_empty(ports_file)
+
+		if File.exist?(ports_file)
+			port_threads = []
+			port_threads << Thread.new { system("cat #{ports_file} | httpx-toolkit -t #{$CONFIG['n_threads']} -o #{hidden_temp}_httpx") }
+			port_threads << Thread.new { system("cat #{ports_file} | httprobe | anew #{hidden_temp}_httprobe") }
+			port_threads.each(&:join)
+
+			# Combine results
+			adding_anew("#{hidden_temp}_httpx", http_file)
+			adding_anew("#{hidden_temp}_httprobe", http_file)
+			
+			# Cleanup
+			[hidden_temp + '_httpx', hidden_temp + '_httprobe'].each { |f| File.delete(f) if File.exist?(f) }
 		end
 	end
 
@@ -969,28 +964,20 @@ def assetenum_fun(params)
 	delete_if_empty "output/interesting_subdomains_#{file}"
 
 	send_telegram_notif("Asset enumeration for #{file} finished")
-
-	# == Search for vulns ==
-	if params[:vl_opt] == "y"
-		base_url_s4v "output/http_#{file}"
-	end
-
 end
 
 
 
 def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
 	urls = File.readlines(params[:file]).map(&:chomp)
+	queue = Queue.new
+	urls.each { |url| queue << url }
 
 	i = 0
 	image_paths = []
 	successful_urls = []
-	queue = Queue.new
-
-	urls.each { |url| queue << url }
-
-	system "mkdir output" if !File.directory?('output')
-	system "mkdir output/webscreen" if !File.directory?('output/webscreen')
+	
+	system "mkdir -p output/webscreen"
 
 	options = Selenium::WebDriver::Chrome::Options.new
 	options.add_argument('--ignore-certificate-errors')
@@ -998,70 +985,70 @@ def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads
 	options.add_argument('--disable-translate')
 	options.add_argument('--ignore-certificate-errors-spki-list')
 	options.add_argument('--window-size=2560,1440')
-	options.add_argument('--headless')
+	options.add_argument('--headless=new')
+	options.add_argument('--disable-gpu')
+	options.add_argument('--no-sandbox')
 
 	mutex = Mutex.new
 	workers = []
 
 	num_threads.times do
 		workers << Thread.new do
-			driver = Selenium::WebDriver.for :chrome, options: options
+			begin
+				driver = Selenium::WebDriver.for(:chrome, options: options)
+				
+				while !queue.empty? && url = queue.pop(true) rescue nil
+					begin
+						driver.navigate.to(url)
+						sleep 1
 
-			while !queue.empty? && url = queue.pop(true) rescue nil
-				begin
-					driver.navigate.to url
+						sanitized = url.gsub(/[^\w\.-]/, '_')[0..150]
+						image_path = "output/webscreen/#{sanitized}.png"
 
-					image_path = "output/webscreen/#{url.gsub(/[^\w\s]/, '_')}.png"
-					driver.save_screenshot(image_path)
+						driver.save_screenshot(image_path)
 
-					mutex.synchronize do
-						i += 1
-						puts "[\e[32m#{i}\e[0m] Screenshot saved as: #{image_path}"
-						image_paths << image_path
-						successful_urls << url
-					end
-				rescue Exception => e
-					mutex.synchronize do
-						puts "[\e[31m#{i}\e[0m] ERROR while trying to take a screenshot of #{url}: #{e.message}"
+						mutex.synchronize do
+							i += 1
+							puts "[\e[32m#{i}\e[0m] Screenshot: #{image_path}"
+							image_paths << image_path
+							successful_urls << url
+						end
+					rescue => e
+						mutex.synchronize do
+							puts "[\e[31m!\e[0m] Error on #{url}: #{e.message.gsub(/\n/, ' ')}"
+						end
 					end
 				end
+				
+			ensure
+				driver.quit if defined?(driver) && driver
 			end
-
-			driver.quit
 		end
 	end
 
 	workers.each(&:join)
 
-	# Create an HTML gallery with all the screenshots
+	# HTML gallery creation
 	File.open('output/gallery.html', 'w') do |html|
-		html.write('<!DOCTYPE html>')
-		html.write('<html lang="en">')
-		html.write('<head>')
-		html.write('<meta charset="UTF-8">')
-		html.write('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-		html.write('<title>EasyG Web Screenshots Gallery</title>')
-		html.write('<style>')
-		html.write('.screenshot { margin: 5px; border: 1px solid #ccc; float: left; width: 180px; }')
-		html.write('.screenshot:hover { border: 1px solid #777; }')
-		html.write('.screenshot img { width: 100%; height: auto; }')
-		html.write('.screenshot-desc { padding: 15px; text-align: center; }')
-		html.write('</style>')
-		html.write('</head>')
-		html.write('<body>')
-
-		image_paths.each_with_index do |path, index|
-			html.write('<div class="screenshot">')
-			html.write("<a href=\"#{path.gsub('output/', '')}\" target=_blank>")
-			html.write("<img src=\"#{path.gsub('output/', '')}\" alt=\"Screenshot #{successful_urls[index]}\" width=\"600\" height=\"400\">")
-			html.write("</a>")
-			html.write("<div class=\"screenshot-desc\"><b>URL:</b> <a href=\"#{successful_urls[index]}\" target=_blank>#{successful_urls[index]}</a></div>")
-			html.write('</div>')
+		html.write('<!DOCTYPE html><html><head><title>Screenshots</title>')
+		html.write('<style>.screenshot{margin:10px;float:left;width:300px;}</style>')
+		html.write('</head><body>')
+		
+		image_paths.each_with_index do |path, idx|
+			html.write(%Q(
+				<div class="screenshot">
+					<a href="#{path}" target="_blank">
+						<img src="#{path}" width="280" alt="#{successful_urls[idx]}">
+					</a>
+					<div>#{successful_urls[idx]}</div>
+				</div>
+			))
 		end
-
-		html.write('</body>')
-		html.write('</html>')
+		
+		html.write('</body></html>')
 	end
+
+	puts "[\e[32m+\e[0m] Gallery created: output/gallery.html"
 end
 
 
