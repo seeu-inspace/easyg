@@ -57,8 +57,11 @@ end
 
 def adding_anew(file_tmp, file_final)
 	if File.exists?(file_tmp)
-		system "cat #{file_tmp} | anew #{file_final}"
-		File.delete(file_tmp) if File.exists?(file_tmp)
+		if system("cat #{file_tmp} | anew #{file_final}")
+			File.delete(file_tmp) if File.exists?(file_tmp)
+		else
+			puts "[\e[31m!\e[0m] Error running anew"
+		end
 	end
 end
 
@@ -79,8 +82,22 @@ end
 
 
 
-def request_fun(uri)
+def process_in_threads(queue, num_threads, &block)
+	total_items = queue.size
+	processed_items = 0
+	
+	process_in_threads(queue, num_threads) do |item|
+		mutex.synchronize do
+			processed_items += 1
+			progress = (processed_items.to_f / total_items) * 100
+			puts "Progress: #{progress.round(2)}%"
+		end
+	end
+end
 
+
+
+def request_fun(uri)
 	proxy_host = $CONFIG['proxy_addr']
 	proxy_port = $CONFIG['proxy_port']
 
@@ -105,7 +122,6 @@ def request_fun(uri)
 	end
 
 	return res
-
 end
 
 
@@ -191,15 +207,46 @@ end
 
 # :: Functions to check URLs ::
 
+
+
+def process_urls(file_to_scan, output_file = nil, &block)
+	queue = Queue.new
+	urls = File.readlines(file_to_scan).map(&:strip).reject(&:empty?)
+	urls.each { |url| queue << url }
+
+	num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min
+	mutex = Mutex.new
+	results = []
+
+	process_in_threads(queue, num_threads) do |url|
+		response = check_url(url)
+		if response
+			result = block.call(response, url) # Process the URL using the provided block
+			if result
+				mutex.synchronize do
+					if output_file
+						File.open(output_file, 'a') { |file| file.puts(result) } # Write to file if output_file is provided
+					else
+						results << result # Store in results array if no output_file is provided
+					end
+				end
+			end
+		end
+	end
+
+	results # Return results if no output_file is provided
+end
+
+
+
 def check_url(url, retries = 3)
 	uri = URI.parse(url)
 	response = nil
 
 	begin
-		# Set up HTTP object with timeouts
 		http = Net::HTTP.new(uri.host, uri.port)
-		http.open_timeout = 5	# seconds for opening the connection
-		http.read_timeout = 10  # seconds for reading the response
+		http.open_timeout = 2
+		http.read_timeout = 5
 
 		if uri.scheme == 'https'
 			http.use_ssl = true
@@ -207,8 +254,6 @@ def check_url(url, retries = 3)
 		end
 
 		request = Net::HTTP::Get.new(uri.request_uri)
-
-		# Perform the request
 		response = http.request(request)
 
 	rescue Timeout::Error, Errno::ETIMEDOUT, Net::OpenTimeout => e
@@ -236,38 +281,10 @@ end
 
 # Get a file containing URLs, check for their status code with check_url
 # If the status code is the one desired, creates a new file containing the results
-def process_urls_for_code(file_to_scan, output_file, status_code, num_threads = $CONFIG['n_threads'])
-	queue = Queue.new
-
-	# Load all URLs into the queue
-	File.foreach(file_to_scan) do |url|
-		url.strip!
-		queue << url unless url.empty?
+def process_urls_for_code(file_to_scan, output_file, status_code)
+	process_urls(file_to_scan, output_file) do |response, url|
+		url if response.code.to_i == status_code
 	end
-
-	File.open(output_file, 'w') do |output|
-		mutex = Mutex.new
-
-		workers = Array.new(num_threads) do
-			Thread.new do
-				while !queue.empty? && url = queue.pop(true) rescue nil
-					response = check_url(url)
-					if response && response.code.to_i == status_code
-						mutex.synchronize do
-							output.puts(url)
-							puts url
-						end
-					end
-				end
-			end
-		end
-
-		workers.each(&:join)
-	end
-
-rescue Exception => e
-	puts "[\e[31m!\e[0m] ERROR: #{e.message}"
-
 end
 
 
@@ -388,6 +405,7 @@ end
 
 
 
+
 def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	puts "[\e[34m*\e[0m] Starting URL cleaning process..."
 
@@ -423,40 +441,24 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	# Step 6: Remove dead links and 404 URLs
 	puts "[\e[34m*\e[0m] Checking for dead links and 404 URLs..."
-	queue = Queue.new
-	filtered_urls.each { |url| queue << url }
-
-	live_urls = []
-	mutex = Mutex.new
-
-	workers = Array.new(num_threads) do
-		Thread.new do
-			until queue.empty?
-				url = queue.pop(true) rescue nil
-				next unless url
-
-				response = check_url(url)
-				if response && response.is_a?(Net::HTTPSuccess)
-					mutex.synchronize { live_urls << url }
-					puts "[\e[32m+\e[0m] Alive URL: #{url}"
-				elsif response && response.code.to_i == 404
-					puts "[\e[31m+\e[0m] 404 Not Found: #{url}"
-				else
-					puts "[\e[31m+\e[0m] Dead URL: #{url}"
-				end
-			end
+	live_urls = process_urls(file_path) do |response, url|
+		if response.is_a?(Net::HTTPSuccess)
+			puts "[\e[32m+\e[0m] Alive URL: #{url}"
+			url
+		elsif response.code.to_i == 404
+			puts "[\e[31m+\e[0m] 404 Not Found: #{url}"
+			nil
+		else
+			puts "[\e[31m+\e[0m] Dead URL: #{url}"
+			nil
 		end
 	end
-
-	workers.each(&:join)
 
 	# Step 7: Overwrite the input file with the cleaned URLs
 	puts "[\e[34m*\e[0m] Writing cleaned URLs to file..."
 	File.open(file_path, 'w') { |file| file.puts(live_urls) }
 	puts "[\e[32m+\e[0m] Cleaned URLs written to #{file_path}"
-
 end
-
 
 
 
@@ -534,39 +536,21 @@ end
 
 
 
-def identify_technology(file_to_scan, num_threads = $CONFIG['n_threads'])
-	queue = Queue.new
+def identify_technology(file_to_scan)
 	technologies = { wp: [], drupal: [], lotus_domino: [], iis: [] }
 
-	File.foreach(file_to_scan) do |url|
-		url.strip!
-		queue << url unless url.empty?
-	end
-
-	mutex = Mutex.new
-
-	workers = Array.new(num_threads) do
-		Thread.new do
-			while !queue.empty? && (url = queue.pop(true) rescue nil)
-				next unless url
-				response = check_url(url)
-
-				if response
-					if is_wordpress?(response)
-						mutex.synchronize { technologies[:wp] << url }
-					elsif is_drupal?(response)
-						mutex.synchronize { technologies[:drupal] << url }
-					elsif is_lotus_domino?(response)
-						mutex.synchronize { technologies[:lotus_domino] << url }
-					elsif is_iis?(response)
-						mutex.synchronize { technologies[:iis] << url }
-					end
-				end
-			end
+	process_urls(file_to_scan) do |response, url|
+		if is_wordpress?(response)
+			technologies[:wp] << url
+		elsif is_drupal?(response)
+			technologies[:drupal] << url
+		elsif is_lotus_domino?(response)
+			technologies[:lotus_domino] << url
+		elsif is_iis?(response)
+			technologies[:iis] << url
 		end
+		nil
 	end
-
-	workers.each(&:join)
 
 	technologies
 end
@@ -609,7 +593,7 @@ def base_url_s4v(file)
 	puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
 	tech_identified = identify_technology(file)
 
-	# write all the techs identified
+	# Write all the techs identified
 	File.open("output/#{file_sanitized}_tech_identified.txt", 'w') do |file|
 		tech_identified.each do |tech, urls|
 			next if urls.empty?
@@ -676,7 +660,7 @@ end
 
 
 
-def search_for_vulns(params, num_threads = $CONFIG['n_threads'])
+def search_for_vulns(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
 
 	file_to_scan = params[:file]
 
@@ -768,7 +752,7 @@ end
 
 
 
-def get_to_burp_fun(params, num_threads = $CONFIG['n_threads'])
+def get_to_burp_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
 	queue = Queue.new
 	mutex = Mutex.new
 
@@ -995,7 +979,7 @@ end
 
 
 
-def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
+def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
 	urls = File.readlines(params[:file]).map(&:chomp)
 
 	i = 0
@@ -1114,7 +1098,7 @@ def crawl_local_fun(params)
 		puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
 	end
 
-	# waymore
+	# Waymore
 	
 	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
@@ -1122,6 +1106,7 @@ def crawl_local_fun(params)
 		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
 		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
 		sleep(30)
+		remove_using_scope(file, "output/#{target}_waymore.txt")
 		clean_urls "output/#{target}_waymore.txt"
 		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
 		sleep(30)
@@ -1133,6 +1118,7 @@ def crawl_local_fun(params)
 		File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
 			target = f.strip
 			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
+			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
 			clean_urls "output/github-endpoints_#{file_sanitized}"
 			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 		end
@@ -1140,8 +1126,9 @@ def crawl_local_fun(params)
 
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
-	system "cat output/allUrls_#{file_sanitized} | grep '\\.js$' | tee output/_tmpAllJSUrls_#{file_sanitized}"
+	system "cat output/allUrls_#{file_sanitized} | grep \"\\.js$\" | tee output/_tmpAllJSUrls_#{file_sanitized}"
 	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | anew output/_tmpAllJSUrls_#{file_sanitized}"
+	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
 	clean_urls "output/_tmpAllJSUrls_#{file_sanitized}"
 	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/allUrls_#{file_sanitized}"
 
