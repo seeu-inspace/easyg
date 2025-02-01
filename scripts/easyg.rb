@@ -94,21 +94,6 @@ end
 
 
 
-def process_in_threads(queue, num_threads, &block)
-	total_items = queue.size
-	processed_items = 0
-	
-	process_in_threads(queue, num_threads) do |item|
-		mutex.synchronize do
-			processed_items += 1
-			progress = (processed_items.to_f / total_items) * 100
-			puts "Progress: #{progress.round(2)}%"
-		end
-	end
-end
-
-
-
 def request_fun(uri)
 	proxy_host = $CONFIG['proxy_addr']
 	proxy_port = $CONFIG['proxy_port']
