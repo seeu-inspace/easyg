@@ -79,7 +79,7 @@ def adding_anew(file_tmp, file_final)
 		end
 	end
 
-	FileUtils.rm_f(final_tmp)
+	FileUtils.rm_f(file_tmp)
 end
 
 
@@ -423,7 +423,10 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	# Step 5: Remove URLs with only tracking parameters
 	puts "[\e[34m*\e[0m] Removing URLs with only tracking parameters..."
-	filtered_urls.reject! { |url| contains_only_tracking_params?(url) }
+	filtered_urls.reject! do |url|
+		next false unless url.include?('?')
+		contains_only_tracking_params?(url)
+	end
 	puts "[\e[32m+\e[0m] URLs with only tracking parameters removed"
 
 	# Step 6: Remove dead links and 404 URLs
@@ -618,16 +621,7 @@ def assetenum_fun(params)
 
 		# Merge all results
 		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out].each do |src|
-			next unless File.exist?(src)
-			
-			File.foreach(src) do |line|
-				line.chomp!
-				next if line.empty?
-				
-				mutex.synchronize do
-					File.open(final_tmp, 'a') { |f| f.puts(line) }
-				end
-			end
+			adding_anew(src, final_tmp)
 		end
 
 		# Validate and deduplicate
@@ -636,16 +630,12 @@ def assetenum_fun(params)
 							.map(&:chomp)
 							.uniq
 							.select { |sub| IPSocket.getaddress(sub) rescue false }
-
 			final_file = "output/#{target}.txt"
 			File.write(final_file, valid_subs.join("\n"))
+			FileUtils.rm_f(final_tmp)
 			adding_anew(final_file, allsubs_file)
 		end
 
-		# Cleanup
-		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
-			FileUtils.rm_f(f)
-		end
 	end
 
 	# == HTTP Discovery ==
@@ -687,9 +677,7 @@ def assetenum_fun(params)
 			# Combine results
 			adding_anew("#{hidden_temp}_httpx", http_file)
 			adding_anew("#{hidden_temp}_httprobe", http_file)
-			
-			# Cleanup
-			[hidden_temp + '_httpx', hidden_temp + '_httprobe'].each { |f| FileUtils.rm_f(f) }
+
 		end
 	end
 
@@ -795,58 +783,84 @@ def crawl_local_fun(params)
 	file = params[:file]
 	file_sanitized = file.gsub("/", "")
 	target_tmp = ""
-
 	FileUtils.mkdir_p('output')
 
-	File.open(file,'r').each_line do |f|
-		target = Shellwords.escape(f.chomp)
-		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
+	targets = File.readlines(file).map(&:chomp)
+	target_queue = Queue.new
+	targets.each { |t| target_queue << t }
+	mutex = Mutex.new
 
-		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
-		system "katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o output/#{target_sanitized}_tmp.txt"
+	# Thread pool for target processing
+	target_threads = Array.new([targets.size, Etc.nprocessors].min) do
+		Thread.new do
+			while !target_queue.empty? && target = target_queue.pop(true) rescue nil
+				target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/', '')
+				target_tmp = target_sanitized
 
-		puts "\n[\e[34m*\e[0m] Crawling #{target} with gau\n"
-		system "echo #{target}| gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bpm,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o output/#{target_sanitized}_gau.txt"
-		adding_anew("output/#{target_sanitized}_gau.txt", "output/#{target_sanitized}_tmp.txt")
+				# Run katana and gau in parallel
+				katana_file = "output/#{target_sanitized}_tmp.txt"
+				gau_file = "output/#{target_sanitized}_gau.txt"
 
-		if target_sanitized != target_tmp
-			puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target_sanitized} with ParamSpider\n"
-			system "paramspider -d #{target_sanitized}"
+				threads = []
+				threads << Thread.new do
+					system("katana -u #{Shellwords.escape(target)} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o #{katana_file}")
+				end
+
+				threads << Thread.new do
+					system("echo #{Shellwords.escape(target)} | gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bmp,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o #{gau_file}")
+				end
+
+				threads.each(&:join)
+
+				# Merge results
+				mutex.synchronize do
+					adding_anew(gau_file, katana_file)
+				end
+
+				# ParamSpider
+				unless target_sanitized == target_tmp
+					system("paramspider -d #{target_sanitized}")
+					adding_anew("results/#{target_sanitized}.txt", katana_file)
+				end
+
+				# Clean and merge
+				mutex.synchronize do
+					clean_urls(katana_file)
+					adding_anew(katana_file, "output/allUrls_#{file_sanitized}")
+					puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
+				end
+			end
 		end
-		target_tmp = target_sanitized
-		adding_anew("results/#{target_sanitized}.txt", "output/#{target_sanitized}_tmp.txt")
-		
-		puts ""
-		clean_urls "output/#{target_sanitized}_tmp.txt"
-		adding_anew("output/#{target_sanitized}_tmp.txt","output/allUrls_#{file_sanitized}")
-		puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
 	end
+	target_threads.each(&:join)
 
-	# Waymore
-	
 	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
-	File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
-		target = f.strip
-		puts "\n[\e[34m*\e[0m] Finding more endpoints for #{target} with WayMore\n"
-		system "waymore -i #{target} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU output/#{target}_waymore.txt"
-		sleep(30)
-		remove_using_scope(file, "output/#{target}_waymore.txt")
-		clean_urls "output/#{target}_waymore.txt"
-		adding_anew("output/#{target}_waymore.txt","output/allUrls_#{file_sanitized}")
-		sleep(30)
-	end
-	
-	# Find new URLS from Github using github-endpoints.py
-	if !$CONFIG['github_token'].nil? || $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-		puts "\n[\e[34m*\e[0m] Finding more endpoints with github-endpoints.py"
-		File.open("output/_tmp_domains_#{file_sanitized}",'r').each_line do |f|
-			target = f.strip
-			system "python ~/Tools/web-attack/github-search/github-endpoints.py -d #{target} -t #{$CONFIG['github_token']} | tee output/github-endpoints_#{file_sanitized}"
-			remove_using_scope(file, "output/github-endpoints_#{file_sanitized}")
-			clean_urls "output/github-endpoints_#{file_sanitized}"
-			adding_anew("output/github-endpoints_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
+	domains = File.readlines("output/_tmp_domains_#{file_sanitized}").map(&:chomp)
+	domain_queue = Queue.new
+	domains.each { |d| domain_queue << d }
+  
+	domain_threads = Array.new([domains.size, Etc.nprocessors].min) do
+	  Thread.new do
+		while !domain_queue.empty? && domain = domain_queue.pop(true) rescue nil
+		  # Waymore processing
+		  waymore_file = "output/#{domain}_waymore.txt"
+		  system("waymore -i #{domain} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU #{waymore_file}")
+		  remove_using_scope(file, waymore_file)
+		  clean_urls(waymore_file)
+		  mutex.synchronize { adding_anew(waymore_file, "output/allUrls_#{file_sanitized}") }
+  
+		  # GitHub endpoints processing
+		  if $CONFIG['github_token'] && $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+			github_file = "output/github-endpoints_#{domain}.txt"
+			system("python ~/Tools/web-attack/github-search/github-endpoints.py -d #{domain} -t #{$CONFIG['github_token']} | tee #{github_file}")
+			remove_using_scope(file, github_file)
+			clean_urls(github_file)
+			mutex.synchronize { adding_anew(github_file, "output/allUrls_#{file_sanitized}") }
+		  end
 		end
+	  end
 	end
+	domain_threads.each(&:join)
 
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
@@ -867,13 +881,12 @@ def crawl_local_fun(params)
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
-	FileUtils.rm_f("output/allJSUrls_#{file_sanitized}")
 
 	# Final
 	FileUtils.rm_f("output/_tmp_domains_#{file_sanitized}")
 	FileUtils.rm_f("output/tmp_scope.txt")
 	FileUtils.rm_f("parameters.txt")
-	system "rm -rf results/"
+	FileUtils.rm_rf("results/")
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
