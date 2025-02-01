@@ -9,6 +9,7 @@ require 'thread'
 require 'set'
 require 'webdrivers'
 require 'selenium-webdriver'
+require 'fileutils'
 
 $CONFIG = YAML.load_file('config.yaml')
 
@@ -78,15 +79,15 @@ def adding_anew(file_tmp, file_final)
 		end
 	end
 
-	File.delete(file_tmp)
+	FileUtils.rm_f(final_tmp)
 end
 
 
 
 def delete_if_empty(file)
-	if !File.exists?(file) || File.zero?(file)
+	if !File.exist?(file) || File.zero?(file)
 		puts "[\e[36m+\e[0m] No result found"
-		File.delete(file) if File.exists?(file)
+		FileUtils.rm_f(file)
 	else
 		puts "[\e[32m+\e[0m] Results added at #{file}"
 	end
@@ -135,13 +136,17 @@ def extract_main_domains(input_file, output_file)
 			host = uri.host&.downcase
 			next if host.nil? || host.empty?
 
+			# Special case handling for country-code TLDs
 			parts = host.split('.')
 
+			# IP address or single-word domain
 			main_domain = if parts.length == 1 || host.match?(/\A\d{1,3}(\.\d{1,3}){3}\z/)
 				host
 			elsif parts[-2].match?(/^(co|com|org|net|gov|edu|ac)$/) && parts.length > 2
+				# Handle special TLD patterns (e.g. .co.uk, .ac.jp)
 				"#{parts[-3]}.#{parts[-2]}.#{parts[-1]}"
 			else
+				# Standard domain format
 				"#{parts[-2]}.#{parts[-1]}"
 			end
 
@@ -201,39 +206,6 @@ end
 
 
 
-def process_urls(file_to_scan, output_file = nil, &block)
-	queue = Queue.new
-	urls = File.readlines(file_to_scan).map(&:strip).reject(&:empty?)
-	urls.each { |url| queue << url }
-
-	num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min
-	mutex = Mutex.new
-	results = []
-
-	(1..num_threads).map do
-		Thread.new do
-			while !queue.empty?
-				url = queue.pop(true) rescue nil
-				next unless url
-
-				response = check_url(url)
-				next unless response
-
-				result = block.call(response, url)
-				if result
-					mutex.synchronize do
-						output_file ? File.write(output_file, "#{result}\n", mode: 'a') : results << result
-					end
-				end
-			end
-		end
-	end.each(&:join)
-
-	results
-end
-
-
-
 def check_url(url, retries = 2)
 	uri = URI.parse(url)
 	response = nil
@@ -270,6 +242,39 @@ def check_url(url, retries = 2)
 	end
 
 	response
+end
+
+
+
+def process_urls(file_to_scan, output_file = nil, &block)
+	queue = Queue.new
+	urls = File.readlines(file_to_scan).map(&:strip).reject(&:empty?)
+	urls.each { |url| queue << url }
+
+	num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min
+	mutex = Mutex.new
+	results = []
+
+	(1..num_threads).map do
+		Thread.new do
+			while !queue.empty?
+				url = queue.pop(true) rescue nil
+				next unless url
+
+				response = check_url(url)
+				next unless response
+
+				result = block.call(response, url)
+				if result
+					mutex.synchronize do
+						output_file ? File.write(output_file, "#{result}\n", mode: 'a') : results << result
+					end
+				end
+			end
+		end
+	end.each(&:join)
+
+	results
 end
 
 
@@ -315,6 +320,9 @@ def file_sanitization(file_path)
 			begin
 				uri = URI.parse(line)
 
+				# Encodes URL components while preserving existing percent-encoding:
+				# - Splits segments like "%20" to avoid double-encoding
+				# - Handles path, query, and fragment separately
 				encode_component = ->(component) {
 					component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }
 									 .split(/(%[0-9A-Fa-f]{2})/)
@@ -390,7 +398,11 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	# Step 2: Filter only valid URLs using sed
 	puts "[\e[34m*\e[0m] Filtering valid URLs..."
-	system "sed -i -E '/^(http|https):/!d' #{file_path}"
+	filtered = []
+	File.foreach(file_path) do |line|
+		filtered << line if line.match?(/^(http|https):/)
+	end
+	File.write(file_path, filtered.join)
 
 	# Step 3: Process the file with urless to deduplicate URLs
 	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
@@ -524,13 +536,13 @@ end
 
 
 def assetenum_fun(params)
-	system "mkdir output" unless File.directory?('output')
+	FileUtils.mkdir_p('output')
 	file = params[:file]
 	allsubs_file = "output/allsubs_#{file}"
 	File.write(allsubs_file, "") unless File.exist?(allsubs_file)
 
 	File.open(file, 'r').each_line do |f|
-		target = f.chomp
+		target = Shellwords.escape(f.chomp)
 		next if target.empty?
 
 		puts "\n[\e[34m*\e[0m] Starting asset enumeration for #{target}"
@@ -545,7 +557,7 @@ def assetenum_fun(params)
 
 		# Cleanup previous runs
 		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
-			File.delete(f) if File.exist?(f)
+			FileUtils.rm_f(f)
 		end
 
 		# Parallel execution setup
@@ -632,7 +644,7 @@ def assetenum_fun(params)
 
 		# Cleanup
 		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
-			File.delete(f) if File.exist?(f)
+			FileUtils.rm_f(f)
 		end
 	end
 
@@ -646,22 +658,15 @@ def assetenum_fun(params)
 	puts "\n[\e[34m*\e[0m] Searching for web services output/allsubs_#{file}"
 
 	threads = []
-
-	threads << Thread.new do
-	  system("cat output/allsubs_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -p #{$CONFIG['ports']} -o #{temp_httpx}")
-	end
-
-	threads << Thread.new do
-	  system("cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 100 | tee #{temp_httprobe}")
-	end
-
+	threads << Thread.new { system("cat output/allsubs_#{file} | httpx-toolkit -t #{$CONFIG['n_threads']} -p #{$CONFIG['ports']} -o #{temp_httpx}") }
+	threads << Thread.new { system("cat output/allsubs_#{file} | httprobe -p http:81 -p http:3000 -p https:3000 -p http:3001 -p https:3001 -p http:8000 -p http:8080 -p https:8443 -c 100 | tee #{temp_httprobe}") }
 	threads.each(&:join)
 
 	adding_anew(temp_httpx, http_file)
 	adding_anew(temp_httprobe, http_file)
 
 	# Cleanup
-	[temp_httpx, temp_httprobe].each { |f| File.delete(f) if File.exist?(f) }
+	[temp_httpx, temp_httprobe].each { |f| FileUtils.rm_f(f) }
 	puts "[\e[32m+\e[0m] Results saved as #{http_file}"
 
 	# == naabu ==
@@ -684,7 +689,7 @@ def assetenum_fun(params)
 			adding_anew("#{hidden_temp}_httprobe", http_file)
 			
 			# Cleanup
-			[hidden_temp + '_httpx', hidden_temp + '_httprobe'].each { |f| File.delete(f) if File.exist?(f) }
+			[hidden_temp + '_httpx', hidden_temp + '_httprobe'].each { |f| FileUtils.rm_f(f) }
 		end
 	end
 
@@ -709,7 +714,7 @@ def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads
 	image_paths = []
 	successful_urls = []
 	
-	system "mkdir -p output/webscreen"
+	FileUtils.mkdir_p('output/webscreen')
 
 	options = Selenium::WebDriver::Chrome::Options.new
 	options.add_argument('--ignore-certificate-errors')
@@ -791,10 +796,10 @@ def crawl_local_fun(params)
 	file_sanitized = file.gsub("/", "")
 	target_tmp = ""
 
-	system "mkdir output" if !File.directory?('output')
+	FileUtils.mkdir_p('output')
 
 	File.open(file,'r').each_line do |f|
-		target = f.chomp
+		target = Shellwords.escape(f.chomp)
 		target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/','')
 
 		puts "\n[\e[34m*\e[0m] Crawling #{target} with katana\n"
@@ -853,7 +858,7 @@ def crawl_local_fun(params)
 
 	# Just keep it 200 for JS files
 	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
-	File.delete("output/_tmpAllJSUrls_#{file_sanitized}") if File.exists?("output/_tmpAllJSUrls_#{file_sanitized}")
+	FileUtils.rm_f("output/_tmpAllJSUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
@@ -862,12 +867,12 @@ def crawl_local_fun(params)
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
-	File.delete("output/allJSUrls_#{file_sanitized}") if File.exists?("output/allJSUrls_#{file_sanitized}")
+	FileUtils.rm_f("output/allJSUrls_#{file_sanitized}")
 
 	# Final
-	File.delete("output/_tmp_domains_#{file_sanitized}") if File.exists?("output/_tmp_domains_#{file_sanitized}")
-	File.delete("output/tmp_scope.txt") if File.exists?("output/tmp_scope.txt")
-	File.delete("parameters.txt") if File.exists?("parameters.txt")
+	FileUtils.rm_f("output/_tmp_domains_#{file_sanitized}")
+	FileUtils.rm_f("output/tmp_scope.txt")
+	FileUtils.rm_f("parameters.txt")
 	system "rm -rf results/"
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
