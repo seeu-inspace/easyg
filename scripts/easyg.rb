@@ -670,7 +670,7 @@ def assetenum_fun(params)
 		if File.exist?(ports_file)
 			port_threads = []
 			port_threads << Thread.new { system("cat #{ports_file} | httpx-toolkit -t #{$CONFIG['n_threads']} -o #{hidden_temp}_httpx") }
-			port_threads << Thread.new { system("cat #{ports_file} | httprobe | anew #{hidden_temp}_httprobe") }
+			port_threads << Thread.new { system("cat #{ports_file} | httprobe | tee #{hidden_temp}_httprobe") }
 			port_threads.each(&:join)
 
 			# Combine results
