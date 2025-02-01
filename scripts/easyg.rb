@@ -125,38 +125,33 @@ end
 
 def extract_main_domains(input_file, output_file)
 	domains = Set.new
-	
-	def extract_main_domain(url)
-		begin
-			uri = URI.parse(url)
-			host = uri.host&.downcase
-			return nil if host.nil? || host.empty?
-
-			parts = host.split('.')
-
-			return host if parts.length == 1 || host.match?(/\A\d{1,3}(\.\d{1,3}){3}\z/)
-
-			if parts[-2].match?(/^(co|com|org|net|gov|edu|ac)$/) && parts.length > 2
-				return "#{parts[-3]}.#{parts[-2]}.#{parts[-1]}"
-			else
-				return "#{parts[-2]}.#{parts[-1]}"
-			end
-		rescue URI::InvalidURIError
-			nil
-		end
-	end
 
 	File.open(input_file, 'r').each_line do |line|
 		line.strip!
 		next if line.empty?
 
-		domain = extract_main_domain(line)
-		domains.add(domain) unless domain.nil?
+		begin
+			uri = URI.parse(line)
+			host = uri.host&.downcase
+			next if host.nil? || host.empty?
+
+			parts = host.split('.')
+
+			main_domain = if parts.length == 1 || host.match?(/\A\d{1,3}(\.\d{1,3}){3}\z/)
+				host
+			elsif parts[-2].match?(/^(co|com|org|net|gov|edu|ac)$/) && parts.length > 2
+				"#{parts[-3]}.#{parts[-2]}.#{parts[-1]}"
+			else
+				"#{parts[-2]}.#{parts[-1]}"
+			end
+
+			domains.add(main_domain)
+		rescue URI::InvalidURIError
+			next
+		end
 	end
 
-	File.open(output_file, 'w') do |file|
-		domains.each { |domain| file.puts(domain) }
-	end
+	File.open(output_file, 'w') { |file| domains.each { |domain| file.puts(domain) } }
 end
 
 
@@ -307,61 +302,41 @@ end
 
 
 
-def remove_ansi(file_path)
-	unless File.exists?(file_path)
-		puts "[\e[31m+\e[0m] File not found: #{file_path}"
-		return
-	end
-
-	sed_command = "sed -r -i -e 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g' #{file_path}"
-
-	unless system(sed_command)
-		puts "[\e[31m!\e[0m] Error processing file"
-	end
-end
-
-
-
 def file_sanitization(file_path)
-	unless File.exists?(file_path)
-		puts "[\e[31m+\e[0m] File not found: #{file_path}"
-		return
-	end
+	return puts "[\e[31m+\e[0m] File not found: #{file_path}" unless File.exist?(file_path)
 
 	sanitized_lines = []
 
-	def sanitize_url(url)
-		uri = URI.parse(url)
-	
-		def encode_component(component)
-			component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }.split(/(%[0-9A-Fa-f]{2})/).map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }.join
-		end
-
-		encoded_path = uri.path.split('/').map { |segment| encode_component(segment) }.join('/')
-		encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component(part) }.join('=') }.join('&') : nil
-		encoded_fragment = uri.fragment ? encode_component(uri.fragment) : nil
-
-		begin
-			URI::Generic.build(
-				scheme: uri.scheme,
-				userinfo: uri.user,
-				host: uri.host,
-				port: uri.port,
-				path: encoded_path,
-				query: encoded_query,
-				fragment: encoded_fragment
-			).to_s
-		rescue => e
-			return nil
-		end
-	
-	end
-
 	File.foreach(file_path) do |line|
 		line.strip!
+		next if line.empty?
+
 		if line.start_with?("http")
 			begin
-				sanitized_lines << sanitize_url(line)
+				uri = URI.parse(line)
+
+				encode_component = ->(component) {
+					component.gsub(/%[0-9A-Fa-f]{2}/) { |match| match }
+									 .split(/(%[0-9A-Fa-f]{2})/)
+									 .map { |segment| segment.match?(/%[0-9A-Fa-f]{2}/) ? segment : URI.encode_www_form_component(segment).gsub('%', '%25') }
+									 .join
+				}
+
+				encoded_path = uri.path.split('/').map { |segment| encode_component.call(segment) }.join('/')
+				encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component.call(part) }.join('=') }.join('&') : nil
+				encoded_fragment = uri.fragment ? encode_component.call(uri.fragment) : nil
+
+				sanitized_url = URI::Generic.build(
+					scheme: uri.scheme,
+					userinfo: uri.user,
+					host: uri.host,
+					port: uri.port,
+					path: encoded_path,
+					query: encoded_query,
+					fragment: encoded_fragment
+				).to_s
+
+				sanitized_lines << sanitized_url
 			rescue URI::InvalidURIError
 				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
 			end
