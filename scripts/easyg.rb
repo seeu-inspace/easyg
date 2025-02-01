@@ -937,21 +937,9 @@ end
 
 # Define a hash to map options to actions and descriptions
 option_actions = {
-	"firefox" => {
-		action: ->(params) { firefox_fun(params) },
-		description: "Open every entry in <file_input> with Firefox"
-	},
-	"get-to-burp" => {
-		action: ->(params) { get_to_burp_fun(params) },
-		description: "For every entry in <file_input>, send a GET request using Burp Suite as a proxy"
-	},
 	"assetenum" => {
 		action: ->(params) { assetenum_fun(params) },
 		description: "Asset enumeration & web service discovery"
-	},
-	"webscreenshot" => {
-		action: ->(params) { webscreenshot_fun(params) },
-		description: "Take a screenshot for every entry in <file_input> and make a gallery"
 	},
 	"crawl-local" => {
 		action: ->(params) { crawl_local_fun(params) },
@@ -960,6 +948,18 @@ option_actions = {
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
 		description: "Asset enumeration > Crawl Locally"
+	},
+	"get-to-burp" => {
+		action: ->(params) { get_to_burp_fun(params) },
+		description: "For every entry in <file_input>, send a GET request using Burp Suite as a proxy"
+	},
+	"firefox" => {
+		action: ->(params) { firefox_fun(params) },
+		description: "Open every entry in <file_input> with Firefox"
+	},
+	"webscreenshot" => {
+		action: ->(params) { webscreenshot_fun(params) },
+		description: "Take a screenshot for every entry in <file_input> and make a gallery"
 	},
 	"help" => {
 		action: ->(options_actions) { show_help(option_actions) },
