@@ -565,10 +565,11 @@ def assetenum_fun(params)
 		subfinder_out = "output/#{target}_subfinder.txt"
 		github_out = "output/#{target}_github.txt"
 		gobuster_out = "output/#{target}_gobuster.txt"
+		crtsh_out = "output/#{target}_crtsh.txt"
 		final_tmp = "output/#{target}_final.tmp"
 
 		# Cleanup previous runs
-		[amass_results, subfinder_out, github_out, gobuster_out, final_tmp].each do |f|
+		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
 			File.delete(f) if File.exist?(f)
 		end
 
@@ -601,6 +602,27 @@ def assetenum_fun(params)
 			end
 		end
 
+		# crt.sh thread
+		threads << Thread.new do
+			begin
+				uri = URI.parse("https://crt.sh/?q=#{target}&output=json")
+				response = Net::HTTP.get_response(uri)
+				crtsh = JSON.parse((response.body).to_s)
+
+				File.open(crtsh_out, "w") do |file|
+					crtsh.each do |f|
+						if !f["common_name"].nil?
+							subdomain = f["common_name"].gsub('*.','').to_s
+							puts subdomain
+							file.puts(subdomain) if subdomain.include?(".#{target}")
+						end
+					end
+				end
+			rescue Exception => e
+				puts "[\e[31m!\e[0m] ERROR: #{e.message}"
+			end
+		end
+
 		# Wait for all parallel tasks to complete
 		threads.each(&:join)
 
@@ -608,7 +630,7 @@ def assetenum_fun(params)
 		system("oam_subs -names -d #{target} | tee #{amass_results}")
 
 		# Merge all results
-		[amass_results, subfinder_out, github_out, gobuster_out].each do |src|
+		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out].each do |src|
 			next unless File.exist?(src)
 			
 			File.foreach(src) do |line|
@@ -624,9 +646,9 @@ def assetenum_fun(params)
 		# Validate and deduplicate
 		if File.exist?(final_tmp)
 			valid_subs = File.readlines(final_tmp)
-											.map(&:chomp)
-											.uniq
-											.select { |sub| IPSocket.getaddress(sub) rescue false }
+							.map(&:chomp)
+							.uniq
+							.select { |sub| IPSocket.getaddress(sub) rescue false }
 
 			final_file = "output/#{target}.txt"
 			File.write(final_file, valid_subs.join("\n"))
@@ -634,7 +656,7 @@ def assetenum_fun(params)
 		end
 
 		# Cleanup
-		[amass_results, subfinder_out, github_out, gobuster_out, final_tmp, amass_results].each do |f|
+		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
 			File.delete(f) if File.exist?(f)
 		end
 	end
