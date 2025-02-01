@@ -406,8 +406,7 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	# Step 3: Process the file with urless to deduplicate URLs
 	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
-	urless_command = "urless -i #{file_path} -o #{file_path}.tmp"
-	if system(urless_command)
+	if system("urless -i #{file_path} -o #{file_path}.tmp")
 		File.rename("#{file_path}.tmp", file_path)
 		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
 	else
@@ -683,10 +682,28 @@ def assetenum_fun(params)
 
 	# == Interesting subs ==
 
-	puts "\n[\e[34m*\e[0m] Showing some interesting subdomains found"
-	system "cat output/allsubs_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | tee output/interesting_subdomains_#{file}"
-	system "cat output/http_#{file} | grep -E \"jenkins|jira|gitlab|github|sonar|bitbucket|travis|circleci|eslint|pylint|junit|testng|pytest|jest|selenium|appium|postman|newman|cypress|seleniumgrid|artifactory|nexus|ansible|puppet|chef|deploybot|octopus|prometheus|grafana|elk|slack|admin|geoservice|teams\" | sort -u | anew output/interesting_subdomains_#{file}"
-	delete_if_empty "output/interesting_subdomains_#{file}"
+	keywords = %w[jenkins jira gitlab github sonar bitbucket travis circleci eslint pylint junit testng pytest jest selenium appium postman newman cypress seleniumgrid artifactory nexus ansible puppet chef deploybot octopus prometheus grafana elk slack admin geoservice teams]
+	pattern = Regexp.union(keywords.map { |k| Regexp.new(Regexp.escape(k), Regexp::IGNORECASE) })
+	
+	# Process allsubs file and write to interesting_subdomains
+	allsubs_file = "output/allsubs_#{file}"
+	interesting_file = "output/interesting_subdomains_#{file}"
+	
+	if File.exist?(allsubs_file)
+		allsubs_matches = File.readlines(allsubs_file).grep(pattern).map(&:chomp).uniq.sort
+		File.write(interesting_file, allsubs_matches.join("\n") + "\n")
+	end
+	
+	# Process http file and append to interesting_subdomains
+	http_file = "output/http_#{file}"
+	if File.exist?(http_file)
+		http_matches = File.readlines(http_file).grep(pattern).map(&:chomp).uniq.sort
+		File.open(interesting_file, 'a') do |f|
+			f.puts(http_matches.join("\n"))
+		end
+	end
+	
+	delete_if_empty(interesting_file)
 
 	send_telegram_notif("Asset enumeration for #{file} finished")
 end
@@ -864,15 +881,25 @@ def crawl_local_fun(params)
 
 	# JS file analysis
 	puts "\n[\e[34m*\e[0m] Searching for JS files"
-	system "cat output/allUrls_#{file_sanitized} | grep \"\\.js$\" | tee output/_tmpAllJSUrls_#{file_sanitized}"
-	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | anew output/_tmpAllJSUrls_#{file_sanitized}"
-	remove_using_scope(file, "output/_tmpAllJSUrls_#{file_sanitized}")
-	clean_urls "output/_tmpAllJSUrls_#{file_sanitized}"
-	system "cat output/_tmpAllJSUrls_#{file_sanitized} | anew output/allUrls_#{file_sanitized}"
-
-	# Just keep it 200 for JS files
-	process_urls_for_code("output/_tmpAllJSUrls_#{file_sanitized}", "output/allJSUrls_#{file_sanitized}", 200)
-	FileUtils.rm_f("output/_tmpAllJSUrls_#{file_sanitized}")
+	js_lines = []
+	File.foreach("output/allUrls_#{file_sanitized}") do |line|
+		line.chomp!
+		begin
+			uri = URI.parse(line)
+			if uri.path && File.extname(uri.path.downcase) == '.js'
+				js_lines << line
+			end
+		rescue URI::InvalidURIError
+			next
+		end
+	end
+	File.open("output/allJSUrls_#{file_sanitized}", 'w') do |f|
+		js_lines.each { |line| f.puts(line) }
+	end
+	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | tee output/getJS_#{file_sanitized}"
+	adding_anew("output/getJS_#{file_sanitized}","output/allJSUrls_#{file_sanitized}")
+	remove_using_scope(file, "output/allJSUrls_#{file_sanitized}")
+	clean_urls "output/allJSUrls_#{file_sanitized}"
 	puts "[\e[32m+\e[0m] Results saved as output/allJSUrls_#{file_sanitized}"
 
 	# Find new URLs from the JS files
@@ -880,6 +907,7 @@ def crawl_local_fun(params)
 	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
 	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
+	adding_anew("output/allJSUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 
 	# Final
