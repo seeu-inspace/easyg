@@ -476,7 +476,7 @@ def firefox_fun(params)
 		target = f.chomp
 		i += 1
 		puts "[\e[36m#{i.to_s}\e[0m] Firefox open > #{target}"
-		system "firefox \"#{target}\""
+		system("firefox \"#{target}\"")
 		sleep 30 if i%20==0
 	end
 end
@@ -896,7 +896,7 @@ def crawl_local_fun(params)
 	File.open("output/allJSUrls_#{file_sanitized}", 'w') do |f|
 		js_lines.each { |line| f.puts(line) }
 	end
-	system "cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | tee output/getJS_#{file_sanitized}"
+	system("cat output/allUrls_#{file_sanitized} | getJS -threads #{$CONFIG['n_threads']} -complete -resolve | tee output/getJS_#{file_sanitized}")
 	adding_anew("output/getJS_#{file_sanitized}","output/allJSUrls_#{file_sanitized}")
 	remove_using_scope(file, "output/allJSUrls_#{file_sanitized}")
 	clean_urls "output/allJSUrls_#{file_sanitized}"
@@ -904,8 +904,8 @@ def crawl_local_fun(params)
 
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
-	system "sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt"
-	system "xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}"
+	system("sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt")
+	system("xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/allJSUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
