@@ -183,20 +183,20 @@ def send_telegram_notif(message)
 		if response.code.to_i == 200
 			puts "[\e[32m+\e[0m] Notification sent successfully with response: [\e[32m#{response.code} #{response.message}\e[0m]"
 		else
-			puts "[\e[31m+\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
+			puts "[\e[31m!\e[0m] Failed to send notification. Response: [\e[31m#{response.code} #{response.message}\e[0m]"
 		end
 	rescue Net::OpenTimeout, Net::ReadTimeout => e
-		puts "[\e[31m+\e[0m] Network timeout error: #{e.message}"
+		puts "[\e[31m!\e[0m] Network timeout error: #{e.message}"
 		if retries > 0
 			retries -= 1
-			puts "[\e[31m+\e[0m] Retrying... (#{3 - retries} attempts left)"
+			puts "[\e[33m*\e[0m] Retrying... (#{3 - retries} attempts left)"
 			sleep(1)
 			retry
 		end
 	rescue SocketError => e
-		puts "[\e[31m+\e[0m] Socket error: #{e.message}"
+		puts "[\e[31m!\e[0m] Socket error: #{e.message}"
 	rescue StandardError => e
-		puts "[\e[31m+\e[0m] An unexpected error occurred: #{e.message}"
+		puts "[\e[31m!\e[0m] An unexpected error occurred: #{e.message}"
 	end
 end
 
@@ -270,7 +270,7 @@ def check_url(url, retries = 2)
 		puts "[\e[31m-\e[0m] Connection error on URL: #{url}. Skipping."
 		return nil
 	rescue => e
-		puts "[\e[31m!\e[0m] Error checking URL #{url}: #{e.message}"
+		puts "[\e[31m!\e[0m] ERROR checking URL #{url}: #{e.message}"
 		return nil
 	end
 
@@ -462,256 +462,6 @@ end
 
 
 
-# :: Functions to identify technologies ::
-
-
-
-def is_wordpress?(response)
-	return false unless response.is_a?(Net::HTTPSuccess)
-	body = response.body
-
-	wordpress_regexes = [
-		%r{<generator>https?:\/\/wordpress\.org.*</generator>},
-		%r{wp-login.php},
-		%r{\/wp-content/themes\/},
-		%r{\/wp-includes\/},
-		%r{name="generator" content="wordpress},
-		%r{<link[^>]+s\d+\.wp\.com},
-		%r{<!-- This site is optimized with the Yoast (?:WordPress )?SEO plugin v([\d.]+) -},
-		%r{<!--[^>]+WP-Super-Cache}
-	]
-
-	wordpress_regexes.any? { |regex| body.match?(regex) }
-end
-
-
-
-def is_drupal?(response)
-	return false unless response.is_a?(Net::HTTPSuccess)
-	body = response.body
-
-	drupal_regexes = [
-		%r{<meta name="Generator" content="Drupal.*?>},
-		%r{\/sites\/all\/},
-		%r{\/misc\/drupal.js},
-		%r{X-Generator: Drupal}
-	]
-
-	drupal_regexes.any? { |regex| body.match?(regex) } ||
-		response['X-Generator']&.include?('Drupal')
-end
-
-
-
-def is_lotus_domino?(response)
-	return false unless response.is_a?(Net::HTTPSuccess)
-	body = response.body
-
-	lotus_domino_regexes = [
-	  %r{Domino\s[A-Za-z]+\s[0-9\.]{1,3}},
-	  %r{Forms[0-9\.]{1,3}\.nsf\?OpenDatabase}
-	]
-
-	lotus_domino_regexes.any? { |regex| body.match?(regex) }
-end
-
-
-def is_iis?(response)
-	return false unless response.is_a?(Net::HTTPSuccess)
-	body = response.body
-
-	iis_headers = [
-		/Microsoft-IIS\/[\d.]+/,
-		/ASP\.NET/
-	]
-
-	iis_body_regexes = [
-		%r{<title>IIS Windows Server</title>},
-		%r{<h1>Welcome</h1>\s*<h2>IIS}
-	]
-
-	iis_headers.any? { |regex| response['Server']&.match?(regex) || response['X-Powered-By']&.match?(regex) } ||
-		iis_body_regexes.any? { |regex| body.match?(regex) }
-end
-
-
-
-def identify_technology(response)
-	return {} unless response.is_a?(Net::HTTPSuccess)
-	body = response.body.downcase
-  
-	{
-		wp: body.include?('wordpress') || body.include?('/wp-content/'),
-		drupal: body.include?('drupal') || body.include?('/sites/all/'),
-		iis: response['Server']&.include?('IIS')
-	}
-end
-
-
-
-# :: Functions to search for vulnerabilities ::
-
-
-
-def check_file_upload(body)
-	if body.match(/<input[^>]+type=['"]file['"][^>]*>/i)
-		return true
-	end
-	false
-rescue => e
-	puts "[!] Error in check_file_upload: #{e.message}"
-	nil
-end
-
-
-
-# search_for_vulns but for base URLs
-def base_url_s4v(file)
-
-	system "mkdir output" if !File.directory?('output')
-
-	file_sanitized = file.gsub("/", "")
-
-	# Search for 401 and 403 bypasses
-	puts "\n[\e[34m*\e[0m] Searching for 401,403 and bypasses in #{file}"
-	process_urls_for_code("#{file}", "output/40X_#{file_sanitized}", 403)
-	process_urls_for_code("#{file}", "output/401_#{file_sanitized}", 401)
-	system "cat output/401_#{file_sanitized} >> output/40X_#{file_sanitized} && rm output/401_#{file_sanitized}" if File.exists?("output/401_#{file_sanitized}")
-	system "byp4xx -xB -m 2 -L output/40X_#{file_sanitized} | grep -v '==' |tee output/byp4xx_results_#{file_sanitized}"
-	system "dirsearch -e * -x 429,406,404,403,401,400 -l output/40X_#{file_sanitized} --no-color --full-url -t #{$CONFIG['n_threads']} -o output/dirsearch_results_40X_#{file_sanitized}"
-	remove_ansi "output/byp4xx_results_#{file_sanitized}"
-	system "rm -rf reports/" if File.directory?('reports')
-
-	puts "\n[\e[36m+\e[0m] Searching for technologies and specific vulnerabilities in #{file}"
-	tech_identified = identify_technology(file)
-
-	# Write all the techs identified
-	File.open("output/#{file_sanitized}_tech_identified.txt", 'w') do |file|
-		tech_identified.each do |tech, urls|
-			next if urls.empty?
-
-			file.puts "#{tech.to_s.capitalize} sites identified:"
-
-			urls.each { |url| file.puts "	- #{url}" }
-
-			file.puts ""
-		end
-	end
-	puts "[\e[32m+\e[0m] Technologies identified have been saved to output/#{file_sanitized}_tech_identified.txt"
-	
-	# TODO:
-	# - [ ] Aggiungere FavFreak > aggiungere a file_sanitized_tech_identified.txt con anew, `cat urls.txt | python3 favfreak.py -o output`
-	# - [ ] Vedere webanalyze
-
-	# WordPress
-	if tech_identified[:wp].any?
-		system "mkdir output/wpscan" if !File.directory?('output/wpscan')
-		tech_identified[:wp].each do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			puts "\n[\e[34m*\e[0m] Starting WPScan for #{target}"
-			if !$CONFIG['wpscan'].nil? || $CONFIG['wpscan'] != "YOUR_WPSCAN_TOKEN_HERE"
-				system "wpscan --url #{target} --api-token #{$CONFIG['wpscan']} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --exclude-content-based --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
-			else
-				system "wpscan --url #{target} -t #{$CONFIG['n_threads']} --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force -f cli-no-color --exclude-content-based --random-user-agent -o output/wpscan/wpscan_#{sanitized_target}_#{file_sanitized}"
-			end
-		end
-	end
-
-	# Drupal
-	if tech_identified[:drupal].any?
-		system "mkdir output/droopescan" if !File.directory?('output/droopescan')
-		tech_identified[:drupal].each do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "droopescan scan drupal -u #{target} -t #{$CONFIG['n_threads']} | tee output/droopescan/droopescan_#{sanitized_target}.txt"
-		end
-	end
-
-	# Lotus
-	if tech_identified[:lotus_domino].any?
-		system "mkdir output/lotus" if !File.directory?('output/lotus')
-		tech_identified[:lotus_domino].each do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "dirsearch -e * -x 429,406,404,403,401,400 -u #{target} --no-color --full-url -t #{$CONFIG['n_threads']} -w '~/Tools/SecLists/Discovery/Web-Content/LotusNotes.fuzz.txt' -o output/lotus/dirsearch_results_#{sanitized_target}"
-		end
-	end
-
-	if tech_identified[:iis].any?
-		system "mkdir output/iis" if !File.directory?('output/iis')
-		tech_identified[:iis].each do |f|
-			target = f.chomp
-			sanitized_target = target.gsub(/[^\w\s]/, '_')[0, 255]
-			system "shortscan #{target} --verbosity 1 | tee output/iis/iis_results_#{sanitized_target}"
-		end
-	end
-
-	send_telegram_notif("Search for vulns for #{file} finished")
-end
-
-
-
-def search_for_vulns(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
-
-	file_to_scan = params[:file]
-
-	system "mkdir output" if !File.directory?('output')
-
-	o_sanitized = file_to_scan.gsub(/[^\w\s]/, '_')
-
-	# Get only 200s
-	process_urls_for_code(file_to_scan, "output/200_#{o_sanitized}.txt", 200)
-
-	# :: Mantra ::
-	puts "\n[\e[34m*\e[0m] Searching for secrets with Mantra"
-	system "cat output/200_#{o_sanitized}.txt | grep -Evi '\\.(svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif)' | mantra -t #{$CONFIG['n_threads']} | grep \"\\[+\\]\" | tee output/mantra_results_#{o_sanitized}.txt"
-	delete_if_empty "output/mantra_results_#{o_sanitized}.txt"
-	remove_ansi "output/mantra_results_#{o_sanitized}.txt"
-
-	## :: Grep only params ::
-	system "cat #{file_to_scan} | grep -Evi '\\.(js|jsx|svg|png|pngx|gif|gifx|ico|jpg|jpgx|jpeg|jfif|jpg-large|bmp|mp3|mp4|ttf|woff|ttf2|woff2|eot|eot2|swf2|css|pdf|webp|tif|xlsx|xls|map)' | grep \"?\" | tee output/allParams_#{o_sanitized}.txt"
-	
-	report_file_path = "output/file_uploads_#{o_sanitized}.txt"
-	File.open(report_file_path, 'w') do |report_file|
-		workers = Array.new(num_threads) do
-			Thread.new do
-				while !queue.empty?
-					url = queue.pop(true) rescue nil
-					next unless url
-
-					response = check_url(url)
-					next unless response
-
-					content_type = response['content-type']
-					if content_type && content_type.include?('text/html')
-						body = response.body
-						found = check_file_upload(body)
-
-						message = found ? "[+] File upload found on #{url}" : "[-] No file upload found on #{url}"
-						puts message
-
-						if found
-							mutex.synchronize do
-								report_file.puts(url)
-							end
-						end
-					end
-				end
-			end
-		end
-
-		workers.each(&:join)
-	end
-
-	send_telegram_notif("Search for vulnerabilities for #{file_to_scan} finished")
-
-rescue Exception => e
-	puts "[!] ERROR in search_for_vulns: #{e.message}"
-end
-
-
-
 # :: Functions for the options ::
 
 
@@ -874,9 +624,9 @@ def assetenum_fun(params)
 		# Validate and deduplicate
 		if File.exist?(final_tmp)
 			valid_subs = File.readlines(final_tmp)
-											 .map(&:chomp)
-											 .uniq
-											 .select { |sub| IPSocket.getaddress(sub) rescue false }
+											.map(&:chomp)
+											.uniq
+											.select { |sub| IPSocket.getaddress(sub) rescue false }
 
 			final_file = "output/#{target}.txt"
 			File.write(final_file, valid_subs.join("\n"))
@@ -1126,24 +876,6 @@ def crawl_local_fun(params)
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
 
-	# === SEARCH FOR VULNS ===
-	if params[:vl_opt] == "y"
-		params[:file] = "output/allUrls_#{file_sanitized}"
-		search_for_vulns params
-	end
-
-end
-
-
-
-def find_vulns_fun(params)
-	search_for_vulns params
-end
-
-
-
-def find_vulns_base_fun(params)
-	base_url_s4v params[:file]
 end
 
 
@@ -1172,7 +904,7 @@ option_actions = {
 	},
 	"assetenum" => {
 		action: ->(params) { assetenum_fun(params) },
-		description: "Asset enumeration, search also for some vulnerabilites"
+		description: "Asset enumeration & web service discovery"
 	},
 	"webscreenshot" => {
 		action: ->(params) { webscreenshot_fun(params) },
@@ -1180,19 +912,11 @@ option_actions = {
 	},
 	"crawl-local" => {
 		action: ->(params) { crawl_local_fun(params) },
-		description: "Crawl for every entry in <file_input> and save the results in local. Optionally, scan for vulnerabilities"
-	},
-	"find-vulns" => {
-		action: ->(params) { find_vulns_fun(params) },
-		description: "Given a <file_input> containing URLs, scan for vulnerabilities"
-	},
-	"find-vulns-base-url" => {
-		action: ->(params) { find_vulns_base_fun(params) },
-		description: "Given a <file_input> containing base URLs, scan for vulnerabilities"
+		description: "Crawl for every entry in <file_input> and save the results in local"
 	},
 	"do-everything" => {
 		action: ->(params) { do_everything_fun(params) },
-		description: "Asset enumeration > Crawl Locally > Scan for vulnerabilities"
+		description: "Asset enumeration > Crawl Locally"
 	},
 	"help" => {
 		action: ->(options_actions) { show_help(option_actions) },
@@ -1219,17 +943,11 @@ begin
 
 		params = {}
 
-		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-local", "find-vulns", "find-vulns-base-url", "do-everything"]
+		options_that_need_file = ["firefox", "get-to-burp", "assetenum", "webscreenshot", "crawl-local", "do-everything"]
 		if options_that_need_file.include?(option)
 			print "\e[93m┌─\e[0m Enter the file target:\n\e[93m└─\e[0m "
 			params[:file] = gets.chomp
 			puts "\n" if option == "firefox" || option == "get-to-burp" || option == "webscreenshot"
-		end
-
-		if option == "assetenum" || option == "do-everything" || option == "crawl-local"
-			print "\n\e[93m┌─\e[0m Search also for possible vulnerabilities? [y/n]:\n\e[93m└─\e[0m "
-			params[:vl_opt] = gets.chomp
-			puts "\n" if option == "crawl-local"
 		end
 
 		if option == "assetenum" || option == "do-everything"
@@ -1243,14 +961,14 @@ begin
 		option_actions[option][:action].call(option_params[option])
 
 	else
-		puts "[\e[31m+\e[0m] Invalid option selected"
+		puts "[\e[31m!\e[0m] Invalid option selected"
 	end
 
 rescue Interrupt
-	puts "\n[\e[31m+\e[0m] Script interrupted by user. Exiting..."
+	puts "\n[\e[31m!\e[0m] Script interrupted by user. Exiting..."
 	exit
 rescue StandardError => e
-	puts "\n[\e[31m+\e[0m] An error occurred: #{e.message}"
+	puts "\n[\e[31m!\e[0m] An error occurred: #{e.message}"
 	puts e.backtrace
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
