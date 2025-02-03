@@ -684,16 +684,16 @@ def assetenum_fun(params)
 
 	keywords = %w[jenkins jira gitlab github sonar bitbucket travis circleci eslint pylint junit testng pytest jest selenium appium postman newman cypress seleniumgrid artifactory nexus ansible puppet chef deploybot octopus prometheus grafana elk slack admin geoservice teams]
 	pattern = Regexp.union(keywords.map { |k| Regexp.new(Regexp.escape(k), Regexp::IGNORECASE) })
-	
+
 	# Process allsubs file and write to interesting_subdomains
 	allsubs_file = "output/allsubs_#{file}"
 	interesting_file = "output/interesting_subdomains_#{file}"
-	
+
 	if File.exist?(allsubs_file)
 		allsubs_matches = File.readlines(allsubs_file).grep(pattern).map(&:chomp).uniq.sort
 		File.write(interesting_file, allsubs_matches.join("\n") + "\n")
 	end
-	
+
 	# Process http file and append to interesting_subdomains
 	http_file = "output/http_#{file}"
 	if File.exist?(http_file)
@@ -702,7 +702,7 @@ def assetenum_fun(params)
 			f.puts(http_matches.join("\n"))
 		end
 	end
-	
+
 	delete_if_empty(interesting_file)
 
 	send_telegram_notif("Asset enumeration for #{file} finished")
@@ -761,7 +761,7 @@ def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads
 						end
 					end
 				end
-				
+
 			ensure
 				driver.quit if defined?(driver) && driver
 			end
@@ -836,7 +836,7 @@ def crawl_local_fun(params)
 
 				# ParamSpider
 				unless target_sanitized == target_tmp
-					system("paramspider -d #{target_sanitized}")
+					system("paramspider -d #{Shellwords.escape(target_sanitized)}")
 					adding_anew("results/#{target_sanitized}.txt", katana_file)
 				end
 
@@ -857,25 +857,25 @@ def crawl_local_fun(params)
 	domains.each { |d| domain_queue << d }
   
 	domain_threads = Array.new([domains.size, Etc.nprocessors].min) do
-	  Thread.new do
-		while !domain_queue.empty? && domain = domain_queue.pop(true) rescue nil
-		  # Waymore processing
-		  waymore_file = "output/#{domain}_waymore.txt"
-		  system("waymore -i #{domain} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU #{waymore_file}")
-		  remove_using_scope(file, waymore_file)
-		  clean_urls(waymore_file)
-		  mutex.synchronize { adding_anew(waymore_file, "output/allUrls_#{file_sanitized}") }
-  
-		  # GitHub endpoints processing
-		  if $CONFIG['github_token'] && $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
-			github_file = "output/github-endpoints_#{domain}.txt"
-			system("python ~/Tools/web-attack/github-search/github-endpoints.py -d #{domain} -t #{$CONFIG['github_token']} | tee #{github_file}")
-			remove_using_scope(file, github_file)
-			clean_urls(github_file)
-			mutex.synchronize { adding_anew(github_file, "output/allUrls_#{file_sanitized}") }
-		  end
+		Thread.new do
+			while !domain_queue.empty? && domain = domain_queue.pop(true) rescue nil
+				# Waymore processing
+				waymore_file = "output/#{domain}_waymore.txt"
+				system("waymore -i #{domain} -c /home/kali/.config/waymore/config.yml -f -p 5 -mode U -oU #{waymore_file}")
+				remove_using_scope(file, waymore_file)
+				clean_urls(waymore_file)
+				mutex.synchronize { adding_anew(waymore_file, "output/allUrls_#{file_sanitized}") }
+		
+				# GitHub endpoints processing
+				if $CONFIG['github_token'] && $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
+					github_file = "output/github-endpoints_#{domain}.txt"
+					system("python ~/Tools/web-attack/github-search/github-endpoints.py -d #{domain} -t #{$CONFIG['github_token']} | tee #{github_file}")
+					remove_using_scope(file, github_file)
+					clean_urls(github_file)
+					mutex.synchronize { adding_anew(github_file, "output/allUrls_#{file_sanitized}") }
+				end
+			end
 		end
-	  end
 	end
 	domain_threads.each(&:join)
 
