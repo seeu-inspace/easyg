@@ -251,7 +251,7 @@ def process_urls(file_to_scan, output_file = nil, &block)
 	urls = File.readlines(file_to_scan).map(&:strip).reject(&:empty?)
 	urls.each { |url| queue << url }
 
-	num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min
+	num_threads = $CONFIG['n_threads']
 	mutex = Mutex.new
 	results = []
 
@@ -483,7 +483,7 @@ end
 
 
 
-def get_to_burp_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
+def get_to_burp_fun(params, num_threads = $CONFIG['n_threads'])
 	queue = Queue.new
 	mutex = Mutex.new
 
@@ -710,7 +710,7 @@ end
 
 
 
-def webscreenshot_fun(params, num_threads = [Etc.nprocessors, $CONFIG['n_threads']].min)
+def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
 	urls = File.readlines(params[:file]).map(&:chomp)
 	queue = Queue.new
 	urls.each { |url| queue << url }
