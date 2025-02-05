@@ -568,7 +568,7 @@ def assetenum_fun(params)
 
 		# Amass thread
 		threads << Thread.new do
-			amass_mode = params[:gb_opt] == "y" ? "-brute -active" : "-passive"
+			amass_mode = params[:gb_opt] == "y" ? "-brute -active" : "-passive -timeout 15"
 			system("amass enum #{amass_mode} -d #{target} -v -dns-qps 300")
 		end
 
