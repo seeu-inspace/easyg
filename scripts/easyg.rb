@@ -556,6 +556,7 @@ def assetenum_fun(params)
 		gobuster_out = "output/#{target}_gobuster.txt"
 		crtsh_out = "output/#{target}_crtsh.txt"
 		final_tmp = "output/#{target}_final.tmp"
+		vhosts_out = "output/#{target}_vhosts.txt"
 
 		# Cleanup previous runs
 		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
@@ -623,16 +624,61 @@ def assetenum_fun(params)
 			adding_anew(src, final_tmp)
 		end
 
+		dead_subdomains = []
+		alive_ips = Set.new
+	
+		# Read all discovered subdomains
+		subdomains = File.readlines(final_tmp).map(&:chomp).uniq
+	
+		subdomains.each do |sub|
+			begin
+				ip = IPSocket.getaddress(sub)
+				alive_ips << ip
+			rescue
+				dead_subdomains << sub
+			end
+		end
+	
+		# Save dead subdomains to file for VhostFinder
+		dead_subdomains_file = "output/dead_subdomains_#{file}"
+		File.write(dead_subdomains_file, dead_subdomains.join("\n"))
+	
+		# ==== Vhost Enumeration on Alive IPs ====
+		alive_ips.each do |ip|
+			next if ip.empty?
+	
+			puts "[\e[34m*\e[0m] Running VhostFinder on IP: #{ip}"
+			vhost_output = "output/vhosts_#{ip}.txt"
+			
+			# Execute VhostFinder with dead subdomains as wordlist
+			system("VhostFinder -ip #{ip} -wordlist #{dead_subdomains_file} | tee #{vhost_output}")
+	
+			# Parse results and add valid vhosts to allsubs
+			if File.exist?(vhost_output)
+				valid_vhosts = []
+				File.foreach(vhost_output) do |line|
+					next unless line.start_with?("[+]")
+					valid_vhosts << line unless line.empty?
+				end
+				File.open(vhosts_out, 'a') { |f| f.puts(valid_vhosts.join("\n")) }
+				FileUtils.rm_f(vhost_output)
+			end
+		end
+		delete_if_empty(vhost_output)
+
 		# Validate and deduplicate
 		if File.exist?(final_tmp)
 			valid_subs = File.readlines(final_tmp)
 							.map(&:chomp)
 							.uniq
-							.select { |sub| IPSocket.getaddress(sub) rescue false }
 			final_file = "output/#{target}.txt"
 			File.write(final_file, valid_subs.join("\n"))
-			FileUtils.rm_f(final_tmp)
 			adding_anew(final_file, allsubs_file)
+		end
+
+		# Cleanup
+		[dead_subdomains_file, final_tmp].each do |f|
+			FileUtils.rm_f(f)
 		end
 
 	end
@@ -827,16 +873,15 @@ def crawl_local_fun(params)
 					system("echo #{Shellwords.escape(target)} | gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bmp,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o #{gau_file}")
 				end
 
+				threads << Thread.new do
+					system("paramspider -d #{Shellwords.escape(target_sanitized)}")
+				end
+
 				threads.each(&:join)
 
 				# Merge results
 				mutex.synchronize do
 					adding_anew(gau_file, katana_file)
-				end
-
-				# ParamSpider
-				unless target_sanitized == target_tmp
-					system("paramspider -d #{Shellwords.escape(target_sanitized)}")
 					adding_anew("results/#{target_sanitized}.txt", katana_file)
 				end
 
@@ -1016,3 +1061,4 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
+
