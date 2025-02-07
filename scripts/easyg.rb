@@ -671,6 +671,7 @@ def assetenum_fun(params)
 			valid_subs = File.readlines(final_tmp)
 							.map(&:chomp)
 							.uniq
+							.select { |sub| IPSocket.getaddress(sub) rescue false }
 			final_file = "output/#{target}.txt"
 			File.write(final_file, valid_subs.join("\n"))
 			adding_anew(final_file, allsubs_file)
