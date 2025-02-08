@@ -660,11 +660,11 @@ def assetenum_fun(params)
 					next unless line.start_with?("[+]")
 					valid_vhosts << line unless line.empty?
 				end
-				File.open(vhosts_out, 'a') { |f| f.puts(valid_vhosts.join("\n")) }
+				File.open(vhosts_out, 'a') { |f| f.puts(valid_vhosts.join("\n")) } if valid_vhosts.any?
 				FileUtils.rm_f(vhost_output)
 			end
 		end
-		delete_if_empty(vhost_output)
+		delete_if_empty(vhosts_out)
 
 		# Validate and deduplicate
 		if File.exist?(final_tmp)
@@ -1062,4 +1062,3 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
-
