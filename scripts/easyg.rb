@@ -658,7 +658,7 @@ def assetenum_fun(params)
 				valid_vhosts = []
 				File.foreach(vhost_output) do |line|
 					next unless line.start_with?("[+]")
-					valid_vhosts << line.split unless line.empty?
+					valid_vhosts << line unless line.empty?
 				end
 				File.open(vhosts_out, 'a') { |f| f.puts(valid_vhosts.join("\n")) } if valid_vhosts.any?
 				FileUtils.rm_f(vhost_output)
