@@ -62,23 +62,26 @@ def adding_anew(file_tmp, file_final)
 	# Read existing lines from final file
 	existing_lines = Set.new
 	if File.exist?(file_final)
-		File.foreach(file_final) { |line| existing_lines.add(line.chomp) }
+		File.foreach(file_final) { |line| existing_lines.add(line.strip) }
 	end
 
 	# Find new lines in tmp file
 	new_lines = []
 	File.foreach(file_tmp) do |line|
-		line.chomp!
-		new_lines << line unless existing_lines.include?(line)
+		cleaned_line = line.strip
+		next if cleaned_line.empty? || existing_lines.include?(cleaned_line)
+
+		new_lines << cleaned_line
 	end
 
-	# Append new lines to final file
-	if !new_lines.empty?
+	# Append new lines to final file if any exist
+	unless new_lines.empty?
 		File.open(file_final, 'a') do |f|
-			new_lines.each { |line| f.puts(line) }
+			f.puts(new_lines)
 		end
 	end
 
+	# Remove tmp file after processing
 	FileUtils.rm_f(file_tmp)
 end
 
@@ -541,7 +544,9 @@ def assetenum_fun(params)
 	FileUtils.mkdir_p('output')
 	file = params[:file]
 	allsubs_file = "output/allsubs_#{file}"
-	File.write(allsubs_file, "") unless File.exist?(allsubs_file)
+	all_vhosts_file = "output/all_vhosts_#{file}.txt"
+	File.open(allsubs_file, 'a') { |f| f.puts("") } unless File.exist?(allsubs_file)
+	File.open(all_vhosts_file, 'a') { |f| f.puts("") } unless File.exist?(all_vhosts_file)
 
 	File.open(file, 'r').each_line do |f|
 		target = Shellwords.escape(f.chomp)
@@ -556,7 +561,6 @@ def assetenum_fun(params)
 		gobuster_out = "output/#{target}_gobuster.txt"
 		crtsh_out = "output/#{target}_crtsh.txt"
 		final_tmp = "output/#{target}_final.tmp"
-		vhosts_out = "output/#{target}_vhosts.txt"
 
 		# Cleanup previous runs
 		[amass_results, subfinder_out, github_out, gobuster_out, crtsh_out, final_tmp].each do |f|
@@ -627,7 +631,7 @@ def assetenum_fun(params)
 		dead_subdomains = []
 		alive_ips = Set.new
 	
-		# Read all discovered subdomains
+		# Read all discovered subdomains and add valid subdomains to allsubs_file
 		subdomains = File.readlines(final_tmp).map(&:chomp).uniq
 	
 		subdomains.each do |sub|
@@ -635,7 +639,14 @@ def assetenum_fun(params)
 				ip = IPSocket.getaddress(sub)
 				alive_ips << ip
 			rescue
+				ip = "unknown"
 				dead_subdomains << sub
+			end
+			if ip!="unknown"
+				puts sub
+				unless File.foreach(allsubs_file).grep(/^#{Regexp.escape(sub)}$/).any?
+					File.open(allsubs_file, 'a') { |f| f.puts(sub) }
+				end
 			end
 		end
 	
@@ -653,35 +664,39 @@ def assetenum_fun(params)
 			# Execute VhostFinder with dead subdomains as wordlist
 			system("VhostFinder -ip #{ip} -wordlist #{dead_subdomains_file} | tee #{vhost_output}")
 	
-			# Parse results and add valid vhosts to allsubs
+			# Parse results and add valid vhosts
+
 			if File.exist?(vhost_output)
 				valid_vhosts = []
 				File.foreach(vhost_output) do |line|
+					line.strip!
+	
+					next if line.empty?
 					next unless line.start_with?("[+]")
-					valid_vhosts << line unless line.empty?
+	
+					valid_vhosts << line
 				end
-				File.open(vhosts_out, 'a') { |f| f.puts(valid_vhosts.join("\n")) } if valid_vhosts.any?
-				FileUtils.rm_f(vhost_output)
+	
+				# Append to per-IP vhosts file
+				if valid_vhosts.any?					
+					# Append to global Vhosts file
+					File.open(all_vhosts_file, 'a') do |f|
+						valid_vhosts.each do |vhost|
+							unless File.foreach(all_vhosts_file).grep(/^#{Regexp.escape(vhost)}$/).any?
+								f.puts(vhost)
+							end
+						end
+					end
+				end
+	
+				FileUtils.rm_f(vhost_output)	# Cleanup temp file
 			end
-		end
-		delete_if_empty(vhosts_out)
-
-		# Validate and deduplicate
-		if File.exist?(final_tmp)
-			valid_subs = File.readlines(final_tmp)
-							.map(&:chomp)
-							.uniq
-							.select { |sub| IPSocket.getaddress(sub) rescue false }
-			final_file = "output/#{target}.txt"
-			File.write(final_file, valid_subs.join("\n"))
-			adding_anew(final_file, allsubs_file)
 		end
 
 		# Cleanup
 		[dead_subdomains_file, final_tmp].each do |f|
 			FileUtils.rm_f(f)
 		end
-
 	end
 
 	# == HTTP Discovery ==
