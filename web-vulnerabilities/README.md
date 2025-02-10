@@ -423,6 +423,7 @@ IDORs tips
  	- Examples
   		- [IDOR on GraphQL queries BillingDocumentDownload and BillDetails](https://hackerone.com/reports/2207248)
 - Look for [Internal API Requests](https://x.com/yeswehack/status/1859884801030783042), they might lead path traversals and IDORs
+- If you find MongoDB ObjectIds (ex. `5ae9b90a2c144b9def01ec37`), use [mongo-objectid-predict](https://github.com/andresriancho/mongo-objectid-predict) to demonstrate predictability
 
 **Tools**
 - [Autorize](https://github.com/PortSwigger/autorize)
