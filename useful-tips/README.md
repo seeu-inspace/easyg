@@ -135,6 +135,7 @@ Default Credentials
 - `scp username@remoteHost:/remote/dir/file.txt /local/dir/`
   - `scp Administrator@10.10.210.84:"/C:/Users/Administrator/Downloads/20230824142942_loot.zip" "/home/kali/Documents/engagements/TryHackMe/Post-Exploitation Basics/loot.zip"`
 - `pscp.exe username@remoteHost:/remote/dir/file.txt d:\`
+- Run [ssh-audit](https://github.com/jtesta/ssh-audit) for ssh server & client configuration auditing.
 
 **ssh exploitation**
 - `scp -O /home/kali/Documents/engagements/proving-grounds/Sorcerer/max/authorized_keys max@192.168.240.100:/home/max/.ssh/authorized_keys`
