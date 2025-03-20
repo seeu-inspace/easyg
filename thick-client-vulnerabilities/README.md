@@ -15,6 +15,7 @@
 - [Insecure Windows Service permissions](#insecure-windows-service-permissions)
 - [Code injection](#code-injection)
 - [Windows persistence](#windows-persistence)
+- [Debugging & Development Tools Exposure](#debugging--development-tools-exposure)
 
 ## DLL Hijacking
 
@@ -177,3 +178,17 @@ Unprivileged users have the ability to change or replace the executable with arb
 **Resources**
 - [persistence-info.github.io](https://persistence-info.github.io/)
 - [PayloadsAllTheThings/Windows - Persistence](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md)
+
+
+
+## Debugging & Development Tools Exposure
+
+Debugging tools and development features left enabled in a production environment can expose sensitive application internals, allow attackers to execute arbitrary commands, or bypass security mechanisms.
+
+### Debugger CEF Exposure
+
+Some applications use the Chromium Embedded Framework (CEF) for rendering web-based components. If CEF debugging is enabled in production, attackers can exploit it to inspect internal processes, execute arbitrary JavaScript, or even interact with system APIs.
+
+- [CEF Documentation](https://bitbucket.org/chromiumembedded/cef/src/master/)
+- [CEF Debugger Enabled in Google Web Designer](https://bughunters.google.com/reports/vrp/qMhY4nw9i)
+- [taviso/cefdebug](https://github.com/taviso/cefdebug)
