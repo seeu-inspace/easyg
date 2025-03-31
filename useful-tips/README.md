@@ -358,6 +358,8 @@ If something goes wrong
 
 ## More stuff
 
+- If you have problems with an injection, try to inject a longer string in order to cause an overflow.
+
 **Recon with favicons**
 - `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
   - Spring Boot > `116323821`
