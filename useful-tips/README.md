@@ -358,7 +358,8 @@ If something goes wrong
 
 ## More stuff
 
-- If you have problems with an injection, try to inject a longer string in order to cause an overflow.
+- If you have problems with an injection, try to inject a longer string in order to cause an overflow
+- List all running processes whose command line contains a specific keyword `Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like "*<keyword>*" } | Select-Object CommandLine | Format-List`
 
 **Recon with favicons**
 - `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
