@@ -1065,6 +1065,9 @@ Many DOM-based vulnerabilities can be traced back to problems with the way clien
 | Denial of service                | RegExp()                   |
 
 
+**Resources**
+- [The Ultimate Double-Clickjacking PoC | Jorian Woltjer](https://jorianwoltjer.com/blog/p/research/ultimate-doubleclickjacking-poc)
+
 
 ## WebSockets
 
