@@ -9,6 +9,8 @@
 ## Resources
 
 - [Types of LLM vulnerabilities | promptfoo](https://www.promptfoo.dev/docs/red-team/llm-vulnerability-types/)
+- [BeaverTails dataset](https://huggingface.co/datasets/PKU-Alignment/BeaverTails)
+
 
 ## Prompt Injection
 
