@@ -1025,6 +1025,7 @@ Some examples
 - [What is Clickjacking? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/clickjacking)
 - [MetaMask - stealing ETH by exploiting clickjacking - $120,000 bug bounty](https://www.youtube.com/watch?v=HnI0w156rtw)
 - [Bsides Tallinn 2024 - Lyra Rebane (Web security is fun)](https://www.youtube.com/watch?v=2ZENE8ua_gU)
+- [The Ultimate Double-Clickjacking PoC | Jorian Woltjer](https://jorianwoltjer.com/blog/p/research/ultimate-doubleclickjacking-poc)
 
 ## DOM-based vulnerabilities
 
@@ -1063,10 +1064,6 @@ Many DOM-based vulnerabilities can be traced back to problems with the way clien
 | Client-side JSON injection       | JSON.parse()               |
 | DOM-data manipulation            | someElement.setAttribute() |
 | Denial of service                | RegExp()                   |
-
-
-**Resources**
-- [The Ultimate Double-Clickjacking PoC | Jorian Woltjer](https://jorianwoltjer.com/blog/p/research/ultimate-doubleclickjacking-poc)
 
 
 ## WebSockets
