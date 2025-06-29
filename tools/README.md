@@ -358,9 +358,14 @@ keyscan_stop              stop the keystroke sniffer
   ```
 
 **For auths**
-- [textverified.com](https://www.textverified.com/) for auths requiring a phone number
-- [quackr](https://quackr.io/) for a fake phone number (free)
+For auths requiring a phone number
+  - [textverified.com](https://www.textverified.com/) 
+  - [quackr](https://quackr.io/)
+  - [AnonymSMS](https://anonymsms.com/)
+  - [textverified](https://www.textverified.com/)
+For auths requiring an e-mail address
 - [temp-mail.org](https://temp-mail.org/en/)
+- [yopmail](https://yopmail.com/it/)
 
 **To find parameters**
 - [Arjun](https://github.com/s0md3v/Arjun) detection of the parameters present in the application
