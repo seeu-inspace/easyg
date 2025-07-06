@@ -35,6 +35,7 @@
 - [phpLDAPadmin](#phpldapadmin)
 - [Git source code exposure](#git-source-code-exposure)
 - [Subdomain takeover](#subdomain-takeover)
+- [Second-Order Takeover](#second-order-takeover)
 - [4** Bypass](#4-bypass)
 - [Application level Denial of Service](#application-level-denial-of-service)
 - [APIs attacks](#apis-attacks)
@@ -59,7 +60,7 @@
 - [Apache](#apache)
 - [Cisco](#cisco)
 - [Citrix](#citrix)
-- [Second-Order Takeover](#second-order-takeover)
+
 
 
 ## SQL Injection
@@ -1511,6 +1512,15 @@ Once you have the source code, look for the secrets within the files. To find se
 
 
 
+
+## Second-Order Takeover
+
+> "Always consider covering second-order takeovers, because in most cases they are evaluated as critical, like a blind XSS, which is remotely controllable and even application-wide." [[Reference](https://x.com/slymn_clkrsln/status/1792995208562401567)]
+
+Read also [Second-Order Takeover: Scoring High Rewards by nocley](https://medium.com/@nocley/second-order-takeover-scoring-high-rewards-926ff658b76b)
+
+
+
 ## 4** Bypass
 - [byp4xx](https://github.com/lobuhi/byp4xx), s/o to [m0pam](https://twitter.com/m0pam) for the tip
 - Search for subdomain with subfinder. Httpx filters subdomains with a 403 response and prints their cname. Test the cname for a bypass
@@ -1750,10 +1760,3 @@ Accept: */*
 ```
 https://domain/oauth/idp/logout?post_logout_redirect_uri=%0d%0a%0d%0a<script>alert(document.domain)</script>
 ```
-
-
-## Second-Order Takeover
-
-> "Always consider covering second-order takeovers, because in most cases they are evaluated as critical, like a blind XSS, which is remotely controllable and even application-wide." [[Reference](https://x.com/slymn_clkrsln/status/1792995208562401567)]
-
-Read also [Second-Order Takeover: Scoring High Rewards by nocley](https://medium.com/@nocley/second-order-takeover-scoring-high-rewards-926ff658b76b)
