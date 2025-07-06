@@ -59,6 +59,7 @@
 - [Apache](#apache)
 - [Cisco](#cisco)
 - [Citrix](#citrix)
+- [Second-Order Takeover](#second-order-takeover)
 
 
 ## SQL Injection
@@ -1749,3 +1750,10 @@ Accept: */*
 ```
 https://domain/oauth/idp/logout?post_logout_redirect_uri=%0d%0a%0d%0a<script>alert(document.domain)</script>
 ```
+
+
+## Second-Order Takeover
+
+> "Always consider covering second-order takeovers, because in most cases they are evaluated as critical, like a blind XSS, which is remotely controllable and even application-wide." [[Reference](https://x.com/slymn_clkrsln/status/1792995208562401567)]
+
+Read also [Second-Order Takeover: Scoring High Rewards by nocley](https://medium.com/@nocley/second-order-takeover-scoring-high-rewards-926ff658b76b)
