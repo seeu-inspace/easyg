@@ -263,6 +263,7 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 - Insert two emails, like:
   - `email1@service.com;email2@service.com`
   - `email:["email1@service.com","email2@service.com"]`
+- If you can control the body of the password reset email, embed the password reset link within an `<img>` tag using a subdomain you control. This may allow for a zero-click account takeover via Googlebot's automatic link crawling
 
 **Rate-limit**
 - Bypass with `X-Forwarded-For:127.0.0.1-1000`
