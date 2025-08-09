@@ -15,7 +15,7 @@ Note: a lot of these commands are from [RTFM: Red Team Field Manual](https://www
 - [Examples](#examples)
 
 ## Linux Services and Networking
-```
+```shell
 netstat -tulpn                                           Show Linux network ports with process ID’s (PIDs)
 watch ss -stplu                                          Watch TCP, UDP open ports in real time with socket summary
 lsof -i                                                  Show established connections
@@ -45,7 +45,7 @@ sudo tail -f /var/log/apache2/access.log                 Monitor the Apache log 
 ```
 
 ## Linux User Management
-```
+```shell
 whoami                                                   Shows currently logged in user on Linux
 id                                                       Shows currently logged in user and groups for the user
 last                                                     Shows last logged in users
@@ -59,7 +59,7 @@ history                                                  Show bash history, comm
 ```
 
 ## Linux File Commands
-```
+```shell
 df -h blah                                               Display size of file / dir Linux
 diff file1 file2                                         Compare / Show differences between two files on Linux
 md5sum file                                              Generate MD5SUM Linux
@@ -88,7 +88,7 @@ vimdiff scan-a.txt scan-b.txt                            Compare files using vim
 ```
 
 ## Misc Commands
-```
+```shell
 init 6                                                   Reboot Linux from the command line
 gcc -o output.c input.c                                  Compile C code
 gcc -m32 -o output.c input.c                             Cross compile C code, compile 32 bit binary on 64 bit Linux
@@ -127,7 +127,7 @@ rdesktop -u <user> -p <password> <ip>                    Connect with RDP
 ```
 
 ## Linux environment variables
-```
+```shell
 export vartest=8.8.8.8                                   Declare an environment variable
 env                                                      See all declared environment variables
 $$                                                       Env var; Display the ID of the current shell instance
@@ -143,7 +143,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 ```
 
 ## Linux File System Permissions
-```
+```shell
 777 rwxrwxrwx                                            No restriction, global WRX any user can do anything
 755 rwxr-xr-x                                            Owner has full access, others can read and execute the file
 700 rwx------                                            Owner has full access, no one else has access
@@ -153,7 +153,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 ```
 
 ## Linux Directories
-```
+```shell
 /                                                        / also know as “slash” or the root
 /bin                                                     Common programs, shared by the system, the system administrator and the users
 /boot                                                    Boot files, boot loader (grub), kernels, vmlinuz
@@ -175,7 +175,7 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 ```
 
 ## Linux Interesting Files / Directories
-```
+```shell
 /etc/passwd                                              Contains local Linux users
 /etc/shadow                                              Contains local account password hashes
 /etc/group                                               Contains local account groups
@@ -191,6 +191,12 @@ export HISTTIMEFORMAT='%F %T '                           Include the date/time i
 /var/log/apache2/access.log                              Apache access log file typical path
 /var/log/httpd/access.log                                Apache access log file typical path
 /etc/fstab                                               File system mounts
+```
+
+## More commands
+```shell
+# to add routes to .ovpn
+cat list.txt | while read domain; do ip=$(dig +short "$domain" | grep -E '^[0-9.]+$* | head -n 1); if [-n "$ip" ]; then echo "route $ip 255.255.255.255 #$domain"; fi; done
 ```
 
 ## Examples
