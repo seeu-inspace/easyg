@@ -1463,6 +1463,7 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
   1. [200 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/idontexist*~.*" 2>&1 | grep "HTTP/1.1"`
   2. [404 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/aspnet~1.*" 2>&1 | grep "HTTP/1.1"`
   3. `java -jar /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/iis_shortname_scanner.jar 2 20 http://10.10.10.93 /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/config.xml`
+  		- [IIS-ShortName-Scanner](https://github.com/irsdl/IIS-ShortName-Scanner)
 - IIS file extensions https://learn.microsoft.com/en-us/previous-versions/2wawkw1c(v=vs.140)?redirectedfrom=MSDN
 
 
