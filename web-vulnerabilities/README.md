@@ -1349,6 +1349,10 @@ Common attacks
 - `x5c` (X.509 Certificate Chain) can lead to [CVE-2017-2800](https://talosintelligence.com/vulnerability_reports/TALOS-2017-0293) and [CVE-2018-2633](https://mbechler.github.io/2018/01/20/Java-CVE-2018-2633/)
 - [JWT algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion)
 
+Check for shared Signing Key in different environments
+- For example, the JWT generated on the dev website works on prod website
+- See "[This Tiny JWT Mistake = Massive Bug Bounty](https://www.youtube.com/watch?v=0R3xHx7fPUM)"
+
 **Resources**
 - [{JWT}.{Attack}.Playbook](https://github.com/ticarpi/jwt_tool/wiki)
 - [Checklist](https://github.com/ticarpi/jwt_tool/wiki/Attack-Methodology)
