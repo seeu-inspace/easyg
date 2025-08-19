@@ -7,7 +7,6 @@ require 'socket'
 require 'yaml'
 require 'thread'
 require 'set'
-require 'webdrivers'
 require 'selenium-webdriver'
 require 'fileutils'
 
@@ -873,15 +872,11 @@ end
 
 
 
-def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
+def webscreenshot_fun(params)
 	urls = File.readlines(params[:file]).map(&:chomp)
-	queue = Queue.new
-	urls.each { |url| queue << url }
-
-	i = 0
 	image_paths = []
 	successful_urls = []
-	
+
 	FileUtils.mkdir_p('output/webscreen')
 
 	options = Selenium::WebDriver::Chrome::Options.new
@@ -894,51 +889,41 @@ def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
 	options.add_argument('--disable-gpu')
 	options.add_argument('--no-sandbox')
 
-	mutex = Mutex.new
-	workers = []
+	driver_path = `which chromedriver`.strip
+	if driver_path.empty?
+		abort "[!] chromedriver not found in PATH. Please install it (sudo apt install chromium-driver)"
+	end
+	puts "[+] Using chromedriver: #{driver_path}"
 
-	num_threads.times do
-		workers << Thread.new do
-			begin
-				driver = Selenium::WebDriver.for(:chrome, options: options)
-				
-				while !queue.empty? && url = queue.pop(true) rescue nil
-					begin
-						driver.navigate.to(url)
-						sleep 1
+	service = Selenium::WebDriver::Chrome::Service.new(path: driver_path)
+	driver	= Selenium::WebDriver.for :chrome, options: options, service: service
 
-						sanitized = url.gsub(/[^\w\.-]/, '_')[0..150]
-						image_path = "output/webscreen/#{sanitized}.png"
+	urls.each_with_index do |url, i|
+		begin
+			driver.navigate.to(url)
+			sleep 1
 
-						driver.save_screenshot(image_path)
+			sanitized = url.gsub(/[^\w\.-]/, '_')[0..150]
+			image_path = "output/webscreen/#{sanitized}.png"
 
-						mutex.synchronize do
-							i += 1
-							puts "[\e[32m#{i}\e[0m] Screenshot: #{image_path}"
-							image_paths << image_path
-							successful_urls << url
-						end
-					rescue => e
-						mutex.synchronize do
-							puts "[\e[31m!\e[0m] Error on #{url}: #{e.message.gsub(/\n/, ' ')}"
-						end
-					end
-				end
+			driver.save_screenshot(image_path)
 
-			ensure
-				driver.quit if defined?(driver) && driver
-			end
+			puts "[\e[32m#{i+1}\e[0m] Screenshot: #{image_path}"
+			image_paths << image_path
+			successful_urls << url
+		rescue => e
+			puts "[\e[31m!\e[0m] Error on #{url}: #{e.message.gsub(/\n/, ' ')}"
 		end
 	end
 
-	workers.each(&:join)
+	driver.quit
 
 	# HTML gallery creation
 	File.open('output/gallery.html', 'w') do |html|
 		html.write('<!DOCTYPE html><html><head><title>Screenshots</title>')
 		html.write('<style>.screenshot{margin:10px;float:left;width:300px;}</style>')
 		html.write('</head><body>')
-		
+
 		image_paths.each_with_index do |path, idx|
 			html.write(%Q(
 				<div class="screenshot">
@@ -949,7 +934,7 @@ def webscreenshot_fun(params, num_threads = $CONFIG['n_threads'])
 				</div>
 			))
 		end
-		
+
 		html.write('</body></html>')
 	end
 
