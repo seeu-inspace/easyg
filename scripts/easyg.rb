@@ -164,6 +164,49 @@ end
 
 
 
+def extract_domains_from_urls(input_file, output_file)
+	# Set to store unique domains
+	unique_domains = Set.new
+	
+	# Read each line from the input file
+	File.foreach(input_file) do |line|
+		# Remove any leading/trailing whitespace
+		line.strip!
+		
+		# Skip if the line is empty
+		next if line.empty?
+		
+		begin
+			# Add a scheme if missing, so URI.parse doesn't fail
+			line = "http://" + line unless line.match?(/^(http|https):\/\//)
+			
+			# Parse the line as a URI
+			uri = URI.parse(line)
+			
+			# Extract the host (domain)
+			host = uri.host
+			
+			# Check if the host is valid and doesn't start with '*.'
+			if host && !host.start_with?("*.") && host.include?('.')
+				unique_domains.add(host)
+			end
+			
+		rescue URI::InvalidURIError
+			# Handle cases where the line is not a valid URL
+			next
+		end
+	end
+	
+	# Write the unique domains to the output file
+	File.open(output_file, 'w') do |f|
+		unique_domains.sort.each do |domain|
+			f.puts(domain)
+		end
+	end
+end
+
+
+
 def send_telegram_notif(message)
 
 	return unless $CONFIG['telegram'] && $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" && $CONFIG['telegram_chat_id'] && $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
@@ -965,7 +1008,7 @@ def crawl_local_fun(params)
 
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
-	system("sed -E 's~^[a-zA-Z]+://([^:/]+).*~\\1~' output/allUrls_#{file_sanitized} | grep -v \"^*\\.\" | sed '/^\\s*$/d' | grep '\\.' | sort | uniq > output/tmp_scope.txt")
+	extract_domains_from_urls("output/allUrls_#{file_sanitized}", "output/tmp_scope.txt")
 	system("xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/allJSUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
