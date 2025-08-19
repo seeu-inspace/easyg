@@ -207,6 +207,64 @@ end
 
 
 
+def github_endpoints(domain, token)
+	results = []
+	base_url = "https://api.github.com/search/code"
+	search_query = %("#{domain}")
+
+	sort_orders = [
+		{ sort: "indexed", order: "desc" },
+		{ sort: "indexed", order: "asc" },
+		{ sort: "", order: "desc" }
+	]
+
+	sort_orders.each do |so|
+		page = 1
+		loop do
+			query = URI.encode_www_form({
+				q: search_query,
+				per_page: 100,
+				page: page,
+				s: so[:sort],
+				o: so[:order]
+			})
+
+			uri = URI("#{base_url}?#{query}")
+			req = Net::HTTP::Get.new(uri)
+			req['Authorization'] = "token #{token}"
+			req['User-Agent'] = "RubyScript"
+
+			res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+			json = JSON.parse(res.body) rescue {}
+
+			break if !json['items'] || json['items'].empty?
+
+			json['items'].each do |item|
+				raw_url = item['html_url']
+					.sub('https://github.com/', 'https://raw.githubusercontent.com/')
+					.sub('/blob/', '/')
+
+				begin
+					raw_uri = URI(raw_url)
+					raw_res = Net::HTTP.get(raw_uri)
+					# Trova solo http/https contenenti il dominio
+					raw_res.scan(%r{https?://[^\s"'<>]+}).each do |match|
+						results << match.strip if match.include?(domain)
+					end
+				rescue
+					next
+				end
+			end
+
+			page += 1
+		end
+	end
+
+	results.uniq
+end
+
+
+
 def send_telegram_notif(message)
 
 	return unless $CONFIG['telegram'] && $CONFIG['telegram'] != "YOUR_TELEGRAM_TOKEN_HERE" && $CONFIG['telegram_chat_id'] && $CONFIG['telegram_chat_id'] != "YOUR_TELEGRAM_CHAT_ID_HERE"
@@ -973,7 +1031,8 @@ def crawl_local_fun(params)
 				# GitHub endpoints processing
 				if $CONFIG['github_token'] && $CONFIG['github_token'] != "YOUR_GITHUB_TOKEN_HERE"
 					github_file = "output/github-endpoints_#{domain}.txt"
-					system("python ~/Tools/web-attack/github-search/github-endpoints.py -d #{domain} -t #{$CONFIG['github_token']} | tee #{github_file}")
+					endpoints = github_endpoints(domain, $CONFIG['github_token'])
+					File.open(github_file, "w") { |f| f.puts(endpoints) }
 					remove_using_scope(file, github_file)
 					clean_urls(github_file)
 					mutex.synchronize { adding_anew(github_file, "output/allUrls_#{file_sanitized}") }
