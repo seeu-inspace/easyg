@@ -900,19 +900,29 @@ def webscreenshot_fun(params)
 
 	urls.each_with_index do |url, i|
 		begin
+			driver.manage.timeouts.page_load = 5
 			driver.navigate.to(url)
-			sleep 1
+		rescue Selenium::WebDriver::Error::TimeoutError
+			puts "[!] Timeout on #{url}, capturing what’s loaded..."
+		rescue Selenium::WebDriver::Error::UnknownError => e
+			if e.message.include?("net::ERR_SSL_PROTOCOL_ERROR")
+				puts "[!] SSL error on #{url}, capturing what’s loaded..."
+			else
+				puts "[!] Unknown error on #{url}: #{e.message.gsub(/\n/, ' ')}"
+				next	# salta direttamente senza screenshot
+			end
+		end
 
+		begin
 			sanitized = url.gsub(/[^\w\.-]/, '_')[0..150]
 			image_path = "output/webscreen/#{sanitized}.png"
-
 			driver.save_screenshot(image_path)
 
 			puts "[\e[32m#{i+1}\e[0m] Screenshot: #{image_path}"
 			image_paths << image_path
 			successful_urls << url
 		rescue => e
-			puts "[\e[31m!\e[0m] Error on #{url}: #{e.message.gsub(/\n/, ' ')}"
+			puts "[\e[31m!\e[0m] Error saving screenshot for #{url}: #{e.message.gsub(/\n/, ' ')}"
 		end
 	end
 
