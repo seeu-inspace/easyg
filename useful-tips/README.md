@@ -361,6 +361,9 @@ If something goes wrong
 - If you have problems with an injection, try to inject a longer string in order to cause an overflow
 - List all running processes whose command line contains a specific keyword `Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like "*<keyword>*" } | Select-Object CommandLine | Format-List`
 
+> "Always consider covering second-order takeovers, because in most cases they are evaluated as critical, like a blind XSS, which is remotely controllable and even application-wide."
+- Check: "[Second-Order Takeover: Scoring High Rewards! 🏆 | by nocley | Medium](https://medium.com/@nocley/second-order-takeover-scoring-high-rewards-926ff658b76b)"
+
 **Recon with favicons**
 - `subfinder -d target.com | httpx -favicon -j | jq -r .favicon | grep -v null | sort -u`
   - Spring Boot > `116323821`
