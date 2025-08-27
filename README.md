@@ -1,4 +1,12 @@
-<img src="img/easyg-removebg.png" alt="easyg_header" width="520" height="260">
+```ruby
+███████╗ █████╗ ███████╗██╗   ██╗ ██████╗
+██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝
+█████╗  ███████║███████╗ ╚████╔╝ ██║  ███╗
+██╔══╝  ██╔══██║╚════██║  ╚██╔╝  ██║   ██║
+███████╗██║  ██║███████║   ██║   ╚██████╔╝
+╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝
+Made with <3 by Riccardo Malatesta (@seeu)
+```
 
 [![License](https://img.shields.io/github/license/seeu-inspace/easyg)](LICENSE)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
