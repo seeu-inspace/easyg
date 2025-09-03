@@ -437,6 +437,10 @@ sudo mv Postman/ /opt/Postman
 sudo ln -s /opt/Postman/Postman /usr/bin/postman
 ```
 
+**AI Security Frameworks**
+- [Cybersecurity AI (CAI)](https://github.com/aliasrobotics/cai)
+- [Strix](https://github.com/usestrix/strix)
+
 **Misc tools**
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)
 - [base64encode.org](https://www.base64encode.org/)
