@@ -9,6 +9,7 @@
 ## Resources
 
 - [Types of LLM vulnerabilities | promptfoo](https://www.promptfoo.dev/docs/red-team/llm-vulnerability-types/)
+- [llms.txt polyglot prompt injection example](https://josephthacker.com/llms.txt)
 
 
 ## Prompt Injection
