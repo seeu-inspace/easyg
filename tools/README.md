@@ -39,7 +39,7 @@ To give you (and myself) an idea on how it works, I've made this graphic:
   ```
 - Analyze better the results from Intruder with Settings > "Grep - Extract"
   - Manually select in the response the value that you want to track in a new column in the results
-- [To fix visual glitches](https://forum.portswigger.net/thread/visual-glitches-within-burp-on-secondary-screen-390bebb0)
+- To fix visual glitches: `start javaw -Dsun.java2d.d3d=false -Dsun.java2d.noddraw=true -jar \path\to\burpsuite_community.jar`
 
 
 **Cool extensions**
@@ -58,7 +58,6 @@ To give you (and myself) an idea on how it works, I've made this graphic:
 - [InQL](https://portswigger.net/bappstore/296e9a0730384be4b2fffef7b4e19b1f)
 - [Wsdler](https://github.com/NetSPI/Wsdler)
 - [Swagger-EZ](https://github.com/RhinoSecurityLabs/Swagger-EZ)
-- [Hackvertor](https://portswigger.net/bappstore/65033cbd2c344fbabe57ac060b5dd100)
 - [Turbo Intruder](https://github.com/PortSwigger/turbo-intruder)
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
