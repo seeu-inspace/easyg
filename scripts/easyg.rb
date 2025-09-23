@@ -649,7 +649,7 @@ def assetenum_fun(params)
 	File.open(all_vhosts_file, 'a') { |f| f.puts("") } unless File.exist?(all_vhosts_file)
 
 	File.open(file, 'r').each_line do |f|
-		target = Shellwords.escape(f.chomp)
+		target = f.chomp
 		next if target.empty?
 
 		puts "\n[\e[34m*\e[0m] Starting asset enumeration for #{target}"
@@ -978,15 +978,15 @@ def crawl_local_fun(params)
 
 				threads = []
 				threads << Thread.new do
-					system("katana -u #{Shellwords.escape(target)} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o #{katana_file}")
+					system("katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o #{katana_file}")
 				end
 
 				threads << Thread.new do
-					system("echo #{Shellwords.escape(target)} | gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bmp,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o #{gau_file}")
+					system("echo #{target} | gau --blacklist svg,png,gif,ico,jpg,jpeg,jfif,jpg-large,bmp,mp3,mp4,ttf,woff,ttf2,woff2,eot,eot2,swf,swf2,css --fc 404 --threads #{$CONFIG['n_threads']} --verbose --o #{gau_file}")
 				end
 
 				threads << Thread.new do
-					system("paramspider -d #{Shellwords.escape(target_sanitized)}")
+					system("paramspider -d #{target_sanitized}")
 				end
 
 				threads.each(&:join)
