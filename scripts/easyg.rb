@@ -766,6 +766,7 @@ def assetenum_fun(params)
 				ip = "unknown"
 				dead_subdomains << sub
 			end
+
 			if ip!="unknown"
 				puts sub
 				unless File.foreach(allsubs_file).grep(/^#{Regexp.escape(sub)}$/).any?
@@ -774,52 +775,54 @@ def assetenum_fun(params)
 			end
 		end
 	
-		# Save dead subdomains to file for VhostFinder
-		dead_subdomains_file = "output/dead_subdomains_#{file}"
-		File.write(dead_subdomains_file, dead_subdomains.join("\n"))
-	
-		# ==== Vhost Enumeration on Alive IPs ====
-		alive_ips.each do |ip|
-			next if ip.empty?
-	
-			puts "[\e[34m*\e[0m] Running VhostFinder on IP: #{ip}"
-			vhost_output = "output/vhosts_#{ip}.txt"
-			
-			# Execute VhostFinder with dead subdomains as wordlist
-			system("VhostFinder -ip #{ip} -wordlist #{dead_subdomains_file} | tee #{vhost_output}")
-	
-			# Parse results and add valid vhosts
+		if params[:gb_opt] == "y"
+			# Save dead subdomains to file for VhostFinder
+			dead_subdomains_file = "output/dead_subdomains_#{file}"
+			File.write(dead_subdomains_file, dead_subdomains.join("\n"))
+		
+			# ==== Vhost Enumeration on Alive IPs ====
+			alive_ips.each do |ip|
+				next if ip.empty?
+		
+				puts "[\e[34m*\e[0m] Running VhostFinder on IP: #{ip}"
+				vhost_output = "output/vhosts_#{ip}.txt"
+				
+				# Execute VhostFinder with dead subdomains as wordlist
+				system("VhostFinder -ip #{ip} -wordlist #{dead_subdomains_file} | tee #{vhost_output}")
+		
+				# Parse results and add valid vhosts
 
-			if File.exist?(vhost_output)
-				valid_vhosts = []
-				File.foreach(vhost_output) do |line|
-					line.strip!
-	
-					next if line.empty?
-					next unless line.start_with?("[+]")
-	
-					valid_vhosts << line
-				end
-	
-				# Append to per-IP vhosts file
-				if valid_vhosts.any?					
-					# Append to global Vhosts file
-					File.open(all_vhosts_file, 'a') do |f|
-						valid_vhosts.each do |vhost|
-							unless File.foreach(all_vhosts_file).grep(/^#{Regexp.escape(vhost)}$/).any?
-								f.puts(vhost)
+				if File.exist?(vhost_output)
+					valid_vhosts = []
+					File.foreach(vhost_output) do |line|
+						line.strip!
+		
+						next if line.empty?
+						next unless line.start_with?("[+]")
+		
+						valid_vhosts << line
+					end
+		
+					# Append to per-IP vhosts file
+					if valid_vhosts.any?					
+						# Append to global Vhosts file
+						File.open(all_vhosts_file, 'a') do |f|
+							valid_vhosts.each do |vhost|
+								unless File.foreach(all_vhosts_file).grep(/^#{Regexp.escape(vhost)}$/).any?
+									f.puts(vhost)
+								end
 							end
 						end
 					end
+		
+					FileUtils.rm_f(vhost_output)	# Cleanup temp file
 				end
-	
-				FileUtils.rm_f(vhost_output)	# Cleanup temp file
 			end
-		end
 
-		# Cleanup
-		[dead_subdomains_file, final_tmp].each do |f|
-			FileUtils.rm_f(f)
+			# Cleanup
+			[dead_subdomains_file, final_tmp].each do |f|
+				FileUtils.rm_f(f)
+			end
 		end
 	end
 
