@@ -531,24 +531,42 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	end
 	puts "[\e[32m+\e[0m] URLs with only tracking parameters removed"
 
-	# Step 6: Remove 4** URLs
-	puts "[\e[34m*\e[0m] Checking for dead links and 404 URLs..."
-	live_urls = process_urls(file_path) do |response, url|
-		if response.is_a?(Net::HTTPSuccess)
-			puts "[\e[32m+\e[0m] Alive URL: #{url}"
-			url
-		elsif response.code.to_i == 404
-			puts "[\e[31m+\e[0m] 404 Not Found: #{url}"
-			nil
-		elsif response.code.to_i == 410
-			puts "[\e[31m!\e[0m] 410 Gone: #{url}"
-			nil
-		elsif response.code.to_i == 401
-			puts "[\e[31m!\e[0m] 401 Unauthorized: #{url}"
-			nil
-		else
-			puts "[\e[33m~\e[0m] #{response.code} response: #{url}"
-			url
+	# Step 6: Remove dead links and 404 URLs
+	puts "[\e[34m*\e[0m] Checking for 4** URLs..."
+	queue = Queue.new
+	filtered_urls.each { |url| queue << url }
+
+	live_urls = []
+	mutex = Mutex.new
+
+	workers = Array.new(num_threads) do
+		Thread.new do
+			until queue.empty?
+				url = queue.pop(true) rescue nil
+				next unless url
+
+				response = check_url(url)
+
+				if response.nil?
+					puts "[\e[31m+\e[0m] No response: #{url}"
+					next
+				end
+
+				case response.code.to_i
+				when 200
+					puts "[\e[32m+\e[0m] Alive URL: #{url}"
+					mutex.synchronize { live_urls << url }
+				when 404
+					puts "[\e[31m+\e[0m] 404 Not Found: #{url}"
+				when 410
+					puts "[\e[31m!\e[0m] 410 Gone: #{url}"
+				when 401
+					puts "[\e[31m!\e[0m] 401 Unauthorized: #{url}"
+				else
+					puts "[\e[33m~\e[0m] #{response.code} response: #{url}"
+					mutex.synchronize { live_urls << url }
+				end
+			end
 		end
 	end
 
