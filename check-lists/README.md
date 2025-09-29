@@ -79,7 +79,7 @@
 	- Passive Information Gathering (OSINT)
 	- Active Information Gathering
 3. Service enumeration
-4. Cicle
+4. Cycle
 	- Penetration
   	- Initial Foothold
   	- Privilege Escalation
