@@ -493,6 +493,12 @@ end
 
 
 def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
+
+	unless File.exist?(file_path)
+		puts "[\e[31m!\e[0m] Error: File not found: #{file_path}"
+		return
+	end
+
 	puts "[\e[34m*\e[0m] Starting URL cleaning process..."
 
 	# Step 1: Clean file
@@ -509,12 +515,12 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 
 	# Step 3: Process the file with urless to deduplicate URLs
 	puts "[\e[34m*\e[0m] Running urless to deduplicate URLs..."
-	if system("urless -i #{file_path} -o #{file_path}.tmp")
-		File.rename("#{file_path}.tmp", file_path)
+	if system("urless -i #{file_path} -o #{file_path}.tmp 2>/dev/null")
+		File.rename("#{file_path}.tmp", file_path) 
 		puts "[\e[32m+\e[0m] Urless processing complete, deduplicated URLs written to #{file_path}"
 	else
-		puts "[\e[31m!\e[0m] Error running urless"
-		return
+		FileUtils.rm_f("#{file_path}.tmp") 
+		puts "[\e[31m!\e[0m] Error running urless, skipping deduplication step."
 	end
 
 	# Step 4: Remove useless URLs like _Incapsula_Resource
@@ -569,6 +575,8 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 			end
 		end
 	end
+	
+	workers.each(&:join)
 
 	# Step 7: Overwrite the input file with the cleaned URLs
 	puts "[\e[34m*\e[0m] Writing cleaned URLs to file..."
@@ -774,7 +782,7 @@ def assetenum_fun(params)
 				end
 			end
 		end
-	
+
 		if params[:gb_opt] == "y"
 			# Save dead subdomains to file for VhostFinder
 			dead_subdomains_file = "output/dead_subdomains_#{file}"
@@ -1026,7 +1034,6 @@ def crawl_local_fun(params)
 
 				# Clean and merge
 				mutex.synchronize do
-					clean_urls(katana_file)
 					adding_anew(katana_file, "output/allUrls_#{file_sanitized}")
 					puts "[\e[32m+\e[0m] Results for #{target} saved in output/allUrls_#{file_sanitized}"
 				end
@@ -1034,6 +1041,8 @@ def crawl_local_fun(params)
 		end
 	end
 	target_threads.each(&:join)
+
+	clean_urls("output/allUrls_#{file_sanitized}")
 
 	extract_main_domains("output/allUrls_#{file_sanitized}", "output/_tmp_domains_#{file_sanitized}")
 	domains = File.readlines("output/_tmp_domains_#{file_sanitized}").map(&:chomp)
