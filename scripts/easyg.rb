@@ -421,7 +421,13 @@ def file_sanitization(file_path)
 
 		if line.start_with?("http")
 			begin
+
 				uri = URI.parse(line)
+
+				if uri.host.nil? && (uri.scheme == 'http' || uri.scheme == 'https')
+					puts "[\e[31m+\e[0m] URL with missing host found and skipped: #{line}"
+					next # Skip to the next line
+				end
 
 				# Encodes URL components while preserving existing percent-encoding:
 				# - Splits segments like "%20" to avoid double-encoding
