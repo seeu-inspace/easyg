@@ -396,7 +396,7 @@ def contains_only_tracking_params?(url)
 	uri = URI.parse(url)
 	return false if uri.query.nil? || uri.query.empty? # check if there are parameters, if not return false
 
-	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid gad_source fbclid __cf_chl_rt_tk]
+	tracking_params = %w[utm_source utm_medium utm_campaign utm_term utm_content gclid gad_source fbclid __cf_chl_rt_tk msclkid dclid ttclid yclid _branch_match_id _branch_referrer __hssc __hstc __hsfp _ga _gl ref]
 	params = URI.decode_www_form(uri.query).map(&:first)
 
 	(params - tracking_params).empty?
@@ -526,7 +526,9 @@ def clean_urls(file_path, num_threads = $CONFIG['n_threads'])
 	# Step 4: Remove useless URLs like _Incapsula_Resource
 	puts "[\e[34m*\e[0m] Removing useless URLs..."
 	urls = File.readlines(file_path).map(&:strip).reject(&:empty?)
-	filtered_urls = urls.reject { |url| url.include?('_Incapsula_Resource') }
+	filtered_urls = urls.reject do |url|
+		url.include?('_Incapsula_Resource') || url.include?('/akam/')
+	end
 	puts "[\e[32m+\e[0m] Useless URLs removed"
 
 	# Step 5: Remove URLs with only tracking parameters
