@@ -1013,7 +1013,7 @@ def crawl_local_fun(params)
 	mutex = Mutex.new
 
 	# Thread pool for target processing
-	target_threads = Array.new([targets.size, Etc.nprocessors].min) do
+	target_threads = Array.new(num_threads) do
 		Thread.new do
 			while !target_queue.empty? && target = target_queue.pop(true) rescue nil
 				target_sanitized = target.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/', '')
@@ -1222,4 +1222,5 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
+
 
