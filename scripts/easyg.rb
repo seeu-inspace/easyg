@@ -443,19 +443,23 @@ def file_sanitization(file_path)
 				encoded_query = uri.query ? uri.query.split('&').map { |param| param.split('=', 2).map { |part| encode_component.call(part) }.join('=') }.join('&') : nil
 				encoded_fragment = uri.fragment ? encode_component.call(uri.fragment) : nil
 
-				sanitized_url = URI::Generic.build(
-					scheme: uri.scheme,
-					userinfo: uri.user,
-					host: uri.host,
-					port: uri.port,
-					path: encoded_path,
-					query: encoded_query,
-					fragment: encoded_fragment
-				).to_s
-
-				sanitized_lines << sanitized_url
-			rescue URI::InvalidURIError
-				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line}"
+				begin
+					sanitized_url = URI::Generic.build(
+						scheme: uri.scheme,
+						userinfo: uri.user,
+						host: uri.host,
+						port: uri.port,
+						path: encoded_path,
+						query: encoded_query,
+						fragment: encoded_fragment
+					).to_s
+					sanitized_lines << sanitized_url
+				rescue
+					next
+				end
+				
+			rescue URI::InvalidURIError => e
+				puts "[\e[31m+\e[0m] Invalid URL found and skipped: #{line} | Error: #{e.message}"
 			end
 		else
 			sanitized_lines << line
@@ -1218,3 +1222,4 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
+
