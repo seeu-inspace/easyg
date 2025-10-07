@@ -1742,6 +1742,8 @@ Accept: */*
 
 ```
 
+From "[Attacking organizations with big scopes: from zero to hero](https://youtu.be/vFk0XtHfuSg?si=yaCVbxP8IImt_CnY&t=1510)".
+
 Resources:
 - [Confusion Attacks: Exploiting Hidden Semantic Ambiguity in Apache HTTP Server!](https://blog.orange.tw/posts/2024-08-confusion-attacks-en/)
 
