@@ -17,6 +17,11 @@
 - [Windows persistence](#windows-persistence)
 - [Debugging & Development Tools Exposure](#debugging--development-tools-exposure)
 
+## Notes
+
+Resources:
+- [Using Burp's Invisible Proxy Settings to Test a Non-Proxy-Aware Thick Client Application](https://portswigger.net/support/using-burp-suites-invisible-proxy-settings-to-test-a-non-proxy-aware-thick-client-application)
+
 ## DLL Hijacking
 
 **Tool**
