@@ -2,6 +2,7 @@
 
 ## Index
 
+- [Notes](#notes)
 - [DLL Hijacking](#dll-hijacking)
 - [Insecure application design](#insecure-application-design)
 - [Weak Hashing Algorithms](#weak-hashing-algorithms)
