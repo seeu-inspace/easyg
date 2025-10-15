@@ -1007,6 +1007,8 @@ def crawl_local_fun(params)
 	target_tmp = ""
 	FileUtils.mkdir_p('output')
 
+	num_threads = $CONFIG['n_threads']
+
 	targets = File.readlines(file).map(&:chomp)
 	target_queue = Queue.new
 	targets.each { |t| target_queue << t }
@@ -1111,7 +1113,7 @@ def crawl_local_fun(params)
 	# Find new URLs from the JS files
 	puts "\n[\e[34m*\e[0m] Finding more endpoints from output/allJSUrls_#{file_sanitized} with xnLinkFinder"
 	extract_domains_from_urls("output/allUrls_#{file_sanitized}", "output/tmp_scope.txt")
-	system("xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp output/tmp_scope.txt -o output/xnLinkFinder_#{file_sanitized}")
+	system("xnLinkFinder -i output/allJSUrls_#{file_sanitized} -sf output/tmp_scope.txt -p #{$CONFIG['n_threads']} -vv -insecure -sp #{file} -o output/xnLinkFinder_#{file_sanitized}")
 	clean_urls "output/xnLinkFinder_#{file_sanitized}"
 	adding_anew("output/allJSUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
@@ -1222,6 +1224,4 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
-
-
 
