@@ -57,7 +57,6 @@
 - [wordlists.assetnote.io](https://wordlists.assetnote.io/)
 - [content_discovery_all.txt](https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10)
 - [OneListForAll](https://github.com/six2dez/OneListForAll)
-- [wordlistgen](https://github.com/ameenmaali/wordlistgen)
 - [Scavenger](https://github.com/0xDexter0us/Scavenger)
 
 **Wordlists kali**
