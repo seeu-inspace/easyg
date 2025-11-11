@@ -736,7 +736,33 @@ def assetenum_fun(params)
 		# Gobuster DNS thread (heavy mode only)
 		if params[:gb_opt] == "y"
 			threads << Thread.new do
-				system("gobuster dns -d #{target} -w all.txt -t #{$CONFIG['n_threads']} -o #{gobuster_out}")
+				begin
+					unless File.exist?("all.txt")
+						uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
+						response = Net::HTTP.get_response(uri)
+						alltxt = (response.body).to_s
+						File.open('all.txt', 'w') { |file| file.write(alltxt) }
+					end
+
+					gobuster_tmp = "output/#{target}_gobuster_tmp.txt"
+					system("gobuster dns -d #{target} -v -t #{$CONFIG['n_threads']} --no-color --wildcard -o #{gobuster_tmp} -w all.txt")
+
+					File.open(gobuster_out, 'w') do |outf|
+						if File.exist?(gobuster_tmp)
+							File.foreach(gobuster_tmp) do |line|
+								if line.include?("Found: ")
+									outf.puts line.split("Found: ", 2).last.strip
+								elsif line =~ /Found\s+(.+\S)/
+									outf.puts $1.strip
+								end
+							end
+						end
+					end
+
+					File.delete(gobuster_tmp) if File.exist?(gobuster_tmp)
+				rescue Exception => e
+					puts "[\e[31m!\e[0m] Gobuster error: #{e.message}"
+				end
 			end
 		end
 
@@ -1224,4 +1250,3 @@ rescue StandardError => e
 	send_telegram_notif 'easyg.rb crashed'
 	exit 1
 end
-
