@@ -62,6 +62,7 @@ To give you (and myself) an idea on how it works, I've made this graphic:
 - [HTTP Request Smuggler](https://github.com/PortSwigger/http-request-smuggler)
 - [BurpCustomizer](https://github.com/CoreyD97/BurpCustomizer)
 - [Burp Bounty](https://burpbounty.net/)
+- [Bypass Bot Detection](https://portswigger.net/bappstore/50fd63182afe43b7a3cf99b523f313f9)
 
 **Browser extensions**
 - [Trufflehog Chrome Extension](https://github.com/trufflesecurity/Trufflehog-Chrome-Extension)
