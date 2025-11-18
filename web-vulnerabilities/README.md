@@ -1375,7 +1375,7 @@ How OAuth 2.0 works:
 
 **[OAuth flow](https://portswigger.net/web-security/oauth/grant-types)**
 
-<img src="img/oauth-authorization-code-flow.jpg" alt="oauth-flow">
+<img src="../img/oauth-authorization-code-flow.jpg" alt="oauth-flow">
 
 Following standard endpoints:
 - `/.well-known/oauth-authorization-server`
