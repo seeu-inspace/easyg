@@ -60,6 +60,7 @@
 - [Apache](#apache)
 - [Cisco](#cisco)
 - [Citrix](#citrix)
+- [Adobe Experience Manager](#adobe-experience-manager)
 
 
 
@@ -1779,3 +1780,9 @@ Resources:
 ```
 https://domain/oauth/idp/logout?post_logout_redirect_uri=%0d%0a%0d%0a<script>alert(document.domain)</script>
 ```
+
+## Adobe Experience Manager
+
+- `/jcr:content.json` returns the content of a page node itself
+- `.ext.json` returns the JSON representation of a specific child node or content component
+- `.childrenlist.json` lists all immediate child nodes/components under a given node
