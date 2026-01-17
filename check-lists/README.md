@@ -104,7 +104,7 @@
 - [ ] Perform integrity checks
     - [ ] Determine whether any IDs, documentation, or data are required
     - [ ] Verify whether any sections or functionalities are not working
-- [ ] Create a PwnDoc project and prepare files (excel/markdown) for notes and progress tracking
+- [ ] Create a PwnDoc and prepare files (excel/markdown) for notes and progress tracking
 
 ## Bug Bounty Hunting
 
