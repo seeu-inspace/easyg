@@ -72,6 +72,7 @@
 
 ## Penetration Testing cycle
 
+**OSCP Flow**
 1. Defining the Scope
 	- Check if the target is valid
 	- Setup the environment
@@ -93,6 +94,17 @@
 	- Reporting / Analysis
 	- Lessons Learned / Remediation
 
+**Penetration Test Checklist**
+
+- [ ] Define the scope
+- [ ] Define the limitations (both client-imposed and technical constraints)
+- [ ] Clarify the deadline
+- [ ] Check for any previous activity or reports related to the target
+- [ ] Verify available user accounts and confirm they are working
+- [ ] Perform integrity checks
+    - [ ] Determine whether any IDs, documentation, or data are required
+    - [ ] Verify whether any sections or functionalities are not working
+- [ ] Create a PwnDoc project and prepare files (excel/markdown) for notes and progress tracking
 
 ## Bug Bounty Hunting
 
