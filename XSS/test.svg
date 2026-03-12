@@ -1,7 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="100">
   <rect width="100%" height="100%" fill="#f0f0f0" rx="5" ry="5"/>
   
-  <image href="favicon_cnp_seguradora.svg" x="10" y="10" width="80" height="80"/>
+  <image href="" x="10" y="10" width="80" height="80"/>
+  
+  <text x="110" y="55" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#333">Right click on me and open in a new window</text>
+</svg>
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100">
+  <rect width="100%" height="100%" fill="#f0f0f0" rx="5" ry="5"/>
+  
+  <image href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+Cjxzdmcgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiA8ZGVmcz4KICA8Y2xpcFBhdGggaWQ9ImNsaXAwXzE1Nzk2XzQyMjQwIj4KICAgPHJlY3QgZmlsbD0id2hpdGUiIGhlaWdodD0iNTYiIGlkPSJzdmdfMSIgd2lkdGg9IjE3NCIvPgogIDwvY2xpcFBhdGg+CiA8L2RlZnM+CiA8ZyBjbGFzcz0ibGF5ZXIiPgogIDx0aXRsZT5MYXllciAxPC90aXRsZT4KICA8ZyBpZD0ic3ZnXzI1Ij4KICAgPHBhdGggZD0ibTMxNC4wNCwxMDEuMzVsLTMwOS4zNSwwbDAsMzA5LjNsMzA5LjM1LDBsMCwtMzA5LjN6IiBmaWxsPSIjMDAyMzY0IiBpZD0ic3ZnXzMiLz4KICAgPHBhdGggZD0ibTU1LjY1LDEzOC41NmMtMC43MiwtMC4zMyAtMC41NSwtMS4yOCAwLjIyLC0xLjI4bDU3LjEyLDBjMy4xNiwwIDUuMjcsMy42IDMuNTUsNi42NmwtMi45NCw1LjA1bC0zNS4wNSwwbC0yMi45LC0xMC40M20tMjMuNTcsNDQuMzFjLTAuNjEsMC40NCAtMC4xMSwxLjMzIDAuNTUsMS4xNmwxMDMuNDMsLTI4LjA2YzAuNDQsLTAuMTEgMC45NCwtMC41NSAwLjk0LC0xLjIyYzAsLTAuNzggLTAuNjcsLTEuMzMgLTEuMzMsLTEuMzNsLTU3LjEyLDBsLTQ2LjQ4LDI5LjQ1bDAsMHptMTcuNTgsMS4xNmwzNy41NSwtMC42N2MzLjYsLTAuMTEgNy44OCwtMi4yMiA5LjgyLC01LjU1bDQuNDksLTcuODJsLTUxLjg1LDE0LjAzbDAsMHoiIGZpbGw9IndoaXRlIiBpZD0ic3ZnXzQiLz4KICAgPHBhdGggZD0ibTEwNS42MiwzMDguNTVsLTE0LjA5LDEwLjU5Yy00LjM4LC01LjU1IC0xMS44MSwtOS41NCAtMTguNTIsLTkuNTRjLTEyLjc2LDAgLTIzLjI0LDEwLjc2IC0yMy4yNCwyNC4wMWMwLDEzLjI1IDEwLjQ4LDIzLjg1IDIzLjI0LDIzLjg1YzYuODgsMCAxNC4wMywtMy44MyAxOC41MiwtOS41NGwxNC4wOSwxMC41OWMtNy42LDkuODcgLTE5LjM2LDE2LjA4IC0zMi42MSwxNi4wOGMtMjIuNjgsMCAtNDAuOTgsLTE4LjQ3IC00MC45OCwtNDAuOThjMCwtMjIuNTcgMTguMywtNDEuMTUgNDAuOTgsLTQxLjE1YzEzLjI1LDAgMjUuMDEsNi4yNyAzMi42MSwxNi4wOG02OC41NSwzMy43MmwtMzYuODgsLTQ3LjUzbC0xNS41MywwbDAsNzcuNjRsMTcuMTQsMGwwLC00Ny4zNmwzNi44Myw0Ny4zNmwxNS42NCwwbDAsLTc3LjY0bC0xNy4yNSwwbDAsNDcuNTNsMC4wNiwwem00Mi45MywtNDcuNTNsMCw3Ny41OWwxNy4yNSwwbDAsLTE4LjU4bDIyLjksMGMxNi4xOSwwIDI5LjQ1LC0xMy4wOSAyOS40NSwtMjkuMzljMCwtMTYuMzYgLTEzLjI1LC0yOS42MiAtMjkuNDUsLTI5LjYybC00MC4xNSwwem01MS41OCwyOS42MmMwLDYuNzcgLTUuNTUsMTIuMzEgLTEyLjMxLDEyLjMxbC0yMi4wMiwwbDAsLTI0LjY4bDIyLjAyLDBjNi43NywwIDEyLjMxLDUuNDQgMTIuMzEsMTIuMzd6IiBmaWxsPSJ3aGl0ZSIgaWQ9InN2Z181Ii8+CiAgIDxwYXRoIGQ9Im0zNTIuNjksMjU2LjAzbC0zOC42NiwwbDAsMTU0LjYybDM4LjY2LDBsMCwtMTU0LjYyeiIgZmlsbD0iI0Q3MDA2NCIgaWQ9InN2Z182Ii8+CiAgIDxwYXRoIGQ9Im0xNTkuMzYsMjQ0Ljk0YzQwLjMyLC01MS44IDEwMy4yNywtODUuMDIgMTczLjkyLC04NS4wMmM3MC42NiwwIDEzMy42NiwzMy4yMiAxNzQuMDMsODUuMDJsLTUxLjEzLDBjLTMyLjUsLTI5LjM5IC03NS41OSwtNDcuNDIgLTEyMi45LC00Ny40MmMtNDcuMzEsMCAtOTAuNCwxOC4wMiAtMTIyLjczLDQ3LjQybC01MS4xOSwweiIgZmlsbD0iIzM5QThFNSIgaWQ9InN2Z183Ii8+CiAgPC9nPgogPC9nPgo8L3N2Zz4=" x="10" y="10" width="80" height="80"/>
   
   <text x="110" y="55" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#333">Right click on me and open in a new window</text>
 </svg>
