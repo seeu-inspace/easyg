@@ -1044,6 +1044,7 @@ Some examples
 - [Bsides Tallinn 2024 - Lyra Rebane (Web security is fun)](https://www.youtube.com/watch?v=2ZENE8ua_gU)
 - [The Ultimate Double-Clickjacking PoC | Jorian Woltjer](https://jorianwoltjer.com/blog/p/research/ultimate-doubleclickjacking-poc)
 - [Clipjacking: Hacked by copying text - Clickjacking but better](https://blog.jaisal.dev/articles/cwazy-clipboardz)
+- [SVG clickjacking](https://lyra.horse/blog/2025/12/svg-clickjacking/)
 
 ## DOM-based vulnerabilities
 
