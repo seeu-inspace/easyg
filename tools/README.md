@@ -47,6 +47,7 @@ To give you (and myself) an idea on how it works, I've made this graphic:
 - [Upload Scanner](https://portswigger.net/bappstore/b2244cbb6953442cb3c82fa0a0d908fa)
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
 - [JS Miner](https://portswigger.net/bappstore/0ab7a94d8e11449daaf0fb387431225b)
+- [JS Analyzer - Burp Suite Extension by Jensec](https://github.com/jenish-sojitra/JSAnalyzer)
 - [403 Bypasser](https://portswigger.net/bappstore/444407b96d9c4de0adb7aed89e826122)
 - [Autorize](https://github.com/PortSwigger/autorize)
 - [Anonymous Cloud](https://portswigger.net/bappstore/ea60f107b25d44ddb59c1aee3786c6a1)
