@@ -80,7 +80,7 @@ pwd                                                      Print the current direc
 cd ~                                                     Return to the home/user directory
 echo "test1" > test.txt                                  Saves "test1" in the new file "test.txt"
 echo "test2" >> test.txt                                 Add in a new line "test2" in the file "test.txt"
-echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extr fields from a stream using a multi-character separator in awk
+echo "hack::the::world" | awk -F "::" '{print $1, $3}'   Extract fields from a stream using a multi-character separator in awk
 comm scan-a.txt scan-b.txt                               Compare files
 diff -c scan-a.txt scan-b.txt                            Compare files, context format
 diff -u scan-a.txt scan-b.txt                            Compare files, unified format
@@ -90,17 +90,17 @@ vimdiff scan-a.txt scan-b.txt                            Compare files using vim
 ## Misc Commands
 ```shell
 init 6                                                   Reboot Linux from the command line
-gcc -o output.c input.c                                  Compile C code
-gcc -m32 -o output.c input.c                             Cross compile C code, compile 32 bit binary on 64 bit Linux
+gcc -o output input.c                                    Compile C code
+gcc -m32 -o output input.c                               Cross compile C code, compile 32 bit binary on 64 bit Linux
 unset HISTORYFILE                                        Disable bash history logging
 kill -9 $$                                               Kill current session
 chown user:group blah                                    Change owner of file or dir
-chown -R user:group blah                                 Change owner of file or dir and all underlying files / dirs – recersive chown
+chown -R user:group blah                                 Change owner of file or dir and all underlying files / dirs – recursive chown
 chmod 600 file                                           Change file / dir permissions, see [Linux File System Permissons](#linux-file-system-permissions) for details
 ssh user@X.X.X.X | cat /dev/null > ~/.bash_history       Clear bash history
 man -k '^passwd$'                                        See the documentation of a command. Use the flag -k for keyword research
 man 5 passwd                                             See the page 5 of the documentation
-apropos descr                                            See wich description from docs matches the input for apropos
+apropos descr                                            See which description from docs matches the input for apropos
 locate sbd.exe                                           Locate "sbd.exe"
 sudo find / -name sbd*                                   Perform recursive search starting from root file system directory and look for files that starts with "sbd"
 which sbd                                                Search in $PATH "sbd"
@@ -109,18 +109,18 @@ apt show resource-agents                                 Examine information rel
 sudo apt install pure-ftpd                               apt install the pure-ftpd application
 sudo apt remove --purge pure-ftpd                        apt remove –purge to completely remove the pure-ftpd application
 sudo dpkg -i man-db_2.7.0.2-5_amd64.deb                  dpkg -i to install the man-db application
-echo "I need to try hard" | sed 's/hard/harder/'         Replac a word in the output stream
+echo "I need to try hard" | sed 's/hard/harder/'         Replace a word in the output stream
 echo "Hack.The.World."| cut -f 3 -d "."                  Extract fields from the echo command output using cut
 cut -d ":" -f 1 /etc/passwd                              Extract usernames from /etc/passwd using cut
 wc -m < test.txt                                         Feed the wc command with the < operator
-cat test.txt | wc -m                                     Pip the output of the cat command into wc
+cat test.txt | wc -m                                     Pipe the output of the cat command into wc
 wget -O report_w.pdf https://of.io/report.pdf            Download a file through wget
 curl -o report_c.pdf https://of.io/report.pdf            Download a file with curl
 axel -a -n 20 -o report_a.pdf https://of.io/report.pdf   Download a file with axel; -n: number of multiple connections to use, -a: more concise progress indicator, -o specify a different file name for the downloaded file
 alias lsa='ls -la'                                       Create an alias "lsa" to execute the command "ls -la"
-alias mkdir='ping -c 1 localhost'                        Creat an alias that overrides the mkdir command
-unalias mkdir                                            Unsett an alias
-cat ~/.bashrc                                            Examin the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc"
+alias mkdir='ping -c 1 localhost'                        Create an alias that overrides the mkdir command
+unalias mkdir                                            Unset an alias
+cat ~/.bashrc                                            Examine the ".bashrc" default file, the system-wide file for Bash settings located at "/etc/bash.bashrc"
 chmod +x                                                 Make a file executable
 xfreerdp /u:<user> /p:<password> /cert:ignore /v:<ip>    Connect with RDP
 rdesktop -u <user> -p <password> <ip>                    Connect with RDP
