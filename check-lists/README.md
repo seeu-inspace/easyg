@@ -34,7 +34,7 @@
 ## Recon
 - [ ] Identify technologies
 	- [ ] Look for response headers, use `curl -I www.domain.com`
-	- [ ] Use WappaLyzer, WhatWeb, BuilWith
+	- [ ] Use WappaLyzer, WhatWeb, BuiltWith
 		- Check for CVEs
 	- [ ] Portscanning: use nmap, also for possible hidden web ports
 		- SMB: `nmap -vvv -p 139,445 --script=smb*`
@@ -51,7 +51,7 @@
 		- [testssl.sh](https://testssl.sh/)
 		- `nmap -sV --script ssl-enum-ciphers -p 443`
 		- [SSL Server Test (Powered by Qualys SSL Labs)](https://www.ssllabs.com/ssltest/)
-	- [ ] Check if HTST is set
+	- [ ] Check if HSTS is set
 		- `Strict-Transport-Security`
 		- [sslstrip](https://github.com/moxie0/sslstrip)
 - [ ] Metafiles Leakage
@@ -121,7 +121,7 @@
   		- [asrank.caida.org](https://asrank.caida.org/)
   		- [check_mdi.py](https://github.com/expl0itabl3/check_mdi/blob/main/check_mdi.py)
     			- `./check_mdi.py -d <domain>`
-    		- [whois.arin.net](https://whois.arin.net/ui/query.do)
+    		- [ARIN RDAP Search](https://search.arin.net/rdap/)
     		- [asnmap](https://github.com/projectdiscovery/asnmap)
       		- For ASNs
         		- `amass intel -asn 13374,14618`
@@ -140,7 +140,7 @@
   - Grab the HTTP titles
     `cat out.txt | httpx -title`
 - [ ] Check for mobile/desktop applications
-  - If there are any other non-web application, use [Apkleak](https://github.com/dwisiswant0/apkleaks) and [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) (even if OoS) to grap endpoints
+  - If there are any other non-web application, use [Apkleak](https://github.com/dwisiswant0/apkleaks) and [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) (even if OoS) to grab endpoints
 
 ### Single target
 - [ ] Recon
@@ -173,7 +173,7 @@
   - [HTTP Request Smuggling](../web-vulnerabilities#http-request-smuggling) in login panels
   - [CSRF](../web-vulnerabilities#cross-site-request-forgery-csrf) for every auth user action
   - Password Reset Broken Logic / Poisoning
-- [ ] Cheack / search for [upload functions](../web-vulnerabilities/#file-upload-vulnerabilities)
+- [ ] Check / search for [upload functions](../web-vulnerabilities/#file-upload-vulnerabilities)
 - [ ] Email functions, check if you can send emails from the target
   - [ ] Spoofing
   - [ ] HTML Injection
