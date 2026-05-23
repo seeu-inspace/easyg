@@ -205,7 +205,7 @@ $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://<IP>:<PORT>/<FILE_TO_UPL
 ## WireShark
 
 **Filters**
-- `net 10.10.1.0/24`, capture traffic only on the `10.10.1.0/24` address range
+- `net <SUBNET>`, capture traffic only on the specified address range
 
 **Display filters**
 - `tcp.port == 21`, only display FTP data
@@ -333,7 +333,7 @@ keyscan_stop              stop the keystroke sniffer
 
 **Port forwarding**
 - `meterpreter> portfwd -h`
-  - Example `portfwd add -l 3389 -p 3389 -r 192.168.1.121`
+  - Example `portfwd add -l 3389 -p 3389 -r <TARGET_IP>`
 
 
 ## Others
@@ -377,7 +377,7 @@ For auths requiring an e-mail address
 - [amass](https://github.com/OWASP/Amass)
   - `amass enum -brute -active -d target -o output/target.txt -v` 
 - [subfinder](https://github.com/projectdiscovery/subfinder)
-  - `subfinder -d target -all -o output/target_subfinder.txt"`
+  - `subfinder -d target -all -o output/target_subfinder.txt`
 - [github-subdomains](https://github.com/gwen001/github-subdomains)
 - [bgp.he.net](https://bgp.he.net/) to find ASN + `amass intel -asn <ASN>`
 - [crt.sh](https://crt.sh/)
@@ -422,7 +422,7 @@ For auths requiring an e-mail address
 - [Vulnerability Rating Taxonomy](https://bugcrowd.com/vulnerability-rating-taxonomy)
 - [CVSS Calculator](https://www.first.org/cvss/calculator/3.1)
 - [PwnDoc](https://github.com/pwndoc/pwndoc)
-- [Vulnrepo](https://vulnrepo.com/home)
+- [Vulnrepo](https://vulnrepo.com/)
 - [PlexTrac](https://plextrac.com/)
 - [Offensive Security Exam Report Template in Markdown](https://github.com/noraj/OSCP-Exam-Report-Template-Markdown)
 - English grammar
