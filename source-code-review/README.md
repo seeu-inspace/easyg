@@ -4,7 +4,7 @@
 
 - [Notes](#notes)
 - [Strategies](#strategies)
-- [Digging deeeper](#digging-deeeper)
+- [Digging deeper](#digging-deeper)
 - [URL routing](#url-routing)
 - [Check-list](#check-list)
 - [Filtering / Escaping](#filtering--escaping)
@@ -32,10 +32,10 @@ There are many methods to do code review. Some examples:
 - Bottom up / Bottom down where you start from the functions you encounter first and see which other functions it calls and which other functions are called from
   - aka Forward Data Propagation / Backward Data Propagation
 - Greb way, where you search for specific keys like file.open, system, eval. This way is useful only if you want to do a quick code review
-- Another way is to start from a functionality, like Password Reset, and review all the code linked to this function. I’ll review which function Password Reset calls and by wich function, it’s called.
+- Another way is to start from a functionality, like Password Reset, and review all the code linked to this function. I’ll review which function Password Reset calls and by which function, it’s called.
 
-## Digging deeeper
-- Prioritize functions like authentication, autorization, PII etc.
+## Digging deeper
+- Prioritize functions like authentication, authorization, PII etc.
   - example: disclosing PII in the logs, from [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
     <img src="img/Screenshot_20221110_172648.png">
   - example: SQL injection in [OrderStatus.java](https://github.com/ShiftLeftSecurity/tarpit-java/blob/master/src/main/java/io/shiftleft/tarpit/OrderStatus.java)
@@ -44,7 +44,7 @@ There are many methods to do code review. Some examples:
 
 ## URL routing
 
-- `On “Ruby on rails” we have `config/routes.rb` and a directory `app/controllers/…`. Something similar happens for applications like “struts” where the configuration is in an xml file.
+- On “Ruby on rails” we have `config/routes.rb` and a directory `app/controllers/…`. Something similar happens for applications like “struts” where the configuration is in an xml file.
 - Another example is “Python Flask” where the mapping is part of the source code and you might encounter something like `@app.route(’hello’)\ndef hello:\n…` . Same will happen with “Ruby Sinatra” with something like `get hello do\n …\nend`.
 
 
@@ -89,13 +89,13 @@ There are many methods to do code review. Some examples:
 - Regular Expressions
     - Missing “^” (caret) and/or “$” to enforce the start or end of the line.
         - `/^pentesterlab/` will match `pentesterlab.com.example.org`.
-        - Matching one word, `/\w+$/` will match `../../../../webshell.ph`p ⇒ it should be `/^\w+$/`
-        - The same applies for functions startwith and endwith
+        - Matching one word, `/\w+$/` will match `../../../../webshell.php` ⇒ it should be `/^\w+$/`
+        - The same applies for functions startswith and endswith
     - Not escaping special characters
         - `/^assets.pentesterlab.com$/`, the dot is not escaped so it will match `[assetszpentesterlab.com](http://assetszpentesterlab.com)` ⇒ the correct way is `/^assets\.pentesterlab\.com$/`
     - Some languages use multiline by default, in Ruby, for example:
         - `/^test$/` will match “test\nHACKER” ⇒ the correct way is `/\Atest\z/`
-        - Other languares use “m” at the end to specify multiline like `/^test$/m` so make sure it’s not used
+        - Other languages use “m” at the end to specify multiline like `/^test$/m` so make sure it’s not used
         - Ignorecase: `/^inc$/i` will match “ınc## ”,##  dotless i (in Turkish), remove the ignorecase
 - Modifications before or after Filtering/Escaping
     - Check again that the modifications does not create another exploitation
