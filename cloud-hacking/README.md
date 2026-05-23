@@ -50,7 +50,7 @@ Target example: `http://[name_of_bucket].s3.amazonaws.com`
 ## AWS Cognito
 
 If you've found aws cognito client id and secret
-1. `clientID:clientSercret` => `base64KEY`
+1. `clientID:clientSecret` => `base64KEY`
 2. `curl -X POST 'https://xx.amazoncognito.com/oauth2/token' \   -H 'Authorization: Basic base64KEY'\   -H 'Content-Type: application/x-www-form-urlencoded' \   -d 'grant_type=client_credentials'`
 3. [Source](https://twitter.com/GodfatherOrwa/status/1670617783510376448)
 
