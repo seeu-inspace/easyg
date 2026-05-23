@@ -14,13 +14,12 @@
 - [CVE trends](https://cvetrends.com/)
 - [Packet Storm](https://packetstormsecurity.com/)
 - [PortSwigger/research](https://portswigger.net/research)
-- [all InfoSec news](https://allinfosecnews.com/)
+
 
 **Newsletters**
 - [Bug Bytes](https://blog.intigriti.com/category/bugbytes/)
 - [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
 - [The Unsupervised Learning Newsletter](https://danielmiessler.com/newsletter/)
-- [Executive Offense](https://executiveoffense.beehiiv.com/subscribe)
 - [TLDR Newsletter](https://tldr.tech/)
 - [Hive Five - securibee](https://securib.ee/newsletter/)
 - [Vulnerable U](https://vulnu.beehiiv.com/)
