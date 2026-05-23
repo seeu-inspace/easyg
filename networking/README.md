@@ -5,7 +5,7 @@
 - [Tools](#tools)
 - [Checking the routing table](#checking-the-routing-table)
 - [Discover the MAC address](#discover-the-mac-address)
-- [Change MAC address](#change-mac-addess)
+- [Change MAC address](#change-mac-address)
 - [Check listening ports and the current TCP connections](#check-listening-ports-and-the-current-tcp-connections)
 - [Add new routes](#add-new-routes)
 - [Null session](#null-session)
