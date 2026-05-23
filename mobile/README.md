@@ -57,7 +57,7 @@ In case you need to reinstall the certificate in the smartphone
 - From Burp: proxy configured with bind to any port that you want, bind to address set to "All interfaces"
 - From the device
   1. Set VPN configuration in Wi-Fi with the machine's IP and the listener port set before
-  2. Go to `brup/` with your browser and download the certificate
+  2. Go to `burp/` with your browser and download the certificate
   3. Rename it with `.crt` extension
   4. Go to "Install a certificate" from your device settings and install the downloaded certificate
   5. Reboot (Note: you need Magisk + [MagiskTrustUserCerts](https://github.com/NVISOsecurity/MagiskTrustUserCerts))
@@ -88,8 +88,8 @@ In case you need to reinstall the certificate in the smartphone
 - [Android Studio](https://developer.android.com/studio) Android application development, useful also for the emulator
   - Note: to start only the emulator, use commands such as
     ```cmd
-    cd C:\Users\Riccardo\AppData\Local\Android\Sdk\emulator
-    emulator -avd Pixel_4_XL_API_30
+    cd %LOCALAPPDATA%\Android\Sdk\emulator
+    emulator -avd <AVD_NAME>
     ```
 
 ## Tools
@@ -179,9 +179,9 @@ You can find more elements than when using `jadx-gui`
 - `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/assets`
 - `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/` depending on the application, you can find some source code here
 - `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/lib` important for when you recompile the application. Also, worth look into it as some devs might store some API keys here
-    - use `strings [libapp.so](http://libapp.so)` to see if there is any human redeable strings in these files
+    - use `strings libapp.so` to see if there is any human readable strings in these files
 - `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/res/values/strings.xml` here you can find some interesting strings
-- `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/smali` where the actual source code is stored. This files are not humanly redeable, so you shoudl use `jadx-gui`
+- `~/Documents/AppName-1.9.0-release/AppName-1.9.0-release/smali` where the actual source code is stored. These files are not humanly readable, so you should use `jadx-gui`
 
 
 
@@ -194,7 +194,7 @@ Absence or improper implementation of certificate and public key pinning in a mo
 
 - Check for HTML injections
 - Search for XSS
-  - With this type of attack, it's possible to achieve an RCE. Check [this](https://www.joshmorony.com/why-xss-attacks-are-more-dangerous-for-capacitor-cordova-apps/) and [this](https://research.securitum.com/security-problems-of-apache-cordova-steal-the-entire-contents-of-the-phone_s-memory-card-with-one-xss/)
+  - With this type of attack, it's possible to achieve an RCE. Check [this](https://www.joshmorony.com/why-xss-attacks-are-more-dangerous-for-capacitor-cordova-apps/)
 
 
 ## Hardcoded strings
