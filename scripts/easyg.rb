@@ -233,8 +233,30 @@ def github_endpoints(domain, token)
 			req['Authorization'] = "token #{token}"
 			req['User-Agent'] = "RubyScript"
 
-			res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
-			json = JSON.parse(res.body) rescue {}
+			max_retries = 3
+			attempt = 0
+			json = {}
+
+			begin
+				attempt += 1
+				res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+					http.open_timeout = 10
+					http.read_timeout = 15
+					http.request(req)
+				end
+				json = JSON.parse(res.body) rescue {}
+			rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Net::OpenTimeout,
+						 Net::ReadTimeout, SocketError, OpenSSL::SSL::SSLError => e
+				if attempt < max_retries
+					wait = 2 ** attempt	# backoff esponenziale: 2s, 4s, 8s
+					puts "[!] github_endpoints: #{e.class} su #{domain}, retry #{attempt}/#{max_retries} tra #{wait}s..."
+					sleep(wait)
+					retry
+				else
+					puts "[!] github_endpoints: troppi errori per #{domain} (#{e.message}). Skipping."
+					break
+				end
+			end
 
 			break if !json['items'] || json['items'].empty?
 
@@ -718,7 +740,9 @@ def assetenum_fun(params)
 		# Amass thread
 		threads << Thread.new do
 			amass_mode = params[:gb_opt] == "y" ? "-brute -active" : "-passive -timeout 15"
-			system("amass enum #{amass_mode} -d #{target} -v -dns-qps 300")
+			amass_config = File.join(Dir.home, '.config', 'amass', 'config.yaml')
+			config_flag = File.exist?(amass_config) ? "-config #{amass_config}" : ""
+			system("amass enum #{amass_mode} -d #{target} -v -dns-qps 300 #{config_flag}")
 		end
 
 		# Subfinder thread
@@ -737,15 +761,31 @@ def assetenum_fun(params)
 		if params[:gb_opt] == "y"
 			threads << Thread.new do
 				begin
-					unless File.exist?("all.txt")
-						uri = URI.parse("https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt")
-						response = Net::HTTP.get_response(uri)
-						alltxt = (response.body).to_s
-						File.open('all.txt', 'w') { |file| file.write(alltxt) }
+					wordlist = "output/all_dns_wordlist.txt"
+					unless File.exist?(wordlist)
+						puts "[\e[34m*\e[0m] Downloading DNS wordlist..."
+						urls = [
+							"https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/all.txt",
+							"https://gist.githubusercontent.com/jhaddix/86a06c5dc309d08580a018c66354a056/raw/96f4e51d96b2203f19f6381c8c545b278eaa0837/all.txt"
+						]
+						downloaded = false
+						urls.each do |url|
+							system("curl -sS -L -o #{wordlist} '#{url}'")
+							if File.exist?(wordlist) && File.size(wordlist) > 1000
+								puts "[\e[32m+\e[0m] DNS wordlist downloaded (#{File.size(wordlist)} bytes)"
+								downloaded = true
+								break
+							end
+							FileUtils.rm_f(wordlist)
+						end
+						unless downloaded
+							puts "[\e[31m!\e[0m] Failed to download DNS wordlist, skipping Gobuster"
+							next
+						end
 					end
 
 					gobuster_tmp = "output/#{target}_gobuster_tmp.txt"
-					system("gobuster dns -d #{target} -v -t #{$CONFIG['n_threads']} --no-color --wildcard -o #{gobuster_tmp} -w all.txt")
+					system("gobuster dns -d #{target} -v -t #{$CONFIG['n_threads']} --no-color --wildcard -o #{gobuster_tmp} -w #{wordlist}")
 
 					File.open(gobuster_out, 'w') do |outf|
 						if File.exist?(gobuster_tmp)
@@ -825,32 +865,32 @@ def assetenum_fun(params)
 			# Save dead subdomains to file for VhostFinder
 			dead_subdomains_file = "output/dead_subdomains_#{file}"
 			File.write(dead_subdomains_file, dead_subdomains.join("\n"))
-		
+
 			# ==== Vhost Enumeration on Alive IPs ====
 			alive_ips.each do |ip|
 				next if ip.empty?
-		
+
 				puts "[\e[34m*\e[0m] Running VhostFinder on IP: #{ip}"
 				vhost_output = "output/vhosts_#{ip}.txt"
-				
+
 				# Execute VhostFinder with dead subdomains as wordlist
 				system("VhostFinder -ip #{ip} -wordlist #{dead_subdomains_file} | tee #{vhost_output}")
-		
+
 				# Parse results and add valid vhosts
 
 				if File.exist?(vhost_output)
 					valid_vhosts = []
 					File.foreach(vhost_output) do |line|
 						line.strip!
-		
+
 						next if line.empty?
 						next unless line.start_with?("[+]")
-		
+
 						valid_vhosts << line
 					end
-		
+
 					# Append to per-IP vhosts file
-					if valid_vhosts.any?					
+					if valid_vhosts.any?
 						# Append to global Vhosts file
 						File.open(all_vhosts_file, 'a') do |f|
 							valid_vhosts.each do |vhost|
@@ -860,16 +900,16 @@ def assetenum_fun(params)
 							end
 						end
 					end
-		
+
 					FileUtils.rm_f(vhost_output)	# Cleanup temp file
 				end
 			end
 
-			# Cleanup
-			[dead_subdomains_file, final_tmp].each do |f|
-				FileUtils.rm_f(f)
-			end
+			FileUtils.rm_f(dead_subdomains_file)
 		end
+
+		# Cleanup tmp files (always, regardless of mode)
+		FileUtils.rm_f(final_tmp)
 	end
 
 	# == HTTP Discovery ==
@@ -912,6 +952,8 @@ def assetenum_fun(params)
 			adding_anew("#{hidden_temp}_httpx", http_file)
 			adding_anew("#{hidden_temp}_httprobe", http_file)
 
+			# Cleanup hidden temp files
+			["#{hidden_temp}_httpx", "#{hidden_temp}_httprobe"].each { |f| FileUtils.rm_f(f) }
 		end
 	end
 
@@ -1053,7 +1095,7 @@ def crawl_local_fun(params)
 
 				threads = []
 				threads << Thread.new do
-					system("katana -u #{target} -jc -jsl -hl -kf -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o #{katana_file}")
+					system("katana -u #{target} -jc -jsl -hl -kf all -aff -d 3 -p 25 -c 25 -fs fqdn -H \"Cookie: #{$CONFIG['cookie']}\" -o #{katana_file}")
 				end
 
 				threads << Thread.new do
@@ -1144,11 +1186,22 @@ def crawl_local_fun(params)
 	adding_anew("output/allJSUrls_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 	adding_anew("output/xnLinkFinder_#{file_sanitized}", "output/allUrls_#{file_sanitized}")
 
-	# Final
+	# Final cleanup — remove intermediate/temp files
 	FileUtils.rm_f("output/_tmp_domains_#{file_sanitized}")
 	FileUtils.rm_f("output/tmp_scope.txt")
 	FileUtils.rm_f("parameters.txt")
 	FileUtils.rm_rf("results/")
+	FileUtils.rm_f("output/getJS_#{file_sanitized}")
+	FileUtils.rm_f("output/xnLinkFinder_#{file_sanitized}")
+	targets.each do |t|
+		ts = t.gsub(/^https?:\/\//, '').gsub(/:\d+$/, '').gsub('/', '')
+		FileUtils.rm_f("output/#{ts}_tmp.txt")
+		FileUtils.rm_f("output/#{ts}_gau.txt")
+	end
+	domains.each do |d|
+		FileUtils.rm_f("output/#{d}_waymore.txt")
+		FileUtils.rm_f("output/github-endpoints_#{d}.txt")
+	end
 	remove_using_scope(file, "output/allUrls_#{file_sanitized}")
 	puts "[\e[32m+\e[0m] Results for #{file} saved as output/allUrls_#{file_sanitized}"
 	send_telegram_notif("Crawl-local for #{file} finished")
