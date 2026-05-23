@@ -24,20 +24,20 @@
 **Tools**
 - [feroxbuster](https://github.com/epi052/feroxbuster)
   - `feroxbuster -u https://example.com/ --proxy http://127.0.0.1:8080 -k -w wordlist.txt -s 200,403`
-  - `feroxbuster -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -C 404,400,401,403 --url http://192.168.244.140:8000`
+  - `feroxbuster -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -C 404,400,401,403 --url http://<IP>:<PORT>`
 - [dirsearch](https://github.com/maurosoria/dirsearch)
   - `dirsearch -l list.txt -x 404,500,501,502,503 -e *`
   - `dirsearch -u target.io -x 404,500,501,502,503 -e *`
   - `dirsearch -u <target> -w /usr/share/seclists/Discovery/Web-Content/big.txt -r -R 2 --full-url -t 75 --suffix=.php`
-  - `dirsearch -e * -x 404,401,500,503 -u http://192.168.244.140:8000`
-  - `dirsearch -u http://192.168.134.126 -w /usr/share/wordlists/dirb/common.txt -r -R 2 --full-url -t 75 --suffix=.txt`
+  - `dirsearch -e * -x 404,401,500,503 -u http://<IP>:<PORT>`
+  - `dirsearch -u http://<IP> -w /usr/share/wordlists/dirb/common.txt -r -R 2 --full-url -t 75 --suffix=.txt`
   - `dirsearch -e * -x 429,406,404,403,401,400 -l file.txt --no-color --full-url -t 5`
 - [DIRB](https://salsa.debian.org/pkg-security-team/dirb)
   - `dirb http://www.target.com -r -z 10`
 - [dirbuster](https://github.com/KajanM/DirBuster)
 - [gobuster](https://github.com/OJ/gobuster)
-  - `gobuster dir -w /usr/share/wordlists/dirb/common.txt -u http://192.168.228.63:450`
-  - `gobuster dir -u http://192.168.190.112 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt`
+  - `gobuster dir -w /usr/share/wordlists/dirb/common.txt -u http://<IP>:<PORT>`
+  - `gobuster dir -u http://<IP> -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt`
 - [ffuf](https://github.com/ffuf/ffuf)
   - `ffuf -u 'http://<IP>/secret/evil.php?FUZZ=/etc/passwd' -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -fs 0`
 
@@ -72,7 +72,7 @@
 - [Source2Url](https://github.com/danielmiessler/Source2URL/blob/master/Source2URL) to get endpoints from a source code
 - [waymore](https://github.com/xnl-h4ck3r/waymore) more results from the Wayback Machine
 - [BurpJSLinkFinder](https://github.com/InitRoot/BurpJSLinkFinder)
-- [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate funcionality based on script resources included
+- [trashcompactor](https://github.com/michael1026/trashcompactor) to remove URLs with duplicate functionality based on script resources included
 
 ## Google Dorking
 - `ext:` search for: asp, aspx, jsp, jspx, do, action, php, php3, form, html, xhtml, phtml, cfm, fcc, xsp, swf, nsf, cgi, axd, jsf
