@@ -5,7 +5,7 @@
 - [Tools](#tools)
 - [Checking the routing table](#checking-the-routing-table)
 - [Discover the MAC address](#discover-the-mac-address)
-- [Change MAC addess](#change-mac-addess)
+- [Change MAC address](#change-mac-addess)
 - [Check listening ports and the current TCP connections](#check-listening-ports-and-the-current-tcp-connections)
 - [Add new routes](#add-new-routes)
 - [Null session](#null-session)
@@ -47,7 +47,7 @@ ipconfig /all   on Windows
 ifconfig        on MacOS
 ```
 
-## Change MAC addess
+## Change MAC address
 - [How to change or spoof the MAC address in Windows (7 ways)](https://www.digitalcitizen.life/change-mac-address-windows/)
 - [How to Change Your MAC Address on Linux](https://www.makeuseof.com/how-to-change-mac-address-on-linux/)
   - [macchanger](https://github.com/acrogenesis/macchanger)
@@ -111,7 +111,7 @@ for i in $(seq 1 254); do nc -zv -w 1 <octet>.<octet>.<octet>.$i <port>; done   
 ## Check ARP cache
 ```
 ip neighbour    on Linux
-apr -a          on Windows
+arp -a          on Windows
 arp             on *nix OS
 ```
 
@@ -124,7 +124,7 @@ arp             on *nix OS
 
 An example
 1. `echo 1 > /proc/sys/net/ipv4/ip_forward`
-2. `arpspoof -i eth0 -t 192.168.4.11 -r 192.168.4.16`
+2. `arpspoof -i eth0 -t <TARGET_IP> -r <GATEWAY_IP>`
 
 
 ## Well-known Ports
