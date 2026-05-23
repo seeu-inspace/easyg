@@ -12,7 +12,7 @@
   - [Foundry](#foundry)
   - [Slither](#slither)
   - [Code](#code)
-- [Audit](#Audit)
+- [Audit](#audit)
   - [Interview process](#interview-process)
   - [Audit process](#audit-process)
   - [Audit methodology](#audit-methodology)
@@ -51,7 +51,7 @@
   - [Cyfrin CodeHawks First Flights](#cyfrin-codeHawks-first-flights)
     - [First Flight #14: AirDropper H-02. Lack of a claim verification mechanism in the function `MerkleAirdrop::claim` results in the USDC protocol balance draining](#first-flight-14-airdropper-h-02-lack-of-a-claim-verification-mechanism-in-the-function-merkleairdropclaim-results-in-the-usdc-protocol-balance-draining)
     - [First Flight #13: Baba Marta H-01. No restriction implemented in `MartenitsaToken::updateCountMartenitsaTokensOwner` allows any user to update any MartenitsaToken balance breaking the operativity and purpose of the protocol](#first-flight-13-baba-marta-h-01-no-restriction-implemented-in-martenitsatokenupdatecountmartenitsatokensowner-allows-any-user-to-update-any-martenitsatoken-balance-breaking-the-operativity-and-purpose-of-the-protocol)
-    - [First Flight #13: Baba Marta M-01. `MartenitsaEvent::stopEvent` does not clear the list of partecipants not allowing recurring users to join new events](#first-flight-13-baba-marta-m-01-martenitsaeventstopevent-does-not-clear-the-list-of-partecipants-not-allowing-recurring-users-to-join-new-events)
+    - [First Flight #13: Baba Marta M-01. `MartenitsaEvent::stopEvent` does not clear the list of participants not allowing recurring users to join new events](#first-flight-13-baba-marta-m-01-martenitsaeventstopevent-does-not-clear-the-list-of-participants-not-allowing-recurring-users-to-join-new-events)
 
 ## Introduction
 
@@ -64,7 +64,7 @@ There are two common types of operations that are carried out to create a crypto
 
 **Ethereum** is a blockchain that has popularized an incredible innovation: smart contracts, which are a program or collection of code and data that reside and function in a specific address on the network. Thanks to this factor, it is defined as a "programmable blockchain".
 
-Note: By design, smart contracts are immutable. This means that once a Smart Contract is deployed, it cannot be modified, with the exception of the [Proxy Upgrade Pattern](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies).
+Note: By design, smart contracts are immutable. This means that once a Smart Contract is deployed, it cannot be modified, with the exception of the [Proxy Upgrade Pattern](https://docs.openzeppelin.com/contracts/5.x/api/proxy).
 
 A token can be created with a smart contract. Most of them reside in the ERC20 category, which is fungible tokens. Other tokens are ERC-721 and ERC-1155, aka NFTs.
 
@@ -108,7 +108,7 @@ See also: [Ethereum 101 - by Rajeev | Secureum](https://secureum.substack.com/p/
 - **Batch Auction**: Batch Auctions collect and execute multiple orders simultaneously at set intervals, enhancing liquidity and fairness in decentralized exchange trading.
 - **Arbitrage**: When you take advantage of a price discrepancy on two exchanges
 
-You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/resources/defi-glossary)
+You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/getting-started/glossary)
 
 ## Personal security
 
@@ -399,7 +399,7 @@ C. Reporting
 
 ### Audit methodology
 
-1. Git clone the repository in local enviorment + disable `ffi` if needed
+1. Git clone the repository in local environment + disable `ffi` if needed
 2. Read the documentation
 3. Create a scope table with: name file, lines of code, if you have audited or not. You can use notion for this, as it enables you to create an interactive spreadsheet. For example, you can rank the contracts based on complexity.
     - A cool tool for this purpose is [Solidity Code Metrics](https://github.com/Consensys/solidity-metrics)
@@ -561,7 +561,7 @@ function test_denialOfService() public {
 
 #### Mitigation
 
-It depends on the scenario, an example for Puppy Raffle NFT: https://www.codehawks.com/report/clo383y5c000jjx087qrkbrj8#M-01
+It depends on the scenario, an example for Puppy Raffle NFT: https://codehawks.cyfrin.io/c/2023-10-Puppy-Raffle
 
 #### Notes
 
@@ -675,15 +675,11 @@ function withdrawFunction() public {
 
 #### Notes
 
-→ See this PoC: https://www.codehawks.com/report/clo383y5c000jjx087qrkbrj8#H-02
-
-→ Reentrancy for NFTs: https://www.codehawks.com/finding/clvge72wm000stmgh7yrwcpbt
-
 → To check also: [A Historical Collection of Reentrancy Attacks](https://github.com/pcaversaccio/reentrancy-attacks)
 
 ### Weak Randomness
 
-This happens every time in the contract is used something other than an Oracle to enstablish randomness. The purpose of the random number rapresent the severity of the issue.
+This happens every time in the contract is used something other than an Oracle to establish randomness. The purpose of the random number represents the severity of the issue.
 
 - For example: if the random value is used to mint a rare NFT, it’s an high severity issue
 - See: https://github.com/immunefi-team/Web3-Security-Library/tree/main/Vulnerabilities#bad-randomness
@@ -762,7 +758,7 @@ $ chisel
 - Remove `unchecked` if it’s present
 - Usa a more recent version of solidity
 - Bigger uints, for example from `uint64` to `uint256`
-- Use SafeMath https://docs.openzeppelin.com/contracts/2.x/api/math
+- Use SafeMath https://docs.openzeppelin.com/contracts/4.x/api/utils#SafeMath
 
 ### Unsafe casting
 
@@ -870,7 +866,7 @@ Resources:
 
 ### Centralization
 
-Most of the time, for competitive audits, this would be marked as a known issue or no issue. However, for a private audit, you should always report it. This especially if it’s behind a proxy, at least to cover yourself from any responsability.
+Most of the time, for competitive audits, this would be marked as a known issue or no issue. However, for a private audit, you should always report it. This especially if it’s behind a proxy, at least to cover yourself from any responsibility.
 
 → An example of an hack: [UK Court Ordered Oasis to Exploit Own Security Flaw to Recover 120k wETH Stolen in Wormhole Hack](https://medium.com/@observer1/uk-court-ordered-oasis-to-exploit-own-security-flaw-to-recover-120k-weth-stolen-in-wormhole-hack-fcadc439ca9d).
 
@@ -920,7 +916,7 @@ For pricing: It’s always advisable to rely on secure price oracle mechanism, l
 
 ### Signature issues
 
-- [Publick Key / Private Key Demo](https://github.com/anders94/public-private-key-demo)
+- [Public Key / Private Key Demo](https://github.com/anders94/public-private-key-demo)
 - [Polygon Lack Of Balance Check Bugfix Review - $2.2m Bounty](https://medium.com/immunefi/polygon-lack-of-balance-check-bugfix-postmortem-2-2m-bounty-64ec66c24c7d)
     - Note: `ecrecovery` does not revert. Instead, it returns `0`. So, the result from this function must be checked.
 - Signature Replay: [SignatureReplay.sol](https://remix.ethereum.org/#url=https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/signature-replay/SignatureReplay.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.20+commit.a1b79de6.js)
@@ -1338,7 +1334,7 @@ It is advisable to implement checks on the function `MartenitsaToken::updateCoun
 
 </details>
 
-#### [First Flight #13: Baba Marta](https://codehawks.cyfrin.io/c/2024-04-Baba-Marta) M-01. `MartenitsaEvent::stopEvent` does not clear the list of partecipants not allowing recurring users to join new events
+#### [First Flight #13: Baba Marta](https://codehawks.cyfrin.io/c/2024-04-Baba-Marta) M-01. `MartenitsaEvent::stopEvent` does not clear the list of participants not allowing recurring users to join new events
 
 **Summary**
 
@@ -1401,7 +1397,7 @@ You can test this by adding `testJoinNewEvent()` to `MartenitsaToken.t.sol` test
 
 <summary>Solution</summary>
 
-It is advisable to clear the list of partecipants after stopping an event to allow recurring users to join new events. An example to do so is the following.
+It is advisable to clear the list of participants after stopping an event to allow recurring users to join new events. An example to do so is the following.
 
 ```diff
     /**
