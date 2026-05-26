@@ -21,7 +21,7 @@
 
 To give you (and myself) an idea on how it works, I've made this graphic:
 
-<img src="../img/Senza titolo-2024-12-02-0900.png">
+<img src="../img/easyg--scheme.svg">
 
 ## Burp Suite
 
