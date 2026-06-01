@@ -108,8 +108,6 @@ See also: [Ethereum 101 - by Rajeev | Secureum](https://secureum.substack.com/p/
 - **Batch Auction**: Batch Auctions collect and execute multiple orders simultaneously at set intervals, enhancing liquidity and fairness in decentralized exchange trading.
 - **Arbitrage**: When you take advantage of a price discrepancy on two exchanges
 
-You can find more here: [DeFi Glossary | yearn.fi](https://docs.yearn.fi/getting-started/glossary)
-
 ## Personal security
 
 - Store your assets in a **cold wallet** (hardware wallet) instead of a hot wallet (Centralized exchanges or CEXs). Some good examples are [Ledger](https://www.ledger.com/) and [Trezor](https://trezor.io/);
