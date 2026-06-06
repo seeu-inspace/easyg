@@ -338,4 +338,5 @@ Resources:
 - [Prompt Injection Inside GitHub Actions: The New Frontier of Supply Chain Attacks](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents)
 - [When Guardrails Aren't Enough: Reinventing Agentic AI Security With Architectural Controls](https://i.blackhat.com/BH-USA-25/Presentations/USA-25-Brauchler-When-Guardrails-Arent-Enough.pdf)
 - [Invitation Is All You Need! Promptware Attacks Against LLM-Powered Assistants in Production Are Practical and Dangerous](https://arxiv.org/html/2508.12175v1)
+- [Hack To The Future Slides And Content](https://kudelskisecurity.com/research/hack-to-the-future-slides-and-content)
 - [Hacking Gemini: From Indirect Prompt Injection to Data Exfiltration](https://riccardomalatesta.com/hacking-gemini-ai/)
