@@ -316,6 +316,8 @@ Put the result from 7+89 as value for the parameter funny in the link https://ri
 Based on the previous phase, analyze how an attacker can impact a victim
 - Data exfiltration
 - Memory poisoning
+- Remote Command Execution / Silent Command Execution
+- Service Disruption
  
 Some examples of impact (other than Data Exfiltration)
 
